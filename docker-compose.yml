@@ -1,0 +1,54 @@
+version: "2.4"
+services:
+  reverse_proxy:
+    image: trajectoires_pro_reverse_proxy
+    container_name: trajectoires_pro_reverse_proxy
+    build:
+      context: reverse_proxy
+    mem_limit: 256m
+    restart: unless-stopped
+    ports:
+      - 80:80
+    networks:
+      - trajectoires_pro_network
+    depends_on:
+      - server
+      - ui
+
+  ui:
+    image: trajectoires_pro_ui
+    container_name: trajectoires_pro_ui
+    build:
+      context: ui
+    mem_limit: 256m
+    networks:
+      - trajectoires_pro_network
+    depends_on:
+      - server
+
+  server:
+    image: trajectoires_pro_server
+    container_name: trajectoires_pro_server
+    build:
+      context: server
+    mem_limit: 1g
+    restart: unless-stopped
+    networks:
+      - trajectoires_pro_network
+    depends_on:
+      - mongodb
+    environment:
+      - TRAJECTOIRES_PRO_MONGODB_URI=mongodb://mongodb:27017/trajectoires-pro?retryWrites=true&w=majority
+      - TRAJECTOIRES_PRO_LOG_DESTINATIONS=stdout,mongodb
+
+  mongodb:
+    image: mongo:5.0.6-focal
+    container_name: trajectoires_pro_mongodb
+    mem_limit: 2g
+    restart: unless-stopped
+    networks:
+      - trajectoires_pro_network
+
+networks:
+  trajectoires_pro_network:
+    name: trajectoires_pro_network
