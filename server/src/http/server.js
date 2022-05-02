@@ -9,6 +9,7 @@ const corsMiddleware = require("./middlewares/corsMiddleware");
 const packageJson = require("../../package.json");
 const hello = require("./routes/helloRoutes");
 const { dbCollection } = require("../common/mongodb");
+const svg = require("./routes/svgRoutes");
 
 module.exports = async () => {
   const app = express();
@@ -17,6 +18,7 @@ module.exports = async () => {
   app.use(corsMiddleware());
   app.use(logMiddleware());
   app.use(hello());
+  app.use(svg());
 
   app.get(
     "/api",
