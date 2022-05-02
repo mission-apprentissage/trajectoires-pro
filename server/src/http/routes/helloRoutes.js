@@ -9,7 +9,7 @@ module.exports = () => {
   const router = express.Router();
 
   router.get(
-    "/",
+    "/api/hello",
     tryCatch(async (req, res) => {
       logger.info("Hello World");
       return res.json({

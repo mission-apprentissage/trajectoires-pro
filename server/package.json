@@ -19,7 +19,6 @@
     "body-parser": "1.20.0",
     "boom": "7.3.0",
     "bunyan": "1.8.15",
-    "bunyan-mongodb-stream": "0.0.3",
     "bunyan-slack": "0.0.10",
     "commander": "9.2.0",
     "dotenv": "16.0.0",
@@ -27,7 +26,7 @@
     "express": "4.18.1",
     "joi": "17.6.0",
     "lodash": "4.17.21",
-    "mongoose": "5.13.14",
+    "mongodb": "4.5.0",
     "oleoduc": "0.6.2",
     "pretty-ms": "7.0.1"
   },

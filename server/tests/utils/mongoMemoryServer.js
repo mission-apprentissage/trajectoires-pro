@@ -1,7 +1,6 @@
 // eslint-disable-next-line node/no-unpublished-require
 let { MongoMemoryServer } = require("mongodb-memory-server");
-const { connectToMongodb } = require("../../src/common/mongodb");
-const models = require("../../src/common/model");
+const { connectToMongodb, getDatabase, configureValidation, configureIndexes } = require("../../src/common/mongodb");
 
 let mongodHolder;
 
@@ -13,12 +12,16 @@ module.exports = {
       },
     });
     let uri = mongodHolder.getUri();
-    return connectToMongodb(uri);
+    let client = await connectToMongodb(uri);
+    await configureIndexes();
+    await configureValidation();
+    return client;
   },
   stopMongod() {
     return mongodHolder.stop();
   },
   async removeAll() {
-    return Promise.all(Object.values(models).map((m) => m.deleteMany()));
+    let collections = await getDatabase().collections();
+    return Promise.all(collections.map((c) => c.deleteMany({})));
   },
 };

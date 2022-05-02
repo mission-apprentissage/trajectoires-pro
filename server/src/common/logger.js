@@ -3,10 +3,8 @@ const { throttle, omit, isEmpty } = require("lodash");
 const bunyan = require("bunyan");
 const BunyanSlack = require("bunyan-slack");
 const config = require("../config");
-const BunyanMongodbStream = require("bunyan-mongodb-stream");
 // eslint-disable-next-line node/no-unpublished-require
 const chalk = require("chalk");
-const { Log } = require("./model");
 const { compose, writeData, transformData } = require("oleoduc");
 
 function prettyPrintStream(outputName) {
@@ -105,20 +103,11 @@ function sendLogsToSlack() {
   };
 }
 
-function sendLogsToMongodb() {
-  return {
-    name: "mongodb",
-    level: "info",
-    stream: BunyanMongodbStream({ model: Log }),
-  };
-}
-
 const createStreams = () => {
   let availableDestinations = {
     stdout: () => sendLogsToConsole("stdout"),
     stderr: () => sendLogsToConsole("stderr"),
     slack: () => sendLogsToSlack(),
-    mongodb: () => sendLogsToMongodb(),
   };
 
   return config.log.destinations
@@ -130,7 +119,7 @@ const createStreams = () => {
 };
 
 module.exports = bunyan.createLogger({
-  name: "referentiel",
+  name: "trajectoire-pro",
   serializers: {
     ...bunyan.stdSerializers,
     err: function (err) {

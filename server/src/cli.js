@@ -1,13 +1,15 @@
 require("dotenv").config();
 const { program: cli } = require("commander");
 const runScript = require("./common/runScript");
+const migrate = require("./jobs/migrate");
 
 cli
-  .command("sample")
-  .description("Example")
-  .action(() => {
+  .command("migrate")
+  .description("Execute les scripts de migration")
+  .option("--dropIndexes", "Supprime les anciens indexes")
+  .action((options) => {
     runScript(() => {
-      console.log("Hello World");
+      return migrate(options);
     });
   });
 

@@ -1,11 +1,10 @@
-// eslint-disable-next-line node/no-unpublished-require
+const logger = require("../common/logger").child({ context: "script" });
+const { closeMongodbConnection, connectToMongodb, configureValidation } = require("../common/mongodb");
 const prettyMilliseconds = require("pretty-ms");
-const { closeMongoConnection, connectToMongodb } = require("./mongodb");
-const logger = require("./logger");
 const { isEmpty } = require("lodash");
 
-process.on("unhandledRejection", (e) => console.log(e));
-process.on("uncaughtException", (e) => console.log(e));
+process.on("unhandledRejection", (e) => logger.error(e));
+process.on("uncaughtException", (e) => logger.error(e));
 process.stdout.on("error", function (err) {
   if (err.code === "EPIPE") {
     // eslint-disable-next-line no-process-exit
@@ -38,7 +37,7 @@ const exit = async (scriptError) => {
 
   setTimeout(() => {
     //Waiting logger to flush all logs (MongoDB)
-    closeMongoConnection().catch((e) => {
+    closeMongodbConnection().catch((e) => {
       console.error(e);
       process.exitCode = 1;
     });
@@ -51,6 +50,7 @@ async function runScript(job) {
     timer.start();
 
     await connectToMongodb();
+    await configureValidation();
 
     const results = await job();
 
