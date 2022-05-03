@@ -1,5 +1,4 @@
 const express = require("express");
-const logger = require("../../common/logger");
 const tryCatch = require("../middlewares/tryCatchMiddleware");
 
 const ejs = require("ejs");
