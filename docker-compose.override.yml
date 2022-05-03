@@ -5,17 +5,14 @@ services:
     volumes:
       - trajectoires_pro_nginx_data:/data:z
       - ./reverse_proxy/dev/includes:/etc/nginx/templates/includes/env
-    build:
-      args:
-        - ENV=development
 
   ui:
     build:
-      context: ui
-      dockerfile: Dockerfile.dev
+      args:
+        TRAJECTOIRES_PRO_ENV: dev
     volumes:
       - ./ui:/app:z
-      - /app/node_modules
+      - /app/node_modules/
       - /app/.next
     mem_limit: 1g
     stdin_open: true
@@ -25,9 +22,8 @@ services:
     ports:
       - "127.0.0.1:9229:9229" # Allows remote debugging
     volumes:
-      - ./server/src:/app/src:z # Allows source folders to be watched
-      - ./server/config:/app/config:z
       - trajectoires_pro_server_data:/data:z
+      - ./server/src:/app/src:z
     environment:
       - TRAJECTOIRES_PRO_ENV=dev
       - TRAJECTOIRES_PRO_LOG_LEVEL=debug

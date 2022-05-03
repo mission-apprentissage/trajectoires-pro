@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "docker-dev": "yarn install && yarn dev",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watch",
     "test:ci": "jest --ci",
-    "coverage": "jest --ci --coverage"
+    "coverage": "jest --ci --coverage",
+    "postinstall": "mkdir -p .next"
   },
   "dependencies": {
     "next": "12.1.5",
