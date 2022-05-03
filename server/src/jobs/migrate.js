@@ -2,9 +2,7 @@ const { configureIndexes, configureValidation, dbCollection } = require("../comm
 
 const VERSION = 0;
 
-async function tasks() {
-  return {};
-}
+async function tasks() {}
 
 async function _ensureMigrationCanBeRun() {
   let count = await dbCollection("migrations").count({ version: VERSION });

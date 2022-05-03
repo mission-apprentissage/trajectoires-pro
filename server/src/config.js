@@ -15,4 +15,10 @@ module.exports = {
       .default("mongodb://127.0.0.1:27017/trajectoires-pro?retryWrites=true&w=majority")
       .asString(),
   },
+  ovh: {
+    storage: {
+      uri: env.get("TRAJECTOIRES_PRO_OVH_STORAGE_URI").asString(),
+      storageName: env.get("TRAJECTOIRES_PRO_OVH_STORAGE_NAME").default("mna-trajectoires-pro").asString(),
+    },
+  },
 };
