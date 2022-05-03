@@ -12,7 +12,7 @@ module.exports = {
   mongodb: {
     uri: env
       .get("TRAJECTOIRES_PRO_MONGODB_URI")
-      .default("mongodb://127.0.0.1:27017/referentiel?retryWrites=true&w=majority")
+      .default("mongodb://127.0.0.1:27017/trajectoires-pro?retryWrites=true&w=majority")
       .asString(),
   },
 };
