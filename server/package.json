@@ -16,11 +16,13 @@
     "lint": "eslint src/ tests/"
   },
   "dependencies": {
+    "axios": "0.27.2",
     "body-parser": "1.20.0",
     "boom": "7.3.0",
     "bunyan": "1.8.15",
     "bunyan-slack": "0.0.10",
     "commander": "9.2.0",
+    "csv-parse": "5.0.4",
     "dotenv": "16.0.0",
     "ejs": "3.1.7",
     "env-var": "7.1.1",
