@@ -1,6 +1,5 @@
 const express = require("express");
 const config = require("../config");
-const mongoose = require("mongoose");
 const logger = require("../common/logger");
 const bodyParser = require("body-parser");
 const logMiddleware = require("./middlewares/logMiddleware");
@@ -8,7 +7,8 @@ const errorMiddleware = require("./middlewares/errorMiddleware");
 const tryCatch = require("./middlewares/tryCatchMiddleware");
 const corsMiddleware = require("./middlewares/corsMiddleware");
 const packageJson = require("../../package.json");
-const hello = require("./routes/hello");
+const hello = require("./routes/helloRoutes");
+const { dbCollection } = require("../common/mongodb");
 
 module.exports = async () => {
   const app = express();
@@ -16,17 +16,14 @@ module.exports = async () => {
   app.use(bodyParser.json());
   app.use(corsMiddleware());
   app.use(logMiddleware());
-
-  app.use("/api/helloRoute", hello());
+  app.use(hello());
 
   app.get(
     "/api",
     tryCatch(async (req, res) => {
       let mongodbStatus;
 
-      let db = mongoose.connection;
-      await db
-        .collection("samples")
+      await dbCollection("logs")
         .stats()
         .then(() => {
           mongodbStatus = true;
