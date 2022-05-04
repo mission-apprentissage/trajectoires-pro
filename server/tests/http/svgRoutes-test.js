@@ -1,6 +1,6 @@
 const assert = require("assert");
 const { startServer } = require("../utils/testUtils");
-
+const { dbCollection } = require("../../src/common/mongodb");
 const { insertInsertJeunes } = require("../utils/fakeData");
 
 describe("svgRoutes", () => {
@@ -12,7 +12,7 @@ describe("svgRoutes", () => {
 
   it("should return a svg file if data exist", async () => {
     const { httpClient } = await startServer();
-    const response = await httpClient.get("/api/svg/etablissement/0751234J/1022105/2022-2021");
+    const response = await httpClient.get("/api/svg/uai/0751234J/code_formation/1022105/millesime/2022-2021");
 
     assert.strictEqual(response.status, 200);
     assert.ok(response.headers["content-type"].includes("image/svg+xml"));
@@ -23,7 +23,9 @@ describe("svgRoutes", () => {
 
   it("should get the horizontal file if asked", async () => {
     const { httpClient } = await startServer();
-    const response = await httpClient.get("/api/svg/etablissement/0751234J/1022105/2022-2021?direction=horizontal");
+    const response = await httpClient.get(
+      "/api/svg/uai/0751234J/code_formation/1022105/millesime/2022-2021?direction=horizontal"
+    );
 
     assert.strictEqual(response.status, 200);
     assert.ok(response.headers["content-type"].includes("image/svg+xml"));
@@ -35,7 +37,9 @@ describe("svgRoutes", () => {
 
   it("should get the vertical file if asked direction is not list", async () => {
     const { httpClient } = await startServer();
-    const response = await httpClient.get("/api/svg/etablissement/0751234J/1022105/2022-2021?direction=diagonal");
+    const response = await httpClient.get(
+      "/api/svg/uai/0751234J/code_formation/1022105/millesime/2022-2021?direction=diagonal"
+    );
 
     assert.strictEqual(response.status, 200);
     assert.ok(response.headers["content-type"].includes("image/svg+xml"));
@@ -65,7 +69,7 @@ describe("svgRoutes", () => {
       uai_de_etablissement: "0751234K",
     });
     const { httpClient } = await startServer();
-    const response = await httpClient.get("/api/svg/etablissement/0751234K/1022105/2022-2021");
+    const response = await httpClient.get("/api/svg/uai/0751234K/code_formation/1022105/millesime/2022-2021");
 
     assert.strictEqual(response.status, 200);
     assert.ok(response.headers["content-type"].includes("image/svg+xml"));
@@ -95,7 +99,9 @@ describe("svgRoutes", () => {
       uai_de_etablissement: "0751234K",
     });
     const { httpClient } = await startServer();
-    const response = await httpClient.get("/api/svg/etablissement/0751234K/1022105/2022-2021?direction=horizontal");
+    const response = await httpClient.get(
+      "/api/svg/uai/0751234K/code_formation/1022105/millesime/2022-2021?direction=horizontal"
+    );
 
     assert.strictEqual(response.status, 200);
     assert.ok(response.headers["content-type"].includes("image/svg+xml"));
@@ -125,7 +131,7 @@ describe("svgRoutes", () => {
       uai_de_etablissement: "0751234K",
     });
     const { httpClient } = await startServer();
-    const response = await httpClient.get("/api/svg/etablissement/0751234K/1022105/2022-2021");
+    const response = await httpClient.get("/api/svg/uai/0751234K/code_formation/1022105/millesime/2022-2021");
 
     assert.strictEqual(response.status, 200);
     assert.ok(response.headers["content-type"].includes("image/svg+xml"));
@@ -138,7 +144,13 @@ describe("svgRoutes", () => {
 
   it("should return a 404 if data does not exist", async () => {
     const { httpClient } = await startServer();
-    const response = await httpClient.get("/api/svg/etablissement/0751234P/1022101/2022-2021");
+    const response = await httpClient.get("/api/svg/uai/0751234P/code_formation/1022101/millesime/2022-2021");
     assert.strictEqual(response.status, 404);
+  });
+
+  it("should return a 400 if uai is not well formated", async () => {
+    const { httpClient } = await startServer();
+    const response = await httpClient.get("/api/svg/uai/0010001/code_formation/23220023440/millesime/2020-2019");
+    assert.strictEqual(response.status, 400);
   });
 });
