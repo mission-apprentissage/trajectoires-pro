@@ -10,11 +10,13 @@ const packageJson = require("../../package.json");
 const hello = require("./routes/helloRoutes");
 const { dbCollection } = require("../common/mongodb");
 const svg = require("./routes/svgRoutes");
+const mongoSanitize = require("express-mongo-sanitize");
 
 module.exports = async () => {
   const app = express();
 
   app.use(bodyParser.json());
+  app.use(mongoSanitize({ replaceWith: "_" }));
   app.use(corsMiddleware());
   app.use(logMiddleware());
   app.use(hello());
