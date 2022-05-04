@@ -3006,6 +3006,11 @@ range-parser@~1.2.1:
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
 
+rate-limiter-flexible@2.3.7:
+  version "2.3.7"
+  resolved "https://registry.yarnpkg.com/rate-limiter-flexible/-/rate-limiter-flexible-2.3.7.tgz#c23e1f818a1575f1de1fd173437f4072125e1615"
+  integrity sha512-dmc+J/IffVBvHlqq5/XClsdLdkOdQV/tjrz00cwneHUbEDYVrf4aUDAyR4Jybcf2+Vpn4NwoVrnnAyt/D0ciWw==
+
 raw-body@2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/raw-body/-/raw-body-2.5.1.tgz#fe1b1628b181b700215e5fd42389f98b71392857"
@@ -3415,6 +3420,18 @@ statuses@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-2.0.1.tgz#55cb000ccf1d48728bd23c685a063998cf1a1b63"
   integrity sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==
+
+stream-chain@^2.2.5:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/stream-chain/-/stream-chain-2.2.5.tgz#b30967e8f14ee033c5b9a19bbe8a2cba90ba0d09"
+  integrity sha512-1TJmBx6aSWqZ4tx7aTpBDXK0/e2hhcNSTV8+CbFJtDjbb+I1mZ8lHit0Grw9GRT+6JbIrrDd8esncgBi8aBXGA==
+
+stream-json@1.7.4:
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/stream-json/-/stream-json-1.7.4.tgz#e41637f93c5aca7267009ca8a3f6751e62331e69"
+  integrity sha512-ja2dde1v7dOlx5/vmavn8kLrxvNfs7r2oNc5DYmNJzayDDdudyCSuTB1gFjH4XBVTIwxiMxL4i059HX+ZiouXg==
+  dependencies:
+    stream-chain "^2.2.5"
 
 string-argv@^0.3.1:
   version "0.3.1"

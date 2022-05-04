@@ -4,6 +4,13 @@ const runScript = require("./common/runScript");
 const migrate = require("./jobs/migrate");
 const importInsertJeunes = require("./jobs/importInsertJeunes");
 const { createReadStream } = require("fs");
+const InsertJeunesApi = require("./common/api/InsertJeunesApi");
+const { oleoduc, writeData, filterData } = require("oleoduc");
+const { difference } = require("lodash");
+
+function asArray(v) {
+  return v.split(",");
+}
 
 cli
   .command("importInsertJeunes")
@@ -23,6 +30,35 @@ cli
   .action((options) => {
     runScript(() => {
       return migrate(options);
+    });
+  });
+
+cli
+  .command("testApi")
+  .argument("<uai>", "L'UAI de l'établissement")
+  .argument("<millesime>", "Le millesime")
+  .option("--dimensions <dimensions>", "Permet de sélectionner une ou plusieurs dimensions", asArray)
+  .action((uai, millesime, { dimensions }) => {
+    runScript(async () => {
+      let api = new InsertJeunesApi();
+
+      await oleoduc(
+        await api.statsParEtablissement(uai, millesime),
+        filterData((data) => {
+          if (!dimensions || dimensions.length === 0) {
+            return true;
+          }
+
+          let current = data.dimensions.reduce((acc, d) => {
+            return [...acc, ...Object.keys(d)];
+          }, []);
+
+          return current.length === dimensions.length && difference(dimensions, current).length === 0;
+        }),
+        writeData((data) => {
+          console.log(data);
+        })
+      );
     });
   });
 

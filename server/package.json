@@ -32,7 +32,9 @@
     "lodash": "4.17.21",
     "mongodb": "4.5.0",
     "oleoduc": "0.6.2",
-    "pretty-ms": "7.0.1"
+    "pretty-ms": "7.0.1",
+    "rate-limiter-flexible": "2.3.7",
+    "stream-json": "1.7.4"
   },
   "engines": {
     "node": ">=12.11.0"
