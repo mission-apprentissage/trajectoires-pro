@@ -5,6 +5,7 @@ const InsertJeunesApi = require("../../common/api/InsertJeunesApi");
 const { compose, transformIntoJSON, accumulateData, flattenArray, transformData } = require("oleoduc");
 const { arrayOf } = require("../utils/validators");
 const { pick } = require("lodash");
+const { checkApiKey } = require("../middlewares/authMiddleware");
 
 function getFormationStats(codeFormations) {
   return compose(
@@ -48,6 +49,7 @@ module.exports = () => {
 
   router.get(
     "/api/insertjeunes/uai/:uai/millesime/:millesime",
+    checkApiKey(),
     tryCatch(async (req, res) => {
       const { uai, millesime, codes_formations } = await Joi.object({
         uai: Joi.string()

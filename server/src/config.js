@@ -25,6 +25,7 @@ module.exports = {
     api: {
       username: env.get("TRAJECTOIRES_PRO_INSERTJEUNES_USERNAME").required().asString(),
       password: env.get("TRAJECTOIRES_PRO_INSERTJEUNES_PASSWORD").required().asString(),
+      key: env.get("TRAJECTOIRES_PRO_INSERTJEUNES_API_KEY").required().asString(),
     },
   },
 };
