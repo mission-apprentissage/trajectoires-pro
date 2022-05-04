@@ -1,0 +1,5 @@
+name: "Custom CodeQL config"
+
+paths-ignore:
+  - server/tests
+  - ui/__tests__
