@@ -10,7 +10,7 @@
   "scripts": {
     "start": "nodemon --ignore tests/ src/index.js",
     "debug": "nodemon --inspect=0.0.0.0 --signal SIGINT --ignore tests/ src/index.js",
-    "test": "TRAJECTOIRES_PRO_LOG_LEVEL=fatal mocha --exit tests/**/*-test.js",
+    "test": "TRAJECTOIRES_PRO_LOG_LEVEL=fatal mocha --inline-diffs --exit tests/**/*-test.js",
     "cli": "TRAJECTOIRES_PRO_LOG_DESTINATIONS=stderr node src/cli.js",
     "coverage": "nyc --temp-dir .coverage/.nyc_output --report-dir .coverage --reporter=lcov --reporter=html yarn test",
     "lint": "eslint src/ tests/"
@@ -22,6 +22,7 @@
     "bunyan": "1.8.15",
     "bunyan-slack": "0.0.10",
     "commander": "9.2.0",
+    "compose-middleware": "5.0.1",
     "csv-parse": "5.0.4",
     "dotenv": "16.0.0",
     "ejs": "3.1.7",
@@ -32,7 +33,12 @@
     "lodash": "4.17.21",
     "mongodb": "4.5.0",
     "oleoduc": "0.6.2",
-    "pretty-ms": "7.0.1"
+    "passport": "0.5.2",
+    "passport-headerapikey": "1.2.2",
+    "pretty-ms": "7.0.1",
+    "rate-limiter-flexible": "2.3.7",
+    "stream-json": "1.7.4",
+    "uuid": "8.3.2"
   },
   "engines": {
     "node": ">=12.11.0"

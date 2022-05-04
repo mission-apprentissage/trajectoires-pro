@@ -1,3 +1,18 @@
-// const Joi = require("joi");
+const Joi = require("joi");
 
-module.exports = {};
+const customJoi = Joi.extend((joi) => ({
+  type: "arrayOf",
+  base: joi.array(),
+  // eslint-disable-next-line no-unused-vars
+  coerce(value, helpers) {
+    return { value: value.split ? value.split(",") : value };
+  },
+}));
+
+function arrayOf(itemSchema = Joi.string()) {
+  return customJoi.arrayOf().items(itemSchema).single();
+}
+
+module.exports = {
+  arrayOf,
+};

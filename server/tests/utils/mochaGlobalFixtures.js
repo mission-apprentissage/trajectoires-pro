@@ -1,3 +1,4 @@
+require("./testConfig");
 const { stopMongod, removeAll, startMongod } = require("./mongoMemoryServer");
 const nock = require("nock"); // eslint-disable-line node/no-unpublished-require
 
