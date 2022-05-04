@@ -10,6 +10,7 @@ const packageJson = require("../../package.json");
 const hello = require("./routes/helloRoutes");
 const { dbCollection } = require("../common/mongodb");
 const svg = require("./routes/svgRoutes");
+const insertJeunes = require("./routes/insertJeunesRoutes");
 const mongoSanitize = require("express-mongo-sanitize");
 
 module.exports = async () => {
@@ -21,6 +22,7 @@ module.exports = async () => {
   app.use(logMiddleware());
   app.use(hello());
   app.use(svg());
+  app.use(insertJeunes());
 
   app.get(
     "/api",
