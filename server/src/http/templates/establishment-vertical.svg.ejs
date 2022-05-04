@@ -1,12 +1,13 @@
+<% const height = rates.length === 1 ? 268 : 323 %>
 <svg
   width="320"
-  height="323"
-  viewBox="0 0 320 323"
+  height="<%= height %>"
+  viewBox="0 0 320 <%= height %>"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink"
 >
-  <rect x="0.5" y="0.5" width="319" height="322" fill="white" />
+  <rect x="0.5" y="0.5" width="319" height="<%= height-1 %>" fill="white" />
   <rect width="320" height="106" fill="#F5F5FE" />
   <text
     fill="black"
@@ -20,6 +21,8 @@
     <tspan x="32" y="38.625">Les chiffres cl&#xe9;s de la</tspan>
     <tspan x="32" y="66.625">formation avec</tspan>
   </text>
+
+  <!-- first block starts here -->
   <rect x="30" y="204" width="90" height="35" rx="4" fill="#B8FEC9" />
   <path
     fill-rule="evenodd"
@@ -36,8 +39,27 @@
     font-weight="bold"
     letter-spacing="0em"
   >
-    <tspan x="59" y="232.438"><%= taux_emploi_6_mois_apres_la_sortie %>%</tspan>
+    <tspan x="59" y="232.438"><%= rates[0].rate %>%</tspan>
   </text>
+  <text
+    fill="black"
+    xml:space="preserve"
+    style="white-space: pre"
+    font-family="Marianne"
+    font-size="14"
+    letter-spacing="0em"
+  >
+    <% if(rates[0].labels.length === 1) { %>
+    <tspan x="130" y="227.125"><%= rates[0].labels[0] %></tspan>
+    <% } else { %>
+    <tspan x="130" y="217.125"><%= rates[0].labels[0] %></tspan>
+    <tspan x="130" y="237.125"><%= rates[0].labels[1] %></tspan>
+    <% } %>
+  </text>
+  <!-- end first block -->
+
+  <!-- second block starts here -->
+  <% if(rates.length > 1) { %>
   <rect x="30" y="269" width="90" height="35" rx="4" fill="#B8FEC9" />
   <path
     fill-rule="evenodd"
@@ -54,7 +76,7 @@
     font-weight="bold"
     letter-spacing="0em"
   >
-    <tspan x="57.5" y="297.438"><%= taux_de_poursuite_etudes %>%</tspan>
+    <tspan x="57.5" y="297.438"><%= rates[1].rate %>%</tspan>
   </text>
   <text
     fill="black"
@@ -64,19 +86,16 @@
     font-size="14"
     letter-spacing="0em"
   >
-    <tspan x="130" y="217.125">sont en emploi 6 mois</tspan>
-    <tspan x="130" y="237.125">apr&#xe8;s la fin de la formation.</tspan>
+    <% if(rates[1].labels.length === 1) { %>
+    <tspan x="130" y="293.125"><%= rates[1].labels[0] %></tspan>
+    <% } else { %>
+    <tspan x="130" y="283.125"><%= rates[1].labels[0] %></tspan>
+    <tspan x="130" y="303.125"><%= rates[1].labels[1] %></tspan>
+    <% } %>
   </text>
-  <text
-    fill="black"
-    xml:space="preserve"
-    style="white-space: pre"
-    font-family="Marianne"
-    font-size="14"
-    letter-spacing="0em"
-  >
-    <tspan x="130" y="293.125">poursuivent leurs &#xe9;tudes.</tspan>
-  </text>
+  <% } %>
+  <!-- end second block -->
+
   <rect x="185" y="70" width="104" height="25" fill="url(#pattern0)" />
   <text
     fill="#3A3A3A"
@@ -90,7 +109,7 @@
     <tspan x="30" y="145">Que deviennent les apprenants</tspan>
     <tspan x="30" y="169">issus de cette formation ?</tspan>
   </text>
-  <rect x="0.5" y="0.5" width="319" height="322" stroke="#E5E5E5" />
+  <rect x="0.5" y="0.5" width="319" height="<%= height-1 %>" stroke="#E5E5E5" />
   <defs>
     <style type="text/css">
       @font-face {

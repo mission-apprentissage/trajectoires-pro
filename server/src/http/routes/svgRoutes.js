@@ -1,3 +1,4 @@
+// @ts-check
 const fs = require("fs");
 const express = require("express");
 const tryCatch = require("../middlewares/tryCatchMiddleware");
@@ -19,8 +20,36 @@ const loadBase64Font = () => {
     const buffer = fs.readFileSync(path.join(__dirname, `../templates/fonts/Marianne-Regular.woff`));
     base64Font = buffer.toString("base64");
   }
-
   return base64Font;
+};
+
+const labels = {
+  taux_emploi_6_mois_apres_la_sortie: ["sont en emploi 6 mois", "après la fin de la formation."],
+  taux_de_poursuite_etudes: ["poursuivent leurs études."],
+};
+
+/**
+ * Create on array of rates to feed the ejs template
+ *
+ * @param {{taux_emploi_6_mois_apres_la_sortie?: Number, taux_de_poursuite_etudes?: Number}} insertJeunesData
+ * @returns {Array<{rate: Number, labels: string[]}>}
+ */
+const getRates = (insertJeunesData) => {
+  if (!insertJeunesData) {
+    return [];
+  }
+
+  const { taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes } = insertJeunesData;
+  const rates = Object.entries({ taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes })
+    .filter(([, value]) => !!value || value === 0)
+    .map(([key, value]) => {
+      return {
+        rate: value,
+        labels: labels[key],
+      };
+    });
+
+  return rates;
 };
 
 /**
@@ -38,19 +67,24 @@ module.exports = () => {
       const { uai_de_etablissement, code_formation, millesime } = params;
       const { direction = "vertical" } = query;
 
-      const insertJeunesData = await dbCollection("insertJeunes").findOne({
-        uai_de_etablissement,
-        code_formation,
-        millesime,
-      });
+      const insertJeunesData = await dbCollection("insertJeunes").findOne(
+        {
+          uai_de_etablissement,
+          code_formation,
+          millesime,
+        },
+        {
+          projection: { taux_emploi_6_mois_apres_la_sortie: 1, taux_de_poursuite_etudes: 1 },
+        }
+      );
 
-      if (!insertJeunesData) {
+      const rates = getRates(insertJeunesData);
+      if (rates.length === 0) {
         return res.sendStatus(404);
       }
 
       const base64Font = loadBase64Font();
-      const { taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes } = insertJeunesData;
-      const data = { base64Font, taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes };
+      const data = { base64Font, rates };
       const svg = await ejs.renderFile(
         establishmentSvgTemplates[direction] ?? establishmentSvgTemplates.vertical,
         data,
