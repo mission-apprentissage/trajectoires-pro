@@ -283,15 +283,14 @@ function findRegionByUai(uai) {
   return found || null;
 }
 
-function findRegionByName(name) {
+function sanitize(value) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function findRegionByName(nom) {
   return (
     REGIONS.find((region) => {
-      return (
-        region.nom
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .toUpperCase() === name.toUpperCase()
-      );
+      return sanitize(region.nom).toUpperCase() === sanitize(nom).toUpperCase();
     }) || null
   );
 }
