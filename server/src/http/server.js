@@ -7,7 +7,6 @@ const errorMiddleware = require("./middlewares/errorMiddleware");
 const tryCatch = require("./middlewares/tryCatchMiddleware");
 const corsMiddleware = require("./middlewares/corsMiddleware");
 const packageJson = require("../../package.json");
-const hello = require("./routes/helloRoutes");
 const { dbCollection } = require("../common/mongodb");
 const svg = require("./routes/svgRoutes");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -19,7 +18,6 @@ module.exports = async () => {
   app.use(mongoSanitize({ replaceWith: "_" }));
   app.use(corsMiddleware());
   app.use(logMiddleware());
-  app.use(hello());
   app.use(svg());
 
   app.get(
