@@ -4,6 +4,7 @@ const express = require("express");
 const tryCatch = require("../middlewares/tryCatchMiddleware");
 const ejs = require("ejs");
 const path = require("path");
+const Joi = require("joi");
 const { dbCollection } = require("../../common/mongodb");
 
 const establishmentSvgTemplates = {
@@ -59,12 +60,19 @@ module.exports = () => {
   const router = express.Router();
 
   /**
-   * e.g: GET /api/svg/etablissement/0010016M/32221023012/2020-2019?direction=horizontal
+   * e.g: GET /api/svg/uai/0010016M/code_formation/32221023012/millesime/2020-2019?direction=horizontal
    */
   router.get(
-    "/api/svg/etablissement/:uai_de_etablissement/:code_formation/:millesime",
+    "/api/svg/uai/:uai_de_etablissement/code_formation/:code_formation/millesime/:millesime",
     tryCatch(async ({ params, query }, res) => {
-      const { uai_de_etablissement, code_formation, millesime } = params;
+      const { uai_de_etablissement, code_formation, millesime } = await Joi.object({
+        uai_de_etablissement: Joi.string()
+          .pattern(/^[0-9]{7}[A-Z]{1}$/)
+          .required(),
+        code_formation: Joi.string().required(),
+        millesime: Joi.string().required(),
+      }).validateAsync(params, { abortEarly: false });
+
       const { direction = "vertical" } = query;
 
       const insertJeunesData = await dbCollection("insertJeunes").findOne(
