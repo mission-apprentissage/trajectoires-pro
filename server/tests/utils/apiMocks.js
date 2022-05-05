@@ -2,20 +2,20 @@ const nock = require("nock"); // eslint-disable-line node/no-unpublished-require
 const InsertJeunesApi = require("../../src/common/api/InsertJeunesApi");
 const { merge } = require("lodash");
 
-function createNock(baseUrl) {
+function createNock(baseUrl, options = {}) {
   let client = nock(baseUrl);
-  return client.persist();
+  return options.stack ? client : client.persist();
 }
 
 module.exports = {
-  mockInsertJeunesApi(callback) {
-    let client = createNock(InsertJeunesApi.baseApiUrl);
+  mockInsertJeunesApi(callback, options) {
+    let client = createNock(InsertJeunesApi.baseApiUrl, options);
     callback(client, {
       login(custom = {}) {
         return merge(
           {},
           {
-            acces_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9",
+            access_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9",
           },
           custom
         );
@@ -98,5 +98,7 @@ module.exports = {
         );
       },
     });
+
+    return client;
   },
 };

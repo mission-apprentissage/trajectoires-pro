@@ -23,7 +23,8 @@ class InsertJeunesApi extends RateLimitedApi {
   constructor(options = {}) {
     super("InsertJeunesApi", { nbRequests: 5, durationInSeconds: 1, ...options });
     this.access_token = null;
-    this.access_token_duration = 60000 * 2; //minutes
+    this.access_token_timestamp = null;
+    this.access_token_timeout = options.access_token_timeout || 60000 * 2; //minutes
   }
 
   static get baseApiUrl() {
@@ -34,8 +35,8 @@ class InsertJeunesApi extends RateLimitedApi {
     return !!this.access_token;
   }
 
-  isAccesTokenExpired() {
-    return !this.access_token_time || Date.now() - this.access_token_time < this.access_token_duration;
+  isAccessTokenExpired() {
+    return !this.access_token_timestamp || this.access_token_timeout < Date.now() - this.access_token_timestamp;
   }
 
   getAuthHeaders() {
@@ -54,12 +55,12 @@ class InsertJeunesApi extends RateLimitedApi {
     });
 
     this.access_token = data.access_token;
-    this.access_token_time = Date.now();
+    this.access_token_timestamp = Date.now();
   }
 
   async statsParEtablissement(uai, millesime) {
     return this.execute(async () => {
-      if (!this.isAuthenticated() || this.isAccesTokenExpired()) {
+      if (!this.isAuthenticated() || this.isAccessTokenExpired()) {
         await this.login();
       }
 
