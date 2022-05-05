@@ -77,7 +77,6 @@ const importInserJeunesNationalData = async (options = {}) => {
         }
       } catch (e) {
         stats.failed++;
-        console.error("eeeee", e.errInfo.details.schemaRulesNotSatisfied);
         logger.error(e, `Impossible d'ajouter les données`);
       }
     }),
