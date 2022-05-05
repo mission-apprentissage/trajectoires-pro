@@ -1,11 +1,11 @@
 const assert = require("assert");
 const { startServer } = require("../utils/testUtils");
 const { dbCollection } = require("../../src/common/mongodb");
-const { insertInsertJeunes } = require("../utils/fakeData");
+const { insertInserJeunesEtablissements } = require("../utils/fakeData");
 
 describe("svgRoutes", () => {
   beforeEach(async () => {
-    await insertInsertJeunes({
+    await insertInserJeunesEtablissements({
       taux_emploi_6_mois_apres_la_sortie: 50,
     });
   });
@@ -51,7 +51,7 @@ describe("svgRoutes", () => {
   });
 
   it("should display only one data if present - vertical", async () => {
-    await dbCollection("insertJeunes").insertOne({
+    await dbCollection("inserJeunesEtablissements").insertOne({
       millesime: "2022-2021",
       code_formation: "1022105",
       type: "apprentissage",
@@ -81,7 +81,7 @@ describe("svgRoutes", () => {
   });
 
   it("should display only one data if present - horizontal", async () => {
-    await dbCollection("insertJeunes").insertOne({
+    await dbCollection("inserJeunesEtablissements").insertOne({
       millesime: "2022-2021",
       code_formation: "1022105",
       type: "apprentissage",
@@ -112,7 +112,7 @@ describe("svgRoutes", () => {
   });
 
   it("should display data if value is 0", async () => {
-    await dbCollection("insertJeunes").insertOne({
+    await dbCollection("inserJeunesEtablissements").insertOne({
       millesime: "2022-2021",
       code_formation: "1022105",
       type: "apprentissage",

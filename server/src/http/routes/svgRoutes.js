@@ -32,15 +32,15 @@ const labels = {
 /**
  * Create on array of rates to feed the ejs template
  *
- * @param {{taux_emploi_6_mois_apres_la_sortie?: Number, taux_de_poursuite_etudes?: Number}} insertJeunesData
+ * @param {{taux_emploi_6_mois_apres_la_sortie?: Number, taux_de_poursuite_etudes?: Number}} inserJeunesEtablissementsData
  * @returns {Array<{rate: Number, labels: string[]}>}
  */
-const getRates = (insertJeunesData) => {
-  if (!insertJeunesData) {
+const getRates = (inserJeunesEtablissementsData) => {
+  if (!inserJeunesEtablissementsData) {
     return [];
   }
 
-  const { taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes } = insertJeunesData;
+  const { taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes } = inserJeunesEtablissementsData;
   const rates = Object.entries({ taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes })
     .filter(([, value]) => !!value || value === 0)
     .map(([key, value]) => {
@@ -75,7 +75,7 @@ module.exports = () => {
 
       const { direction = "vertical" } = query;
 
-      const insertJeunesData = await dbCollection("insertJeunes").findOne(
+      const inserJeunesEtablissementsData = await dbCollection("inserJeunesEtablissements").findOne(
         {
           uai_de_etablissement,
           code_formation,
@@ -86,7 +86,7 @@ module.exports = () => {
         }
       );
 
-      const rates = getRates(insertJeunesData);
+      const rates = getRates(inserJeunesEtablissementsData);
       if (rates.length === 0) {
         return res.sendStatus(404);
       }

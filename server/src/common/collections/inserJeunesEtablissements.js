@@ -1,6 +1,7 @@
 const { object, objectId, string, integer } = require("./schemas/jsonSchemaTypes");
+
 module.exports = {
-  name: "insertJeunes",
+  name: "inserJeunesEtablissements",
   schema: () => {
     return object(
       {
