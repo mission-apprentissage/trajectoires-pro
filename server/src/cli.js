@@ -1,7 +1,6 @@
 require("dotenv").config();
 const { program: cli } = require("commander");
 const runScript = require("./common/runScript");
-const migrate = require("./jobs/migrate");
 const importInserJeunesEtablissementsData = require("./jobs/importInserJeunesEtablissementsData");
 const importInserJeunesNationalData = require("./jobs/importInserJeunesNationalData");
 const { createReadStream } = require("fs");
@@ -26,16 +25,6 @@ cli
   .action((file, options = {}) => {
     runScript(() => {
       return importInserJeunesEtablissementsData({ input: file, ...options });
-    });
-  });
-
-cli
-  .command("migrate")
-  .description("Execute les scripts de migration")
-  .option("--dropIndexes", "Supprime les anciens indexes")
-  .action((options) => {
-    runScript(() => {
-      return migrate(options);
     });
   });
 
