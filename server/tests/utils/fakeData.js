@@ -2,8 +2,8 @@ const { merge } = require("lodash");
 const { dbCollection } = require("../../src/common/mongodb");
 
 module.exports = {
-  insertInsertJeunes(custom, map = (v) => v) {
-    return dbCollection("insertJeunes").insertOne(
+  insertInserJeunesEtablissements(custom, map = (v) => v) {
+    return dbCollection("inserJeunesEtablissements").insertOne(
       map(
         merge(
           {},

@@ -1,4 +1,5 @@
 module.exports = {
   logs: require("./logs"),
-  insertJeunes: require("./insertJeunes"),
+  inserJeunesEtablissements: require("./inserJeunesEtablissements"),
+  inserJeunesNationals: require("./inserJeunesNationals"),
 };

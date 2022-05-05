@@ -1,7 +1,7 @@
 const { object, objectId, string, integer } = require("./schemas/jsonSchemaTypes");
 
 module.exports = {
-  name: "inserJeunesNational",
+  name: "inserJeunesNationals",
   schema: () => {
     return object(
       {
@@ -34,6 +34,7 @@ module.exports = {
       }
     );
   },
+
   indexes: () => {
     return [[{ millesime: 1, code_formation: 1 }, { unique: true }]];
   },
