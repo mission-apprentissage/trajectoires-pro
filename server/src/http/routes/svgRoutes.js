@@ -36,10 +36,6 @@ const labels = {
  * @returns {Array<{rate: Number, labels: string[]}>}
  */
 const getRates = (inserJeunesEtablissementsData) => {
-  if (!inserJeunesEtablissementsData) {
-    return [];
-  }
-
   const { taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes } = inserJeunesEtablissementsData;
   const rates = Object.entries({ taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes })
     .filter(([, value]) => !!value || value === 0)
@@ -86,9 +82,13 @@ module.exports = () => {
         }
       );
 
+      if (!inserJeunesEtablissementsData) {
+        return res.status(404).send("UAI, code formation et/ou millésime invalide");
+      }
+
       const rates = getRates(inserJeunesEtablissementsData);
       if (rates.length === 0) {
-        return res.sendStatus(404);
+        return res.status(404).send("Donnée non disponible");
       }
 
       const base64Font = loadBase64Font();
