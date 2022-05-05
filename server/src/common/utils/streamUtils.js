@@ -2,6 +2,7 @@ const { compose, transformData } = require("oleoduc");
 const { parser } = require("stream-json");
 const { pick } = require("stream-json/filters/Pick");
 const { streamArray } = require("stream-json/streamers/StreamArray");
+const { parseCsv } = require("./csvUtils");
 
 module.exports = {
   streamNestedJsonArray: (arrayPropertyName) => {
@@ -13,5 +14,8 @@ module.exports = {
         return data.value;
       })
     );
+  },
+  readCSV: (stream) => {
+    return compose(stream, parseCsv());
   },
 };
