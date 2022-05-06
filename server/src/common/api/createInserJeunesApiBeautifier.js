@@ -2,9 +2,13 @@ const { oleoduc, filterData, accumulateData, writeData } = require("oleoduc");
 const InsertJeunesApi = require("./InserJeunesApi");
 const { streamNestedJsonArray } = require("../utils/streamUtils");
 
+function getCodeFormation(dimension) {
+  return dimension["id_formation_apprentissage"] || dimension["id_mefstat11"];
+}
+
 function filterFormationStats() {
   return filterData((data) => {
-    return data.dimensions.find((d) => d["id_formation_apprentissage"] || d["id_mefstat11"]);
+    return data.dimensions.filter(getCodeFormation).length > 0;
   });
 }
 
@@ -12,7 +16,7 @@ function groupByFormation(millesime) {
   return accumulateData(
     (acc, stats) => {
       const dimension = stats.dimensions[0];
-      const codeFormation = dimension["id_formation_apprentissage"] || dimension["id_mefstat11"];
+      const codeFormation = getCodeFormation(dimension);
 
       const index = acc.findIndex((item) => item.code_formation === codeFormation);
 
