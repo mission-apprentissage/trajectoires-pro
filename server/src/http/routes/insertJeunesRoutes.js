@@ -1,11 +1,12 @@
 const express = require("express");
 const tryCatch = require("../middlewares/tryCatchMiddleware");
 const Joi = require("joi");
-const InsertJeunesApi = require("../../common/api/InsertJeunesApi");
+const InsertJeunesApi = require("../../common/api/InserJeunesApi");
 const { compose, transformIntoJSON, accumulateData, flattenArray, transformData } = require("oleoduc");
 const { arrayOf } = require("../utils/validators");
 const { pick } = require("lodash");
 const { checkApiKey } = require("../middlewares/authMiddleware");
+const { streamNestedJsonArray } = require("../../common/utils/streamUtils");
 
 function getFormationStats(codeFormations) {
   return compose(
@@ -60,7 +61,8 @@ module.exports = () => {
       }).validateAsync({ ...req.query, ...req.params }, { abortEarly: false });
 
       return compose(
-        await api.statsParEtablissement(uai, millesime),
+        await api.fetchEtablissementStats(uai, millesime),
+        streamNestedJsonArray("data"),
         getFormationStats(codes_formations),
         transformIntoJSON({ arrayWrapper: { uai, millesime }, arrayPropertyName: "formations" }),
         res

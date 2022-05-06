@@ -1477,6 +1477,11 @@ fast-levenshtein@^2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
+fast-luhn@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/fast-luhn/-/fast-luhn-2.0.0.tgz#aa41d6ffbda40e55e12f005ab5d09e542e023817"
+  integrity sha512-REI/GKhchu+SflfR6DOusv/KJGp2+rZ0FCANa2GWsxr669BuuLPKrXqImtbGVXlRkkCOM7mZlk8icdLmZeGBog==
+
 fd-slicer@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/fd-slicer/-/fd-slicer-1.1.0.tgz#25c7c89cb1f9077f8891bbe61d8f390eae256f1e"

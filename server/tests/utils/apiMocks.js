@@ -1,5 +1,5 @@
 const nock = require("nock"); // eslint-disable-line node/no-unpublished-require
-const InsertJeunesApi = require("../../src/common/api/InsertJeunesApi");
+const InsertJeunesApi = require("../../src/common/api/InserJeunesApi");
 const { merge } = require("lodash");
 
 function createNock(baseUrl, options = {}) {

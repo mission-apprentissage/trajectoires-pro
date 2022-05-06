@@ -10,9 +10,7 @@ module.exports = {
       parser(),
       pick({ filter: arrayPropertyName }),
       streamArray(),
-      transformData((data) => {
-        return data.value;
-      })
+      transformData((data) => data.value)
     );
   },
   readCSV: (stream) => {
