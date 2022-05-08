@@ -1,9 +1,9 @@
 const { compose, transformIntoCSV, transformIntoJSON } = require("oleoduc");
 const { DateTime } = require("luxon");
 
-function sendAsJson(res) {
+function sendAsJson(res, options = {}) {
   res.setHeader("Content-Type", `application/json`);
-  return compose(transformIntoJSON(), res);
+  return compose(transformIntoJSON(options), res);
 }
 
 function sendAsCSV(res, options = {}) {

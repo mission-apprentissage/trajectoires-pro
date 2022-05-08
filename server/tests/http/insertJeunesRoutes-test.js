@@ -3,7 +3,6 @@ const config = require("../../src/config");
 const { startServer } = require("../utils/testUtils");
 const { mockInsertJeunesApi } = require("../utils/apiMocks");
 const { insertEtablissementsStats } = require("../utils/fakeData");
-const { uniq } = require("lodash");
 
 describe("insertJeunesRoutes", () => {
   function mockApi(uai, millesime) {
@@ -37,37 +36,64 @@ describe("insertJeunesRoutes", () => {
     });
 
     assert.strictEqual(response.status, 200);
-    assert.deepStrictEqual(response.data, [
-      {
-        uai: "0751234J",
-        formations: [
-          {
-            code_formation: "12345678",
-            millesime: "2018_2019",
-            nb_annee_term: 46,
-            nb_en_emploi_12_mois: 12,
-            nb_en_emploi_6_mois: 10,
-            nb_poursuite_etudes: 14,
-            nb_sortant: 32,
-            taux_emploi_12_mois: 38,
-            taux_emploi_6_mois: 31,
-            taux_poursuite_etudes: 30,
-          },
-          {
-            code_formation: "87456123",
-            millesime: "2018_2019",
-            nb_annee_term: 46,
-            nb_en_emploi_12_mois: 12,
-            nb_en_emploi_6_mois: 10,
-            nb_poursuite_etudes: 14,
-            nb_sortant: 32,
-            taux_emploi_12_mois: 38,
-            taux_emploi_6_mois: 31,
-            taux_poursuite_etudes: 30,
-          },
-        ],
+    assert.deepStrictEqual(response.data, {
+      etablissements: [
+        {
+          uai: "0751234J",
+          formations: [
+            {
+              code_formation: "12345678",
+              millesime: "2018_2019",
+              nb_annee_term: 46,
+              nb_en_emploi_12_mois: 12,
+              nb_en_emploi_6_mois: 10,
+              nb_poursuite_etudes: 14,
+              nb_sortant: 32,
+              taux_emploi_12_mois: 38,
+              taux_emploi_6_mois: 31,
+              taux_poursuite_etudes: 30,
+            },
+          ],
+        },
+      ],
+      pagination: {
+        nombre_de_page: 1,
+        page: 1,
+        items_par_page: 10,
+        total: 1,
       },
-    ]);
+    });
+  });
+
+  it("Vérifie qu'on peut limiter le nombre de résultats", async () => {
+    const { httpClient } = await startServer();
+    await insertEtablissementsStats({ uai: "0751234J" });
+    await insertEtablissementsStats({ uai: "0751234X" });
+
+    const response = await httpClient.get(`/api/insertjeunes/etablissements?items_par_page=1`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+
+    assert.strictEqual(response.status, 200);
+    assert.strictEqual(response.data.etablissements.length, 1);
+  });
+
+  it("Vérifie qu'on peut paginer les résultats", async () => {
+    const { httpClient } = await startServer();
+    await insertEtablissementsStats({ uai: "0751234J" });
+    await insertEtablissementsStats({ uai: "0751234X" });
+
+    const response = await httpClient.get(`/api/insertjeunes/etablissements?items_par_page=1&page=2`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+
+    assert.strictEqual(response.status, 200);
+    assert.strictEqual(response.data.etablissements.length, 1);
+    assert.strictEqual(response.data.etablissements[0].uai, "0751234X");
   });
 
   it("Vérifie qu'on peut obtenir les stats de formations pour un établissement", async () => {
@@ -82,25 +108,39 @@ describe("insertJeunesRoutes", () => {
     });
 
     assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.data.length, 1);
-    assert.strictEqual(response.data[0].uai, "0751234J");
+    assert.deepStrictEqual(response.data, {
+      etablissements: [
+        {
+          uai: "0751234J",
+          formations: [
+            {
+              code_formation: "12345678",
+              millesime: "2018_2019",
+              nb_annee_term: 46,
+              nb_en_emploi_12_mois: 12,
+              nb_en_emploi_6_mois: 10,
+              nb_poursuite_etudes: 14,
+              nb_sortant: 32,
+              taux_emploi_12_mois: 38,
+              taux_emploi_6_mois: 31,
+              taux_poursuite_etudes: 30,
+            },
+          ],
+        },
+      ],
+      pagination: {
+        nombre_de_page: 1,
+        page: 1,
+        items_par_page: 10,
+        total: 1,
+      },
+    });
   });
 
   it("Vérifie qu'on peut obtenir les stats de formations pour un millesime", async () => {
     const { httpClient } = await startServer();
     await insertEtablissementsStats({
       uai: "0751234J",
-      formations: [
-        {
-          millesime: "2018_2019",
-        },
-        {
-          millesime: "2020_2021",
-        },
-      ],
-    });
-    await insertEtablissementsStats({
-      uai: "0751234X",
       formations: [
         {
           millesime: "2018_2019",
@@ -115,14 +155,38 @@ describe("insertJeunesRoutes", () => {
     });
 
     assert.strictEqual(response.status, 200);
-    assert.deepStrictEqual(uniq(response.data[0].formations.map((f) => f.millesime)), ["2018_2019"]);
-    assert.deepStrictEqual(uniq(response.data[1].formations.map((f) => f.millesime)), ["2018_2019"]);
+    assert.deepStrictEqual(response.data, {
+      etablissements: [
+        {
+          uai: "0751234J",
+          formations: [
+            {
+              code_formation: "12345678",
+              millesime: "2018_2019",
+              nb_annee_term: 46,
+              nb_en_emploi_12_mois: 12,
+              nb_en_emploi_6_mois: 10,
+              nb_poursuite_etudes: 14,
+              nb_sortant: 32,
+              taux_emploi_12_mois: 38,
+              taux_emploi_6_mois: 31,
+              taux_poursuite_etudes: 30,
+            },
+          ],
+        },
+      ],
+      pagination: {
+        nombre_de_page: 1,
+        page: 1,
+        items_par_page: 10,
+        total: 1,
+      },
+    });
   });
 
   it("Vérifie qu'on peut obtenir les stats de formations pour code formation", async () => {
     const { httpClient } = await startServer();
     await insertEtablissementsStats({
-      uai: "0751234J",
       formations: [
         {
           code_formation: "12345",
@@ -140,25 +204,33 @@ describe("insertJeunesRoutes", () => {
     });
 
     assert.strictEqual(response.status, 200);
-    assert.deepStrictEqual(response.data, [
-      {
-        uai: "0751234J",
-        formations: [
-          {
-            code_formation: "12345",
-            millesime: "2018_2019",
-            nb_annee_term: 46,
-            nb_en_emploi_12_mois: 12,
-            nb_en_emploi_6_mois: 10,
-            nb_poursuite_etudes: 14,
-            nb_sortant: 32,
-            taux_emploi_12_mois: 38,
-            taux_emploi_6_mois: 31,
-            taux_poursuite_etudes: 30,
-          },
-        ],
+    assert.deepStrictEqual(response.data, {
+      etablissements: [
+        {
+          uai: "0751234J",
+          formations: [
+            {
+              code_formation: "12345",
+              millesime: "2018_2019",
+              nb_annee_term: 46,
+              nb_en_emploi_12_mois: 12,
+              nb_en_emploi_6_mois: 10,
+              nb_poursuite_etudes: 14,
+              nb_sortant: 32,
+              taux_emploi_12_mois: 38,
+              taux_emploi_6_mois: 31,
+              taux_poursuite_etudes: 30,
+            },
+          ],
+        },
+      ],
+      pagination: {
+        nombre_de_page: 1,
+        page: 1,
+        items_par_page: 10,
+        total: 1,
       },
-    ]);
+    });
   });
 
   it("Vérifie qu'on peut exporter les données au format CSV", async () => {
@@ -177,7 +249,6 @@ describe("insertJeunesRoutes", () => {
       response.data,
       `uai;code_formation;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
 0751234J;12345678;2018_2019;46;12;10;14;32;38;31;30
-0751234J;87456123;2018_2019;46;12;10;14;32;38;31;30
 `
     );
   });
