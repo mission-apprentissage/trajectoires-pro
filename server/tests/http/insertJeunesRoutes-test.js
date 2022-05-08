@@ -161,6 +161,27 @@ describe("insertJeunesRoutes", () => {
     ]);
   });
 
+  it("Vérifie qu'on peut exporter les données au format CSV", async () => {
+    const { httpClient } = await startServer();
+    await insertEtablissementsStats();
+
+    const response = await httpClient.get(`/api/insertjeunes/etablissements.csv`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+
+    assert.strictEqual(response.status, 200);
+    assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
+    assert.deepStrictEqual(
+      response.data,
+      `uai;code_formation;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
+0751234J;12345678;2018_2019;46;12;10;14;32;38;31;30
+0751234J;87456123;2018_2019;46;12;10;14;32;38;31;30
+`
+    );
+  });
+
   it("Vérifie qu'on retourne une 404 si les paramètres sont invalides", async () => {
     const { httpClient } = await startServer();
 

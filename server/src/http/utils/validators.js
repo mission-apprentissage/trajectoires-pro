@@ -13,6 +13,13 @@ function arrayOf(itemSchema = Joi.string()) {
   return customJoi.arrayOf().items(itemSchema).single();
 }
 
+function exports() {
+  return {
+    ext: Joi.string().valid("json", "csv").default("json"),
+  };
+}
+
 module.exports = {
   arrayOf,
+  exports,
 };
