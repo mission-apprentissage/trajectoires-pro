@@ -7,6 +7,7 @@ module.exports = {
         _id: objectId(),
         code_formation: string(),
         millesime: string(),
+        type: string({ enum: ["apprentissage", "pro"] }),
         nb_annee_term: integer(),
         nb_en_emploi_12_mois: integer(),
         nb_en_emploi_6_mois: integer(),

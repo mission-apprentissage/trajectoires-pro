@@ -21,8 +21,8 @@ describe("importEtablissementsStats", () => {
   }
 
   it("Vérifie qu'on peut importer les stats de formations pour un établissement", async () => {
-    mockApi("0751234J", "2018_2019");
     let input = createStream(`uai\n0751234J`);
+    mockApi("0751234J", "2018_2019");
 
     let stats = await importEtablissementsStats({ input, millesimes: ["2018_2019"] });
 
@@ -33,12 +33,14 @@ describe("importEtablissementsStats", () => {
         {
           code_formation: "12345678",
           millesime: "2018_2019",
+          type: "apprentissage",
           taux_emploi_12_mois: 12,
           taux_emploi_6_mois: 6,
         },
         {
           code_formation: "87456123",
           millesime: "2018_2019",
+          type: "pro",
           taux_emploi_12_mois: 10,
           taux_emploi_6_mois: 20,
         },
@@ -71,12 +73,14 @@ describe("importEtablissementsStats", () => {
         {
           code_formation: "12345678",
           millesime: "2018_2019",
+          type: "apprentissage",
           taux_emploi_12_mois: 12,
           taux_emploi_6_mois: 6,
         },
         {
           code_formation: "87456123",
           millesime: "2018_2019",
+          type: "pro",
           taux_emploi_12_mois: 10,
           taux_emploi_6_mois: 20,
         },

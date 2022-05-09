@@ -38,6 +38,7 @@ module.exports = {
             {
               code_formation: "12345678",
               millesime: "2018_2019",
+              type: "apprentissage",
               nb_annee_term: 46,
               nb_en_emploi_12_mois: 12,
               nb_en_emploi_6_mois: 10,

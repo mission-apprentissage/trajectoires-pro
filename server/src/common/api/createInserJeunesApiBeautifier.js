@@ -2,6 +2,10 @@ const { oleoduc, filterData, accumulateData, writeData } = require("oleoduc");
 const InsertJeunesApi = require("./InserJeunesApi");
 const { streamNestedJsonArray } = require("../utils/streamUtils");
 
+function getType(dimension) {
+  return dimension["id_formation_apprentissage"] ? "apprentissage" : "pro";
+}
+
 function getCodeFormation(dimension) {
   return dimension["id_formation_apprentissage"] || dimension["id_mefstat11"];
 }
@@ -24,6 +28,7 @@ function groupByFormation(millesime) {
         acc.push({
           code_formation: codeFormation,
           millesime,
+          type: getType(dimension),
           [stats.id_mesure]: stats.valeur_mesure,
         });
       } else {

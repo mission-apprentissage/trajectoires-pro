@@ -79,7 +79,7 @@ module.exports = {
                 valeur_mesure: 20,
                 dimensions: [
                   {
-                    id_formation_apprentissage: "87456123",
+                    id_mefstat11: "87456123",
                   },
                 ],
               },
@@ -88,7 +88,7 @@ module.exports = {
                 valeur_mesure: 10,
                 dimensions: [
                   {
-                    id_formation_apprentissage: "87456123",
+                    id_mefstat11: "87456123",
                   },
                 ],
               },
