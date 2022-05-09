@@ -146,6 +146,29 @@ describe("svgRoutes", () => {
     const { httpClient } = await startServer();
     const response = await httpClient.get("/api/svg/uai/0751234P/code_formation/1022101/millesime/2022-2021");
     assert.strictEqual(response.status, 404);
+    assert.strictEqual(response.data, "UAI, code formation et/ou millésime invalide");
+  });
+
+  it("should return a 404 if data exists but rates are empty", async () => {
+    await dbCollection("inserJeunesEtablissements").insertOne({
+      millesime: "2022-2021",
+      code_formation: "1022106",
+      type: "apprentissage",
+      diplome_renove_ou_nouveau: "non",
+      duree_de_formation: 1,
+      libelle_de_etablissement: "Centre de Formation",
+      libelle_de_la_formation: "cuisinier en desserts de restaurant",
+      region: {
+        code: "84",
+        nom: "Auvergne-Rhône-Alpes",
+      },
+      type_de_diplome: "MC5",
+      uai_de_etablissement: "0751234K",
+    });
+    const { httpClient } = await startServer();
+    const response = await httpClient.get("/api/svg/uai/0751234K/code_formation/1022106/millesime/2022-2021");
+    assert.strictEqual(response.status, 404);
+    assert.strictEqual(response.data, "Donnée non disponible");
   });
 
   it("should return a 400 if uai is not well formated", async () => {
