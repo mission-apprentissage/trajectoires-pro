@@ -44,7 +44,7 @@ module.exports = () => {
   const router = express.Router();
 
   router.get(
-    "/api/insertjeunes/etablissements.:ext?",
+    "/api/inserjeunes/etablissements.:ext?",
     checkApiKey(),
     tryCatch(async (req, res) => {
       const { uais, millesimes, codes_formation, page, items_par_page, ext } = await validate(
@@ -107,7 +107,7 @@ module.exports = () => {
   );
 
   router.get(
-    "/api/insertjeunes/etablissements/:uai",
+    "/api/inserjeunes/etablissements/:uai",
     checkApiKey(),
     tryCatch(async (req, res) => {
       const { uai } = await validate(req.params, {

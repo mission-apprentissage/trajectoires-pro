@@ -1,5 +1,5 @@
 const nock = require("nock"); // eslint-disable-line node/no-unpublished-require
-const InsertJeunesApi = require("../../src/common/api/InserJeunesApi");
+const InserJeunesApi = require("../../src/common/api/InserJeunesApi");
 const { merge } = require("lodash");
 
 function createNock(baseUrl, options = {}) {
@@ -8,8 +8,8 @@ function createNock(baseUrl, options = {}) {
 }
 
 module.exports = {
-  mockInsertJeunesApi(callback, options) {
-    let client = createNock(InsertJeunesApi.baseApiUrl, options);
+  mockInserJeunesApi(callback, options) {
+    let client = createNock(InserJeunesApi.baseApiUrl, options);
     callback(client, {
       login(custom = {}) {
         return merge(

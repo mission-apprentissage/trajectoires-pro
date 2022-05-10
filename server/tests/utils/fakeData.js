@@ -22,7 +22,7 @@ function buildFormationStat(custom = {}) {
 }
 
 module.exports = {
-  insertInserJeunesEtablissements(custom = {}) {
+  inserInserJeunesEtablissements(custom = {}) {
     return dbCollection("inserJeunesEtablissements").insertOne(
       merge(
         {},

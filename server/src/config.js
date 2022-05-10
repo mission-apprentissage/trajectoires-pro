@@ -21,11 +21,11 @@ module.exports = {
       storageName: env.get("TRAJECTOIRES_PRO_OVH_STORAGE_NAME").default("mna-trajectoires-pro").asString(),
     },
   },
-  insertJeunes: {
+  inserJeunes: {
     api: {
-      username: env.get("TRAJECTOIRES_PRO_INSERTJEUNES_USERNAME").required().asString(),
-      password: env.get("TRAJECTOIRES_PRO_INSERTJEUNES_PASSWORD").required().asString(),
-      key: env.get("TRAJECTOIRES_PRO_INSERTJEUNES_API_KEY").required().asString(),
+      username: env.get("TRAJECTOIRES_PRO_INSERJEUNES_USERNAME").required().asString(),
+      password: env.get("TRAJECTOIRES_PRO_INSERJEUNES_PASSWORD").required().asString(),
+      key: env.get("TRAJECTOIRES_PRO_INSERJEUNES_API_KEY").required().asString(),
     },
   },
 };

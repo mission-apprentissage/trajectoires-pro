@@ -9,7 +9,7 @@ const corsMiddleware = require("./middlewares/corsMiddleware");
 const packageJson = require("../../package.json");
 const { dbCollection } = require("../common/mongodb");
 const svg = require("./routes/svgRoutes");
-const insertJeunes = require("./routes/insertJeunesRoutes");
+const inserJeunes = require("./routes/inserJeunesRoutes");
 const mongoSanitize = require("express-mongo-sanitize");
 
 module.exports = async () => {
@@ -20,7 +20,7 @@ module.exports = async () => {
   app.use(corsMiddleware());
   app.use(logMiddleware());
   app.use(svg());
-  app.use(insertJeunes());
+  app.use(inserJeunes());
 
   app.get(
     "/api",

@@ -2,12 +2,12 @@ const assert = require("assert");
 const importEtablissementsStats = require("../../src/jobs/importEtablissementsStats");
 const { createStream } = require("../utils/testUtils");
 const { dbCollection } = require("../../src/common/mongodb");
-const { mockInsertJeunesApi } = require("../utils/apiMocks");
+const { mockInserJeunesApi } = require("../utils/apiMocks");
 const { insertEtablissementsStats } = require("../utils/fakeData");
 
 describe("importEtablissementsStats", () => {
   function mockApi(uai, millesime) {
-    mockInsertJeunesApi((client, responses) => {
+    mockInserJeunesApi((client, responses) => {
       client
         .post("/login")
         .query(() => true)
@@ -91,7 +91,7 @@ describe("importEtablissementsStats", () => {
 
   it("Vérifie qu'on peut gère les erreurs 400 de l'api", async () => {
     let input = createStream(`uai\n0751234J`);
-    mockInsertJeunesApi((client, responses) => {
+    mockInserJeunesApi((client, responses) => {
       client
         .post("/login")
         .query(() => true)

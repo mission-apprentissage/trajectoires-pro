@@ -1,12 +1,12 @@
 const assert = require("assert");
 const config = require("../../src/config");
 const { startServer } = require("../utils/testUtils");
-const { mockInsertJeunesApi } = require("../utils/apiMocks");
+const { mockInserJeunesApi } = require("../utils/apiMocks");
 const { insertEtablissementsStats, buildFormationStat } = require("../utils/fakeData");
 
-describe("insertJeunesRoutes", () => {
+describe("inserJeunesRoutes", () => {
   function mockApi(uai, millesime) {
-    mockInsertJeunesApi((client, responses) => {
+    mockInserJeunesApi((client, responses) => {
       client
         .post("/login")
         .query(() => true)
@@ -21,7 +21,7 @@ describe("insertJeunesRoutes", () => {
 
   function getAuthHeaders() {
     return {
-      "x-api-key": config.insertJeunes.api.key,
+      "x-api-key": config.inserJeunes.api.key,
     };
   }
 
@@ -29,7 +29,7 @@ describe("insertJeunesRoutes", () => {
     const { httpClient } = await startServer();
     await insertEtablissementsStats();
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements`, {
+    const response = await httpClient.get(`/api/inserjeunes/etablissements`, {
       headers: {
         ...getAuthHeaders(),
       },
@@ -71,7 +71,7 @@ describe("insertJeunesRoutes", () => {
     await insertEtablissementsStats({ uai: "0751234J" });
     await insertEtablissementsStats({ uai: "0751234X" });
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements?items_par_page=1`, {
+    const response = await httpClient.get(`/api/inserjeunes/etablissements?items_par_page=1`, {
       headers: {
         ...getAuthHeaders(),
       },
@@ -86,7 +86,7 @@ describe("insertJeunesRoutes", () => {
     await insertEtablissementsStats({ uai: "0751234J" });
     await insertEtablissementsStats({ uai: "0751234X" });
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements?items_par_page=1&page=2`, {
+    const response = await httpClient.get(`/api/inserjeunes/etablissements?items_par_page=1&page=2`, {
       headers: {
         ...getAuthHeaders(),
       },
@@ -102,7 +102,7 @@ describe("insertJeunesRoutes", () => {
     await insertEtablissementsStats({ uai: "0751234J" });
     await insertEtablissementsStats({ uai: "0751234X" });
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements?uais=0751234J`, {
+    const response = await httpClient.get(`/api/inserjeunes/etablissements?uais=0751234J`, {
       headers: {
         ...getAuthHeaders(),
       },
@@ -153,7 +153,7 @@ describe("insertJeunesRoutes", () => {
       ],
     });
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements?millesimes=2018_2019`, {
+    const response = await httpClient.get(`/api/inserjeunes/etablissements?millesimes=2018_2019`, {
       headers: {
         ...getAuthHeaders(),
       },
@@ -203,7 +203,7 @@ describe("insertJeunesRoutes", () => {
       ],
     });
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements?codes_formation=12345`, {
+    const response = await httpClient.get(`/api/inserjeunes/etablissements?codes_formation=12345`, {
       headers: {
         ...getAuthHeaders(),
       },
@@ -244,7 +244,7 @@ describe("insertJeunesRoutes", () => {
     const { httpClient } = await startServer();
     await insertEtablissementsStats();
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements.csv`, {
+    const response = await httpClient.get(`/api/inserjeunes/etablissements.csv`, {
       headers: {
         ...getAuthHeaders(),
       },
@@ -263,7 +263,7 @@ describe("insertJeunesRoutes", () => {
   it("Vérifie qu'on retourne une 404 si les paramètres sont invalides", async () => {
     const { httpClient } = await startServer();
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements?invalid=true`, {
+    const response = await httpClient.get(`/api/inserjeunes/etablissements?invalid=true`, {
       headers: {
         ...getAuthHeaders(),
       },
@@ -294,7 +294,7 @@ describe("insertJeunesRoutes", () => {
     const { httpClient } = await startServer();
     mockApi("0751234J", "2018_2019");
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements`);
+    const response = await httpClient.get(`/api/inserjeunes/etablissements`);
 
     assert.strictEqual(response.status, 401);
   });
@@ -303,7 +303,7 @@ describe("insertJeunesRoutes", () => {
     const { httpClient } = await startServer();
     mockApi("0751234J", "2018_2019");
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements?apiKey=${config.insertJeunes.api.key}`);
+    const response = await httpClient.get(`/api/inserjeunes/etablissements?apiKey=${config.inserJeunes.api.key}`);
 
     assert.strictEqual(response.status, 200);
   });
@@ -314,7 +314,7 @@ describe("insertJeunesRoutes", () => {
       uai: "0751234J",
     });
 
-    const response = await httpClient.get(`/api/insertjeunes/etablissements/0751234J`, {
+    const response = await httpClient.get(`/api/inserjeunes/etablissements/0751234J`, {
       headers: {
         ...getAuthHeaders(),
       },
