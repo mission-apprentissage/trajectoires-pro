@@ -6,7 +6,7 @@ var compose = require("compose-middleware").compose;
 passport.use(
   "api-key",
   new HeaderAPIKeyStrategy({}, false, function (apiKey, done) {
-    if (config.insertJeunes.api.key !== apiKey) {
+    if (config.inserJeunes.api.key !== apiKey) {
       return done(null, false);
     }
 

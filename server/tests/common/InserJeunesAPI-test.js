@@ -1,11 +1,11 @@
 const assert = require("assert");
-const InsertJeunesApi = require("../../src/common/api/InserJeunesApi");
-const { mockInsertJeunesApi } = require("../utils/apiMocks");
+const InserJeunesApi = require("../../src/common/api/InserJeunesApi");
+const { mockInserJeunesApi } = require("../utils/apiMocks");
 const { delay } = require("../../src/common/utils/asyncUtils");
 
-describe("InsertJeunesApi", () => {
+describe("InserJeunesApi", () => {
   function mockApi(uai, millesime) {
-    mockInsertJeunesApi(
+    mockInserJeunesApi(
       (client, responses) => {
         client
           .post("/login")
@@ -42,7 +42,7 @@ describe("InsertJeunesApi", () => {
   }
 
   it("Vérifie qu'on ne se reloggue pas si le token n'est pas expiré", async () => {
-    let api = new InsertJeunesApi();
+    let api = new InserJeunesApi();
     mockApi("0751234J", "2018_2019");
 
     await api.fetchEtablissementStats("0751234J", "2018_2019");
@@ -53,7 +53,7 @@ describe("InsertJeunesApi", () => {
 
   it("Vérifie qu'on peut configurer le timeout du token", async () => {
     mockApi("0751234J", "2018_2019");
-    let api = new InsertJeunesApi({ access_token_timeout: 1 });
+    let api = new InserJeunesApi({ access_token_timeout: 1 });
 
     await api.fetchEtablissementStats("0751234J", "2018_2019");
     await delay(25);

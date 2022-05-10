@@ -1,11 +1,11 @@
 const assert = require("assert");
 const { startServer } = require("../utils/testUtils");
 const { dbCollection } = require("../../src/common/mongodb");
-const { insertInserJeunesEtablissements } = require("../utils/fakeData");
+const { inserInserJeunesEtablissements } = require("../utils/fakeData");
 
 describe("svgRoutes", () => {
   beforeEach(async () => {
-    await insertInserJeunesEtablissements({
+    await inserInserJeunesEtablissements({
       taux_emploi_6_mois_apres_la_sortie: 50,
     });
   });

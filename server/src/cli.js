@@ -31,7 +31,7 @@ cli
 
 cli
   .command("importStats")
-  .description("Importe les données statistiques de l'API InsertJeunes")
+  .description("Importe les données statistiques de l'API InserJeunes")
   .argument("[file]", "Un fichier CSV avec la liste des UAI dans une colonne ayant pour nom 'uai'", createReadStream)
   .action((file) => {
     runScript(() => {

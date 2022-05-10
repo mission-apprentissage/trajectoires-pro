@@ -1,5 +1,5 @@
 const { oleoduc, filterData, accumulateData, writeData } = require("oleoduc");
-const InsertJeunesApi = require("./InserJeunesApi");
+const InserJeunesApi = require("./InserJeunesApi");
 const { streamNestedJsonArray } = require("../utils/streamUtils");
 
 function getType(dimension) {
@@ -42,7 +42,7 @@ function groupByFormation(millesime) {
 }
 
 module.exports = (options = {}) => {
-  const api = options.api || new InsertJeunesApi();
+  const api = options.api || new InserJeunesApi();
 
   async function getFormationsStats(uai, millesime) {
     const httpStream = await api.fetchEtablissementStats(uai, millesime);
