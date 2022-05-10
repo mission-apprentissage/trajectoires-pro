@@ -50,7 +50,11 @@ module.exports = () => {
       const { uais, millesimes, codes_formation, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
         {
-          uais: arrayOf(Joi.string().required()).default([]),
+          uais: arrayOf(
+            Joi.string()
+              .pattern(/^[0-9]{7}[A-Z]{1}$/)
+              .required()
+          ).default([]),
           millesimes: arrayOf(Joi.string().required()).default([]),
           codes_formation: arrayOf(Joi.string().required()).default([]),
           ...validators.exports(),
@@ -106,14 +110,11 @@ module.exports = () => {
     "/api/insertjeunes/etablissements/:uai",
     checkApiKey(),
     tryCatch(async (req, res) => {
-      const { uai, millesimes, codes_formation } = await validate(
-        { ...req.query, ...req.params },
-        {
-          uai: Joi.string().required(),
-          millesimes: arrayOf(Joi.string().required()).default([]),
-          codes_formation: arrayOf(Joi.string().required()).default([]),
-        }
-      );
+      const { uai } = await validate(req.params, {
+        uai: Joi.string()
+          .pattern(/^[0-9]{7}[A-Z]{1}$/)
+          .required(),
+      });
 
       let found = await dbCollection("etablissementsStats").findOne({ uai }, { projection: { _id: 0 } });
 
@@ -121,12 +122,7 @@ module.exports = () => {
         throw Boom.notFound("Etablissement inconnu");
       }
 
-      res.json({
-        ...found,
-        formations: found.formations
-          .filter((f) => (millesimes.length > 0 ? millesimes.includes(f.millesime) : true))
-          .filter((f) => (codes_formation.length > 0 ? codes_formation.includes(f.code_formation) : true)),
-      });
+      res.json(found);
     })
   );
 
