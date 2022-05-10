@@ -1,4 +1,4 @@
-const { oleoduc, filterData, accumulateData, writeData } = require("oleoduc");
+const { filterData, accumulateData, compose, flattenArray } = require("oleoduc");
 const InserJeunesApi = require("./InserJeunesApi");
 const { streamNestedJsonArray } = require("../utils/streamUtils");
 
@@ -16,7 +16,7 @@ function filterFormationStats() {
   });
 }
 
-function groupByFormation(millesime) {
+function groupByFormation(uai, millesime) {
   return accumulateData(
     (acc, stats) => {
       const dimension = stats.dimensions[0];
@@ -26,6 +26,7 @@ function groupByFormation(millesime) {
 
       if (index === -1) {
         acc.push({
+          uai,
           code_formation: codeFormation,
           millesime,
           type: getType(dimension),
@@ -47,18 +48,13 @@ module.exports = (options = {}) => {
   async function getFormationsStats(uai, millesime) {
     const httpStream = await api.fetchEtablissementStats(uai, millesime);
 
-    let result;
-    await oleoduc(
+    return compose(
       httpStream,
       streamNestedJsonArray("data"),
       filterFormationStats(),
-      groupByFormation(millesime),
-      writeData((data) => {
-        result = data;
-      })
+      groupByFormation(uai, millesime),
+      flattenArray()
     );
-
-    return result;
   }
 
   return {

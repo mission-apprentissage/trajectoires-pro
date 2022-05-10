@@ -1,6 +1,5 @@
 const nock = require("nock"); // eslint-disable-line node/no-unpublished-require
 const InserJeunesApi = require("../../src/common/api/InserJeunesApi");
-const { merge } = require("lodash");
 
 function createNock(baseUrl, options = {}) {
   let client = nock(baseUrl);
@@ -12,7 +11,7 @@ module.exports = {
     let client = createNock(InserJeunesApi.baseApiUrl, options);
     callback(client, {
       login(custom = {}) {
-        return merge(
+        return Object.assign(
           {},
           {
             access_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9",
@@ -21,7 +20,7 @@ module.exports = {
         );
       },
       uai(custom = {}) {
-        return merge(
+        return Object.assign(
           {},
           {
             metadata: {
@@ -62,33 +61,6 @@ module.exports = {
                 dimensions: [
                   {
                     id_formation_apprentissage: "12345678",
-                  },
-                ],
-              },
-              {
-                id_mesure: "taux_emploi_12_mois",
-                valeur_mesure: 12,
-                dimensions: [
-                  {
-                    id_formation_apprentissage: "12345678",
-                  },
-                ],
-              },
-              {
-                id_mesure: "taux_emploi_6_mois",
-                valeur_mesure: 20,
-                dimensions: [
-                  {
-                    id_mefstat11: "87456123",
-                  },
-                ],
-              },
-              {
-                id_mesure: "taux_emploi_12_mois",
-                valeur_mesure: 10,
-                dimensions: [
-                  {
-                    id_mefstat11: "87456123",
                   },
                 ],
               },

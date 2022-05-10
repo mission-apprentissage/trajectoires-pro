@@ -3,7 +3,7 @@ const { program: cli } = require("commander");
 const runScript = require("./common/runScript");
 const importInserJeunesEtablissementsData = require("./jobs/importInserJeunesEtablissementsData");
 const importInserJeunesNationalData = require("./jobs/importInserJeunesNationalData");
-const importEtablissementsStats = require("./jobs/importEtablissementsStats");
+const importFormationsStats = require("./jobs/importFormationsStats");
 const { createReadStream } = require("fs");
 
 cli
@@ -35,7 +35,7 @@ cli
   .argument("[file]", "Un fichier CSV avec la liste des UAI dans une colonne ayant pour nom 'uai'", createReadStream)
   .action((file) => {
     runScript(() => {
-      return importEtablissementsStats({ input: file });
+      return importFormationsStats({ input: file });
     });
   });
 

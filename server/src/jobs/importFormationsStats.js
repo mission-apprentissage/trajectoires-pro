@@ -44,47 +44,45 @@ async function loadUaisFromCSV(input) {
   return [...uais];
 }
 
-async function importEtablissementsStats(options = {}) {
-  const jobStats = { total: 0, created: 0, updated: 0, failed: 0 };
+async function importFormationsStats(options = {}) {
+  const jobStats = { created: 0, updated: 0, failed: 0 };
   const { getFormationsStats } = createInserJeunesApiBeautifier();
   const millesimes = options.millesimes || ["2018_2019", "2019_2020"];
 
   const uais = await loadUaisFromCSV(options.input);
-  logger.info(`Import des stats pour ${uais.length} établissements`, { uais });
+  logger.info(`Import des stats pour ${uais.length} établissements`);
 
   await oleoduc(
     Readable.from(uais),
     writeData(
       async (uai) => {
         try {
-          jobStats.total++;
-          const stats = await Promise.all(millesimes.map((millesime) => getFormationsStats(uai, millesime)));
+          await Promise.all(
+            millesimes.map(async (millesime) => {
+              for await (const stats of await getFormationsStats(uai, millesime)) {
+                const res = await dbCollection("formationsStats").updateOne(
+                  { uai: stats.uai, code_formation: stats.code_formation },
+                  {
+                    $set: stats,
+                  },
+                  { upsert: true }
+                );
 
-          const res = await dbCollection("etablissementsStats").updateOne(
-            { uai },
-            {
-              $setOnInsert: {
-                uai,
-              },
-              $set: {
-                formations: stats.flatMap((a) => a),
-              },
-            },
-            { upsert: true }
+                if (res.upsertedCount) {
+                  logger.debug(`Nouvelle formation ajoutée ${uai}`);
+                  jobStats.created++;
+                } else if (res.modifiedCount) {
+                  jobStats.updated++;
+                  logger.debug(`Formation ${uai} mise à jour`);
+                } else {
+                  logger.trace(`Formation ${uai} déjà à jour`);
+                }
+              }
+            })
           );
-
-          if (res.upsertedCount) {
-            logger.debug(`Nouvel établissement ajouté ${uai}`);
-            jobStats.created++;
-          } else if (res.modifiedCount) {
-            jobStats.updated++;
-            logger.debug(`Etablissement ${uai} mis à jour`);
-          } else {
-            logger.trace(`Etablissement ${uai} déjà à jour`);
-          }
         } catch (e) {
           jobStats.failed++;
-          logger.error(e, `Impossible d'importer les stats pour l'uai ${uai}`);
+          logger.error(e, `Impossible d'importer les stats pour l'établissement ${uai}`);
         }
       },
       { parallel: 10 }
@@ -94,4 +92,4 @@ async function importEtablissementsStats(options = {}) {
   return jobStats;
 }
 
-module.exports = importEtablissementsStats;
+module.exports = importFormationsStats;
