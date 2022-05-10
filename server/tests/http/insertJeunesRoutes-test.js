@@ -2,7 +2,7 @@ const assert = require("assert");
 const config = require("../../src/config");
 const { startServer } = require("../utils/testUtils");
 const { mockInsertJeunesApi } = require("../utils/apiMocks");
-const { insertEtablissementsStats } = require("../utils/fakeData");
+const { insertEtablissementsStats, buildFormationStat } = require("../utils/fakeData");
 
 describe("insertJeunesRoutes", () => {
   function mockApi(uai, millesime) {
@@ -144,9 +144,12 @@ describe("insertJeunesRoutes", () => {
     await insertEtablissementsStats({
       uai: "0751234J",
       formations: [
-        {
+        buildFormationStat({
           millesime: "2018_2019",
-        },
+        }),
+        buildFormationStat({
+          millesime: "2020_2021",
+        }),
       ],
     });
 
@@ -191,12 +194,12 @@ describe("insertJeunesRoutes", () => {
     const { httpClient } = await startServer();
     await insertEtablissementsStats({
       formations: [
-        {
+        buildFormationStat({
           code_formation: "12345",
-        },
-        {
+        }),
+        buildFormationStat({
           code_formation: "67890",
-        },
+        }),
       ],
     });
 
@@ -251,8 +254,8 @@ describe("insertJeunesRoutes", () => {
     assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
     assert.deepStrictEqual(
       response.data,
-      `uai;code_formation;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
-0751234J;12345678;2018_2019;46;12;10;14;32;38;31;30
+      `uai;code_formation;type;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
+0751234J;12345678;apprentissage;2018_2019;46;12;10;14;32;38;31;30
 `
     );
   });
@@ -303,5 +306,120 @@ describe("insertJeunesRoutes", () => {
     const response = await httpClient.get(`/api/insertjeunes/etablissements?apiKey=${config.insertJeunes.api.key}`);
 
     assert.strictEqual(response.status, 200);
+  });
+
+  it("Vérifie qu'on peut obtenir les stats de formations d'un établissement", async () => {
+    const { httpClient } = await startServer();
+    await insertEtablissementsStats({
+      uai: "0751234J",
+    });
+
+    const response = await httpClient.get(`/api/insertjeunes/etablissements/0751234J`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+
+    assert.strictEqual(response.status, 200);
+    assert.deepStrictEqual(response.data, {
+      uai: "0751234J",
+      formations: [
+        {
+          code_formation: "12345678",
+          millesime: "2018_2019",
+          type: "apprentissage",
+          nb_annee_term: 46,
+          nb_en_emploi_12_mois: 12,
+          nb_en_emploi_6_mois: 10,
+          nb_poursuite_etudes: 14,
+          nb_sortant: 32,
+          taux_emploi_12_mois: 38,
+          taux_emploi_6_mois: 31,
+          taux_poursuite_etudes: 30,
+        },
+      ],
+    });
+  });
+
+  it("Vérifie qu'on peut obtenir les stats d'un millesime pour un établissement", async () => {
+    const { httpClient } = await startServer();
+    await insertEtablissementsStats({
+      uai: "0751234J",
+      formations: [
+        buildFormationStat({
+          millesime: "2018_2019",
+        }),
+        buildFormationStat({
+          millesime: "2020_2021",
+        }),
+      ],
+    });
+
+    const response = await httpClient.get(`/api/insertjeunes/etablissements/0751234J?millesimes=2018_2019`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+
+    assert.strictEqual(response.status, 200);
+    assert.deepStrictEqual(response.data, {
+      uai: "0751234J",
+      formations: [
+        {
+          code_formation: "12345678",
+          millesime: "2018_2019",
+          type: "apprentissage",
+          nb_annee_term: 46,
+          nb_en_emploi_12_mois: 12,
+          nb_en_emploi_6_mois: 10,
+          nb_poursuite_etudes: 14,
+          nb_sortant: 32,
+          taux_emploi_12_mois: 38,
+          taux_emploi_6_mois: 31,
+          taux_poursuite_etudes: 30,
+        },
+      ],
+    });
+  });
+
+  it("Vérifie qu'on peut obtenir les stats d'une code formation pour un établissement", async () => {
+    const { httpClient } = await startServer();
+    await insertEtablissementsStats({
+      uai: "0751234J",
+      formations: [
+        buildFormationStat({
+          code_formation: "12345",
+        }),
+        buildFormationStat({
+          code_formation: "67890",
+        }),
+      ],
+    });
+
+    const response = await httpClient.get(`/api/insertjeunes/etablissements/0751234J?codes_formation=12345`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+
+    assert.strictEqual(response.status, 200);
+    assert.deepStrictEqual(response.data, {
+      uai: "0751234J",
+      formations: [
+        {
+          code_formation: "12345",
+          millesime: "2018_2019",
+          type: "apprentissage",
+          nb_annee_term: 46,
+          nb_en_emploi_12_mois: 12,
+          nb_en_emploi_6_mois: 10,
+          nb_poursuite_etudes: 14,
+          nb_sortant: 32,
+          taux_emploi_12_mois: 38,
+          taux_emploi_6_mois: 31,
+          taux_poursuite_etudes: 30,
+        },
+      ],
+    });
   });
 });
