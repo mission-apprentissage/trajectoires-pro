@@ -1,70 +1,111 @@
 const express = require("express");
 const tryCatch = require("../middlewares/tryCatchMiddleware");
 const Joi = require("joi");
-const InsertJeunesApi = require("../../common/api/InsertJeunesApi");
-const { compose, transformIntoJSON, accumulateData, flattenArray, transformData } = require("oleoduc");
-const { arrayOf } = require("../utils/validators");
-const { pick } = require("lodash");
+const { compose, transformData, flattenArray } = require("oleoduc");
+const { arrayOf, validate } = require("../utils/validators");
+const validators = require("../utils/validators");
 const { checkApiKey } = require("../middlewares/authMiddleware");
-
-function getFormationStats(codeFormations) {
-  return compose(
-    transformData((data) => {
-      const count = data.dimensions.filter((d) => {
-        let value = d["id_formation_apprentissage"] || d["id_mefstat11"];
-        return value && (codeFormations.length === 0 || codeFormations.includes(value));
-      }).length;
-
-      return count === 0
-        ? null // ignore it
-        : {
-            ...pick(data, ["id_mesure", "valeur_mesure"]),
-            code_formation: data.dimensions[0]["id_formation_apprentissage"] || data["id_mefstat11"],
-          };
-    }),
-    accumulateData(
-      (acc, data) => {
-        let index = acc.findIndex((item) => item.code_formation === data.code_formation);
-
-        if (index === -1) {
-          acc.push({
-            code_formation: data.code_formation,
-            [data.id_mesure]: data.valeur_mesure,
-          });
-        } else {
-          acc[index][data.id_mesure] = data.valeur_mesure;
-        }
-
-        return acc;
-      },
-      { accumulator: [] }
-    ),
-    flattenArray()
-  );
-}
+const { sendAsCSV, sendAsJson } = require("../utils/exporters");
+const { aggregateAndPaginate } = require("../../common/utils/dbUtils");
 
 module.exports = () => {
   const router = express.Router();
-  const api = new InsertJeunesApi();
 
   router.get(
-    "/api/insertjeunes/uai/:uai/millesime/:millesime",
+    "/api/insertjeunes/etablissements.:ext?",
     checkApiKey(),
     tryCatch(async (req, res) => {
-      const { uai, millesime, codes_formations } = await Joi.object({
-        uai: Joi.string()
-          .pattern(/^[0-9]{7}[A-Z]{1}$/)
-          .required(),
-        millesime: Joi.string().required(),
-        codes_formations: arrayOf(Joi.string().required()).default([]),
-      }).validateAsync({ ...req.query, ...req.params }, { abortEarly: false });
-
-      return compose(
-        await api.statsParEtablissement(uai, millesime),
-        getFormationStats(codes_formations),
-        transformIntoJSON({ arrayWrapper: { uai, millesime }, arrayPropertyName: "formations" }),
-        res
+      const { uais, millesimes, codes_formation, page, items_par_page, ext } = await validate(
+        { ...req.query, ...req.params },
+        {
+          uais: arrayOf(Joi.string().required()).default([]),
+          millesimes: arrayOf(Joi.string().required()).default([]),
+          codes_formation: arrayOf(Joi.string().required()).default([]),
+          ...validators.exports(),
+          ...validators.pagination(),
+        }
       );
+
+      let { aggregate, pagination } = await aggregateAndPaginate({
+        collectionName: "etablissementsStats",
+        query: {
+          ...(uais.length > 0 ? { uai: { $in: uais } } : {}),
+        },
+        pagination: {
+          limit: items_par_page,
+          page,
+        },
+        stages: [
+          {
+            $unwind: "$formations",
+          },
+          {
+            $match: {
+              ...(millesimes.length > 0 ? { "formations.millesime": { $in: millesimes } } : {}),
+              ...(codes_formation.length > 0 ? { "formations.code_formation": { $in: codes_formation } } : {}),
+            },
+          },
+          {
+            $group: {
+              _id: "$uai",
+              uai: {
+                $first: "$uai",
+              },
+              formations: {
+                $push: "$formations",
+              },
+            },
+          },
+          {
+            $sort: { uai: 1 },
+          },
+          {
+            $project: {
+              _id: 0,
+            },
+          },
+        ],
+      });
+
+      if (ext === "csv") {
+        compose(
+          aggregate.stream(),
+          transformData((doc) => {
+            return doc.formations.map((formation) => {
+              return {
+                uai: doc.uai,
+                ...formation,
+              };
+            });
+          }),
+          flattenArray(),
+          sendAsCSV(res, {
+            columns: {
+              uai: (f) => f.uai,
+              code_formation: (f) => f.code_formation,
+              millesime: (f) => f.millesime,
+              nb_annee_term: (f) => f.nb_annee_term,
+              nb_en_emploi_12_mois: (f) => f.nb_en_emploi_12_mois,
+              nb_en_emploi_6_mois: (f) => f.nb_en_emploi_6_mois,
+              nb_poursuite_etudes: (f) => f.nb_poursuite_etudes,
+              nb_sortant: (f) => f.nb_sortant,
+              taux_emploi_12_mois: (f) => f.taux_emploi_12_mois,
+              taux_emploi_6_mois: (f) => f.taux_emploi_6_mois,
+              taux_poursuite_etudes: (f) => f.taux_poursuite_etudes,
+            },
+          })
+        );
+      } else {
+        compose(
+          aggregate.stream(),
+          sendAsJson(res, {
+            arrayPropertyName: "etablissements",
+            arrayWrapper: {
+              pagination,
+            },
+          })
+        );
+      }
     })
   );
 

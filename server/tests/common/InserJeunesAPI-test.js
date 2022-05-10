@@ -1,5 +1,5 @@
 const assert = require("assert");
-const InsertJeunesApi = require("../../src/common/api/InsertJeunesApi");
+const InsertJeunesApi = require("../../src/common/api/InserJeunesApi");
 const { mockInsertJeunesApi } = require("../utils/apiMocks");
 const { delay } = require("../../src/common/utils/asyncUtils");
 
@@ -45,8 +45,8 @@ describe("InsertJeunesApi", () => {
     let api = new InsertJeunesApi();
     mockApi("0751234J", "2018_2019");
 
-    await api.statsParEtablissement("0751234J", "2018_2019");
-    await api.statsParEtablissement("0751234J", "2018_2019");
+    await api.fetchEtablissementStats("0751234J", "2018_2019");
+    await api.fetchEtablissementStats("0751234J", "2018_2019");
 
     assert.strictEqual(api.access_token, "token-1");
   });
@@ -55,9 +55,9 @@ describe("InsertJeunesApi", () => {
     mockApi("0751234J", "2018_2019");
     let api = new InsertJeunesApi({ access_token_timeout: 1 });
 
-    await api.statsParEtablissement("0751234J", "2018_2019");
+    await api.fetchEtablissementStats("0751234J", "2018_2019");
     await delay(25);
-    await api.statsParEtablissement("0751234J", "2018_2019");
+    await api.fetchEtablissementStats("0751234J", "2018_2019");
 
     assert.strictEqual(api.access_token, "token-2");
   });

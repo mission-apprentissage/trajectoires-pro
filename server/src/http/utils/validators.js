@@ -13,6 +13,26 @@ function arrayOf(itemSchema = Joi.string()) {
   return customJoi.arrayOf().items(itemSchema).single();
 }
 
+function exports() {
+  return {
+    ext: Joi.string().valid("json", "csv").default("json"),
+  };
+}
+
+function pagination() {
+  return {
+    items_par_page: Joi.number().default(10),
+    page: Joi.number().default(1),
+  };
+}
+
+function validate(obj, validators) {
+  return Joi.object(validators).validateAsync(obj, { abortEarly: false });
+}
+
 module.exports = {
   arrayOf,
+  exports,
+  pagination,
+  validate,
 };

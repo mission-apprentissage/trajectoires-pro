@@ -6,6 +6,7 @@ const ejs = require("ejs");
 const path = require("path");
 const Joi = require("joi");
 const { dbCollection } = require("../../common/mongodb");
+const { validate } = require("../utils/validators");
 
 const establishmentSvgTemplates = {
   vertical: path.join(__dirname, `../templates/establishment-vertical.svg.ejs`),
@@ -61,13 +62,13 @@ module.exports = () => {
   router.get(
     "/api/svg/uai/:uai_de_etablissement/code_formation/:code_formation/millesime/:millesime",
     tryCatch(async ({ params, query }, res) => {
-      const { uai_de_etablissement, code_formation, millesime } = await Joi.object({
+      const { uai_de_etablissement, code_formation, millesime } = await validate(params, {
         uai_de_etablissement: Joi.string()
           .pattern(/^[0-9]{7}[A-Z]{1}$/)
           .required(),
         code_formation: Joi.string().required(),
         millesime: Joi.string().required(),
-      }).validateAsync(params, { abortEarly: false });
+      });
 
       const { direction = "vertical" } = query;
 

@@ -1,5 +1,5 @@
 const nock = require("nock"); // eslint-disable-line node/no-unpublished-require
-const InsertJeunesApi = require("../../src/common/api/InsertJeunesApi");
+const InsertJeunesApi = require("../../src/common/api/InserJeunesApi");
 const { merge } = require("lodash");
 
 function createNock(baseUrl, options = {}) {
@@ -79,7 +79,7 @@ module.exports = {
                 valeur_mesure: 20,
                 dimensions: [
                   {
-                    id_formation_apprentissage: "87456123",
+                    id_mefstat11: "87456123",
                   },
                 ],
               },
@@ -88,7 +88,7 @@ module.exports = {
                 valeur_mesure: 10,
                 dimensions: [
                   {
-                    id_formation_apprentissage: "87456123",
+                    id_mefstat11: "87456123",
                   },
                 ],
               },
