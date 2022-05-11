@@ -9,7 +9,7 @@ const corsMiddleware = require("./middlewares/corsMiddleware");
 const packageJson = require("../../package.json");
 const { dbCollection } = require("../common/mongodb");
 const svg = require("./routes/svgRoutes");
-const inserJeunes = require("./routes/inserJeunesRoutes");
+const inserJeunes = require("./routes/formationsRoutes");
 const mongoSanitize = require("express-mongo-sanitize");
 
 module.exports = async () => {

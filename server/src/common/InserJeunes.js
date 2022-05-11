@@ -1,8 +1,8 @@
-const { oleoduc, filterData, accumulateData, writeData } = require("oleoduc");
-const InserJeunesApi = require("./InserJeunesApi");
-const { streamNestedJsonArray } = require("../utils/streamUtils");
+const { filterData, accumulateData, compose, flattenArray } = require("oleoduc");
+const InserJeunesApi = require("./api/InserJeunesApi");
+const { streamNestedJsonArray } = require("./utils/streamUtils");
 
-function getType(dimension) {
+function getFiliere(dimension) {
   return dimension["id_formation_apprentissage"] ? "apprentissage" : "pro";
 }
 
@@ -16,7 +16,7 @@ function filterFormationStats() {
   });
 }
 
-function groupByFormation(millesime) {
+function groupByFormation(uai, millesime) {
   return accumulateData(
     (acc, stats) => {
       const dimension = stats.dimensions[0];
@@ -26,9 +26,10 @@ function groupByFormation(millesime) {
 
       if (index === -1) {
         acc.push({
+          uai,
           code_formation: codeFormation,
           millesime,
-          type: getType(dimension),
+          filiere: getFiliere(dimension),
           [stats.id_mesure]: stats.valeur_mesure,
         });
       } else {
@@ -41,27 +42,22 @@ function groupByFormation(millesime) {
   );
 }
 
-module.exports = (options = {}) => {
-  const api = options.api || new InserJeunesApi();
+class InserJeunes {
+  constructor(options = {}) {
+    this.api = options.api || new InserJeunesApi();
+  }
 
-  async function getFormationsStats(uai, millesime) {
-    const httpStream = await api.fetchEtablissementStats(uai, millesime);
+  async getFormationsStats(uai, millesime) {
+    const httpStream = await this.api.fetchEtablissementStats(uai, millesime);
 
-    let result;
-    await oleoduc(
+    return compose(
       httpStream,
       streamNestedJsonArray("data"),
       filterFormationStats(),
-      groupByFormation(millesime),
-      writeData((data) => {
-        result = data;
-      })
+      groupByFormation(uai, millesime),
+      flattenArray()
     );
-
-    return result;
   }
+}
 
-  return {
-    getFormationsStats,
-  };
-};
+module.exports = InserJeunes;
