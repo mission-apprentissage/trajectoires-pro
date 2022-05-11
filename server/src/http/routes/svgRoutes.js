@@ -35,19 +35,19 @@ const loadBase64Font = () => {
 };
 
 const labels = /** @type {const} */ ({
-  taux_emploi_6_mois_apres_la_sortie: ["sont en emploi 6 mois", "après la fin de la formation."],
-  taux_de_poursuite_etudes: ["poursuivent leurs études."],
+  taux_emploi_6_mois: ["sont en emploi 6 mois", "après la fin de la formation."],
+  taux_poursuite_etudes: ["poursuivent leurs études."],
 });
 
 /**
  * Create on array of rates to feed the ejs template
  *
- * @param {{taux_emploi_6_mois_apres_la_sortie?: number, taux_de_poursuite_etudes?: number}} inserJeunesData
+ * @param {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number}} stats
  * @returns {Array<{rate: number | undefined, labels: string[]}>}
  */
-const getRates = (inserJeunesData) => {
-  const { taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes } = inserJeunesData;
-  const rates = Object.entries({ taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes })
+const getRates = (stats) => {
+  const { taux_emploi_6_mois, taux_poursuite_etudes } = stats;
+  return Object.entries({ taux_emploi_6_mois, taux_poursuite_etudes })
     .filter(([, value]) => !!value || value === 0)
     .map(([key, value]) => {
       return {
@@ -55,8 +55,6 @@ const getRates = (inserJeunesData) => {
         labels: labels[key],
       };
     });
-
-  return rates;
 };
 
 /**
@@ -69,10 +67,10 @@ module.exports = () => {
    * e.g: GET /api/svg/uai/0010016M/code_formation/32221023012/millesime/2020-2019?direction=horizontal
    */
   router.get(
-    "/api/svg/uai/:uai_de_etablissement/code_formation/:code_formation/millesime/:millesime",
+    "/api/svg/uai/:uai/code_formation/:code_formation/millesime/:millesime",
     tryCatch(async ({ params, query }, res) => {
-      const { uai_de_etablissement, code_formation, millesime } = await validate(params, {
-        uai_de_etablissement: Joi.string()
+      const { uai, code_formation, millesime } = await validate(params, {
+        uai: Joi.string()
           .pattern(/^[0-9]{7}[A-Z]{1}$/)
           .required(),
         code_formation: Joi.string().required(),
@@ -81,22 +79,22 @@ module.exports = () => {
 
       const { direction = "vertical" } = query;
 
-      const inserJeunesData = await dbCollection("inserJeunesEtablissements").findOne(
+      const stats = await dbCollection("formationsStats").findOne(
         {
-          uai_de_etablissement,
+          uai,
           code_formation,
           millesime,
         },
         {
-          projection: { taux_emploi_6_mois_apres_la_sortie: 1, taux_de_poursuite_etudes: 1 },
+          projection: { taux_emploi_6_mois: 1, taux_poursuite_etudes: 1 },
         }
       );
 
-      if (!inserJeunesData) {
+      if (!stats) {
         return res.status(404).send("UAI, code formation et/ou millésime invalide");
       }
 
-      const rates = getRates(inserJeunesData);
+      const rates = getRates(stats);
       if (rates.length === 0) {
         return res.status(404).send("Donnée non disponible");
       }
@@ -139,7 +137,10 @@ module.exports = () => {
         return res.status(404).send("Code formation et/ou millésime invalide");
       }
 
-      const rates = getRates(inserJeunesData);
+      const rates = getRates({
+        taux_emploi_6_mois: inserJeunesData.taux_emploi_6_mois_apres_la_sortie,
+        taux_poursuite_etudes: inserJeunesData.taux_de_poursuite_etudes,
+      });
       if (rates.length === 0) {
         return res.status(404).send("Donnée non disponible");
       }
