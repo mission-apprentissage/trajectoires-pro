@@ -8,7 +8,7 @@ module.exports = {
         uai: string(),
         code_formation: string(),
         millesime: string(),
-        type: string({ enum: ["apprentissage", "pro"] }),
+        filiere: string({ enum: ["apprentissage", "pro"] }),
         nb_annee_term: integer(),
         nb_en_emploi_12_mois: integer(),
         nb_en_emploi_6_mois: integer(),

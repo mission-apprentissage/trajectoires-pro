@@ -2,7 +2,7 @@ const { filterData, accumulateData, compose, flattenArray } = require("oleoduc")
 const InserJeunesApi = require("./api/InserJeunesApi");
 const { streamNestedJsonArray } = require("./utils/streamUtils");
 
-function getType(dimension) {
+function getFiliere(dimension) {
   return dimension["id_formation_apprentissage"] ? "apprentissage" : "pro";
 }
 
@@ -29,7 +29,7 @@ function groupByFormation(uai, millesime) {
           uai,
           code_formation: codeFormation,
           millesime,
-          type: getType(dimension),
+          filiere: getFiliere(dimension),
           [stats.id_mesure]: stats.valeur_mesure,
         });
       } else {

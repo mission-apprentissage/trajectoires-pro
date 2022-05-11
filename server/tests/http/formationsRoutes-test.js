@@ -4,7 +4,7 @@ const { startServer } = require("../utils/testUtils");
 const { mockInserJeunesApi } = require("../utils/apiMocks");
 const { insertFormationsStats } = require("../utils/fakeData");
 
-describe("inserJeunesRoutes", () => {
+describe("formationsRoutes", () => {
   function mockApi(uai, millesime) {
     mockInserJeunesApi((client, responses) => {
       client
@@ -42,7 +42,7 @@ describe("inserJeunesRoutes", () => {
           uai: "0751234J",
           code_formation: "12345678",
           millesime: "2018_2019",
-          type: "apprentissage",
+          filiere: "apprentissage",
           nb_annee_term: 46,
           nb_en_emploi_12_mois: 12,
           nb_en_emploi_6_mois: 10,
@@ -111,7 +111,7 @@ describe("inserJeunesRoutes", () => {
           uai: "0751234J",
           code_formation: "12345678",
           millesime: "2018_2019",
-          type: "apprentissage",
+          filiere: "apprentissage",
           nb_annee_term: 46,
           nb_en_emploi_12_mois: 12,
           nb_en_emploi_6_mois: 10,
@@ -149,7 +149,7 @@ describe("inserJeunesRoutes", () => {
           uai: "0751234J",
           code_formation: "12345678",
           millesime: "2018_2019",
-          type: "apprentissage",
+          filiere: "apprentissage",
           nb_annee_term: 46,
           nb_en_emploi_12_mois: 12,
           nb_en_emploi_6_mois: 10,
@@ -187,7 +187,7 @@ describe("inserJeunesRoutes", () => {
           uai: "0751234J",
           code_formation: "12345",
           millesime: "2018_2019",
-          type: "apprentissage",
+          filiere: "apprentissage",
           nb_annee_term: 46,
           nb_en_emploi_12_mois: 12,
           nb_en_emploi_6_mois: 10,
@@ -221,7 +221,7 @@ describe("inserJeunesRoutes", () => {
     assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
     assert.deepStrictEqual(
       response.data,
-      `uai;code_formation;type;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
+      `uai;code_formation;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
 0751234J;12345678;apprentissage;2018_2019;46;12;10;14;32;38;31;30
 `
     );

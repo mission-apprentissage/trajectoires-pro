@@ -51,7 +51,7 @@ module.exports = () => {
           columns: {
             uai: (f) => f.uai,
             code_formation: (f) => f.code_formation,
-            type: (f) => f.type,
+            filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,
             nb_annee_term: (f) => f.nb_annee_term,
             nb_en_emploi_12_mois: (f) => f.nb_en_emploi_12_mois,

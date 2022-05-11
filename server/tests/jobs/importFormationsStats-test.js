@@ -31,7 +31,7 @@ describe("importFormationsStats", () => {
       uai: "0751234J",
       code_formation: "12345678",
       millesime: "2018_2019",
-      type: "apprentissage",
+      filiere: "apprentissage",
       taux_emploi_6_mois: 6,
     });
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
@@ -68,8 +68,8 @@ describe("importFormationsStats", () => {
       .find({}, { projection: { _id: 0 } })
       .toArray();
 
-    assert.deepStrictEqual(docs.find((d) => d.code_formation === "12345678").type, "apprentissage");
-    assert.deepStrictEqual(docs.find((d) => d.code_formation === "87456123").type, "pro");
+    assert.deepStrictEqual(docs.find((d) => d.code_formation === "12345678").filiere, "apprentissage");
+    assert.deepStrictEqual(docs.find((d) => d.code_formation === "87456123").filiere, "pro");
     assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
   });
 
