@@ -68,8 +68,8 @@ describe("importFormationsStats", () => {
       .find({}, { projection: { _id: 0 } })
       .toArray();
 
-    assert.deepStrictEqual(docs[0].type, "apprentissage");
-    assert.deepStrictEqual(docs[1].type, "pro");
+    assert.deepStrictEqual(docs.find((d) => d.code_formation === "12345678").type, "apprentissage");
+    assert.deepStrictEqual(docs.find((d) => d.code_formation === "87456123").type, "pro");
     assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
   });
 

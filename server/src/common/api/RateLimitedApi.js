@@ -11,6 +11,7 @@ class RateLimitedApi {
     });
 
     this.rateLimiter.on("status", ({ queueSize, maxQueueSize }) => {
+      logger.trace(`${this.name} api queue status`, { queueSize, maxQueueSize });
       if (queueSize / maxQueueSize >= 0.8) {
         logger.warn(`${this.name} api queue is almost full : ${queueSize} / ${maxQueueSize}`);
       }

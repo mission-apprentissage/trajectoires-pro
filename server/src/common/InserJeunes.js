@@ -1,6 +1,6 @@
 const { filterData, accumulateData, compose, flattenArray } = require("oleoduc");
-const InserJeunesApi = require("./InserJeunesApi");
-const { streamNestedJsonArray } = require("../utils/streamUtils");
+const InserJeunesApi = require("./api/InserJeunesApi");
+const { streamNestedJsonArray } = require("./utils/streamUtils");
 
 function getType(dimension) {
   return dimension["id_formation_apprentissage"] ? "apprentissage" : "pro";
@@ -42,11 +42,13 @@ function groupByFormation(uai, millesime) {
   );
 }
 
-module.exports = (options = {}) => {
-  const api = options.api || new InserJeunesApi();
+class InserJeunes {
+  constructor(options = {}) {
+    this.api = options.api || new InserJeunesApi();
+  }
 
-  async function getFormationsStats(uai, millesime) {
-    const httpStream = await api.fetchEtablissementStats(uai, millesime);
+  async getFormationsStats(uai, millesime) {
+    const httpStream = await this.api.fetchEtablissementStats(uai, millesime);
 
     return compose(
       httpStream,
@@ -56,8 +58,6 @@ module.exports = (options = {}) => {
       flattenArray()
     );
   }
+}
 
-  return {
-    getFormationsStats,
-  };
-};
+module.exports = InserJeunes;
