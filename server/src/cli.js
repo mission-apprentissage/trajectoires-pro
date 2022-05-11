@@ -3,7 +3,10 @@ const { program: cli } = require("commander");
 const runScript = require("./common/runScript");
 const importInserJeunesNationalData = require("./jobs/importInserJeunesNationalData");
 const importFormationsStats = require("./jobs/importFormationsStats");
+const importCertificationsStats = require("./jobs/importCertificationsStats");
 const { createReadStream } = require("fs");
+const { promiseAllProps } = require("./common/utils/asyncUtils");
+const InserJeunes = require("./common/InserJeunes");
 
 cli
   .command("importInserJeunesNationalData")
@@ -22,8 +25,14 @@ cli
   .description("Importe les données statistiques de l'API InserJeunes")
   .argument("[file]", "Un fichier CSV avec la liste des UAI dans une colonne ayant pour nom 'uai'", createReadStream)
   .action((file) => {
-    runScript(() => {
-      return importFormationsStats({ input: file });
+    runScript(async () => {
+      const inserjeunes = new InserJeunes(); //Permet de partager le rate limiter entre les deux imports
+      await inserjeunes.login();
+
+      return promiseAllProps({
+        formations: importFormationsStats({ input: file, inserjeunes }),
+        certifications: importCertificationsStats({ inserjeunes }),
+      });
     });
   });
 

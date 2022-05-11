@@ -95,6 +95,25 @@ class InserJeunesApi extends RateLimitedApi {
       return compose(response, fixJsonResponse());
     });
   }
+
+  async fetchCertificationStats(millesime, filiere) {
+    return this.execute(async () => {
+      if (!this.isAuthenticated() || this.isAccessTokenExpired()) {
+        await this.login();
+      }
+
+      const response = await fetchStream(
+        `${InserJeunesApi.baseApiUrl}/france/millesime/${millesime}/filiere/${filiere}`,
+        {
+          headers: {
+            ...this.getAuthHeaders(),
+          },
+        }
+      );
+
+      return compose(response, fixJsonResponse());
+    });
+  }
 }
 
 module.exports = InserJeunesApi;

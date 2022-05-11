@@ -19,6 +19,23 @@ module.exports = {
           taux_emploi_12_mois: 38,
           taux_emploi_6_mois: 31,
           taux_poursuite_etudes: 30,
+          _meta: {
+            date_import: new Date(),
+          },
+        },
+        custom
+      )
+    );
+  },
+  insertCertificationsStats(custom = {}) {
+    return dbCollection("certificationsStats").insertOne(
+      merge(
+        {},
+        {
+          millesime: "2020",
+          code_formation: "12345",
+          filiere: "apprentissage",
+          taux_emploi_6_mois: 31,
         },
         custom
       )

@@ -41,7 +41,7 @@ module.exports = () => {
         {
           limit: items_par_page,
           page,
-          projection: { _id: 0 },
+          projection: { _id: 0, _meta: 0 },
         }
       );
 

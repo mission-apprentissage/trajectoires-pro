@@ -42,9 +42,37 @@ function groupByFormation(uai, millesime) {
   );
 }
 
+function groupByCertification(millesime) {
+  return accumulateData(
+    (acc, stats) => {
+      const dimension = stats.dimensions[0];
+      const codeFormation = getCodeFormation(dimension);
+      const index = acc.findIndex((item) => item.code_formation === codeFormation);
+
+      if (index === -1) {
+        acc.push({
+          millesime,
+          filiere: getFiliere(dimension),
+          code_formation: codeFormation,
+          [stats.id_mesure]: stats.valeur_mesure,
+        });
+      } else {
+        acc[index][stats.id_mesure] = stats.valeur_mesure;
+      }
+
+      return acc;
+    },
+    { accumulator: [] }
+  );
+}
+
 class InserJeunes {
   constructor(options = {}) {
     this.api = options.api || new InserJeunesApi();
+  }
+
+  async login() {
+    return this.api.login();
   }
 
   async getFormationsStats(uai, millesime) {
@@ -55,6 +83,18 @@ class InserJeunes {
       streamNestedJsonArray("data"),
       filterFormationStats(),
       groupByFormation(uai, millesime),
+      flattenArray()
+    );
+  }
+
+  async getCertificationsStats(millesime, filiere) {
+    const httpStream = await this.api.fetchCertificationStats(millesime, filiere);
+
+    return compose(
+      httpStream,
+      streamNestedJsonArray("data"),
+      filterFormationStats(),
+      groupByCertification(millesime, filiere),
       flattenArray()
     );
   }
