@@ -31,8 +31,8 @@ module.exports = {
     return [
       [{ millesime: 1, code_formation: 1 }, { unique: true }],
       [{ millesime: 1 }],
-      [{ filiere: 1 }],
       [{ code_formation: 1 }],
+      [{ filiere: 1 }],
     ];
   },
 };

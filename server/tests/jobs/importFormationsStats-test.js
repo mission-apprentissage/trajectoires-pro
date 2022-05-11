@@ -69,6 +69,40 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
+  it("Vérifie qu'on fusionne les mesures d'une formation", async () => {
+    let input = createStream(`uai\n0751234J`);
+    mockApi("0751234J", "2018_2019", {
+      data: [
+        {
+          id_mesure: "taux_emploi_6_mois",
+          valeur_mesure: 6,
+          dimensions: [
+            {
+              id_mefstat11: "12345678",
+            },
+          ],
+        },
+        {
+          id_mesure: "taux_emploi_12_mois",
+          valeur_mesure: 12,
+          dimensions: [
+            {
+              id_mefstat11: "12345678",
+            },
+          ],
+        },
+      ],
+    });
+
+    let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
+
+    let found = await dbCollection("formationsStats").findOne({}, { projection: { _id: 0 } });
+    assert.strictEqual(found.taux_emploi_6_mois, 6);
+    assert.strictEqual(found.taux_emploi_12_mois, 12);
+    assert.ok(found._meta.date_import);
+    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
+  });
+
   it("Vérifie qu'on peut importer les stats de plusieurs formations", async () => {
     let input = createStream(`uai\n0751234J`);
     mockApi("0751234J", "2018_2019", {
@@ -84,7 +118,7 @@ describe("importFormationsStats", () => {
         },
         {
           id_mesure: "taux_emploi_6_mois",
-          valeur_mesure: 6,
+          valeur_mesure: 8,
           dimensions: [
             {
               id_formation_apprentissage: "87456123",
@@ -96,12 +130,48 @@ describe("importFormationsStats", () => {
 
     let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
 
-    let docs = await dbCollection("formationsStats")
-      .find({}, { projection: { _id: 0 } })
-      .toArray();
+    let found = await dbCollection("formationsStats").findOne({ code_formation: "12345678" });
+    assert.strictEqual(found.taux_emploi_6_mois, 6);
+    found = await dbCollection("formationsStats").findOne({ code_formation: "87456123" });
+    assert.strictEqual(found.taux_emploi_6_mois, 8);
+    assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
+  });
 
-    assert.deepStrictEqual(docs.find((d) => d.code_formation === "12345678").taux_emploi_6_mois, 6);
-    assert.deepStrictEqual(docs.find((d) => d.code_formation === "87456123").taux_emploi_6_mois, 6);
+  it("Vérifie qu'on peut importer les stats d'une formation sur plusieurs millesimes", async () => {
+    let input = createStream(`uai\n0751234J`);
+    mockApi("0751234J", "2018_2019", {
+      data: [
+        {
+          id_mesure: "taux_emploi_6_mois",
+          valeur_mesure: 6,
+          dimensions: [
+            {
+              id_formation_apprentissage: "12345678",
+            },
+          ],
+        },
+      ],
+    });
+    mockApi("0751234J", "2020_2021", {
+      data: [
+        {
+          id_mesure: "taux_emploi_6_mois",
+          valeur_mesure: 8,
+          dimensions: [
+            {
+              id_formation_apprentissage: "12345678",
+            },
+          ],
+        },
+      ],
+    });
+
+    let stats = await importFormationsStats({ input, millesimes: ["2018_2019", "2020_2021"] });
+
+    let found = await dbCollection("formationsStats").findOne({ millesime: "2018_2019" });
+    assert.strictEqual(found.taux_emploi_6_mois, 6);
+    found = await dbCollection("formationsStats").findOne({ millesime: "2020_2021" });
+    assert.strictEqual(found.taux_emploi_6_mois, 8);
     assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
   });
 

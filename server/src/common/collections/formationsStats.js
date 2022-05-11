@@ -28,6 +28,12 @@ module.exports = {
     );
   },
   indexes: () => {
-    return [[{ uai: 1, code_formation: 1 }, { unique: true }], [{ millesime: 1 }], [{ code_formation: 1 }]];
+    return [
+      [{ uai: 1, code_formation: 1, millesime: 1 }, { unique: true }],
+      [{ uai: 1 }],
+      [{ millesime: 1 }],
+      [{ code_formation: 1 }],
+      [{ filiere: 1 }],
+    ];
   },
 };

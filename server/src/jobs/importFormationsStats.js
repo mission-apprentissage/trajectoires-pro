@@ -73,7 +73,7 @@ async function importFormationsStats(options = {}) {
     writeData(
       async (stats) => {
         const uai = stats.uai;
-        const query = { uai: uai, code_formation: stats.code_formation };
+        const query = { uai: uai, code_formation: stats.code_formation, millesime: stats.millesime };
 
         try {
           const res = await dbCollection("formationsStats").updateOne(

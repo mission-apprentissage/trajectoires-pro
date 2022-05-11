@@ -37,7 +37,7 @@ describe("importCertificationsStats", () => {
   });
 
   it("Vérifie qu'on peut importer les stats d'une certification (pro)", async () => {
-    mockApi("2020", "apprentissage", {
+    mockApi("2020", "voie_pro_sco_educ_nat", {
       data: [
         {
           id_mesure: "taux_emploi_6_mois",
@@ -51,7 +51,7 @@ describe("importCertificationsStats", () => {
       ],
     });
 
-    let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
+    let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["voie_pro_sco_educ_nat"] });
 
     let found = await dbCollection("certificationsStats").findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
@@ -96,6 +96,43 @@ describe("importCertificationsStats", () => {
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
+  it("Vérifie qu'on peut importer les stats d'une certification sur plusieurs millesimes", async () => {
+    mockApi("2020", "apprentissage", {
+      data: [
+        {
+          id_mesure: "taux_emploi_6_mois",
+          valeur_mesure: 20,
+          dimensions: [
+            {
+              id_formation_apprentissage: "12345",
+            },
+          ],
+        },
+      ],
+    });
+    mockApi("2019", "apprentissage", {
+      data: [
+        {
+          id_mesure: "taux_emploi_6_mois",
+          valeur_mesure: 19,
+          dimensions: [
+            {
+              id_formation_apprentissage: "12345",
+            },
+          ],
+        },
+      ],
+    });
+
+    await importCertificationsStats({ millesimes: ["2019", "2020"], filieres: ["apprentissage"] });
+
+    let found = await dbCollection("certificationsStats").findOne({ millesime: "2019" }, { projection: { _id: 0 } });
+    assert.deepStrictEqual(found.taux_emploi_6_mois, 19);
+
+    found = await dbCollection("certificationsStats").findOne({ millesime: "2020" }, { projection: { _id: 0 } });
+    assert.deepStrictEqual(found.taux_emploi_6_mois, 20);
+  });
+
   it("Vérifie qu'on peut importer les stats de plusieurs certifications", async () => {
     mockApi("2020", "apprentissage", {
       data: [
@@ -110,7 +147,7 @@ describe("importCertificationsStats", () => {
         },
         {
           id_mesure: "taux_emploi_12_mois",
-          valeur_mesure: 12,
+          valeur_mesure: 13,
           dimensions: [
             {
               id_formation_apprentissage: "67890",
@@ -122,12 +159,10 @@ describe("importCertificationsStats", () => {
 
     let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
 
-    let docs = await dbCollection("certificationsStats")
-      .find({}, { projection: { _id: 0 } })
-      .toArray();
-
-    assert.deepStrictEqual(docs.find((d) => d.code_formation === "12345")?.taux_emploi_12_mois, 12);
-    assert.deepStrictEqual(docs.find((d) => d.code_formation === "67890")?.taux_emploi_12_mois, 12);
+    let found = await dbCollection("certificationsStats").findOne({ code_formation: "12345" });
+    assert.deepStrictEqual(found.taux_emploi_12_mois, 12);
+    found = await dbCollection("certificationsStats").findOne({ code_formation: "67890" });
+    assert.deepStrictEqual(found.taux_emploi_12_mois, 13);
     assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
   });
 
@@ -143,7 +178,7 @@ describe("importCertificationsStats", () => {
     let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
 
     let found = await dbCollection("certificationsStats").findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(found.taux_emploi_6_mois, 6);
+    assert.strictEqual(found.taux_emploi_6_mois, 6);
     assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 1 });
   });
 
