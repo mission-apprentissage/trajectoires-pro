@@ -1,3 +1,4 @@
+require("dotenv").config();
 const path = require("path");
 const appConfig = require("./src/config");
 
@@ -14,7 +15,7 @@ const config = {
   },
 
   // The migrations dir, can be an relative or absolute path. Only edit this when really necessary.
-  migrationsDir: path.join(__dirname, "migrations"),
+  migrationsDir: path.join(__dirname, "migrations", "scripts"),
 
   // The mongodb collection where the applied changes are stored. Only edit this when really necessary.
   changelogCollectionName: "changelog",
