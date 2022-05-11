@@ -1,4 +1,9 @@
-module.exports = (callback) => {
+//@ts-check
+
+/**
+ * @type  {import("../types").AsyncTryCatchHandler}
+ */
+const asyncTryCatchHandler = (callback) => {
   return async (req, res, next) => {
     try {
       await callback(req, res, next);
@@ -8,3 +13,5 @@ module.exports = (callback) => {
     }
   };
 };
+
+module.exports = asyncTryCatchHandler;

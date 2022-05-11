@@ -15,8 +15,9 @@ const establishmentSvgTemplates = {
 
 /**
  * load base64 font, so that it can be injected in svg
+ * @type {string}
  */
-let base64Font = null;
+let base64Font = "";
 const loadBase64Font = () => {
   if (!base64Font) {
     const buffer = fs.readFileSync(path.join(__dirname, `../templates/fonts/Marianne-Regular.woff`));
@@ -25,16 +26,16 @@ const loadBase64Font = () => {
   return base64Font;
 };
 
-const labels = {
+const labels = /** @type {const} */ ({
   taux_emploi_6_mois_apres_la_sortie: ["sont en emploi 6 mois", "après la fin de la formation."],
   taux_de_poursuite_etudes: ["poursuivent leurs études."],
-};
+});
 
 /**
  * Create on array of rates to feed the ejs template
  *
- * @param {{taux_emploi_6_mois_apres_la_sortie?: Number, taux_de_poursuite_etudes?: Number}} inserJeunesEtablissementsData
- * @returns {Array<{rate: Number, labels: string[]}>}
+ * @param {{taux_emploi_6_mois_apres_la_sortie?: number, taux_de_poursuite_etudes?: number}} inserJeunesEtablissementsData
+ * @returns {Array<{rate: number | undefined, labels: string[]}>}
  */
 const getRates = (inserJeunesEtablissementsData) => {
   const { taux_emploi_6_mois_apres_la_sortie, taux_de_poursuite_etudes } = inserJeunesEtablissementsData;
