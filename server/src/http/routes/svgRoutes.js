@@ -8,6 +8,11 @@ const Joi = require("joi");
 const { dbCollection } = require("../../common/mongodb");
 const { validate } = require("../utils/validators");
 
+/**
+ * @typedef {"success" | "info" | "warning" | "danger"} RateLevel
+ * @typedef {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number}} InserJeunesData
+ */
+
 const svgTemplates = {
   // local : action de formation (formation donnée dans un établissement donné)
   formation: {
@@ -22,13 +27,14 @@ const svgTemplates = {
 };
 
 /**
- * load base64 font, so that it can be injected in svg
+ * Load base64 font, so that it can be injected in svg
+ *
  * @type {string}
  */
 let base64Font = "";
 const loadBase64Font = () => {
   if (!base64Font) {
-    const buffer = fs.readFileSync(path.join(__dirname, `../templates/fonts/Marianne-Regular.woff`));
+    const buffer = fs.readFileSync(path.join(__dirname, `../templates/assets/fonts/Marianne-Regular.woff`));
     base64Font = buffer.toString("base64");
   }
   return base64Font;
@@ -40,19 +46,29 @@ const labels = /** @type {const} */ ({
 });
 
 /**
+ * Get a level to adjust icon and style in the template for this data
+ *
+ * @param {number} value
+ * @returns {RateLevel}
+ */
+const getRateLevel = (value) => {
+  return value < 50 ? (value < 25 ? "danger" : "warning") : "success";
+};
+
+/**
  * Create on array of rates to feed the ejs template
  *
- * @param {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number}} stats
- * @returns {Array<{rate: number | undefined, labels: string[]}>}
+ * @param {InserJeunesData} inserJeunesData
+ * @returns {Array<{rate: number | undefined, labels: string[], level: RateLevel}>}
  */
-const getRates = (stats) => {
-  const { taux_emploi_6_mois, taux_poursuite_etudes } = stats;
+const getRates = ({ taux_emploi_6_mois, taux_poursuite_etudes }) => {
   return Object.entries({ taux_emploi_6_mois, taux_poursuite_etudes })
     .filter(([, value]) => !!value || value === 0)
     .map(([key, value]) => {
       return {
         rate: value,
         labels: labels[key],
+        level: key === "taux_de_poursuite_etudes" ? "info" : getRateLevel(value),
       };
     });
 };
