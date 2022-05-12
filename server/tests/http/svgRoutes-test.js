@@ -9,7 +9,7 @@ describe("svgRoutes", () => {
       return insertFormationsStats({
         uai: "0751234J",
         code_formation: "1022105",
-        millesime: "2022-2021",
+        millesime: "2021_2022",
         taux_emploi_6_mois: 50,
       });
     }
@@ -65,7 +65,7 @@ describe("svgRoutes", () => {
       await dbCollection("formationsStats").insertOne({
         uai: "0751234J",
         code_formation: "1022105",
-        millesime: "2022-2021",
+        millesime: "2021_2022",
         taux_emploi_6_mois: 50,
       });
 
@@ -85,7 +85,7 @@ describe("svgRoutes", () => {
       await dbCollection("formationsStats").insertOne({
         uai: "0751234J",
         code_formation: "1022105",
-        millesime: "2022-2021",
+        millesime: "2021_2022",
         taux_emploi_6_mois: 50,
       });
 
@@ -106,8 +106,8 @@ describe("svgRoutes", () => {
       await insertFormationsStats({
         uai: "0751234J",
         code_formation: "1022105",
-        millesime: "2022-2021",
-        taux_de_poursuite_etudes: 0,
+        millesime: "2021_2022",
+        taux_poursuite_etudes: 0,
         taux_emploi_6_mois: 50,
       });
 
@@ -136,7 +136,7 @@ describe("svgRoutes", () => {
       await dbCollection("formationsStats").insertOne({
         uai: "0751234J",
         code_formation: "1022105",
-        millesime: "2022-2021",
+        millesime: "2021_2022",
       });
 
       const response = await httpClient.get("/api/svg/uai/0751234J/code_formation/1022105/millesime/2022-2021");
@@ -156,7 +156,7 @@ describe("svgRoutes", () => {
     it("should display svg for certification", async () => {
       await dbCollection("inserJeunesNationals").insertOne({
         code_formation: "23830024203",
-        millesime: "2020-2019",
+        millesime: "2019_2020",
         libelle_de_la_formation: "metiers de la mode - vêtement",
         nb_en_annee_terminale: 2845,
         nb_en_emploi_12_mois_apres_la_sortie: 427,
@@ -190,7 +190,7 @@ describe("svgRoutes", () => {
     it("should return a 404 if data exists but rates are empty", async () => {
       await dbCollection("inserJeunesNationals").insertOne({
         code_formation: "23830024203",
-        millesime: "2020-2019",
+        millesime: "2019_2020",
         libelle_de_la_formation: "metiers de la mode - vêtement",
         nb_en_annee_terminale: 2845,
         nb_en_emploi_12_mois_apres_la_sortie: 427,
@@ -212,7 +212,7 @@ describe("svgRoutes", () => {
     it("should get the vertical file if asked direction is not list", async () => {
       await dbCollection("inserJeunesNationals").insertOne({
         code_formation: "23830024203",
-        millesime: "2020-2019",
+        millesime: "2019_2020",
         libelle_de_la_formation: "metiers de la mode - vêtement",
         nb_en_annee_terminale: 2845,
         nb_en_emploi_12_mois_apres_la_sortie: 427,

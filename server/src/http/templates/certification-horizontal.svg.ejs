@@ -23,76 +23,74 @@
   </text>
 
   <!-- first block starts here -->
-  <rect x="30" y="160" width="90" height="35" rx="4" fill="#B8FEC9" />
-  <path
-    fill-rule="evenodd"
-    clip-rule="evenodd"
-    d="M47 184.167C43.318 184.167 40.3334 181.182 40.3334 177.5C40.3334 173.818 43.318 170.833 47 170.833C50.682 170.833 53.6667 173.818 53.6667 177.5C53.6667 181.182 50.682 184.167 47 184.167ZM46.3354 180.167L51.0487 175.453L50.106 174.51L46.3354 178.281L44.4494 176.395L43.5067 177.338L46.3354 180.167Z"
-    fill="#18753C"
-  />
-  <text
-    fill="#18753C"
-    xml:space="preserve"
-    style="white-space: pre"
-    font-family="Marianne"
-    font-size="25"
-    font-weight="bold"
-    letter-spacing="0em"
-  >
-    <tspan x="59" y="188.438"><%= rates[0].rate %>%</tspan>
-  </text>
-  <text
-    fill="black"
-    xml:space="preserve"
-    style="white-space: pre"
-    font-family="Marianne"
-    font-size="14"
-    letter-spacing="0em"
-  >
-    <% if(rates[0].labels.length===1) { %>
-    <tspan x="130" y="183.125"><%= rates[0].labels[0] %></tspan>
-    <% } else { %>
-    <tspan x="130" y="173.125"><%= rates[0].labels[0] %></tspan>
-    <tspan x="130" y="193.125"><%= rates[0].labels[1] %></tspan>
-    <% } %>
-  </text>
+  <g class="<%= rates[0].level %>">
+    <rect x="30" y="160" width="90" height="35" rx="4" class="bg" />
+
+    <g transform="translate(40,170)"><%- await include(`assets/${rates[0].level}-icon.svg.ejs`); %></g>
+
+    <text
+      class="label"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Marianne"
+      font-size="25"
+      font-weight="bold"
+      letter-spacing="0em"
+    >
+      <tspan x="59" y="188.438"><%= rates[0].rate %>%</tspan>
+    </text>
+    <text
+      fill="black"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Marianne"
+      font-size="14"
+      letter-spacing="0em"
+    >
+      <% if(rates[0].labels.length===1) { %>
+      <tspan x="130" y="183.125"><%= rates[0].labels[0] %></tspan>
+      <% } else { %>
+      <tspan x="130" y="173.125"><%= rates[0].labels[0] %></tspan>
+      <tspan x="130" y="193.125"><%= rates[0].labels[1] %></tspan>
+      <% } %>
+    </text>
+  </g>
   <!-- end first block -->
 
   <!-- second block starts here -->
   <% if(rates.length > 1) { %>
-  <rect x="365" y="160" width="90" height="35" rx="4" fill="#B8FEC9" />
-  <path
-    fill-rule="evenodd"
-    clip-rule="evenodd"
-    d="M380.5 184.167C376.818 184.167 373.833 181.182 373.833 177.5C373.833 173.818 376.818 170.833 380.5 170.833C384.182 170.833 387.167 173.818 387.167 177.5C387.167 181.182 384.182 184.167 380.5 184.167ZM379.835 180.167L384.549 175.453L383.606 174.51L379.835 178.281L377.949 176.395L377.007 177.338L379.835 180.167Z"
-    fill="#18753C"
-  />
-  <text
-    fill="#18753C"
-    xml:space="preserve"
-    style="white-space: pre"
-    font-family="Marianne"
-    font-size="25"
-    font-weight="bold"
-    letter-spacing="0em"
-  >
-    <tspan x="392.5" y="188.438"><%= rates[1].rate %>%</tspan>
-  </text>
-  <text
-    fill="black"
-    xml:space="preserve"
-    style="white-space: pre"
-    font-family="Marianne"
-    font-size="14"
-    letter-spacing="0em"
-  >
-    <% if(rates[1].labels.length === 1) { %>
-    <tspan x="465" y="184.125"><%= rates[1].labels[0] %></tspan>
-    <% } else { %>
-    <tspan x="465" y="174.125"><%= rates[1].labels[0] %></tspan>
-    <tspan x="465" y="194.125"><%= rates[1].labels[1] %></tspan>
-    <% } %>
-  </text>
+  <g class="<%= rates[1].level %>">
+    <rect x="365" y="160" width="90" height="35" rx="4" class="bg" />
+
+    <g transform="translate(375,170)"><%- await include(`assets/${rates[1].level}-icon.svg.ejs`); %></g>
+
+    <text
+      class="label"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Marianne"
+      font-size="25"
+      font-weight="bold"
+      letter-spacing="0em"
+    >
+      <tspan x="392.5" y="188.438"><%= rates[1].rate %>%</tspan>
+    </text>
+    <text
+      fill="black"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Marianne"
+      font-size="14"
+      letter-spacing="0em"
+    >
+      <% if(rates[1].labels.length === 1) { %>
+      <tspan x="465" y="184.125"><%= rates[1].labels[0] %></tspan>
+      <% } else { %>
+      <tspan x="465" y="174.125"><%= rates[1].labels[0] %></tspan>
+      <tspan x="465" y="194.125"><%= rates[1].labels[1] %></tspan>
+      <% } %>
+    </text>
+  </g>
   <% } %>
   <!-- end second block -->
 
@@ -117,6 +115,30 @@
         font-weight: 500;
         font-style: normal;
         font-display: swap;
+      }
+      .success .bg {
+        fill: #b8fec9;
+      }
+      .success .label {
+        fill: #18753c;
+      }
+      .info .bg {
+        fill: #e8edff;
+      }
+      .info .label {
+        fill: #0063cb;
+      }
+      .danger .bg {
+        fill: #ffe9e9;
+      }
+      .danger .label {
+        fill: #ce0500;
+      }
+      .warning .bg {
+        fill: #feecc2;
+      }
+      .warning .label {
+        fill: #716043;
       }
     </style>
     <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">

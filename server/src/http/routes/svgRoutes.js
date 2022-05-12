@@ -7,6 +7,12 @@ const path = require("path");
 const Joi = require("joi");
 const { dbCollection } = require("../../common/mongodb");
 const { validate } = require("../utils/validators");
+const { getRateLevel } = require("../../common/rateLevels");
+const { formatMillesime } = require("../utils/formatters");
+
+/**
+ * @typedef {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number, filiere?:"apprentissage" | "pro", diplome?:string}} InserJeunesData
+ */
 
 const svgTemplates = {
   // local : action de formation (formation donnée dans un établissement donné)
@@ -22,13 +28,14 @@ const svgTemplates = {
 };
 
 /**
- * load base64 font, so that it can be injected in svg
+ * Load base64 font, so that it can be injected in svg
+ *
  * @type {string}
  */
 let base64Font = "";
 const loadBase64Font = () => {
   if (!base64Font) {
-    const buffer = fs.readFileSync(path.join(__dirname, `../templates/fonts/Marianne-Regular.woff`));
+    const buffer = fs.readFileSync(path.join(__dirname, `../templates/assets/fonts/Marianne-Regular.woff`));
     base64Font = buffer.toString("base64");
   }
   return base64Font;
@@ -42,17 +49,20 @@ const labels = /** @type {const} */ ({
 /**
  * Create on array of rates to feed the ejs template
  *
- * @param {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number}} stats
- * @returns {Array<{rate: number | undefined, labels: string[]}>}
+ * @param {InserJeunesData} inserJeunesData
+ * @returns {Array<{rate: number | undefined, labels: string[], level: import("../types").RateLevel}>}
  */
-const getRates = (stats) => {
-  const { taux_emploi_6_mois, taux_poursuite_etudes } = stats;
+const getRates = ({ taux_emploi_6_mois, taux_poursuite_etudes, filiere, diplome }) => {
   return Object.entries({ taux_emploi_6_mois, taux_poursuite_etudes })
     .filter(([, value]) => !!value || value === 0)
     .map(([key, value]) => {
       return {
         rate: value,
         labels: labels[key],
+        level:
+          key === "taux_poursuite_etudes"
+            ? "info"
+            : getRateLevel(/** @type {keyof typeof labels} */ (key), value, filiere, diplome),
       };
     });
 };
@@ -83,10 +93,10 @@ module.exports = () => {
         {
           uai,
           code_formation,
-          millesime,
+          millesime: formatMillesime(millesime),
         },
         {
-          projection: { taux_emploi_6_mois: 1, taux_poursuite_etudes: 1 },
+          projection: { taux_emploi_6_mois: 1, taux_poursuite_etudes: 1, filiere: 1 },
         }
       );
 
@@ -126,10 +136,15 @@ module.exports = () => {
       const inserJeunesData = await dbCollection("inserJeunesNationals").findOne(
         {
           code_formation,
-          millesime,
+          millesime: formatMillesime(millesime),
         },
         {
-          projection: { taux_emploi_6_mois_apres_la_sortie: 1, taux_de_poursuite_etudes: 1 },
+          projection: {
+            taux_emploi_6_mois_apres_la_sortie: 1,
+            taux_de_poursuite_etudes: 1,
+            type_de_diplome: 1,
+            type: 1,
+          },
         }
       );
 
@@ -140,6 +155,8 @@ module.exports = () => {
       const rates = getRates({
         taux_emploi_6_mois: inserJeunesData.taux_emploi_6_mois_apres_la_sortie,
         taux_poursuite_etudes: inserJeunesData.taux_de_poursuite_etudes,
+        filiere: inserJeunesData.type,
+        diplome: inserJeunesData.type_de_diplome,
       });
       if (rates.length === 0) {
         return res.status(404).send("Donnée non disponible");
