@@ -7,10 +7,9 @@ const path = require("path");
 const Joi = require("joi");
 const { dbCollection } = require("../../common/mongodb");
 const { validate } = require("../utils/validators");
-const { RATE_LEVELS } = require("../../common/rateLevels");
+const { getRateLevel } = require("../../common/rateLevels");
 
 /**
- * @typedef {"success" | "info" | "warning" | "danger"} RateLevel
  * @typedef {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number, filiere?:"apprentissage" | "pro", diplome?:string}} InserJeunesData
  */
 
@@ -26,6 +25,14 @@ const svgTemplates = {
     horizontal: path.join(__dirname, `../templates/certification-horizontal.svg.ejs`),
   },
 };
+
+/**
+ * Format millesime value, eg: "2020-2019" => "2019_2020"
+ *
+ * @param {string} millesime
+ * @returns {string}
+ */
+const formatMillesime = (millesime) => millesime.split(/-|_/).sort().join("_");
 
 /**
  * Load base64 font, so that it can be injected in svg
@@ -47,30 +54,10 @@ const labels = /** @type {const} */ ({
 });
 
 /**
- * Get a level to adjust icon and style in the template for this data
- *
- * @param {keyof typeof labels} key
- * @param {number} value
- * @param {"apprentissage"|"pro"} filiere
- * @param {string} diplome
- *
- * @returns {RateLevel}
- */
-const getRateLevel = (key, value, filiere, diplome) => {
-  const levels =
-    RATE_LEVELS[key]?.[filiere]?.[diplome] ??
-    RATE_LEVELS[key]?.[filiere]?.default ??
-    RATE_LEVELS[key]?.default ??
-    RATE_LEVELS.default;
-
-  return value < levels.success ? (value < levels.warning ? "danger" : "warning") : "success";
-};
-
-/**
  * Create on array of rates to feed the ejs template
  *
  * @param {InserJeunesData} inserJeunesData
- * @returns {Array<{rate: number | undefined, labels: string[], level: RateLevel}>}
+ * @returns {Array<{rate: number | undefined, labels: string[], level: import("../types").RateLevel}>}
  */
 const getRates = ({ taux_emploi_6_mois, taux_poursuite_etudes, filiere, diplome }) => {
   return Object.entries({ taux_emploi_6_mois, taux_poursuite_etudes })
@@ -113,7 +100,7 @@ module.exports = () => {
         {
           uai,
           code_formation,
-          millesime,
+          millesime: formatMillesime(millesime),
         },
         {
           projection: { taux_emploi_6_mois: 1, taux_poursuite_etudes: 1, filiere: 1 },
@@ -156,7 +143,7 @@ module.exports = () => {
       const inserJeunesData = await dbCollection("inserJeunesNationals").findOne(
         {
           code_formation,
-          millesime,
+          millesime: formatMillesime(millesime),
         },
         {
           projection: {
