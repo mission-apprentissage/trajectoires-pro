@@ -52,8 +52,6 @@ const prepareJsonSchema = (jsonSchema) => {
 const generateTypes = () => {
   Object.values(collections).forEach(({ name, schema }) => {
     const jsonSchema = schema();
-    console.log(jsonSchema);
-
     const preparedJsonSchema = prepareJsonSchema(jsonSchema);
     compile(preparedJsonSchema, name, {
       bannerComment: `
