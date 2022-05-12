@@ -7,6 +7,7 @@ const validators = require("../utils/validators");
 const { checkApiKey } = require("../middlewares/authMiddleware");
 const { addCsvHeaders, addJsonHeaders } = require("../utils/responseUtils");
 const { findAndPaginate } = require("../../common/utils/dbUtils");
+const { formatMillesime } = require("../utils/formatters");
 
 module.exports = () => {
   const router = express.Router();
@@ -34,7 +35,7 @@ module.exports = () => {
         "formationsStats",
         {
           ...(uais.length > 0 ? { uai: { $in: uais } } : {}),
-          ...(millesimes.length > 0 ? { millesime: { $in: millesimes } } : {}),
+          ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
           ...(codes_formation.length > 0 ? { code_formation: { $in: codes_formation } } : {}),
         },
         {

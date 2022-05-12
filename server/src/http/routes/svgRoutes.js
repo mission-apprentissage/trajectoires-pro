@@ -8,6 +8,7 @@ const Joi = require("joi");
 const { dbCollection } = require("../../common/mongodb");
 const { validate } = require("../utils/validators");
 const { getRateLevel } = require("../../common/rateLevels");
+const { formatMillesime } = require("../utils/formatters");
 
 /**
  * @typedef {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number, filiere?:"apprentissage" | "pro", diplome?:string}} InserJeunesData
@@ -25,14 +26,6 @@ const svgTemplates = {
     horizontal: path.join(__dirname, `../templates/certification-horizontal.svg.ejs`),
   },
 };
-
-/**
- * Format millesime value, eg: "2020-2019" => "2019_2020"
- *
- * @param {string} millesime
- * @returns {string}
- */
-const formatMillesime = (millesime) => millesime.split(/-|_/).sort().join("_");
 
 /**
  * Load base64 font, so that it can be injected in svg
