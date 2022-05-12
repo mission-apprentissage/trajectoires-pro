@@ -89,6 +89,9 @@ module.exports = () => {
 
       const { direction = "vertical" } = query;
 
+      /**
+       * @type {import("../../common/collections/formationsStats").FormationsStats}
+       */
       const stats = await dbCollection("formationsStats").findOne(
         {
           uai,
@@ -133,6 +136,9 @@ module.exports = () => {
 
       const { direction = "vertical" } = query;
 
+      /**
+       * @type {import("../../common/collections/inserJeunesNationals").InserJeunesNationals}
+       */
       const inserJeunesData = await dbCollection("inserJeunesNationals").findOne(
         {
           code_formation,
