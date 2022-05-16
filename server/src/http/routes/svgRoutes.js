@@ -15,16 +15,42 @@ const { formatMillesime } = require("../utils/formatters");
  */
 
 const svgTemplates = {
-  // local : action de formation (formation donnée dans un établissement donné)
-  formation: {
-    vertical: path.join(__dirname, `../templates/formation-vertical.svg.ejs`),
-    horizontal: path.join(__dirname, `../templates/formation-horizontal.svg.ejs`),
+  dsfr: {
+    // local : action de formation (formation donnée dans un établissement donné)
+    formation: {
+      vertical: path.join(__dirname, `../templates/dsfr/formation-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `../templates/dsfr/formation-horizontal.svg.ejs`),
+    },
+    // national : diplome
+    certification: {
+      vertical: path.join(__dirname, `../templates/dsfr/certification-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `../templates/dsfr/certification-horizontal.svg.ejs`),
+    },
   },
-  // national : diplome
-  certification: {
-    vertical: path.join(__dirname, `../templates/certification-vertical.svg.ejs`),
-    horizontal: path.join(__dirname, `../templates/certification-horizontal.svg.ejs`),
+  onisep: {
+    // local : action de formation (formation donnée dans un établissement donné)
+    formation: {
+      vertical: path.join(__dirname, `../templates/onisep/formation-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `../templates/onisep/formation-horizontal.svg.ejs`),
+    },
+    // national : diplome
+    certification: {
+      vertical: path.join(__dirname, `../templates/onisep/certification-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `../templates/onisep/certification-horizontal.svg.ejs`),
+    },
   },
+};
+
+/**
+ * Get the right template to display
+ *
+ * @param {string} theme
+ * @param {keyof typeof svgTemplates.dsfr} type
+ * @param {string} direction
+ */
+const getTemplate = (theme = "dsfr", type, direction) => {
+  const templates = svgTemplates[theme] ?? svgTemplates.dsfr;
+  return templates[type][direction] ?? templates[type].vertical ?? svgTemplates.dsfr[type].vertical;
 };
 
 /**
@@ -74,7 +100,7 @@ module.exports = () => {
   const router = express.Router();
 
   /**
-   * e.g: GET /api/svg/uai/0010016M/code_formation/32221023012/millesime/2020-2019?direction=horizontal
+   * e.g: GET /api/svg/uai/0010016M/code_formation/32221023012/millesime/2020-2019?direction=horizontal&theme=onisep
    */
   router.get(
     "/api/svg/uai/:uai/code_formation/:code_formation/millesime/:millesime",
@@ -87,7 +113,7 @@ module.exports = () => {
         millesime: Joi.string().required(),
       });
 
-      const { direction = "vertical" } = query;
+      const { direction = "vertical", theme = "dsfr" } = query;
 
       /**
        * @type {import("../../common/collections/formationsStats").FormationsStats}
@@ -114,7 +140,7 @@ module.exports = () => {
 
       const base64Font = loadBase64Font();
       const data = { base64Font, rates };
-      const svg = await ejs.renderFile(svgTemplates.formation[direction] ?? svgTemplates.formation.vertical, data, {
+      const svg = await ejs.renderFile(getTemplate(theme.toString(), "formation", direction.toString()), data, {
         async: true,
       });
 
@@ -124,7 +150,7 @@ module.exports = () => {
   );
 
   /**
-   * e.g: GET /api/svg/code_formation/32221023012/millesime/2020-2019?direction=horizontal
+   * e.g: GET /api/svg/code_formation/32221023012/millesime/2020-2019?direction=horizontal&theme=onisep
    */
   router.get(
     "/api/svg/code_formation/:code_formation/millesime/:millesime",
@@ -134,7 +160,7 @@ module.exports = () => {
         millesime: Joi.string().required(),
       });
 
-      const { direction = "vertical" } = query;
+      const { direction = "vertical", theme = "dsfr" } = query;
 
       /**
        * @type {import("../../common/collections/inserJeunesNationals").InserJeunesNationals}
@@ -170,11 +196,9 @@ module.exports = () => {
 
       const base64Font = loadBase64Font();
       const data = { base64Font, rates };
-      const svg = await ejs.renderFile(
-        svgTemplates.certification[direction] ?? svgTemplates.certification.vertical,
-        data,
-        { async: true }
-      );
+      const svg = await ejs.renderFile(getTemplate(theme.toString(), "certification", direction.toString()), data, {
+        async: true,
+      });
 
       res.setHeader("content-type", "image/svg+xml");
       return res.status(200).send(svg);
