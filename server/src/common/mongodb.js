@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 const config = require("../config");
-const collections = require("./collections");
+const collections = require("./collections/schemas");
 const logger = require("./logger").child({ context: "db" });
 const { writeData } = require("oleoduc");
 

@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { compile } = require("json-schema-to-typescript");
-const collections = require("../common/collections/index");
+const collections = require("../common/collections/schemas");
 const packageJson = require("../../package.json");
 
 const disableAdditionalProperties = (node) => {
