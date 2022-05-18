@@ -27,7 +27,10 @@ cli
 cli
   .command("importStats")
   .description("Importe les données statistiques de l'API InserJeunes")
-  .argument("<stats>", "Le nom des stats à importer (formations,certifications)", asArray)
+  .argument("<stats>", "Le nom des stats à importer (formations,certifications)", asArray, [
+    "certifications",
+    "formations",
+  ])
   .option("--file", "Un fichier CSV avec la liste des UAI dans une colonne ayant pour nom 'uai'", createReadStream)
   .action((stats, { file }) => {
     runScript(async () => {

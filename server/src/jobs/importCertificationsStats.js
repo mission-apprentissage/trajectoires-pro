@@ -1,5 +1,5 @@
 const logger = require("../common/logger").child({ context: "import" });
-const { writeData, oleoduc, transformData, flattenStream } = require("oleoduc");
+const { writeData, oleoduc, transformData, flattenArray } = require("oleoduc");
 const { Readable } = require("stream");
 const { dbCollection } = require("../common/mongodb");
 const InserJeunes = require("../common/InserJeunes");
@@ -10,9 +10,10 @@ async function importCertificationsStats(options = {}) {
   const millesimes = options.millesimes || ["2019", "2020"];
   const filieres = options.filieres || ["apprentissage", "voie_pro_sco_educ_nat"];
 
-  function handleError(e, context) {
+  function handleError(e, context = {}) {
     logger.error({ err: e, ...context }, `Impossible d'importer les stats pour la certification`);
     jobStats.failed++;
+    return null;
   }
 
   let params = millesimes.flatMap((millesime) => {
@@ -22,15 +23,12 @@ async function importCertificationsStats(options = {}) {
   await oleoduc(
     Readable.from(params),
     transformData(
-      async ({ millesime, filiere }) => {
-        return ij.getCertificationsStats(millesime, filiere).catch((e) => {
-          handleError(e, { millesime, filiere });
-          return null;
-        });
+      async (params) => {
+        return ij.getCertificationsStats(params.millesime, params.filiere).catch((e) => handleError(e, params));
       },
-      { parallel: 10 }
+      { parallel: 4 }
     ),
-    flattenStream(),
+    flattenArray(),
     writeData(
       async (stats) => {
         const query = { millesime: stats.millesime, code_formation: stats.code_formation };
@@ -61,7 +59,8 @@ async function importCertificationsStats(options = {}) {
         }
       },
       { parallel: 10 }
-    )
+    ),
+    { onError: (e) => handleError(e) }
   );
 
   return jobStats;

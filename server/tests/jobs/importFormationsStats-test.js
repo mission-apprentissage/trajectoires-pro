@@ -192,7 +192,7 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 1 });
   });
 
-  it("Vérifie qu'on peut gère les erreurs 400 de l'api", async () => {
+  it("Vérifie qu'on peut gèrer les erreurs 400 de l'api", async () => {
     let input = createStream(`uai\n0751234J`);
     mockInserJeunesApi((client, responses) => {
       client
@@ -209,6 +209,27 @@ describe("importFormationsStats", () => {
     let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
 
     let count = await dbCollection("formationsStats").countDocuments({});
+    assert.strictEqual(count, 0);
+    assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
+  });
+
+  it("Vérifie qu'on peut gèrer un json invalide", async () => {
+    let input = createStream(`uai\n0751234J`);
+    mockInserJeunesApi((client, responses) => {
+      client
+        .post("/login")
+        .query(() => true)
+        .reply(200, responses.login());
+
+      client
+        .get(`/france/millesime/2020/filiere/inconnue`)
+        .query(() => true)
+        .reply(200, "{json:");
+    });
+
+    let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
+
+    let count = await dbCollection("certificationsStats").countDocuments({});
     assert.strictEqual(count, 0);
     assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
   });

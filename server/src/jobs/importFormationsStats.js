@@ -1,6 +1,6 @@
 const { getFromStorage } = require("../common/utils/ovhUtils");
 const logger = require("../common/logger").child({ context: "import" });
-const { compose, mergeStreams, writeData, oleoduc, transformData, flattenStream } = require("oleoduc");
+const { compose, mergeStreams, writeData, oleoduc, transformData, flattenArray } = require("oleoduc");
 const { Readable } = require("stream");
 const { parseCsv } = require("../common/utils/csvUtils");
 const { dbCollection } = require("../common/mongodb");
@@ -52,6 +52,7 @@ async function importFormationsStats(options = {}) {
   function handleError(e, context) {
     logger.error({ err: e, ...context }, `Impossible d'importer les stats pour la formation`);
     jobStats.failed++;
+    return null;
   }
 
   const uais = await loadUaisFromCSV(options.input);
@@ -61,15 +62,12 @@ async function importFormationsStats(options = {}) {
   await oleoduc(
     Readable.from(params),
     transformData(
-      async ({ uai, millesime }) => {
-        return ij.getFormationsStats(uai, millesime).catch((e) => {
-          handleError(e, { uai, millesime });
-          return null;
-        });
+      async (params) => {
+        return ij.getFormationsStats(params.uai, params.millesime).catch((e) => handleError(e, params));
       },
       { parallel: 10 }
     ),
-    flattenStream(),
+    flattenArray(),
     writeData(
       async (stats) => {
         const uai = stats.uai;
