@@ -1,6 +1,6 @@
 const { getFromStorage } = require("../common/utils/ovhUtils");
 const logger = require("../common/logger").child({ context: "import" });
-const { compose, mergeStreams, writeData, oleoduc, transformData, flattenStream } = require("oleoduc");
+const { compose, mergeStreams, writeData, oleoduc, transformData, flattenArray } = require("oleoduc");
 const { Readable } = require("stream");
 const { parseCsv } = require("../common/utils/csvUtils");
 const { dbCollection } = require("../common/mongodb");
@@ -46,38 +46,40 @@ async function loadUaisFromCSV(input) {
 
 async function importFormationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
-  const ij = new InserJeunes();
+  const ij = options.inserjeunes || new InserJeunes();
   const millesimes = options.millesimes || ["2018_2019", "2019_2020"];
 
   function handleError(e, context) {
-    logger.error({ err: e, ...context }, `Impossible d'importer les stats pour l'établissement`);
+    logger.error({ err: e, ...context }, `Impossible d'importer les stats pour la formation`);
     jobStats.failed++;
+    return null;
   }
 
   const uais = await loadUaisFromCSV(options.input);
-  logger.info(`Import des stats pour ${uais.length} établissements`);
+  const params = uais.flatMap((uai) => millesimes.map((millesime) => ({ uai, millesime })));
+  logger.info(`Import des stats pour ${params.length} formations et ${uais.length} établissements`);
 
   await oleoduc(
-    Readable.from(uais.flatMap((uai) => millesimes.map((millesime) => ({ uai, millesime })))),
+    Readable.from(params),
     transformData(
-      async ({ uai, millesime }) => {
-        return ij.getFormationsStats(uai, millesime).catch((e) => {
-          handleError(e, { uai, millesime });
-          return null;
-        });
+      async (params) => {
+        return ij.getFormationsStats(params.uai, params.millesime).catch((e) => handleError(e, params));
       },
       { parallel: 10 }
     ),
-    flattenStream(),
+    flattenArray(),
     writeData(
       async (stats) => {
         const uai = stats.uai;
+        const query = { uai: uai, code_formation: stats.code_formation, millesime: stats.millesime };
 
         try {
-          let query = { uai: uai, code_formation: stats.code_formation };
           const res = await dbCollection("formationsStats").updateOne(
             query,
             {
+              $setOnInsert: {
+                "_meta.date_import": new Date(),
+              },
               $set: stats,
             },
             { upsert: true }
@@ -93,7 +95,7 @@ async function importFormationsStats(options = {}) {
             logger.trace("Formation déjà à jour", query);
           }
         } catch (e) {
-          handleError(e, { uai });
+          handleError(e, query);
         }
       },
       { parallel: 10 }

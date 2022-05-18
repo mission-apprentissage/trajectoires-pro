@@ -1,11 +1,10 @@
-const { object, objectId, string, integer, date } = require("./schemas/jsonSchemaTypes");
+const { object, objectId, string, date, integer } = require("./schemas/jsonSchemaTypes");
 module.exports = {
-  name: "formationsStats",
+  name: "certificationsStats",
   schema: () => {
     return object(
       {
         _id: objectId(),
-        uai: string(),
         millesime: string(),
         code_formation: string(),
         filiere: string({ enum: ["apprentissage", "pro"] }),
@@ -17,6 +16,7 @@ module.exports = {
         taux_poursuite_etudes: integer(),
         taux_emploi_12_mois: integer(),
         taux_emploi_6_mois: integer(),
+        taux_rupture_contrats: integer(),
         _meta: object(
           {
             date_import: date(),
@@ -24,13 +24,12 @@ module.exports = {
           { required: ["date_import"] }
         ),
       },
-      { additionalProperties: false }
+      { additionalProperties: true }
     );
   },
   indexes: () => {
     return [
-      [{ uai: 1, code_formation: 1, millesime: 1 }, { unique: true }],
-      [{ uai: 1 }],
+      [{ millesime: 1, code_formation: 1 }, { unique: true }],
       [{ millesime: 1 }],
       [{ code_formation: 1 }],
       [{ filiere: 1 }],

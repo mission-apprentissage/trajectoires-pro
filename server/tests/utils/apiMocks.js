@@ -69,6 +69,49 @@ module.exports = {
           custom
         );
       },
+      certifications(custom = {}) {
+        return Object.assign(
+          {},
+          {
+            metadata: {
+              liste_mesures: [
+                {
+                  id_mesure: "taux_emploi_6_mois",
+                  libelle_mesure: "Taux d emploi salarié en France à 6 mois",
+                  unite: "pourcentage",
+                },
+                {
+                  id_mesure: "taux_poursuite_etudes",
+                  libelle_mesure: "Taux de poursuite d études",
+                  unite: "pourcentage",
+                },
+              ],
+              liste_dimensions: [
+                {
+                  id_moda_dim: 947,
+                  id_moda_dim_parent: 39,
+                  id_dimension: "id_formation_apprentissage",
+                  libelle_dimension: "spécialité de formation (apprentissage)",
+                  id_modalite: "56033104",
+                  libelle_modalite: "ambulancier",
+                },
+              ],
+            },
+            data: [
+              {
+                id_mesure: "taux_emploi_6_mois",
+                valeur_mesure: 6,
+                dimensions: [
+                  {
+                    id_formation_apprentissage: "12345",
+                  },
+                ],
+              },
+            ],
+          },
+          custom
+        );
+      },
     });
 
     return client;
