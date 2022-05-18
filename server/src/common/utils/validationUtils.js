@@ -33,12 +33,15 @@ function computeChecksum(numbers) {
 
   return ALPHABET_23_LETTERS[numbers % 23];
 }
+function createUAI(code) {
+  return `${code}${computeChecksum(code)}`.toUpperCase();
+}
 
 /**
  * https://blog.juliendelmas.fr/?qu-est-ce-que-le-code-rne-ou-uai
  */
 module.exports = {
-  computeChecksum,
+  createUAI,
   isUAIValid(code) {
     if (!code || code.length !== 8) {
       return false;

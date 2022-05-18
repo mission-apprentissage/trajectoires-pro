@@ -1,24 +1,9 @@
 const assert = require("assert");
 const config = require("../../src/config");
 const { startServer } = require("../utils/testUtils");
-const { mockInserJeunesApi } = require("../utils/apiMocks");
 const { insertFormationsStats } = require("../utils/fakeData");
 
 describe("formationsRoutes", () => {
-  function mockApi(uai, millesime) {
-    mockInserJeunesApi((client, responses) => {
-      client
-        .post("/login")
-        .query(() => true)
-        .reply(200, responses.login());
-
-      client
-        .get(`/UAI/${uai}/millesime/${millesime}`)
-        .query(() => true)
-        .reply(200, responses.uai());
-    });
-  }
-
   function getAuthHeaders() {
     return {
       "x-api-key": config.inserJeunes.api.key,
@@ -27,7 +12,20 @@ describe("formationsRoutes", () => {
 
   it("Vérifie qu'on peut obtenir les stats d'une formation", async () => {
     const { httpClient } = await startServer();
-    await insertFormationsStats();
+    await insertFormationsStats({
+      uai: "0751234J",
+      code_formation: "12345678",
+      millesime: "2018_2019",
+      filiere: "apprentissage",
+      nb_annee_term: 46,
+      nb_en_emploi_12_mois: 12,
+      nb_en_emploi_6_mois: 10,
+      nb_poursuite_etudes: 14,
+      nb_sortant: 32,
+      taux_emploi_12_mois: 38,
+      taux_emploi_6_mois: 31,
+      taux_poursuite_etudes: 30,
+    });
 
     const response = await httpClient.get(`/api/inserjeunes/formations`, {
       headers: {
@@ -64,8 +62,8 @@ describe("formationsRoutes", () => {
 
   it("Vérifie qu'on peut limiter le nombre de résultats", async () => {
     const { httpClient } = await startServer();
-    await insertFormationsStats({ uai: "0751234J" });
-    await insertFormationsStats({ uai: "0751234X" });
+    await insertFormationsStats();
+    await insertFormationsStats();
 
     const response = await httpClient.get(`/api/inserjeunes/formations?items_par_page=1`, {
       headers: {
@@ -105,36 +103,14 @@ describe("formationsRoutes", () => {
     });
 
     assert.strictEqual(response.status, 200);
-    assert.deepStrictEqual(response.data, {
-      formations: [
-        {
-          uai: "0751234J",
-          code_formation: "12345678",
-          millesime: "2018_2019",
-          filiere: "apprentissage",
-          nb_annee_term: 46,
-          nb_en_emploi_12_mois: 12,
-          nb_en_emploi_6_mois: 10,
-          nb_poursuite_etudes: 14,
-          nb_sortant: 32,
-          taux_emploi_12_mois: 38,
-          taux_emploi_6_mois: 31,
-          taux_poursuite_etudes: 30,
-        },
-      ],
-      pagination: {
-        nombre_de_page: 1,
-        page: 1,
-        items_par_page: 10,
-        total: 1,
-      },
-    });
+    assert.strictEqual(response.data.formations[0].uai, "0751234J");
+    assert.strictEqual(response.data.pagination.total, 1);
   });
 
   it("Vérifie qu'on peut obtenir les stats de formations pour un millesime", async () => {
     const { httpClient } = await startServer();
-    await insertFormationsStats({ uai: "0751234J", millesime: "2018_2019" });
-    await insertFormationsStats({ uai: "0751234X", millesime: "2020_2021" });
+    await insertFormationsStats({ millesime: "2018_2019" });
+    await insertFormationsStats({ millesime: "2020_2021" });
 
     const response = await httpClient.get(`/api/inserjeunes/formations?millesimes=2018_2019`, {
       headers: {
@@ -143,36 +119,14 @@ describe("formationsRoutes", () => {
     });
 
     assert.strictEqual(response.status, 200);
-    assert.deepStrictEqual(response.data, {
-      formations: [
-        {
-          uai: "0751234J",
-          code_formation: "12345678",
-          millesime: "2018_2019",
-          filiere: "apprentissage",
-          nb_annee_term: 46,
-          nb_en_emploi_12_mois: 12,
-          nb_en_emploi_6_mois: 10,
-          nb_poursuite_etudes: 14,
-          nb_sortant: 32,
-          taux_emploi_12_mois: 38,
-          taux_emploi_6_mois: 31,
-          taux_poursuite_etudes: 30,
-        },
-      ],
-      pagination: {
-        nombre_de_page: 1,
-        page: 1,
-        items_par_page: 10,
-        total: 1,
-      },
-    });
+    assert.strictEqual(response.data.formations[0].millesime, "2018_2019");
+    assert.strictEqual(response.data.pagination.total, 1);
   });
 
   it("Vérifie qu'on peut obtenir les stats de formations pour code formation", async () => {
     const { httpClient } = await startServer();
-    await insertFormationsStats({ uai: "0751234J", code_formation: "12345" });
-    await insertFormationsStats({ uai: "0751234J", code_formation: "67890" });
+    await insertFormationsStats({ code_formation: "12345" });
+    await insertFormationsStats({ code_formation: "67890" });
 
     const response = await httpClient.get(`/api/inserjeunes/formations?codes_formation=12345`, {
       headers: {
@@ -181,35 +135,26 @@ describe("formationsRoutes", () => {
     });
 
     assert.strictEqual(response.status, 200);
-    assert.deepStrictEqual(response.data, {
-      formations: [
-        {
-          uai: "0751234J",
-          code_formation: "12345",
-          millesime: "2018_2019",
-          filiere: "apprentissage",
-          nb_annee_term: 46,
-          nb_en_emploi_12_mois: 12,
-          nb_en_emploi_6_mois: 10,
-          nb_poursuite_etudes: 14,
-          nb_sortant: 32,
-          taux_emploi_12_mois: 38,
-          taux_emploi_6_mois: 31,
-          taux_poursuite_etudes: 30,
-        },
-      ],
-      pagination: {
-        nombre_de_page: 1,
-        page: 1,
-        items_par_page: 10,
-        total: 1,
-      },
-    });
+    assert.strictEqual(response.data.formations[0].code_formation, "12345");
+    assert.strictEqual(response.data.pagination.total, 1);
   });
 
   it("Vérifie qu'on peut exporter les données au format CSV", async () => {
     const { httpClient } = await startServer();
-    await insertFormationsStats();
+    await insertFormationsStats({
+      uai: "0751234J",
+      code_formation: "12345678",
+      millesime: "2018_2019",
+      filiere: "apprentissage",
+      nb_annee_term: 46,
+      nb_en_emploi_12_mois: 12,
+      nb_en_emploi_6_mois: 10,
+      nb_poursuite_etudes: 14,
+      nb_sortant: 32,
+      taux_emploi_12_mois: 38,
+      taux_emploi_6_mois: 31,
+      taux_poursuite_etudes: 30,
+    });
 
     const response = await httpClient.get(`/api/inserjeunes/formations.csv`, {
       headers: {
@@ -259,7 +204,6 @@ describe("formationsRoutes", () => {
 
   it("Vérifie qu'on retourne une 401 sans apiKey", async () => {
     const { httpClient } = await startServer();
-    mockApi("0751234J", "2018_2019");
 
     const response = await httpClient.get(`/api/inserjeunes/formations`);
 
@@ -268,7 +212,6 @@ describe("formationsRoutes", () => {
 
   it("Vérifie qu'on peut passer l'apiKey en paramètre", async () => {
     const { httpClient } = await startServer();
-    mockApi("0751234J", "2018_2019");
 
     const response = await httpClient.get(`/api/inserjeunes/formations?apiKey=${config.inserJeunes.api.key}`);
 

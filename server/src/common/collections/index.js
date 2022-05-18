@@ -16,4 +16,9 @@ module.exports = {
    * @returns {FormationsStatsCollection}
    */
   formationsStats: () => dbCollection("formationsStats"),
+  /**
+   * @typedef {import("mongodb").Collection<import("./certificationsStats").CertificationsStats>} CertificationsStatsCollection
+   * @returns {CertificationsStatsCollection}
+   */
+  certificationsStats: () => dbCollection("certificationsStats"),
 };

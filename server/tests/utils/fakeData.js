@@ -1,5 +1,12 @@
+// eslint-disable-next-line node/no-unpublished-require
+const { random, helpers } = require("@faker-js/faker").faker;
 const { merge } = require("lodash");
 const { dbCollection } = require("../../src/common/mongodb");
+const { createUAI } = require("../../src/common/utils/validationUtils");
+
+function randomStats() {
+  return parseInt(random.numeric(2));
+}
 
 module.exports = {
   insertFormationsStats(custom = {}) {
@@ -7,18 +14,18 @@ module.exports = {
       merge(
         {},
         {
-          uai: "0751234J",
-          code_formation: "12345678",
+          uai: createUAI(helpers.replaceSymbols("075####")),
+          code_formation: helpers.replaceSymbols("########"),
           millesime: "2018_2019",
           filiere: "apprentissage",
-          nb_annee_term: 46,
-          nb_en_emploi_12_mois: 12,
-          nb_en_emploi_6_mois: 10,
-          nb_poursuite_etudes: 14,
-          nb_sortant: 32,
-          taux_emploi_12_mois: 38,
-          taux_emploi_6_mois: 31,
-          taux_poursuite_etudes: 30,
+          nb_annee_term: randomStats(),
+          nb_en_emploi_12_mois: randomStats(),
+          nb_en_emploi_6_mois: randomStats(),
+          nb_poursuite_etudes: randomStats(),
+          nb_sortant: randomStats(),
+          taux_emploi_12_mois: randomStats(),
+          taux_emploi_6_mois: randomStats(),
+          taux_poursuite_etudes: randomStats(),
           _meta: {
             date_import: new Date(),
           },
@@ -33,9 +40,16 @@ module.exports = {
         {},
         {
           millesime: "2020",
-          code_formation: "12345",
+          code_formation: helpers.replaceSymbols("########"),
           filiere: "apprentissage",
-          taux_emploi_6_mois: 31,
+          nb_annee_term: randomStats(),
+          nb_poursuite_etudes: randomStats(),
+          nb_en_emploi_12_mois: randomStats(),
+          nb_en_emploi_6_mois: randomStats(),
+          taux_poursuite_etudes: randomStats(),
+          taux_emploi_12_mois: randomStats(),
+          taux_emploi_6_mois: randomStats(),
+          taux_rupture_contrats: randomStats(),
         },
         custom
       )
