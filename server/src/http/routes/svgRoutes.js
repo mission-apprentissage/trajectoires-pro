@@ -5,10 +5,10 @@ const tryCatch = require("../middlewares/tryCatchMiddleware");
 const ejs = require("ejs");
 const path = require("path");
 const Joi = require("joi");
-const { dbCollection } = require("../../common/mongodb");
 const { validate } = require("../utils/validators");
 const { getRateLevel } = require("../../common/rateLevels");
 const { formatMillesime } = require("../utils/formatters");
+const { formationsStats, inserJeunesNationals } = require("../../common/collections");
 
 /**
  * @typedef {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number, filiere?:"apprentissage" | "pro", diplome?:string}} InserJeunesData
@@ -115,10 +115,7 @@ module.exports = () => {
 
       const { direction = "vertical", theme = "dsfr" } = query;
 
-      /**
-       * @type {import("../../common/collections/formationsStats").FormationsStats}
-       */
-      const stats = await dbCollection("formationsStats").findOne(
+      const stats = await formationsStats().findOne(
         {
           uai,
           code_formation,
@@ -162,10 +159,7 @@ module.exports = () => {
 
       const { direction = "vertical", theme = "dsfr" } = query;
 
-      /**
-       * @type {import("../../common/collections/inserJeunesNationals").InserJeunesNationals}
-       */
-      const inserJeunesData = await dbCollection("inserJeunesNationals").findOne(
+      const inserJeunesData = await inserJeunesNationals().findOne(
         {
           code_formation,
           millesime: formatMillesime(millesime),
