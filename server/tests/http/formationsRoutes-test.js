@@ -1,7 +1,7 @@
-const assert = require("assert");
-const config = require("../../src/config");
-const { startServer } = require("../utils/testUtils");
-const { insertFormationsStats } = require("../utils/fakeData");
+import assert from "assert";
+import config from "../../src/config.js";
+import { startServer } from "../utils/testUtils.js";
+import { insertFormationsStats } from "../utils/fakeData.js";
 
 describe("formationsRoutes", () => {
   function getAuthHeaders() {

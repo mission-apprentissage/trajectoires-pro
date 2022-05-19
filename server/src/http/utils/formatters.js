@@ -6,8 +6,6 @@
  * @param {string} millesime
  * @returns {string}
  */
-const formatMillesime = (millesime = "") => millesime.split(/-|_/).sort().join("_");
-
-module.exports = {
-  formatMillesime,
-};
+export function formatMillesime(millesime = "") {
+  return millesime.split(/-|_/).sort().join("_");
+}

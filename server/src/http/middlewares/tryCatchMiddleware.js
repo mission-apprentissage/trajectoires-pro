@@ -3,7 +3,7 @@
 /**
  * @type  {import("../types").AsyncTryCatchHandler}
  */
-const asyncTryCatchHandler = (callback) => {
+export function tryCatch(callback) {
   return async (req, res, next) => {
     try {
       await callback(req, res, next);
@@ -12,6 +12,4 @@ const asyncTryCatchHandler = (callback) => {
       return next(e);
     }
   };
-};
-
-module.exports = asyncTryCatchHandler;
+}

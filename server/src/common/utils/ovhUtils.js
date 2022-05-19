@@ -1,9 +1,9 @@
 // eslint-disable-next-line node/no-extraneous-require
-const axios = require("axios");
-const config = require("../../config");
-const { fetchStream } = require("./httpUtils");
+import axios from "axios";
+import config from "../../config.js";
+import { fetchStream } from "./httpUtils.js";
 
-async function authenticate(uri) {
+export async function authenticate(uri) {
   let regExp = new RegExp(/^(https:\/\/)(.+):(.+):(.+)@(.*)$/);
 
   if (!regExp.test(uri)) {
@@ -36,7 +36,7 @@ async function authenticate(uri) {
   return { baseUrl, token };
 }
 
-async function requestObjectAccess(path, options = {}) {
+export async function requestObjectAccess(path, options = {}) {
   let storage = options.storage || config.ovh.storage.storageName;
   let { baseUrl, token } = await authenticate(config.ovh.storage.uri);
 
@@ -46,15 +46,13 @@ async function requestObjectAccess(path, options = {}) {
   };
 }
 
-module.exports = {
-  getFromStorage: async (path, options = {}) => {
-    let { url, token } = await requestObjectAccess(path, options);
-    return fetchStream(url, {
-      method: "GET",
-      headers: {
-        "X-Auth-Token": token,
-        Accept: "application/json",
-      },
-    });
-  },
-};
+export async function getFromStorage(path, options = {}) {
+  let { url, token } = await requestObjectAccess(path, options);
+  return fetchStream(url, {
+    method: "GET",
+    headers: {
+      "X-Auth-Token": token,
+      Accept: "application/json",
+    },
+  });
+}

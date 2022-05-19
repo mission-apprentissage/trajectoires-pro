@@ -1,8 +1,6 @@
 const util = require("util");
-// eslint-disable-next-line node/no-unpublished-require
-const Mocha = require("mocha");
-// eslint-disable-next-line node/no-unpublished-require
-const chalk = require("chalk");
+const Mocha = require("mocha"); // eslint-disable-line node/no-unpublished-require
+const chalk = require("chalk"); // eslint-disable-line node/no-unpublished-require
 const { Base, Spec } = Mocha.reporters;
 const { inherits } = require("util");
 const prettyMilliseconds = require("pretty-ms"); // eslint-disable-line node/no-unpublished-require

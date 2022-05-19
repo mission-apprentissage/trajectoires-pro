@@ -2540,6 +2540,11 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash-es@4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+
 lodash.flattendeep@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz#fb030917f86a3134e5bc9bec0d69e0013ddfedb2"
@@ -2550,7 +2555,7 @@ lodash.set@^4.3.2:
   resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
   integrity sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=
 
-lodash@4.17.21, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21:
+lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -3002,10 +3007,10 @@ object-inspect@^1.12.0, object-inspect@^1.9.0:
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.12.0.tgz#6e2c120e868fd1fd18cb4f18c31741d0d6e776f0"
   integrity sha512-Ho2z80bVIvJloH+YzRmpZVQe87+qASmBUKZDWgx9cu+KDrX2ZDH/3tMy+gXbZETVGs2M8YdxObOh7XAtim9Y0g==
 
-oleoduc@0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/oleoduc/-/oleoduc-0.6.3.tgz#fdce101b86e6547a8f9127cbfe48344ee8351cc1"
-  integrity sha512-sues4AIq68WRmSCvM+1qvPXHg/4Q+PCO2TVDMz6Cjd8sAbiK3bzAI8mxhGPyvY7+gt+k1bVlZ+YJXy4OSd93Fw==
+oleoduc@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/oleoduc/-/oleoduc-0.7.0.tgz#1b55f98126297dd6a30dac691c60bb10403f2198"
+  integrity sha512-PL2tbPkwptK5KOKZVq58cmbRTnH0kkuY2DPqr+zt/CIJeMM7AGDAefx5thAjUGeI/rvXm0/BURhyM3XRVqyLNA==
   dependencies:
     cyclist "1.0.1"
     parallel-transform "1.2.0"

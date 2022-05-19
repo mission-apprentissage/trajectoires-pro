@@ -4,7 +4,7 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the collection schema file,
  * To regenerate this file run $> yarn doc
  */
-const { ObjectId } = require("mongodb");
+import { ObjectId } from "mongodb";
 
 export interface Logs {
   _id?: ObjectId;

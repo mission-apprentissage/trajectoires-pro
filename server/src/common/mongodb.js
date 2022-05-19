@@ -1,18 +1,28 @@
-const { MongoClient } = require("mongodb");
-const config = require("../config");
-const collections = require("./collections/schemas");
-const logger = require("./logger").child({ context: "db" });
-const { writeData } = require("oleoduc");
+import { MongoClient } from "mongodb";
+import config from "../config.js";
+import schemas from "./collections/schemas.js";
+import bunyan from "./logger.js";
+import { writeData } from "oleoduc";
+
+const logger = bunyan.child({ context: "db" });
 
 let clientHolder;
-
 function ensureInitialization() {
   if (!clientHolder) {
     throw new Error("Database connection does not exist. Please call connectToMongodb before.");
   }
 }
 
-async function connectToMongodb(uri = config.mongodb.uri) {
+function sendLogsToMongodb() {
+  logger.addStream({
+    name: "mongodb",
+    type: "raw",
+    level: "info",
+    stream: writeData((data) => dbCollection("logs").insertOne(data)),
+  });
+}
+
+export async function connectToMongodb(uri = config.mongodb.uri) {
   let client = await new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -28,65 +38,55 @@ async function connectToMongodb(uri = config.mongodb.uri) {
   return client;
 }
 
-function sendLogsToMongodb() {
-  logger.addStream({
-    name: "mongodb",
-    type: "raw",
-    level: "info",
-    stream: writeData((data) => dbCollection("logs").insertOne(data)),
-  });
-}
-
-function closeMongodbConnection() {
+export function closeMongodbConnection() {
   ensureInitialization();
   return clientHolder.close();
 }
 
-function getDatabase() {
+export function getDatabase() {
   ensureInitialization();
   return clientHolder.db();
 }
 
-function dbCollection(name) {
+export function dbCollection(name) {
   ensureInitialization();
   return clientHolder.db().collection(name);
 }
 
-async function createCollectionIfNeeded(collection) {
+export async function createCollectionIfNeeded(name) {
   let db = getDatabase();
   let collections = await db.listCollections().toArray();
 
-  if (!collections.find((c) => c.name === collection.name)) {
-    await db.createCollection(collection.name).catch(() => {});
+  if (!collections.find((c) => c.name === name)) {
+    await db.createCollection(name).catch(() => {});
   }
 }
 
-function clearCollection(name) {
+export function clearCollection(name) {
   logger.warn(`Suppression des données de la collection ${name}...`);
   return dbCollection(name)
     .deleteMany({})
     .then((res) => res.deletedCount);
 }
 
-async function configureIndexes(options = {}) {
+export async function configureIndexes(options = {}) {
   await ensureInitialization();
   await Promise.all(
-    Object.values(collections).map(async (collection) => {
+    Object.values(schemas).map(async ({ name, indexes }) => {
       let shouldDropIndexes = options.dropIndexes || false;
-      let dbCol = dbCollection(collection.name);
+      let dbCol = dbCollection(name);
 
-      logger.debug(`Configuring indexes for collection ${collection.name} (drop:${shouldDropIndexes})...`);
+      logger.debug(`Configuring indexes for collection ${name} (drop:${shouldDropIndexes})...`);
       if (shouldDropIndexes) {
         await dbCol.dropIndexes({ background: false });
       }
 
-      if (!collection.indexes) {
+      if (!indexes) {
         return;
       }
 
-      let indexes = collection.indexes();
       await Promise.all(
-        indexes.map(([index, options]) => {
+        indexes().map(([index, options]) => {
           return dbCol.createIndex(index, options);
         })
       );
@@ -94,36 +94,26 @@ async function configureIndexes(options = {}) {
   );
 }
 
-async function configureValidation() {
+export async function configureValidation() {
   await ensureInitialization();
   await Promise.all(
-    Object.values(collections).map(async (collection) => {
-      await createCollectionIfNeeded(collection);
+    Object.values(schemas).map(async ({ name, schema }) => {
+      await createCollectionIfNeeded(name);
 
-      if (!collection.schema) {
+      if (!schema) {
         return;
       }
 
-      logger.debug(`Configuring validation for collection ${collection.name}...`);
+      logger.debug(`Configuring validation for collection ${name}...`);
       let db = getDatabase();
       await db.command({
-        collMod: collection.name,
+        collMod: name,
         validationLevel: "strict",
         validationAction: "error",
         validator: {
-          $jsonSchema: collection.schema(),
+          $jsonSchema: schema(),
         },
       });
     })
   );
 }
-
-module.exports = {
-  connectToMongodb,
-  configureIndexes,
-  configureValidation,
-  getDatabase,
-  dbCollection,
-  closeMongodbConnection,
-  clearCollection,
-};

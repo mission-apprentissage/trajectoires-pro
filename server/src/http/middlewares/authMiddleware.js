@@ -1,7 +1,7 @@
-const config = require("../../config");
-const passport = require("passport");
-const { HeaderAPIKeyStrategy } = require("passport-headerapikey");
-var compose = require("compose-middleware").compose;
+import config from "../../config.js";
+import passport from "passport";
+import { HeaderAPIKeyStrategy } from "passport-headerapikey";
+import { compose } from "compose-middleware";
 
 passport.use(
   "api-key",
@@ -14,7 +14,7 @@ passport.use(
   })
 );
 
-function checkApiKey() {
+export function checkApiKey() {
   return compose((req, res, next) => {
     if (req.query.apiKey) {
       req.headers["x-api-key"] = req.query.apiKey;
@@ -23,7 +23,3 @@ function checkApiKey() {
     next();
   }, passport.authenticate("api-key", { session: false, failWithError: true, assignProperty: "user" }));
 }
-
-module.exports = {
-  checkApiKey,
-};

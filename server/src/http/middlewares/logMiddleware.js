@@ -1,7 +1,7 @@
-const omitBy = require("lodash").omitBy;
-const logger = require("../../common/logger");
+import { omitBy } from "lodash-es";
+import logger from "../../common/logger.js";
 
-module.exports = () => {
+export function logMiddleware() {
   return (req, res, next) => {
     const relativeUrl = (req.baseUrl || "") + (req.url || "");
     const startTime = new Date().getTime();
@@ -61,4 +61,4 @@ module.exports = () => {
 
     next();
   };
-};
+}

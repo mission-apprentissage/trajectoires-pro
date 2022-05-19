@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 const customJoi = Joi.extend((joi) => ({
   type: "arrayOf",
@@ -9,30 +9,23 @@ const customJoi = Joi.extend((joi) => ({
   },
 }));
 
-function arrayOf(itemSchema = Joi.string()) {
+export function arrayOf(itemSchema = Joi.string()) {
   return customJoi.arrayOf().items(itemSchema).single();
 }
 
-function exports() {
+export function exports() {
   return {
     ext: Joi.string().valid("json", "csv").default("json"),
   };
 }
 
-function pagination() {
+export function pagination() {
   return {
     items_par_page: Joi.number().default(10),
     page: Joi.number().default(1),
   };
 }
 
-function validate(obj, validators) {
+export function validate(obj, validators) {
   return Joi.object(validators).validateAsync(obj, { abortEarly: false });
 }
-
-module.exports = {
-  arrayOf,
-  exports,
-  pagination,
-  validate,
-};

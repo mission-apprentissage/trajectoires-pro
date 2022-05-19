@@ -1,10 +1,10 @@
-const assert = require("assert");
-const importFormationsStats = require("../../src/jobs/importFormationsStats");
-const { createStream } = require("../utils/testUtils");
-const { dbCollection } = require("../../src/common/mongodb");
-const { mockInserJeunesApi } = require("../utils/apiMocks");
-const { insertFormationsStats } = require("../utils/fakeData");
-const { omit } = require("lodash");
+import assert from "assert";
+import { omit } from "lodash-es";
+import { importFormationsStats } from "../../src/jobs/importFormationsStats.js";
+import { createStream } from "../utils/testUtils.js";
+import { dbCollection } from "../../src/common/mongodb.js";
+import { mockInserJeunesApi } from "../utils/apiMocks.js";
+import { insertFormationsStats } from "../utils/fakeData.js";
 
 describe("importFormationsStats", () => {
   function mockApi(uai, millesime, response) {

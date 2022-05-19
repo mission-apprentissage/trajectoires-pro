@@ -1,5 +1,5 @@
-const { isEmpty } = require("lodash");
-const luhn = require("fast-luhn");
+import { isEmpty } from "lodash-es";
+import luhn from "fast-luhn";
 const ALPHABET_23_LETTERS = [
   "a",
   "b",
@@ -33,26 +33,21 @@ function computeChecksum(numbers) {
 
   return ALPHABET_23_LETTERS[numbers % 23];
 }
-function createUAI(code) {
+
+export function createUAI(code) {
   return `${code}${computeChecksum(code)}`.toUpperCase();
 }
 
-/**
- * https://blog.juliendelmas.fr/?qu-est-ce-que-le-code-rne-ou-uai
- */
-module.exports = {
-  createUAI,
-  isUAIValid(code) {
-    if (!code || code.length !== 8) {
-      return false;
-    }
+export function isUAIValid(code) {
+  if (!code || code.length !== 8) {
+    return false;
+  }
 
-    let numbers = code.substring(0, 7);
-    let checksum = code.substring(7, 8).toLowerCase();
+  let numbers = code.substring(0, 7);
+  let checksum = code.substring(7, 8).toLowerCase();
 
-    return checksum === computeChecksum(numbers);
-  },
-  isSiretValid(siret) {
-    return !isEmpty(siret) && siret.length === 14 && luhn(siret);
-  },
-};
+  return checksum === computeChecksum(numbers);
+}
+export function isSiretValid(siret) {
+  return !isEmpty(siret) && siret.length === 14 && luhn(siret);
+}

@@ -1,17 +1,17 @@
-const express = require("express");
-const tryCatch = require("../middlewares/tryCatchMiddleware");
-const Joi = require("joi");
-const { compose, transformIntoJSON, transformIntoCSV } = require("oleoduc");
-const { arrayOf, validate } = require("../utils/validators");
-const validators = require("../utils/validators");
-const { checkApiKey } = require("../middlewares/authMiddleware");
-const { addCsvHeaders, addJsonHeaders } = require("../utils/responseUtils");
-const { findAndPaginate } = require("../../common/utils/dbUtils");
-const { formatMillesime } = require("../utils/formatters");
-const { formationsStats } = require("../../common/collections");
-const Boom = require("boom");
+import express from "express";
+import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
+import Joi from "joi";
+import { arrayOf, validate } from "../utils/validators.js";
+import * as validators from "../utils/validators.js";
+import { checkApiKey } from "../middlewares/authMiddleware.js";
+import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
+import { findAndPaginate } from "../../common/utils/dbUtils.js";
+import { formatMillesime } from "../utils/formatters.js";
+import { formationsStats } from "../../common/collections/index.js";
+import Boom from "boom";
+import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
 
-module.exports = () => {
+export default () => {
   const router = express.Router();
 
   router.get(

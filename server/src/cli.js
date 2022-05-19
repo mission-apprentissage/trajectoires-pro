@@ -1,11 +1,11 @@
-require("dotenv").config();
-const { program: cli } = require("commander");
-const runScript = require("./common/runScript");
-const importFormationsStats = require("./jobs/importFormationsStats");
-const importCertificationsStats = require("./jobs/importCertificationsStats");
-const { createReadStream } = require("fs");
-const { promiseAllProps } = require("./common/utils/asyncUtils");
-const InserJeunes = require("./common/InserJeunes");
+import "dotenv/config";
+import { program as cli } from "commander";
+import { createReadStream } from "fs";
+import { runScript } from "./common/runScript.js";
+import { importFormationsStats } from "./jobs/importFormationsStats.js";
+import { importCertificationsStats } from "./jobs/importCertificationsStats.js";
+import { promiseAllProps } from "./common/utils/asyncUtils.js";
+import { InserJeunes } from "./common/InserJeunes.js";
 
 function asArray(v) {
   return v.split(",");

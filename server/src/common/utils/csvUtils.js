@@ -1,7 +1,7 @@
-const { parse } = require("csv-parse");
-const { pickBy, isEmpty } = require("lodash");
+import { parse } from "csv-parse";
+import { pickBy, isEmpty } from "lodash-es";
 
-function parseCsv(options = {}) {
+export function parseCsv(options = {}) {
   return parse({
     trim: true,
     delimiter: ";",
@@ -14,7 +14,3 @@ function parseCsv(options = {}) {
     ...options,
   });
 }
-
-module.exports = {
-  parseCsv,
-};

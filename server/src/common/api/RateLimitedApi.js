@@ -1,6 +1,8 @@
-const logger = require("../logger").child({ context: "api" });
-const RateLimiter = require("./RateLimiter");
-const ApiError = require("./ApiError");
+import { RateLimiter } from "./RateLimiter.js";
+import { ApiError } from "./ApiError.js";
+import bunyan from "../logger.js";
+
+const logger = bunyan.child({ context: "api" });
 
 class RateLimitedApi {
   constructor(name, options = {}) {
@@ -27,4 +29,4 @@ class RateLimitedApi {
   }
 }
 
-module.exports = RateLimitedApi;
+export { RateLimitedApi };

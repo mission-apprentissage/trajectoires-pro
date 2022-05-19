@@ -1,9 +1,9 @@
-const assert = require("assert");
-const importCertificationsStats = require("../../src/jobs/importCertificationsStats");
-const { dbCollection } = require("../../src/common/mongodb");
-const { mockInserJeunesApi } = require("../utils/apiMocks");
-const { insertCertificationsStats } = require("../utils/fakeData");
-const { omit } = require("lodash");
+import assert from "assert";
+import { importCertificationsStats } from "../../src/jobs/importCertificationsStats.js";
+import { dbCollection } from "../../src/common/mongodb.js";
+import { mockInserJeunesApi } from "../utils/apiMocks.js";
+import { insertCertificationsStats } from "../utils/fakeData.js";
+import { omit } from "lodash-es";
 
 describe("importCertificationsStats", () => {
   function mockApi(millesime, filiere, response) {

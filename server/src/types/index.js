@@ -1,3 +1,3 @@
-const { generateTypes } = require("./generateTypes");
+import { generateTypes } from "./generateTypes.js";
 
 generateTypes();

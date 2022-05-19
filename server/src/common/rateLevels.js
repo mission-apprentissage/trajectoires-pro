@@ -28,7 +28,7 @@ const RATE_LEVELS = {
  * @param {"apprentissage"|"pro"} filiere
  * @param {string} diplome
  */
-const getRateLevel = (key, value, filiere, diplome) => {
+export function getRateLevel(key, value, filiere, diplome) {
   const levels =
     RATE_LEVELS[key]?.[filiere]?.[diplome] ??
     RATE_LEVELS[key]?.[filiere]?.default ??
@@ -36,8 +36,4 @@ const getRateLevel = (key, value, filiere, diplome) => {
     RATE_LEVELS.default;
 
   return value < levels.success ? (value < levels.warning ? "danger" : "warning") : "success";
-};
-
-module.exports = {
-  getRateLevel,
-};
+}

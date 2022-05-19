@@ -1,8 +1,10 @@
-const RateLimitedApi = require("./RateLimitedApi");
-const config = require("../../config");
-const { fetchStream, fetchJson } = require("../utils/httpUtils");
-const { compose, transformData, accumulateData } = require("oleoduc");
-const logger = require("../logger").child({ context: "api/inserjeunes" });
+import { RateLimitedApi } from "./RateLimitedApi.js";
+import config from "../../config.js";
+import { fetchStream, fetchJson } from "../utils/httpUtils.js";
+import { compose, transformData, accumulateData } from "oleoduc";
+import bunyan from "../logger.js";
+
+const logger = bunyan.child({ context: "api/inserjeunes" });
 
 function fixJsonResponse() {
   return compose(
@@ -116,4 +118,4 @@ class InserJeunesApi extends RateLimitedApi {
   }
 }
 
-module.exports = InserJeunesApi;
+export { InserJeunesApi };

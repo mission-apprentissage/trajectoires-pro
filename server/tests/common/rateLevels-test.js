@@ -1,5 +1,5 @@
-const assert = require("assert");
-const { getRateLevel } = require("../../src/common/rateLevels");
+import assert from "assert";
+import { getRateLevel } from "../../src/common/rateLevels.js";
 
 describe("getRateLevel", () => {
   it("should get default rate level if key is not listed", () => {

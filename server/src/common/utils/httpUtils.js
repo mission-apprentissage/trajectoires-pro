@@ -1,6 +1,8 @@
-const axios = require("axios");
-const { compose, transformData } = require("oleoduc");
-const logger = require("../logger").child({ context: "http" });
+import axios from "axios";
+import bunyan from "../logger.js";
+import { compose, transformData } from "oleoduc";
+
+const logger = bunyan.child({ context: "http" });
 
 async function _fetch(url, options = {}) {
   let { method = "GET", ...rest } = options;
@@ -26,7 +28,4 @@ async function fetchJson(url, options = {}) {
   return response.data;
 }
 
-module.exports = {
-  fetchStream,
-  fetchJson,
-};
+export { fetchJson, fetchStream };

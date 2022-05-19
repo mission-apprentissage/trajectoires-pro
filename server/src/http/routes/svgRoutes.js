@@ -1,19 +1,21 @@
 // @ts-check
-const fs = require("fs");
-const express = require("express");
-const tryCatch = require("../middlewares/tryCatchMiddleware");
-const ejs = require("ejs");
-const path = require("path");
-const Joi = require("joi");
-const { validate } = require("../utils/validators");
-const { getRateLevel } = require("../../common/rateLevels");
-const { formatMillesime } = require("../utils/formatters");
-const { formationsStats, certificationsStats } = require("../../common/collections");
+import fs from "fs";
+import express from "express";
+import ejs from "ejs";
+import path from "path";
+import Joi from "joi";
+import { validate } from "../utils/validators.js";
+import { getRateLevel } from "../../common/rateLevels.js";
+import { formatMillesime } from "../utils/formatters.js";
+import { formationsStats, certificationsStats } from "../../common/collections/index.js";
+import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
+import { getDirname } from "../../common/esmUtils.js";
+
+const __dirname = getDirname(import.meta.url);
 
 /**
  * @typedef {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number, filiere?:"apprentissage" | "pro", diplome?:string}} InserJeunesData
  */
-
 const svgTemplates = {
   dsfr: {
     // local : action de formation (formation donnée dans un établissement donné)
@@ -96,7 +98,7 @@ const getRates = ({ taux_emploi_6_mois, taux_poursuite_etudes, filiere, diplome 
 /**
  * Route module to render SVG images
  */
-module.exports = () => {
+export default () => {
   const router = express.Router();
 
   /**
