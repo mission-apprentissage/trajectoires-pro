@@ -6,9 +6,8 @@
  */
 const { ObjectId } = require("mongodb");
 
-export interface FormationsStats {
+export interface CertificationsStats {
   _id?: ObjectId;
-  uai: string;
   millesime: string;
   code_formation: string;
   filiere: "apprentissage" | "pro";
@@ -20,6 +19,7 @@ export interface FormationsStats {
   taux_poursuite_etudes?: number;
   taux_emploi_12_mois?: number;
   taux_emploi_6_mois?: number;
+  taux_rupture_contrats?: number;
   _meta?: {
     date_import: Date;
   };

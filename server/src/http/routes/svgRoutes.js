@@ -8,7 +8,7 @@ const Joi = require("joi");
 const { validate } = require("../utils/validators");
 const { getRateLevel } = require("../../common/rateLevels");
 const { formatMillesime } = require("../utils/formatters");
-const { formationsStats, inserJeunesNationals } = require("../../common/collections");
+const { formationsStats, certificationsStats } = require("../../common/collections");
 
 /**
  * @typedef {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number, filiere?:"apprentissage" | "pro", diplome?:string}} InserJeunesData
@@ -159,31 +159,28 @@ module.exports = () => {
 
       const { direction = "vertical", theme = "dsfr" } = query;
 
-      const inserJeunesData = await inserJeunesNationals().findOne(
+      /**
+       * @type {import("../../common/collections/inserJeunesNationals").InserJeunesNationals}
+       */
+      const stats = await certificationsStats().findOne(
         {
           code_formation,
-          millesime: formatMillesime(millesime),
+          millesime,
         },
         {
           projection: {
-            taux_emploi_6_mois_apres_la_sortie: 1,
-            taux_de_poursuite_etudes: 1,
-            type_de_diplome: 1,
-            type: 1,
+            taux_emploi_6_mois: 1,
+            taux_poursuite_etudes: 1,
+            filiere: 1,
           },
         }
       );
 
-      if (!inserJeunesData) {
+      if (!stats) {
         return res.status(404).send("Code formation et/ou millésime invalide");
       }
 
-      const rates = getRates({
-        taux_emploi_6_mois: inserJeunesData.taux_emploi_6_mois_apres_la_sortie,
-        taux_poursuite_etudes: inserJeunesData.taux_de_poursuite_etudes,
-        filiere: inserJeunesData.type,
-        diplome: inserJeunesData.type_de_diplome,
-      });
+      const rates = getRates(stats);
       if (rates.length === 0) {
         return res.status(404).send("Donnée non disponible");
       }

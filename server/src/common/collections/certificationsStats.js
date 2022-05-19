@@ -24,7 +24,7 @@ module.exports = {
           { required: ["date_import"] }
         ),
       },
-      { additionalProperties: true }
+      { required: ["millesime", "code_formation", "filiere"], additionalProperties: false }
     );
   },
   indexes: () => {

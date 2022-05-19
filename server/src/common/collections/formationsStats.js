@@ -24,7 +24,7 @@ module.exports = {
           { required: ["date_import"] }
         ),
       },
-      { additionalProperties: false }
+      { required: ["uai", "millesime", "code_formation", "filiere"], additionalProperties: false }
     );
   },
   indexes: () => {

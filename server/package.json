@@ -57,6 +57,7 @@
     "trailingComma": "es5"
   },
   "devDependencies": {
+    "@faker-js/faker": "6.3.1",
     "axiosist": "0.10.0",
     "chalk": "4.1.2",
     "eslint": "7.1.0",
