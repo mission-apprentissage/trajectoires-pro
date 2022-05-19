@@ -1,3 +1,4 @@
+// eslint-disable-next-line node/no-unpublished-require
 const { random, helpers } = require("@faker-js/faker").faker;
 const { merge } = require("lodash");
 const { dbCollection } = require("../../src/common/mongodb");
