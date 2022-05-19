@@ -8,6 +8,6 @@ describe("healthcheckRoutes", () => {
     const response = await httpClient.get("/api/doc/");
 
     assert.strictEqual(response.status, 200);
-    assert.ok(response.data.indexOf("swagger-ui.css") !== -1);
+    assert.ok(response.data.includes("swagger-ui.css"));
   });
 });
