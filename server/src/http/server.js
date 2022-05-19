@@ -11,6 +11,7 @@ const { dbCollection } = require("../common/mongodb");
 const svg = require("./routes/svgRoutes");
 const formationsRoutes = require("./routes/formationsRoutes");
 const certificationsRoutes = require("./routes/certificationsRoutes");
+const swaggerRoutes = require("./routes/swaggerRoutes");
 const mongoSanitize = require("express-mongo-sanitize");
 
 module.exports = async () => {
@@ -23,6 +24,7 @@ module.exports = async () => {
   app.use(svg());
   app.use(formationsRoutes());
   app.use(certificationsRoutes());
+  app.use(swaggerRoutes());
 
   app.get(
     "/api",
