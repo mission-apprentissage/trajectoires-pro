@@ -3,7 +3,7 @@ info:
   title: Trajectoires pro
   description: Documentation de l'API publique de Trajectoires pro
   license:
-    name: GNU AFFERO GENERAL PUBLIC LICENSE 3
+    name: MIT License
     url: https://raw.githubusercontent.com/mission-apprentissage/referentiel/main/LICENCE
   version: 1.0.0
 
