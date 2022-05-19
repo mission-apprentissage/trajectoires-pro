@@ -4,7 +4,7 @@ info:
   description: Documentation de l'API publique de Trajectoires pro
   license:
     name: MIT License
-    url: https://raw.githubusercontent.com/mission-apprentissage/referentiel/main/LICENCE
+    url: https://raw.githubusercontent.com/mission-apprentissage/trajectoires-pro/main/LICENSE
   version: 1.0.0
 
 paths:
