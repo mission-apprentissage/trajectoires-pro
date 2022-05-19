@@ -8,10 +8,6 @@
   "plugins": [
     "mocha"
   ],
-  "rules": {
-    "mocha/no-skipped-tests": "error",
-    "mocha/no-exclusive-tests": "error"
-  },
   "env": {
     "node": true,
     "es6": true,
@@ -19,5 +15,17 @@
   },
   "parserOptions": {
     "ecmaVersion": 2020
-  }
+  },
+  "rules": {
+    "mocha/no-skipped-tests": "error",
+    "mocha/no-exclusive-tests": "error"
+  },
+  "overrides": [
+    {
+      "files": "tests/**/*.js",
+      "rules": {
+        "node/no-unpublished-require": 0
+      }
+    }
+  ]
 }
