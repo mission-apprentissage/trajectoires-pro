@@ -54,6 +54,24 @@ paths:
           $ref: "#/components/responses/404"
 
 
+  /api/inserjeunes/certifications/code_formation/:code_formation/millesime/:millesime:
+    get:
+      description: Obtenir une certification et ses statistiques
+      tags:
+        - Publique
+      parameters:
+        - $ref: "#/components/parameters/code_formation"
+        - $ref: "#/components/parameters/millesime"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
   /api/inserjeunes/v1/formations:
     get:
       description: Rechercher des formations et leurs statistiques
@@ -349,6 +367,13 @@ components:
         '*/*':
           schema:
             $ref: '#/components/schemas/Formation'
+
+    CertificationResponse:
+      description: Une certification avec ses statistiques
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/Certification'
 
 
   securitySchemes:

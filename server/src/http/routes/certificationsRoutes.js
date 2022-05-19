@@ -8,6 +8,8 @@ const { checkApiKey } = require("../middlewares/authMiddleware");
 const { addCsvHeaders, addJsonHeaders } = require("../utils/responseUtils");
 const { findAndPaginate } = require("../../common/utils/dbUtils");
 const { formatMillesime } = require("../utils/formatters");
+const { certificationsStats } = require("../../common/collections");
+const Boom = require("boom");
 
 module.exports = () => {
   const router = express.Router();
@@ -67,7 +69,31 @@ module.exports = () => {
         });
       }
 
-      compose(find.stream(), extensionTransformer, res);
+      return compose(find.stream(), extensionTransformer, res);
+    })
+  );
+
+  router.get(
+    "/api/inserjeunes/certifications/code_formation/:code_formation/millesime/:millesime",
+    tryCatch(async (req, res) => {
+      const { code_formation, millesime } = await validate(
+        { ...req.params, ...req.query },
+        {
+          code_formation: Joi.string().required(),
+          millesime: Joi.string().required(),
+        }
+      );
+
+      let found = await certificationsStats().findOne(
+        { code_formation, millesime },
+        { projection: { _id: 0, _meta: 0 } }
+      );
+
+      if (!found) {
+        throw Boom.notFound("Code formation et/ou millésime invalide");
+      }
+
+      return res.json(found);
     })
   );
 

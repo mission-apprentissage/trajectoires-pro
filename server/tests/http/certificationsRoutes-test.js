@@ -198,4 +198,51 @@ describe("certificationsRoutes", () => {
 
     assert.strictEqual(response.status, 200);
   });
+
+  it("Vérifie qu'on peut obtenir une formation", async () => {
+    const { httpClient } = await startServer();
+    await insertCertificationsStats({
+      millesime: "2020",
+      code_formation: "12345678",
+      filiere: "apprentissage",
+      nb_annee_term: 1,
+      nb_poursuite_etudes: 2,
+      nb_en_emploi_12_mois: 3,
+      nb_en_emploi_6_mois: 4,
+      taux_poursuite_etudes: 5,
+      taux_emploi_12_mois: 6,
+      taux_emploi_6_mois: 7,
+      taux_rupture_contrats: 8,
+    });
+
+    const response = await httpClient.get(`/api/inserjeunes/certifications/code_formation/12345678/millesime/2020`);
+
+    assert.strictEqual(response.status, 200);
+    assert.deepStrictEqual(response.data, {
+      millesime: "2020",
+      code_formation: "12345678",
+      filiere: "apprentissage",
+      nb_annee_term: 1,
+      nb_poursuite_etudes: 2,
+      nb_en_emploi_12_mois: 3,
+      nb_en_emploi_6_mois: 4,
+      taux_poursuite_etudes: 5,
+      taux_emploi_12_mois: 6,
+      taux_emploi_6_mois: 7,
+      taux_rupture_contrats: 8,
+    });
+  });
+
+  it("Vérifie qu'on retourne une 404 si la formation est inconnue", async () => {
+    const { httpClient } = await startServer();
+
+    const response = await httpClient.get(`/api/inserjeunes/certifications/code_formation/12345678/millesime/INCONNUE`);
+
+    assert.strictEqual(response.status, 404);
+    assert.deepStrictEqual(response.data, {
+      error: "Not Found",
+      message: "Code formation et/ou millésime invalide",
+      statusCode: 404,
+    });
+  });
 });
