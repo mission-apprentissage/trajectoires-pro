@@ -17,14 +17,14 @@ describe("formationsRoutes", () => {
       code_formation: "12345678",
       millesime: "2018_2019",
       filiere: "apprentissage",
-      nb_annee_term: 46,
-      nb_en_emploi_12_mois: 12,
-      nb_en_emploi_6_mois: 10,
-      nb_poursuite_etudes: 14,
-      nb_sortant: 32,
-      taux_emploi_12_mois: 38,
-      taux_emploi_6_mois: 31,
-      taux_poursuite_etudes: 30,
+      nb_annee_term: 1,
+      nb_en_emploi_12_mois: 2,
+      nb_en_emploi_6_mois: 3,
+      nb_poursuite_etudes: 4,
+      nb_sortant: 5,
+      taux_emploi_12_mois: 6,
+      taux_emploi_6_mois: 7,
+      taux_poursuite_etudes: 8,
     });
 
     const response = await httpClient.get(`/api/inserjeunes/formations`, {
@@ -41,14 +41,14 @@ describe("formationsRoutes", () => {
           code_formation: "12345678",
           millesime: "2018_2019",
           filiere: "apprentissage",
-          nb_annee_term: 46,
-          nb_en_emploi_12_mois: 12,
-          nb_en_emploi_6_mois: 10,
-          nb_poursuite_etudes: 14,
-          nb_sortant: 32,
-          taux_emploi_12_mois: 38,
-          taux_emploi_6_mois: 31,
-          taux_poursuite_etudes: 30,
+          nb_annee_term: 1,
+          nb_en_emploi_12_mois: 2,
+          nb_en_emploi_6_mois: 3,
+          nb_poursuite_etudes: 4,
+          nb_sortant: 5,
+          taux_emploi_12_mois: 6,
+          taux_emploi_6_mois: 7,
+          taux_poursuite_etudes: 8,
         },
       ],
       pagination: {
@@ -146,14 +146,14 @@ describe("formationsRoutes", () => {
       code_formation: "12345678",
       millesime: "2018_2019",
       filiere: "apprentissage",
-      nb_annee_term: 46,
-      nb_en_emploi_12_mois: 12,
-      nb_en_emploi_6_mois: 10,
-      nb_poursuite_etudes: 14,
-      nb_sortant: 32,
-      taux_emploi_12_mois: 38,
-      taux_emploi_6_mois: 31,
-      taux_poursuite_etudes: 30,
+      nb_annee_term: 1,
+      nb_en_emploi_12_mois: 2,
+      nb_en_emploi_6_mois: 3,
+      nb_poursuite_etudes: 4,
+      nb_sortant: 5,
+      taux_emploi_12_mois: 6,
+      taux_emploi_6_mois: 7,
+      taux_poursuite_etudes: 8,
     });
 
     const response = await httpClient.get(`/api/inserjeunes/formations.csv`, {
@@ -167,7 +167,7 @@ describe("formationsRoutes", () => {
     assert.deepStrictEqual(
       response.data,
       `uai;code_formation;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
-0751234J;12345678;apprentissage;2018_2019;46;12;10;14;32;38;31;30
+0751234J;12345678;apprentissage;2018_2019;1;2;3;4;5;6;7;8
 `
     );
   });
@@ -216,5 +216,58 @@ describe("formationsRoutes", () => {
     const response = await httpClient.get(`/api/inserjeunes/formations?apiKey=${config.inserJeunes.api.key}`);
 
     assert.strictEqual(response.status, 200);
+  });
+
+  it("Vérifie qu'on peut obtenir une formation", async () => {
+    const { httpClient } = await startServer();
+    await insertFormationsStats({
+      uai: "0751234J",
+      code_formation: "12345678",
+      millesime: "2018_2019",
+      filiere: "apprentissage",
+      nb_annee_term: 1,
+      nb_en_emploi_12_mois: 2,
+      nb_en_emploi_6_mois: 3,
+      nb_poursuite_etudes: 4,
+      nb_sortant: 5,
+      taux_emploi_12_mois: 6,
+      taux_emploi_6_mois: 7,
+      taux_poursuite_etudes: 8,
+    });
+
+    const response = await httpClient.get(
+      `/api/inserjeunes/formations/uai/0751234J/code_formation/12345678/millesime/2018_2019`
+    );
+
+    assert.strictEqual(response.status, 200);
+    assert.deepStrictEqual(response.data, {
+      uai: "0751234J",
+      code_formation: "12345678",
+      millesime: "2018_2019",
+      filiere: "apprentissage",
+      nb_annee_term: 1,
+      nb_en_emploi_12_mois: 2,
+      nb_en_emploi_6_mois: 3,
+      nb_poursuite_etudes: 4,
+      nb_sortant: 5,
+      taux_emploi_12_mois: 6,
+      taux_emploi_6_mois: 7,
+      taux_poursuite_etudes: 8,
+    });
+  });
+
+  it("Vérifie qu'on retourne une 404 si la formation est inconnue", async () => {
+    const { httpClient } = await startServer();
+
+    const response = await httpClient.get(
+      `/api/inserjeunes/formations/uai/0751234J/code_formation/12345678/millesime/INCONNUE`
+    );
+
+    assert.strictEqual(response.status, 404);
+    assert.deepStrictEqual(response.data, {
+      error: "Not Found",
+      message: "UAI, code formation et/ou millésime invalide",
+      statusCode: 404,
+    });
   });
 });

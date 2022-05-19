@@ -38,13 +38,7 @@ paths:
       security:
         - ApiKeyAuth: [ ]
       parameters:
-        - name: ext
-          in: path
-          required: true
-          schema:
-            type: string
-            enum: [ "json", "csv" ]
-            default: json
+        - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/millesimes"
         - $ref: "#/components/parameters/codes_formation"
         - $ref: "#/components/parameters/page"
@@ -91,13 +85,7 @@ paths:
       security:
         - ApiKeyAuth: [ ]
       parameters:
-        - name: ext
-          in: path
-          required: true
-          schema:
-            type: string
-            enum: [ "json", "csv" ]
-            default: json
+        - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/uais"
         - $ref: "#/components/parameters/millesimes"
         - $ref: "#/components/parameters/codes_formation"
@@ -113,8 +101,28 @@ paths:
         404:
           $ref: "#/components/responses/404"
 
+  /api/inserjeunes/formations/uai/:uai/code_formation/:code_formation/millesime/:millesime:
+    get:
+      description: Obtenir une formation et ses statistiques
+      tags:
+        - Publique
+      parameters:
+        - $ref: "#/components/parameters/uai"
+        - $ref: "#/components/parameters/code_formation"
+        - $ref: "#/components/parameters/millesime"
+      responses:
+        200:
+          $ref: "#/components/responses/FormationsResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
 components:
   parameters:
+    # Query parameters
     millesimes:
       name: millesimes
       in: query
@@ -136,6 +144,7 @@ components:
         Permet de filtrer la recherche avec une ou plusieurs UAI séparées par des virgules.
       schema:
         type: string
+        pattern: '^[0-9]{7}[A-Z]{1}$'
 
     page:
       name: page
@@ -151,6 +160,35 @@ components:
       schema:
         type: integer
         default: 10
+
+    ext:
+      name: ext
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [ "json", "csv" ]
+        default: json
+
+    # Path parameters
+    uai:
+      name: uai
+      in: path
+      schema:
+        type: string
+        pattern: '^[0-9]{7}[A-Z]{1}$'
+
+    code_formation:
+      name: code_formation
+      in: path
+      schema:
+        type: string
+
+    millesime:
+      name: millesime
+      in: path
+      schema:
+        type: string
 
   schemas:
     Error:
