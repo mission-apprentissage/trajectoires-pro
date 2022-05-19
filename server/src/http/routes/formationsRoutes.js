@@ -103,7 +103,7 @@ module.exports = () => {
         throw Boom.notFound("UAI, code formation et/ou millésime invalide");
       }
 
-      res.json(found);
+      return res.json(found);
     })
   );
 
