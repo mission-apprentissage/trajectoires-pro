@@ -1,0 +1,310 @@
+openapi: 3.0.1
+info:
+  title: Trajectoires pro
+  description: Documentation de l'API publique de Trajectoires pro
+  license:
+    name: GNU AFFERO GENERAL PUBLIC LICENSE 3
+    url: https://raw.githubusercontent.com/mission-apprentissage/referentiel/main/LICENCE
+  version: 1.0.0
+
+paths:
+  /api/inserjeunes/certifications:
+    get:
+      description: Rechercher des certifications et leurs statistiques
+      tags:
+        - Publique
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/codes_formation"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationsResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/certifications.{ext}:
+    get:
+      description: Permet d'exporter des certifications et leurs statistiques
+      tags:
+        - Publique
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: ext
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [ "json", "csv" ]
+            default: json
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/codes_formation"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationsResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+
+  /api/inserjeunes/v1/formations:
+    get:
+      description: Rechercher des formations et leurs statistiques
+      tags:
+        - Publique
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/uais"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/codes_formation"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+      responses:
+        200:
+          $ref: "#/components/responses/FormationsResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/v1/formations.{ext}:
+    get:
+      description: Permet d'exporter des formations et leurs statistiques
+      tags:
+        - Publique
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: ext
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [ "json", "csv" ]
+            default: json
+        - $ref: "#/components/parameters/uais"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/codes_formation"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+      responses:
+        200:
+          $ref: "#/components/responses/FormationsResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+components:
+  parameters:
+    millesimes:
+      name: millesimes
+      in: query
+      description: Permet de filtrer la recherche avec un ou plusieurs millesimes séparés par des virgules.
+      schema:
+        type: string
+
+    codes_formation:
+      name: codes_formation
+      in: query
+      description: Permet de filtrer la recherche avec un ou plusieurs codes formations séparés par des virgules.
+      schema:
+        type: string
+
+    uais:
+      name: uais
+      in: query
+      description: |
+        Permet de filtrer la recherche avec une ou plusieurs UAI séparées par des virgules.
+      schema:
+        type: string
+
+    page:
+      name: page
+      in: query
+      description: Le numéro de la page désirée
+      schema:
+        type: integer
+
+    items_par_page:
+      name: items_par_page
+      in: query
+      description: Le nombre maximum d'éléments dans la page
+      schema:
+        type: integer
+        default: 10
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: string
+        resultats_par_page:
+          type: number
+        nombre_de_page:
+          type: number
+        total:
+          type: number
+      description: Statut de la pagination
+    Certification:
+      type: object
+      properties:
+        millesime:
+          type: string
+        code_formation:
+          type: string
+        filiere:
+          type: string
+          enum: [ "apprentissage", "pro" ]
+        nb_annee_term:
+          type: number
+        nb_poursuite_etudes:
+          type: number
+        nb_en_emploi_12_mois:
+          type: number
+        nb_en_emploi_6_mois:
+          type: number
+        nb_sortant:
+          type: number
+        taux_poursuite_etudes:
+          type: number
+        taux_emploi_12_mois:
+          type: number
+        taux_emploi_6_mois:
+          type: number
+        taux_rupture_contrats:
+          type: number
+        _meta:
+          type: object
+          required:
+            - date_import
+          properties:
+            date_import:
+              type: string
+    Formation:
+      type: object
+      properties:
+        uai:
+          type: string
+        millesime:
+          type: string
+        code_formation:
+          type: string
+        filiere:
+          type: string
+          enum: [ "apprentissage", "pro" ]
+        nb_annee_term:
+          type: number
+        nb_poursuite_etudes:
+          type: number
+        nb_en_emploi_12_mois:
+          type: number
+        nb_en_emploi_6_mois:
+          type: number
+        nb_sortant:
+          type: number
+        taux_poursuite_etudes:
+          type: number
+        taux_emploi_12_mois:
+          type: number
+        taux_emploi_6_mois:
+          type: number
+        _meta:
+          type: object
+          required:
+            - date_import
+          properties:
+            date_import:
+              type: string
+
+
+  responses:
+    400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    401:
+      description: L'api key est manquante ou invalide
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    404:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    CertificationsResponse:
+      description: La liste des certifications avec leurs statistiques
+      content:
+        '*/*':
+          schema:
+            type: object
+            properties:
+              organismes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Certification'
+              meta:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                description: Informations complémentaires
+
+    FormationsResponse:
+      description: La liste des formations avec leurs statistiques
+      content:
+        '*/*':
+          schema:
+            type: object
+            properties:
+              organismes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Formation'
+              meta:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                description: Informations complémentaires
+
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: apiKey
