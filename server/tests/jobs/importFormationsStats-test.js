@@ -222,14 +222,14 @@ describe("importFormationsStats", () => {
         .reply(200, responses.login());
 
       client
-        .get(`/france/millesime/2020/filiere/inconnue`)
+        .get(`/UAI/0751234J/millesime/2018_2019`)
         .query(() => true)
         .reply(200, "{json:");
     });
 
     let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
 
-    let count = await dbCollection("certificationsStats").countDocuments({});
+    let count = await dbCollection("formationsStats").countDocuments({});
     assert.strictEqual(count, 0);
     assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
   });
