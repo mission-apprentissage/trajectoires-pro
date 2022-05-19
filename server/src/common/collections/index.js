@@ -7,11 +7,6 @@ module.exports = {
    */
   logs: () => dbCollection("logs"),
   /**
-   * @typedef {import("mongodb").Collection<import("./inserJeunesNationals").InserJeunesNationals>}InserJeunesNationalsCollection
-   *  @returns {InserJeunesNationalsCollection}
-   */
-  inserJeunesNationals: () => dbCollection("inserJeunesNationals"),
-  /**
    * @typedef {import("mongodb").Collection<import("./formationsStats").FormationsStats>} FormationsStatsCollection
    * @returns {FormationsStatsCollection}
    */
