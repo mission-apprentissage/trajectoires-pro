@@ -6,6 +6,7 @@ import { importFormationsStats } from "./jobs/importFormationsStats.js";
 import { importCertificationsStats } from "./jobs/importCertificationsStats.js";
 import { promiseAllProps } from "./common/utils/asyncUtils.js";
 import { InserJeunes } from "./common/InserJeunes.js";
+import { importCodesFormations } from "./jobs/importCodesFormations.js";
 
 function asArray(v) {
   return v.split(",");
@@ -28,6 +29,15 @@ cli
         ...(stats.includes("formations") ? { formations: importFormationsStats({ input: file, inserjeunes }) } : {}),
         ...(stats.includes("certifications") ? { certifications: importCertificationsStats({ inserjeunes }) } : {}),
       });
+    });
+  });
+
+cli
+  .command("importCodesFormations")
+  .description("Import les codes des formations de la BCN")
+  .action(() => {
+    runScript(async () => {
+      return importCodesFormations();
     });
   });
 
