@@ -1,19 +1,27 @@
-const { dbCollection } = require("../mongodb");
+import { dbCollection } from "../mongodb.js";
 
-module.exports = {
-  /**
-   * @typedef {import("mongodb").Collection<import("./logs").Logs>} LogsCollection
-   * @returns {LogsCollection}
-   */
-  logs: () => dbCollection("logs"),
-  /**
-   * @typedef {import("mongodb").Collection<import("./formationsStats").FormationsStats>} FormationsStatsCollection
-   * @returns {FormationsStatsCollection}
-   */
-  formationsStats: () => dbCollection("formationsStats"),
-  /**
-   * @typedef {import("mongodb").Collection<import("./certificationsStats").CertificationsStats>} CertificationsStatsCollection
-   * @returns {CertificationsStatsCollection}
-   */
-  certificationsStats: () => dbCollection("certificationsStats"),
-};
+/**
+ * @typedef {import("mongodb").Collection<import("./certificationsStats").CertificationsStats>} CertificationsStatsCollection
+ * @returns {CertificationsStatsCollection}
+ */
+function certificationsStats() {
+  return dbCollection("certificationsStats");
+}
+
+/**
+ * @typedef {import("mongodb").Collection<import("./formationsStats").FormationsStats>} FormationsStatsCollection
+ * @returns {FormationsStatsCollection}
+ */
+function formationsStats() {
+  return dbCollection("formationsStats");
+}
+
+/**
+ * @typedef {import("mongodb").Collection<import("./logs").Logs>} LogsCollection
+ * @returns {LogsCollection}
+ */
+function logs() {
+  return dbCollection("logs");
+}
+
+export { logs, formationsStats, certificationsStats };

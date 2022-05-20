@@ -3,5 +3,5 @@
   "exit": true,
   "recursive": true,
   "require": "tests/utils/mochaGlobalFixtures.js",
-  "reporter": "tests/utils/mochaReporter.js"
+  "reporter": "tests/utils/mochaReporter.cjs"
 }

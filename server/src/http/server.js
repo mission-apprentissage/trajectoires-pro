@@ -1,20 +1,20 @@
-const express = require("express");
-const config = require("../config");
-const logger = require("../common/logger");
-const bodyParser = require("body-parser");
-const logMiddleware = require("./middlewares/logMiddleware");
-const errorMiddleware = require("./middlewares/errorMiddleware");
-const tryCatch = require("./middlewares/tryCatchMiddleware");
-const corsMiddleware = require("./middlewares/corsMiddleware");
-const packageJson = require("../../package.json");
-const { dbCollection } = require("../common/mongodb");
-const svg = require("./routes/svgRoutes");
-const formationsRoutes = require("./routes/formationsRoutes");
-const certificationsRoutes = require("./routes/certificationsRoutes");
-const swaggerRoutes = require("./routes/swaggerRoutes");
-const mongoSanitize = require("express-mongo-sanitize");
+import express from "express";
+import bodyParser from "body-parser";
+import config from "../config.js";
+import logger from "../common/logger.js";
+import mongoSanitize from "express-mongo-sanitize";
+import { logMiddleware } from "./middlewares/logMiddleware.js";
+import { errorMiddleware } from "./middlewares/errorMiddleware.js";
+import { tryCatch } from "./middlewares/tryCatchMiddleware.js";
+import { corsMiddleware } from "./middlewares/corsMiddleware.js";
+import { dbCollection } from "../common/mongodb.js";
+import svg from "./routes/svgRoutes.js";
+import formationsRoutes from "./routes/formationsRoutes.js";
+import certificationsRoutes from "./routes/certificationsRoutes.js";
+import swaggerRoutes from "./routes/swaggerRoutes.js";
+import { packageJson } from "../common/esmUtils.js";
 
-module.exports = async () => {
+export default async () => {
   const app = express();
 
   app.use(bodyParser.json());

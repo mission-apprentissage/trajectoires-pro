@@ -1,7 +1,7 @@
-const assert = require("assert");
-const { startServer } = require("../utils/testUtils");
-const { dbCollection } = require("../../src/common/mongodb");
-const { insertFormationsStats, insertCertificationsStats } = require("../utils/fakeData");
+import assert from "assert";
+import { startServer } from "../utils/testUtils.js";
+import { dbCollection } from "../../src/common/mongodb.js";
+import { insertFormationsStats, insertCertificationsStats } from "../utils/fakeData.js";
 
 describe("svgRoutes", () => {
   describe("formation", () => {

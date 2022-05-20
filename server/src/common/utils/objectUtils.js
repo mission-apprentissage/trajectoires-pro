@@ -1,9 +1,5 @@
-const { pickBy, isNil } = require("lodash");
+import { pickBy, isNil } from "lodash-es";
 
-function omitNil(obj) {
+export function omitNil(obj) {
   return pickBy(obj, (v) => !isNil(v));
 }
-
-module.exports = {
-  omitNil,
-};

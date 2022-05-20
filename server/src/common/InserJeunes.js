@@ -1,6 +1,6 @@
-const { filterData, accumulateData, flattenArray, oleoduc, writeData } = require("oleoduc");
-const InserJeunesApi = require("./api/InserJeunesApi");
-const { streamNestedJsonArray } = require("./utils/streamUtils");
+import { filterData, accumulateData, flattenArray, oleoduc, writeData } from "oleoduc";
+import { InserJeunesApi } from "./api/InserJeunesApi.js";
+import { streamNestedJsonArray } from "./utils/streamUtils.js";
 
 function getFiliere(dimension) {
   return dimension["id_formation_apprentissage"] ? "apprentissage" : "pro";
@@ -112,4 +112,4 @@ class InserJeunes {
   }
 }
 
-module.exports = InserJeunes;
+export { InserJeunes };

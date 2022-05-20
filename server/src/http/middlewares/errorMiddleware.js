@@ -1,4 +1,4 @@
-const Boom = require("boom");
+import Boom from "boom";
 
 function boomify(rawError) {
   let error;
@@ -17,7 +17,7 @@ function boomify(rawError) {
   return error;
 }
 
-module.exports = () => {
+export function errorMiddleware() {
   // eslint-disable-next-line no-unused-vars
   return (rawError, req, res, next) => {
     req.err = rawError;
@@ -25,4 +25,4 @@ module.exports = () => {
     let { output } = boomify(req.err);
     return res.status(output.statusCode).send(output.payload);
   };
-};
+}

@@ -1,7 +1,7 @@
-const assert = require("assert");
-const InserJeunesApi = require("../../src/common/api/InserJeunesApi");
-const { mockInserJeunesApi } = require("../utils/apiMocks");
-const { delay } = require("../../src/common/utils/asyncUtils");
+import assert from "assert";
+import { InserJeunesApi } from "../../src/common/api/InserJeunesApi.js";
+import { mockInserJeunesApi } from "../utils/apiMocks.js";
+import { delay } from "../../src/common/utils/asyncUtils.js";
 
 describe("InserJeunesApi", () => {
   function mockApi(uai, millesime) {

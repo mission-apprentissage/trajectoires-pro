@@ -1,11 +1,10 @@
-const util = require("util");
-const { throttle, omit, isEmpty } = require("lodash");
-const bunyan = require("bunyan");
-const BunyanSlack = require("bunyan-slack");
-const config = require("../config");
-// eslint-disable-next-line node/no-unpublished-require
-const chalk = require("chalk");
-const { compose, writeData, transformData } = require("oleoduc");
+import util from "util";
+import { throttle, omit, isEmpty } from "lodash-es";
+import bunyan from "bunyan";
+import BunyanSlack from "bunyan-slack";
+import config from "../config.js";
+import chalk from "chalk"; // eslint-disable-line node/no-unpublished-import
+import { compose, writeData, transformData } from "oleoduc";
 
 function prettyPrintStream(outputName) {
   let levels = {
@@ -118,7 +117,7 @@ const createStreams = () => {
     });
 };
 
-module.exports = bunyan.createLogger({
+export default bunyan.createLogger({
   name: "trajectoire-pro",
   serializers: {
     ...bunyan.stdSerializers,

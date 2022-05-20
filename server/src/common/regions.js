@@ -269,7 +269,7 @@ const REGIONS = [
   },
 ];
 
-function findRegionByUai(uai) {
+export function findRegionByUai(uai) {
   if (!uai) {
     return null;
   }
@@ -283,11 +283,11 @@ function findRegionByUai(uai) {
   return found || null;
 }
 
-function sanitize(value) {
+export function sanitize(value) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-function findRegionByName(nom) {
+export function findRegionByName(nom) {
   return (
     REGIONS.find((region) => {
       return sanitize(region.nom).toUpperCase() === sanitize(nom).toUpperCase();
@@ -295,27 +295,18 @@ function findRegionByName(nom) {
   );
 }
 
-function findRegionByCode(code) {
+export function findRegionByCode(code) {
   return REGIONS.find((region) => region.code === code) || null;
 }
 
-function findRegionByCodeInsee(code) {
+export function findRegionByCodeInsee(code) {
   return REGIONS.find((region) => region.departements.find((d) => code.startsWith(d.code))) || null;
 }
 
-function findRegionByAcademie(code) {
+export function findRegionByAcademie(code) {
   return REGIONS.find((region) => region.academies.find((a) => a.code === code)) || null;
 }
 
-function getRegions() {
+export function getRegions() {
   return REGIONS;
 }
-
-module.exports = {
-  findRegionByUai,
-  findRegionByName,
-  findRegionByCode,
-  findRegionByCodeInsee,
-  findRegionByAcademie,
-  getRegions,
-};

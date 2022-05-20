@@ -1,10 +1,12 @@
-const logger = require("../common/logger").child({ context: "import" });
-const { writeData, oleoduc, transformData, flattenArray } = require("oleoduc");
-const { Readable } = require("stream");
-const { dbCollection } = require("../common/mongodb");
-const InserJeunes = require("../common/InserJeunes");
+import bunyan from "../common/logger.js";
+import { Readable } from "stream";
+import { dbCollection } from "../common/mongodb.js";
+import { InserJeunes } from "../common/InserJeunes.js";
+import { writeData, oleoduc, transformData, flattenArray } from "oleoduc";
 
-async function importCertificationsStats(options = {}) {
+const logger = bunyan.child({ context: "import" });
+
+export async function importCertificationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
   const ij = options.inserjeunes || new InserJeunes();
   const millesimes = options.millesimes || ["2019", "2020"];
@@ -65,5 +67,3 @@ async function importCertificationsStats(options = {}) {
 
   return jobStats;
 }
-
-module.exports = importCertificationsStats;

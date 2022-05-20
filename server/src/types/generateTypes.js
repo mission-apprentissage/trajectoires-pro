@@ -1,8 +1,8 @@
-const fs = require("fs");
-const path = require("path");
-const { compile } = require("json-schema-to-typescript");
-const collections = require("../common/collections/schemas");
-const packageJson = require("../../package.json");
+import fs from "fs";
+import path from "path";
+import { compile } from "json-schema-to-typescript";
+import schemas from "../common/collections/schemas.js";
+import { getDirname, packageJson } from "../common/esmUtils.js";
 
 const disableAdditionalProperties = (node) => {
   if (node.properties) {
@@ -49,8 +49,8 @@ const prepareJsonSchema = (jsonSchema) => {
   return schema;
 };
 
-const generateTypes = () => {
-  Object.values(collections).forEach(({ name, schema }) => {
+export function generateTypes() {
+  Object.values(schemas).forEach(({ name, schema }) => {
     const jsonSchema = schema();
     const preparedJsonSchema = prepareJsonSchema(jsonSchema);
     compile(preparedJsonSchema, name, {
@@ -61,12 +61,12 @@ const generateTypes = () => {
            * DO NOT MODIFY IT BY HAND. Instead, modify the collection schema file,
            * To regenerate this file run $> yarn doc
            */
-           const { ObjectId } = require("mongodb");
+           import { ObjectId } from "mongodb";
 
           `,
       style: packageJson.prettier,
-    }).then((ts) => fs.writeFileSync(path.resolve(__dirname, `../common/collections/${name}.d.ts`), ts));
+    }).then((ts) =>
+      fs.writeFileSync(path.resolve(getDirname(import.meta.url), `../common/collections/${name}.d.ts`), ts)
+    );
   });
-};
-
-module.exports = { generateTypes };
+}

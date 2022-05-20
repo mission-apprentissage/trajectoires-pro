@@ -1,11 +1,11 @@
-const assert = require("assert");
-const {
+import assert from "assert";
+import {
   findRegionByUai,
   findRegionByName,
   findRegionByCodeInsee,
   findRegionByCode,
   findRegionByAcademie,
-} = require("../../src/common/regions");
+} from "../../src/common/regions.js";
 
 describe("regions", () => {
   it("Permet de trouver une région avec son UAI", () => {

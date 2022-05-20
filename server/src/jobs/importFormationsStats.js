@@ -1,11 +1,13 @@
-const { getFromStorage } = require("../common/utils/ovhUtils");
-const logger = require("../common/logger").child({ context: "import" });
-const { compose, mergeStreams, writeData, oleoduc, transformData, flattenArray } = require("oleoduc");
-const { Readable } = require("stream");
-const { parseCsv } = require("../common/utils/csvUtils");
-const { dbCollection } = require("../common/mongodb");
-const { isUAIValid } = require("../common/utils/validationUtils");
-const InserJeunes = require("../common/InserJeunes");
+import { compose, mergeStreams, writeData, oleoduc, transformData, flattenArray } from "oleoduc";
+import { Readable } from "stream";
+import bunyan from "../common/logger.js";
+import { getFromStorage } from "../common/utils/ovhUtils.js";
+import { parseCsv } from "../common/utils/csvUtils.js";
+import { dbCollection } from "../common/mongodb.js";
+import { isUAIValid } from "../common/utils/validationUtils.js";
+import { InserJeunes } from "../common/InserJeunes.js";
+
+const logger = bunyan.child({ context: "import" });
 
 function readCSV(stream) {
   return compose(stream, parseCsv());
@@ -44,7 +46,7 @@ async function loadUaisFromCSV(input) {
   return [...uais];
 }
 
-async function importFormationsStats(options = {}) {
+export async function importFormationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
   const ij = options.inserjeunes || new InserJeunes();
   const millesimes = options.millesimes || ["2018_2019", "2019_2020"];
@@ -104,5 +106,3 @@ async function importFormationsStats(options = {}) {
 
   return jobStats;
 }
-
-module.exports = importFormationsStats;

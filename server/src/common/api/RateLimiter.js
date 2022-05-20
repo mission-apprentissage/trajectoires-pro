@@ -1,5 +1,5 @@
-const { RateLimiterMemory, RateLimiterQueue } = require("rate-limiter-flexible");
-const { EventEmitter } = require("events");
+import { RateLimiterMemory, RateLimiterQueue } from "rate-limiter-flexible";
+import { EventEmitter } from "events";
 
 class RateLimiter extends EventEmitter {
   constructor(name, options = {}) {
@@ -27,4 +27,4 @@ class RateLimiter extends EventEmitter {
   }
 }
 
-module.exports = RateLimiter;
+export { RateLimiter };

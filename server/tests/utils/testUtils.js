@@ -1,8 +1,8 @@
-const server = require("../../src/http/server");
-const axiosist = require("axiosist"); // eslint-disable-line node/no-unpublished-require
-const { Readable } = require("stream"); // eslint-disable-line node/no-unpublished-require
+import axiosist from "axiosist"; // eslint-disable-line node/no-unpublished-import
+import { Readable } from "stream"; // eslint-disable-line node/no-unpublished-require
+import server from "../../src/http/server.js";
 
-async function startServer() {
+export async function startServer() {
   const app = await server();
   const httpClient = axiosist(app);
 
@@ -11,7 +11,7 @@ async function startServer() {
   };
 }
 
-let createStream = (content) => {
+export function createStream(content) {
   let stream = new Readable({
     objectMode: true,
     read() {},
@@ -21,9 +21,4 @@ let createStream = (content) => {
   stream.push(null);
 
   return stream;
-};
-
-module.exports = {
-  startServer,
-  createStream,
-};
+}

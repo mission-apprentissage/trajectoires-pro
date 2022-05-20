@@ -1,19 +1,18 @@
-const { compose, transformData } = require("oleoduc");
-const { parser } = require("stream-json");
-const { pick } = require("stream-json/filters/Pick");
-const { streamArray } = require("stream-json/streamers/StreamArray");
-const { parseCsv } = require("./csvUtils");
+import { compose, transformData } from "oleoduc";
+import streamJson from "stream-json";
+import jsonFilters from "stream-json/filters/Pick.js";
+import streamers from "stream-json/streamers/StreamArray.js";
+import { parseCsv } from "./csvUtils.js";
 
-module.exports = {
-  streamNestedJsonArray: (arrayPropertyName) => {
-    return compose(
-      parser(),
-      pick({ filter: arrayPropertyName }),
-      streamArray(),
-      transformData((data) => data.value)
-    );
-  },
-  readCSV: (stream) => {
-    return compose(stream, parseCsv());
-  },
-};
+export function readCSV(stream) {
+  return compose(stream, parseCsv());
+}
+
+export function streamNestedJsonArray(arrayPropertyName) {
+  return compose(
+    streamJson.parser(),
+    jsonFilters.pick({ filter: arrayPropertyName }),
+    streamers.streamArray(),
+    transformData((data) => data.value)
+  );
+}

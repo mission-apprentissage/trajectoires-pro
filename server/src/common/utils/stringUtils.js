@@ -1,3 +1,3 @@
-const asInteger = (value) => (value ? parseInt(value) : null);
-
-module.exports = { asInteger };
+export function asInteger(value) {
+  return value ? parseInt(value) : null;
+}

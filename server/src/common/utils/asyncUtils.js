@@ -1,4 +1,4 @@
-const { isPlainObject, zipObject, keys, values } = require("lodash");
+import { isPlainObject, zipObject, keys, values } from "lodash-es";
 
 function delay(milliseconds) {
   return new Promise((resolve) => setTimeout(() => resolve(), milliseconds));
@@ -11,4 +11,4 @@ async function promiseAllProps(data) {
   return Promise.all(data);
 }
 
-module.exports = { delay, promiseAllProps };
+export { delay, promiseAllProps };

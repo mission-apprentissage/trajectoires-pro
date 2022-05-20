@@ -1,6 +1,6 @@
-const env = require("env-var");
+import env from "env-var";
 
-module.exports = {
+const config = {
   env: env.get("TRAJECTOIRES_PRO_ENV").default("local").asString(),
   publicUrl: env.get("TRAJECTOIRES_PRO_PUBLIC_URL").default("http://localhost").asString(),
   log: {
@@ -29,3 +29,5 @@ module.exports = {
     },
   },
 };
+
+export default config;

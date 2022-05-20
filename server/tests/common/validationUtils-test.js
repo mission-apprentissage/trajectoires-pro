@@ -1,5 +1,5 @@
-const assert = require("assert");
-const { isUAIValid, isSiretValid } = require("../../src/common/utils/validationUtils");
+import assert from "assert";
+import { isUAIValid, isSiretValid } from "../../src/common/utils/validationUtils.js";
 
 describe("validationUtils", () => {
   it("permet de valider une UAI", () => {
