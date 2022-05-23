@@ -72,7 +72,7 @@ paths:
         404:
           $ref: "#/components/responses/404"
 
-  /api/inserjeunes/v1/formations:
+  /api/inserjeunes/formations:
     get:
       description: Rechercher des formations et leurs statistiques
       tags:
@@ -95,7 +95,7 @@ paths:
         404:
           $ref: "#/components/responses/404"
 
-  /api/inserjeunes/v1/formations.{ext}:
+  /api/inserjeunes/formations.{ext}:
     get:
       description: Permet d'exporter des formations et leurs statistiques
       tags:
