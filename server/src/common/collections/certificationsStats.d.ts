@@ -20,6 +20,14 @@ export interface CertificationsStats {
   taux_emploi_12_mois?: number;
   taux_emploi_6_mois?: number;
   taux_rupture_contrats?: number;
+  certification?: {
+    code_formation?: string;
+    alias?: array;
+    diplome?: {
+      code: string;
+      label: string;
+    };
+  };
   _meta?: {
     date_import: Date;
   };

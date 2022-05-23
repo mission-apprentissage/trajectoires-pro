@@ -25,11 +25,11 @@ function logs() {
 }
 
 /**
- * @typedef {import("mongodb").Collection<import("./codesFormations.js").Mefs>} LogsCollection
- * @returns {LogsCollection}
+ * @typedef {import("mongodb").Collection<import("./certifications.js").Mefs>} CertificationsCollection
+ * @returns {CertificationsCollection}
  */
-function codesFormations() {
-  return dbCollection("codesFormations");
+function certifications() {
+  return dbCollection("certifications");
 }
 
-export { logs, codesFormations, formationsStats, certificationsStats };
+export { logs, certifications, formationsStats, certificationsStats };

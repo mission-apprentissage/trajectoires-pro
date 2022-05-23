@@ -1,8 +1,9 @@
 import bunyan from "../common/logger.js";
 import { Readable } from "stream";
-import { dbCollection } from "../common/mongodb.js";
 import { InserJeunes } from "../common/InserJeunes.js";
-import { writeData, oleoduc, transformData, flattenArray } from "oleoduc";
+import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
+import { certifications, certificationsStats } from "../common/collections/index.js";
+import { pick } from "lodash-es";
 
 const logger = bunyan.child({ context: "import" });
 
@@ -36,33 +37,45 @@ export async function importCertificationsStats(options = {}) {
         const query = { millesime: stats.millesime, code_formation: stats.code_formation };
 
         try {
-          const res = await dbCollection("certificationsStats").updateOne(
+          const certification = await certifications().findOne({
+            $or: [{ code_formation: stats.code_formation }, { "alias.code": stats.code_formation }],
+          });
+
+          if (!certification) {
+            logger.warn(`Impossible de trouver la certification pour la stats`, query);
+          }
+
+          const res = await certificationsStats().updateOne(
             query,
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
               },
-              $set: stats,
+              $set: {
+                ...stats,
+                ...(certification
+                  ? { certification: pick(certification, ["code_formation", "diplome", "alias"]) }
+                  : {}),
+              },
             },
             { upsert: true }
           );
 
           if (res.upsertedCount) {
-            logger.info("Nouvelle certification ajoutée", query);
+            logger.info("Nouvelle stats de certification ajoutée", query);
             jobStats.created++;
           } else if (res.modifiedCount) {
             jobStats.updated++;
-            logger.debug("Certification mise à jour", query);
+            logger.debug("Stats de certification mise à jour", query);
           } else {
-            logger.trace("Certification déjà à jour", query);
+            logger.trace("Stats de certification déjà à jour", query);
           }
         } catch (e) {
           handleError(e, query);
         }
       },
       { parallel: 10 }
-    ),
-    { onError: (e) => handleError(e) }
+    )
   );
 
   return jobStats;

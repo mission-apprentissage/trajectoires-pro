@@ -1,4 +1,5 @@
-import { object, objectId, string, date, integer } from "./schemas/jsonSchemaTypes.js";
+import { date, integer, object, objectId, string } from "./schemas/jsonSchemaTypes.js";
+import { certificationFields } from "./schemas/certificationFields.js";
 
 export const name = "certificationsStats";
 
@@ -8,6 +9,8 @@ export function indexes() {
     [{ millesime: 1 }],
     [{ code_formation: 1 }],
     [{ filiere: 1 }],
+    [{ "certification.code_formation": 1 }],
+    [{ "certification.alias.code": 1 }],
   ];
 }
 
@@ -27,6 +30,7 @@ export function schema() {
       taux_emploi_12_mois: integer(),
       taux_emploi_6_mois: integer(),
       taux_rupture_contrats: integer(),
+      certification: object(certificationFields()),
       _meta: object(
         {
           date_import: date(),

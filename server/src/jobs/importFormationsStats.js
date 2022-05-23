@@ -1,11 +1,12 @@
-import { compose, mergeStreams, writeData, oleoduc, transformData, flattenArray } from "oleoduc";
+import { compose, flattenArray, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
 import { Readable } from "stream";
 import bunyan from "../common/logger.js";
 import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
-import { dbCollection } from "../common/mongodb.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/InserJeunes.js";
+import { certifications, formationsStats } from "../common/collections/index.js";
+import { pick } from "lodash-es";
 
 const logger = bunyan.child({ context: "import" });
 
@@ -76,25 +77,38 @@ export async function importFormationsStats(options = {}) {
         const query = { uai: uai, code_formation: stats.code_formation, millesime: stats.millesime };
 
         try {
-          const res = await dbCollection("formationsStats").updateOne(
+          const certification = await certifications().findOne({
+            $or: [{ code_formation: stats.code_formation }, { "alias.code": stats.code_formation }],
+          });
+
+          if (!certification) {
+            logger.warn(`Impossible de trouver la certification pour la stats`, query);
+          }
+
+          const res = await formationsStats().updateOne(
             query,
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
               },
-              $set: stats,
+              $set: {
+                ...stats,
+                ...(certification
+                  ? { certification: pick(certification, ["code_formation", "diplome", "alias"]) }
+                  : {}),
+              },
             },
             { upsert: true }
           );
 
           if (res.upsertedCount) {
-            logger.info("Nouvelle formation ajoutée", query);
+            logger.info("Nouvelle stats de formation ajoutée", query);
             jobStats.created++;
           } else if (res.modifiedCount) {
             jobStats.updated++;
-            logger.debug("Formation mise à jour", query);
+            logger.debug("Stats de formation mise à jour", query);
           } else {
-            logger.trace("Formation déjà à jour", query);
+            logger.trace("Stats de formation déjà à jour", query);
           }
         } catch (e) {
           handleError(e, query);

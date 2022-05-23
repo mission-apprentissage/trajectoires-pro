@@ -1,29 +1,26 @@
 import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublished-import
 import { merge } from "lodash-es";
-import { dbCollection } from "../../src/common/mongodb.js";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
-
-function randomStats() {
-  return parseInt(faker.random.numeric(2));
-}
+import { certificationsStats, certifications, formationsStats } from "../../src/common/collections/index.js";
+import { generateCodeFormation, generateStats } from "./testUtils.js";
 
 export function insertFormationsStats(custom = {}) {
-  return dbCollection("formationsStats").insertOne(
+  return formationsStats().insertOne(
     merge(
       {},
       {
         uai: createUAI(faker.helpers.replaceSymbols("075####")),
-        code_formation: faker.helpers.replaceSymbols("########"),
+        code_formation: generateCodeFormation(),
         millesime: "2018_2019",
         filiere: "apprentissage",
-        nb_annee_term: randomStats(),
-        nb_en_emploi_12_mois: randomStats(),
-        nb_en_emploi_6_mois: randomStats(),
-        nb_poursuite_etudes: randomStats(),
-        nb_sortant: randomStats(),
-        taux_emploi_12_mois: randomStats(),
-        taux_emploi_6_mois: randomStats(),
-        taux_poursuite_etudes: randomStats(),
+        nb_annee_term: generateStats(),
+        nb_en_emploi_12_mois: generateStats(),
+        nb_en_emploi_6_mois: generateStats(),
+        nb_poursuite_etudes: generateStats(),
+        nb_sortant: generateStats(),
+        taux_emploi_12_mois: generateStats(),
+        taux_emploi_6_mois: generateStats(),
+        taux_poursuite_etudes: generateStats(),
         _meta: {
           date_import: new Date(),
         },
@@ -34,21 +31,36 @@ export function insertFormationsStats(custom = {}) {
 }
 
 export function insertCertificationsStats(custom = {}) {
-  return dbCollection("certificationsStats").insertOne(
+  return certificationsStats().insertOne(
     merge(
       {},
       {
         millesime: "2020",
-        code_formation: faker.helpers.replaceSymbols("########"),
+        code_formation: generateCodeFormation(),
         filiere: "apprentissage",
-        nb_annee_term: randomStats(),
-        nb_poursuite_etudes: randomStats(),
-        nb_en_emploi_12_mois: randomStats(),
-        nb_en_emploi_6_mois: randomStats(),
-        taux_poursuite_etudes: randomStats(),
-        taux_emploi_12_mois: randomStats(),
-        taux_emploi_6_mois: randomStats(),
-        taux_rupture_contrats: randomStats(),
+        nb_annee_term: generateStats(),
+        nb_poursuite_etudes: generateStats(),
+        nb_en_emploi_12_mois: generateStats(),
+        nb_en_emploi_6_mois: generateStats(),
+        taux_poursuite_etudes: generateStats(),
+        taux_emploi_12_mois: generateStats(),
+        taux_emploi_6_mois: generateStats(),
+        taux_rupture_contrats: generateStats(),
+      },
+      custom
+    )
+  );
+}
+
+export function insertCertifications(custom = {}) {
+  return certifications().insertOne(
+    merge(
+      {},
+      {
+        code_formation: generateCodeFormation(),
+        alias: [],
+        diplome: { code: "4", label: "BAC" },
+        _meta: { date_import: new Date() },
       },
       custom
     )

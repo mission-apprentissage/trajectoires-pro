@@ -20,6 +20,14 @@ export interface FormationsStats {
   taux_poursuite_etudes?: number;
   taux_emploi_12_mois?: number;
   taux_emploi_6_mois?: number;
+  certification?: {
+    code_formation?: string;
+    alias?: array;
+    diplome?: {
+      code: string;
+      label: string;
+    };
+  };
   _meta?: {
     date_import: Date;
   };

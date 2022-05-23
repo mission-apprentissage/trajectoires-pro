@@ -1,6 +1,8 @@
 import axiosist from "axiosist"; // eslint-disable-line node/no-unpublished-import
 import { Readable } from "stream"; // eslint-disable-line node/no-unpublished-require
 import server from "../../src/http/server.js";
+// eslint-disable-next-line node/no-unpublished-import
+import { faker } from "@faker-js/faker";
 
 export async function startServer() {
   const app = await server();
@@ -21,4 +23,12 @@ export function createStream(content) {
   stream.push(null);
 
   return stream;
+}
+
+export function generateStats() {
+  return parseInt(faker.random.numeric(2));
+}
+
+export function generateCodeFormation() {
+  return faker.helpers.replaceSymbols("########");
 }

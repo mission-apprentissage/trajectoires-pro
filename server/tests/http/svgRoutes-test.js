@@ -2,6 +2,7 @@ import assert from "assert";
 import { startServer } from "../utils/testUtils.js";
 import { dbCollection } from "../../src/common/mongodb.js";
 import { insertFormationsStats, insertCertificationsStats } from "../utils/fakeData.js";
+import { formationsStats } from "../../src/common/collections/index.js";
 
 describe("svgRoutes", () => {
   describe("formation", () => {
@@ -62,7 +63,7 @@ describe("svgRoutes", () => {
 
     it("should display only one data if present - vertical", async () => {
       const { httpClient } = await startServer();
-      await dbCollection("formationsStats").insertOne({
+      await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
         millesime: "2021_2022",
@@ -80,7 +81,7 @@ describe("svgRoutes", () => {
 
     it("should display only one data if present - horizontal", async () => {
       const { httpClient } = await startServer();
-      await dbCollection("formationsStats").insertOne({
+      await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
         millesime: "2021_2022",
@@ -102,7 +103,7 @@ describe("svgRoutes", () => {
 
     it("should display data if value is 0", async () => {
       const { httpClient } = await startServer();
-      await dbCollection("formationsStats").insertOne({
+      await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
         millesime: "2021_2022",
@@ -133,7 +134,7 @@ describe("svgRoutes", () => {
 
     it("should return a 404 if data exists but rates are empty", async () => {
       const { httpClient } = await startServer();
-      await dbCollection("formationsStats").insertOne({
+      await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
         millesime: "2021_2022",

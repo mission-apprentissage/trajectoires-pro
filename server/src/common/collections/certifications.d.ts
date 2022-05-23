@@ -6,12 +6,13 @@
  */
 import { ObjectId } from "mongodb";
 
-export interface CodesFormations {
+export interface Certifications {
   _id?: ObjectId;
   code_formation: string;
-  niveau?: {
+  alias: array;
+  diplome?: {
     code: string;
-    diplome: string;
+    label: string;
   };
   _meta: {
     date_import: Date;
