@@ -1,8 +1,8 @@
 import assert from "assert";
 import { merge, omit } from "lodash-es";
-import { importCFD } from "../../src/jobs/importCFD.js";
+import { importCodeFormationDiplomes } from "../../src/jobs/importCodeFormationDiplomes.js";
 import { createStream } from "../utils/testUtils.js";
-import { cfd } from "../../src/common/collections/index.js";
+import { codeFormationDiplomes } from "../../src/common/collections/index.js";
 
 function getBcnTables(custom = {}) {
   return merge(
@@ -16,16 +16,16 @@ function getBcnTables(custom = {}) {
   );
 }
 
-describe("importCFD", () => {
+describe("importCodeFormationDiplomes", () => {
   it("Vérifie qu'on peut importer les codes formation (apprentissage)", async () => {
-    let stats = await importCFD(
+    let stats = await importCodeFormationDiplomes(
       getBcnTables({
         V_FORMATION_DIPLOME: createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|LIBELLE_COURT|LIBELLE_STAT_33
 40023203|403|BAC PRO|BATIMENT`),
       })
     );
 
-    const found = await cfd().findOne({}, { projection: { _id: 0 } });
+    const found = await codeFormationDiplomes().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       code_formation: "40023203",
       libelle: "BAC PRO BATIMENT",
@@ -43,7 +43,7 @@ describe("importCFD", () => {
   });
 
   it("Vérifie qu'on peut importer les codes formation (secondaire)", async () => {
-    let stats = await importCFD(
+    let stats = await importCodeFormationDiplomes(
       getBcnTables({
         N_FORMATION_DIPLOME: createStream(
           `FORMATION_DIPLOME|ANCIEN_DIPLOME_1|NOUVEAU_DIPLOME_1|LIBELLE_COURT|LIBELLE_STAT_33
@@ -52,7 +52,7 @@ describe("importCFD", () => {
       })
     );
 
-    const found = await cfd().findOne({}, { projection: { _id: 0 } });
+    const found = await codeFormationDiplomes().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       code_formation: "12345678",
       code_formation_alternatifs: [],
@@ -70,7 +70,7 @@ describe("importCFD", () => {
   });
 
   it("Vérifie qu'on peut importer un code formation et ses MEF", async () => {
-    await importCFD(
+    await importCodeFormationDiplomes(
       getBcnTables({
         N_MEF: createStream(`FORMATION_DIPLOME|MEF|MEF_STAT_9|MEF_STAT_11
 12345678|99976543210|999765432|99976543210
@@ -82,14 +82,14 @@ describe("importCFD", () => {
       })
     );
 
-    const found = await cfd().findOne({}, { projection: { _id: 0 } });
+    const found = await codeFormationDiplomes().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found.mef, ["99976543210", "88876543210"]);
     assert.deepStrictEqual(found.mef_stats_11, ["99976543210", "88876543210"]);
     assert.deepStrictEqual(found.mef_stats_9, ["999765432", "888765432"]);
   });
 
   it("Vérifie qu'on peut importer un code formation avec des codes alternatifs", async () => {
-    await importCFD(
+    await importCodeFormationDiplomes(
       getBcnTables({
         N_FORMATION_DIPLOME: createStream(
           `FORMATION_DIPLOME|ANCIEN_DIPLOME_1|NOUVEAU_DIPLOME_1|LIBELLE_COURT|LIBELLE_STAT_33
@@ -98,18 +98,18 @@ describe("importCFD", () => {
       })
     );
 
-    const found = await cfd().findOne({}, { projection: { _id: 0 } });
+    const found = await codeFormationDiplomes().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found.code_formation_alternatifs, ["32031211", "51033003"]);
   });
 
   it("Vérifie qu'on peut gérer les codes formation avec diplome inconnu", async () => {
-    let stats = await importCFD(
+    let stats = await importCodeFormationDiplomes(
       getBcnTables({
         N_FORMATION_DIPLOME: createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME\n99999902|999`),
       })
     );
 
-    let found = await cfd().findOne({ code_formation: "99999902" }, { projection: { _id: 0 } });
+    let found = await codeFormationDiplomes().findOne({ code_formation: "99999902" }, { projection: { _id: 0 } });
     assert.ok(!found.diplome);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0, total: 1 });
   });

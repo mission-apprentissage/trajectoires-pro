@@ -1,7 +1,7 @@
 import { arrayOf, date, object, objectId, string } from "./schemas/jsonSchemaTypes.js";
 import { diplomeSchema } from "./schemas/diplomeSchema.js";
 
-export const name = "cfd";
+export const name = "codeFormationDiplomes";
 
 export function indexes() {
   return [

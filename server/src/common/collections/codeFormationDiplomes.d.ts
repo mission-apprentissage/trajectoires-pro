@@ -6,14 +6,14 @@
  */
 import { ObjectId } from "mongodb";
 
-export interface Cfd {
+export interface CodeFormationDiplomes {
   _id?: ObjectId;
   code_formation: string;
-  code_formation_alternatifs: array;
   libelle: string;
-  mef?: string;
-  mef_stats_9?: string;
-  mef_stats_11?: string;
+  code_formation_alternatifs: array;
+  mef: array;
+  mef_stats_9: array;
+  mef_stats_11: array;
   diplome?: {
     code: string;
     libelle: string;

@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublished-import
 import { merge } from "lodash-es";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
-import { certificationsStats, cfd, formationsStats } from "../../src/common/collections/index.js";
+import { certificationsStats, codeFormationDiplomes, formationsStats } from "../../src/common/collections/index.js";
 import { generateCodeFormation, generateStats } from "./testUtils.js";
 
 export function insertFormationsStats(custom = {}) {
@@ -53,7 +53,7 @@ export function insertCertificationsStats(custom = {}) {
 }
 
 export function insertCFD(custom = {}) {
-  return cfd().insertOne(
+  return codeFormationDiplomes().insertOne(
     merge(
       {},
       {

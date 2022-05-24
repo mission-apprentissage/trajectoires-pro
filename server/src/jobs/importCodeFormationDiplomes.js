@@ -1,5 +1,5 @@
 import { mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
-import { cfd } from "../common/collections/index.js";
+import { codeFormationDiplomes } from "../common/collections/index.js";
 import bunyan from "../common/logger.js";
 import { getBCNTable, loadMefs } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
@@ -8,7 +8,7 @@ import { getDiplome } from "../common/actions/getDiplome.js";
 
 const logger = bunyan.child({ context: "import" });
 
-async function importCFD(options = {}) {
+async function importCodeFormationDiplomes(options = {}) {
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
   const mefs = await loadMefs(options);
 
@@ -52,30 +52,30 @@ async function importCFD(options = {}) {
       });
     }),
     writeData(
-      async (codeFormationDiplome) => {
-        const { code_formation } = codeFormationDiplome;
+      async (cfd) => {
+        const { code_formation } = cfd;
 
         try {
           stats.total++;
 
-          if (!codeFormationDiplome.diplome) {
+          if (!cfd.diplome) {
             logger.warn(`Diplome inconnu pour le code formation ${code_formation}`);
           }
 
-          const res = await cfd().updateOne(
+          const res = await codeFormationDiplomes().updateOne(
             {
               code_formation,
             },
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
-                ...pick(codeFormationDiplome, ["code_formation", "libelle", "diplome"]),
+                ...pick(cfd, ["code_formation", "libelle", "diplome"]),
               },
               $addToSet: {
-                code_formation_alternatifs: { $each: codeFormationDiplome.code_formation_alternatifs },
-                mef: { $each: codeFormationDiplome.mef },
-                mef_stats_9: { $each: codeFormationDiplome.mef_stats_9 },
-                mef_stats_11: { $each: codeFormationDiplome.mef_stats_11 },
+                code_formation_alternatifs: { $each: cfd.code_formation_alternatifs },
+                mef: { $each: cfd.mef },
+                mef_stats_9: { $each: cfd.mef_stats_9 },
+                mef_stats_11: { $each: cfd.mef_stats_11 },
               },
             },
             { upsert: true }
@@ -102,4 +102,4 @@ async function importCFD(options = {}) {
   return stats;
 }
 
-export { importCFD };
+export { importCodeFormationDiplomes };
