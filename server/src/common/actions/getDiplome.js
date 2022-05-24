@@ -9,9 +9,9 @@ const ANCIENS_NIVEAUX_MAPPER = {
 
 const NIVEAUX_LIBELLES = {
   3: "CAP",
-  4: "BAC PRO",
+  4: "BAC",
   5: "BTS",
-  6: "LIC PRO",
+  6: "LIC",
   7: "MASTER",
 };
 

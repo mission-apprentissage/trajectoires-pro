@@ -93,7 +93,7 @@ const getRates = (stats) => {
         level:
           key === "taux_poursuite_etudes"
             ? "info"
-            : getRateLevel(/** @type {keyof typeof labels} */ (key), value, stats.filiere, stats.diplome?.label),
+            : getRateLevel(/** @type {keyof typeof labels} */ (key), value, stats.filiere, stats.diplome?.libelle),
       };
     });
 };

@@ -35,7 +35,7 @@ describe("importCodeFormationDiplomes", () => {
       mef_stats_11: [],
       diplome: {
         code: "4",
-        libelle: "BAC PRO",
+        libelle: "BAC",
       },
     });
     assert.ok(found._meta.date_import);
