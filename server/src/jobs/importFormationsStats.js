@@ -5,8 +5,8 @@ import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/InserJeunes.js";
-import { certifications, formationsStats } from "../common/collections/index.js";
-import { pick } from "lodash-es";
+import { formationsStats } from "../common/collections/index.js";
+import { getCFD } from "../common/actions/getCFD.js";
 
 const logger = bunyan.child({ context: "import" });
 
@@ -77,12 +77,11 @@ export async function importFormationsStats(options = {}) {
         const query = { uai: uai, code_formation: stats.code_formation, millesime: stats.millesime };
 
         try {
-          const certification = await certifications().findOne({
-            $or: [{ code_formation: stats.code_formation }, { "alias.code": stats.code_formation }],
-          });
+          const cfd = await getCFD(stats.code_formation);
 
-          if (!certification) {
-            logger.warn(`Impossible de trouver la certification pour la stats`, query);
+          const diplome = cfd?.diplome;
+          if (!diplome) {
+            logger.warn(`Impossible de trouver le diplome pour la stats`, query);
           }
 
           const res = await formationsStats().updateOne(
@@ -93,9 +92,7 @@ export async function importFormationsStats(options = {}) {
               },
               $set: {
                 ...stats,
-                ...(certification
-                  ? { certification: pick(certification, ["code_formation", "diplome", "alias"]) }
-                  : {}),
+                ...(diplome ? { diplome } : {}),
               },
             },
             { upsert: true }

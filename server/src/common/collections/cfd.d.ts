@@ -6,25 +6,19 @@
  */
 import { ObjectId } from "mongodb";
 
-export interface FormationsStats {
+export interface Cfd {
   _id?: ObjectId;
-  uai: string;
-  millesime: string;
   code_formation: string;
-  filiere: "apprentissage" | "pro";
-  nb_annee_term?: number;
-  nb_poursuite_etudes?: number;
-  nb_en_emploi_12_mois?: number;
-  nb_en_emploi_6_mois?: number;
-  nb_sortant?: number;
-  taux_poursuite_etudes?: number;
-  taux_emploi_12_mois?: number;
-  taux_emploi_6_mois?: number;
+  code_formation_alternatifs: array;
+  libelle: string;
+  mef?: string;
+  mef_stats_9?: string;
+  mef_stats_11?: string;
   diplome?: {
     code: string;
     libelle: string;
   };
-  _meta?: {
+  _meta: {
     date_import: Date;
   };
 }

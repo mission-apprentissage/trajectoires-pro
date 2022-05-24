@@ -2,8 +2,8 @@ import bunyan from "../common/logger.js";
 import { Readable } from "stream";
 import { InserJeunes } from "../common/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
-import { certifications, certificationsStats } from "../common/collections/index.js";
-import { pick } from "lodash-es";
+import { certificationsStats } from "../common/collections/index.js";
+import { getCFD } from "../common/actions/getCFD.js";
 
 const logger = bunyan.child({ context: "import" });
 
@@ -37,12 +37,11 @@ export async function importCertificationsStats(options = {}) {
         const query = { millesime: stats.millesime, code_formation: stats.code_formation };
 
         try {
-          const certification = await certifications().findOne({
-            $or: [{ code_formation: stats.code_formation }, { "alias.code": stats.code_formation }],
-          });
+          const cfd = await getCFD(stats.code_formation);
 
-          if (!certification) {
-            logger.warn(`Impossible de trouver la certification pour la stats`, query);
+          const diplome = cfd?.diplome;
+          if (!diplome) {
+            logger.warn(`Impossible de trouver le diplome pour la stats`, query);
           }
 
           const res = await certificationsStats().updateOne(
@@ -53,9 +52,7 @@ export async function importCertificationsStats(options = {}) {
               },
               $set: {
                 ...stats,
-                ...(certification
-                  ? { certification: pick(certification, ["code_formation", "diplome", "alias"]) }
-                  : {}),
+                ...(diplome ? { diplome } : {}),
               },
             },
             { upsert: true }

@@ -28,8 +28,8 @@ function logs() {
  * @typedef {import("mongodb").Collection<import("./certifications.js").Mefs>} CertificationsCollection
  * @returns {CertificationsCollection}
  */
-function certifications() {
-  return dbCollection("certifications");
+function cfd() {
+  return dbCollection("cfd");
 }
 
-export { logs, certifications, formationsStats, certificationsStats };
+export { logs, cfd, formationsStats, certificationsStats };

@@ -3,23 +3,13 @@ import { fetchStream } from "./utils/httpUtils.js";
 import iconv from "iconv-lite";
 import { parseCsv } from "./utils/csvUtils.js";
 
-const NIVEAUX_INTERMINISTERIEL_DIPLOMES = {
-  0: "MENTION COMPLEMENTAIRE",
-  1: "MASTER",
-  2: "LICENCE",
-  3: "BTS",
-  4: "BAC",
-  5: "CAP",
-  6: "DIPLOME NATIONAL DU BREVET",
-  7: "PREELEMENTAIRE ET ELEMENTAIRE",
-  9: "BREVET D'APTITUDE",
-};
-
-export async function getBCNTable(table, options = {}) {
+export async function getBCNTable(tableName, options = {}) {
   let stream =
-    options[table] ||
+    options[tableName] ||
     compose(
-      await fetchStream(`https://infocentre.pleiade.education.fr/bcn/index.php/export/CSV?n=${table}&separator=%7C`),
+      await fetchStream(
+        `https://infocentre.pleiade.education.fr/bcn/index.php/export/CSV?n=${tableName}&separator=%7C`
+      ),
       iconv.decodeStream("iso-8859-1")
     );
 
@@ -35,21 +25,7 @@ export async function getBCNTable(table, options = {}) {
   );
 }
 
-export async function loadNiveauxFormation(options) {
-  const table = await getBCNTable("N_NIVEAU_FORMATION_DIPLOME", options);
-
-  const niveaux = [];
-  for await (const data of table) {
-    niveaux.push({
-      NIVEAU_FORMATION_DIPLOME: data.NIVEAU_FORMATION_DIPLOME,
-      NIVEAU_INTERMINISTERIEL: data.NIVEAU_INTERMINISTERIEL,
-    });
-  }
-
-  return niveaux;
-}
-
-export async function loadMefs(niveaux, options) {
+export async function loadMefs(options) {
   const table = await getBCNTable("N_MEF", options);
 
   const array = [];
@@ -63,8 +39,4 @@ export async function loadMefs(niveaux, options) {
   }
 
   return array;
-}
-
-export function getNiveau(code) {
-  return NIVEAUX_INTERMINISTERIEL_DIPLOMES[code];
 }

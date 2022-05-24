@@ -6,18 +6,18 @@ import { importFormationsStats } from "./jobs/importFormationsStats.js";
 import { importCertificationsStats } from "./jobs/importCertificationsStats.js";
 import { promiseAllProps } from "./common/utils/asyncUtils.js";
 import { InserJeunes } from "./common/InserJeunes.js";
-import { importCertifications } from "./jobs/importCertifications.js";
+import { importCFD } from "./jobs/importCFD.js";
 
 function asArray(v) {
   return v.split(",");
 }
 
 cli
-  .command("importCertifications")
-  .description("Import les certifications de la BCN")
+  .command("importCFD")
+  .description("Import les CFD depuis la BCN")
   .action(() => {
     runScript(() => {
-      return importCertifications();
+      return importCFD();
     });
   });
 

@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublished-import
 import { merge } from "lodash-es";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
-import { certificationsStats, certifications, formationsStats } from "../../src/common/collections/index.js";
+import { certificationsStats, cfd, formationsStats } from "../../src/common/collections/index.js";
 import { generateCodeFormation, generateStats } from "./testUtils.js";
 
 export function insertFormationsStats(custom = {}) {
@@ -52,14 +52,18 @@ export function insertCertificationsStats(custom = {}) {
   );
 }
 
-export function insertCertifications(custom = {}) {
-  return certifications().insertOne(
+export function insertCFD(custom = {}) {
+  return cfd().insertOne(
     merge(
       {},
       {
-        code_formation: generateCodeFormation(),
-        alias: [],
-        diplome: { code: "4", label: "BAC" },
+        code_formation: generateCodeFormation("4"),
+        code_formation_alternatifs: [],
+        mef: [],
+        mef_stats_9: [],
+        mef_stats_11: [],
+        libelle: "BAC PRO BATIMENT",
+        diplome: { code: "4", libelle: "BAC" },
         _meta: { date_import: new Date() },
       },
       custom

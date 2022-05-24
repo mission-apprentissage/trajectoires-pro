@@ -1,7 +1,7 @@
 import assert from "assert";
 import { importCertificationsStats } from "../../src/jobs/importCertificationsStats.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
-import { insertCertifications, insertCertificationsStats } from "../utils/fakeData.js";
+import { insertCFD, insertCertificationsStats } from "../utils/fakeData.js";
 import { omit } from "lodash-es";
 import { certificationsStats } from "../../src/common/collections/index.js";
 
@@ -34,11 +34,11 @@ describe("importCertificationsStats", () => {
         },
       ],
     });
-    await insertCertifications({
+    await insertCFD({
       code_formation: "12345678",
       diplome: {
         code: "4",
-        label: "BAC",
+        libelle: "BAC",
       },
     });
 
@@ -50,20 +50,16 @@ describe("importCertificationsStats", () => {
       filiere: "apprentissage",
       taux_emploi_6_mois: 6,
       code_formation: "12345678",
-      certification: {
-        code_formation: "12345678",
-        alias: [],
-        diplome: {
-          code: "4",
-          label: "BAC",
-        },
+      diplome: {
+        code: "4",
+        libelle: "BAC",
       },
     });
     assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
-  it("Vérifie qu'on peut importer les stats d'une certification (pro)", async () => {
+  it("Vérifie qu'on peut importer les stats d'une certification (mefstats11)", async () => {
     mockApi("2020", "voie_pro_sco_educ_nat", {
       data: [
         {
@@ -71,35 +67,20 @@ describe("importCertificationsStats", () => {
           valeur_mesure: 6,
           dimensions: [
             {
-              id_mefstat11: "12345678",
+              id_mefstat11: "09876543210",
             },
           ],
         },
       ],
     });
-    await insertCertifications({
-      code_formation: "12345678",
-      alias: [
-        {
-          code: "4746640400",
-          type: "mef",
-        },
-        {
-          code: "084621214",
-          type: "mef_stat_9",
-        },
-        {
-          code: "90517039856",
-          type: "mef_stat_11",
-        },
-        {
-          code: "97302570",
-          type: "code_formation_ancien",
-        },
-      ],
+    await insertCFD({
+      code_formation: "00000000",
+      mef: ["00000000000"],
+      mef_stats_11: ["09876543210"],
+      mef_stats_9: ["00000000000"],
       diplome: {
         code: "4",
-        label: "BAC",
+        libelle: "BAC",
       },
     });
 
@@ -107,85 +88,20 @@ describe("importCertificationsStats", () => {
 
     let found = await certificationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
-      millesime: "2020",
       filiere: "pro",
+      millesime: "2020",
+      code_formation: "09876543210",
       taux_emploi_6_mois: 6,
-      code_formation: "12345678",
-      certification: {
-        code_formation: "12345678",
-        alias: [
-          {
-            code: "4746640400",
-            type: "mef",
-          },
-          {
-            code: "084621214",
-            type: "mef_stat_9",
-          },
-          {
-            code: "90517039856",
-            type: "mef_stat_11",
-          },
-          {
-            code: "97302570",
-            type: "code_formation_ancien",
-          },
-        ],
-        diplome: {
-          code: "4",
-          label: "BAC",
-        },
-      },
-    });
-    assert.ok(found._meta.date_import);
-    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
-  });
-
-  it("Vérifie qu'on peut importer les stats d'une certification avec un alias", async () => {
-    mockApi("2020", "apprentissage", {
-      data: [
-        {
-          id_mesure: "taux_emploi_6_mois",
-          valeur_mesure: 6,
-          dimensions: [
-            {
-              id_formation_apprentissage: "CODE_FORMATION",
-            },
-          ],
-        },
-      ],
-    });
-    await insertCertifications({
-      code_formation: "12345678",
-      alias: [{ type: "code_formation_ancien", code: "CODE_FORMATION" }],
       diplome: {
         code: "4",
-        label: "BAC",
-      },
-    });
-
-    let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
-
-    let found = await certificationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
-      millesime: "2020",
-      filiere: "apprentissage",
-      taux_emploi_6_mois: 6,
-      code_formation: "CODE_FORMATION",
-      certification: {
-        code_formation: "12345678",
-        alias: [{ type: "code_formation_ancien", code: "CODE_FORMATION" }],
-        diplome: {
-          code: "4",
-          label: "BAC",
-        },
+        libelle: "BAC",
       },
     });
     assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
-  it("Vérifie qu'on peut importer les stats sans certification", async () => {
+  it("Vérifie qu'on peut importer les stats sans diplome", async () => {
     mockApi("2020", "apprentissage", {
       data: [
         {
@@ -200,7 +116,7 @@ describe("importCertificationsStats", () => {
       ],
     });
 
-    let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
+    await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
 
     let found = await certificationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
@@ -210,7 +126,6 @@ describe("importCertificationsStats", () => {
       taux_emploi_6_mois: 6,
     });
     assert.ok(found._meta.date_import);
-    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
   it("Vérifie qu'on fusionne les mesures pour une même certification", async () => {
