@@ -10,6 +10,6 @@ describe("getDiplome", () => {
     assert.deepStrictEqual(getDiplome("3XXXXXXXX"), { code: "5", libelle: "BTS" });
     assert.deepStrictEqual(getDiplome("2XXXXXXXX"), { code: "6", libelle: "LIC" });
     assert.deepStrictEqual(getDiplome("1XXXXXXXX"), { code: "7", libelle: "MASTER" });
-    assert.deepStrictEqual(getDiplome("0XXXXXXX"), { code: "7", libelle: "MASTER" }); // Mention complémentaire
+    assert.deepStrictEqual(getDiplome("0XXXXXXX"), { code: "0", libelle: "MC" });
   });
 });

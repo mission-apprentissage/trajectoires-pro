@@ -4,10 +4,11 @@ const ANCIENS_NIVEAUX_MAPPER = {
   3: "5",
   2: "6",
   1: "7",
-  0: "7", //Mention complémentaire
+  0: "0", //Mention complémentaire
 };
 
 const NIVEAUX_LIBELLES = {
+  0: "MC",
   3: "CAP",
   4: "BAC",
   5: "BTS",
