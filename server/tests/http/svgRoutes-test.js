@@ -2,7 +2,7 @@ import assert from "assert";
 import { startServer } from "../utils/testUtils.js";
 import { dbCollection } from "../../src/common/mongodb.js";
 import { insertFormationsStats, insertCertificationsStats } from "../utils/fakeData.js";
-import { formationsStats } from "../../src/common/collections/index.js";
+import { formationsStats } from "../../src/common/collections/formationsStats.js";
 
 describe("svgRoutes", () => {
   describe("formation", () => {

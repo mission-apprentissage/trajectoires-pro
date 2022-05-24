@@ -3,6 +3,8 @@ import * as codeFormationDiplomes from "./codeFormationDiplomes.js";
 import * as formationsStats from "./formationsStats.js";
 import * as certificationsStats from "./certificationsStats.js";
 
-const schemas = { logs, codeFormationDiplomes, formationsStats, certificationsStats };
+const collections = { logs, codeFormationDiplomes, formationsStats, certificationsStats };
 
-export default schemas;
+export function getCollections() {
+  return Object.values(collections);
+}

@@ -7,9 +7,10 @@ import Joi from "joi";
 import { validate } from "../utils/validators.js";
 import { getRateLevel } from "../../common/rateLevels.js";
 import { formatMillesime } from "../utils/formatters.js";
-import { formationsStats, certificationsStats } from "../../common/collections/index.js";
 import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
 import { getDirname } from "../../common/esmUtils.js";
+import { formationsStats } from "../../common/collections/formationsStats.js";
+import { certificationsStats } from "../../common/collections/certificationsStats.js";
 
 const __dirname = getDirname(import.meta.url);
 

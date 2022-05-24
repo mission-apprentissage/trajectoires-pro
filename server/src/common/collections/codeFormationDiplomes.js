@@ -1,5 +1,6 @@
-import { arrayOf, date, object, objectId, string } from "./schemas/jsonSchemaTypes.js";
-import { diplomeSchema } from "./schemas/diplomeSchema.js";
+import { arrayOf, date, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
+import { dbCollection } from "../mongodb.js";
 
 export const name = "codeFormationDiplomes";
 
@@ -44,4 +45,12 @@ export function schema() {
       additionalProperties: false,
     }
   );
+}
+
+/**
+ * @typedef {import("mongodb").Collection<import("./certifications.js").Mefs>} CertificationsCollection
+ * @returns {CertificationsCollection}
+ */
+export function codeFormationDiplomes() {
+  return dbCollection("codeFormationDiplomes");
 }

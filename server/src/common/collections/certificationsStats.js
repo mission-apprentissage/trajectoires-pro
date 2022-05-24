@@ -1,5 +1,6 @@
-import { date, integer, object, objectId, string } from "./schemas/jsonSchemaTypes.js";
-import { diplomeSchema } from "./schemas/diplomeSchema.js";
+import { date, integer, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
+import { dbCollection } from "../mongodb.js";
 
 export const name = "certificationsStats";
 
@@ -40,4 +41,12 @@ export function schema() {
     },
     { required: ["millesime", "code_formation", "filiere", "diplome"], additionalProperties: false }
   );
+}
+
+/**
+ * @typedef {import("mongodb").Collection<import("./certificationsStats").CertificationsStats>} CertificationsStatsCollection
+ * @returns {CertificationsStatsCollection}
+ */
+export function certificationsStats() {
+  return dbCollection("certificationsStats");
 }

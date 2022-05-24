@@ -5,8 +5,8 @@ import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/InserJeunes.js";
-import { formationsStats } from "../common/collections/index.js";
 import { getCFD } from "../common/actions/getCFD.js";
+import { formationsStats } from "../common/collections/formationsStats.js";
 
 const logger = bunyan.child({ context: "import" });
 

@@ -1,4 +1,5 @@
-import { object, objectId, string, date, integer } from "./schemas/jsonSchemaTypes.js";
+import { object, objectId, string, date, integer } from "./jsonSchema/jsonSchemaTypes.js";
+import { dbCollection } from "../mongodb.js";
 
 export const name = "logs";
 
@@ -20,4 +21,12 @@ export function schema() {
     },
     { required: ["time"], additionalProperties: true }
   );
+}
+
+/**
+ * @typedef {import("mongodb").Collection<import("./logs").Logs>} LogsCollection
+ * @returns {LogsCollection}
+ */
+export function logs() {
+  return dbCollection("logs");
 }
