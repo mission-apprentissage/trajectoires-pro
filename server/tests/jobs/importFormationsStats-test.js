@@ -106,36 +106,6 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
-  it("Vérifie qu'on peut importer les stats sans diplome", async () => {
-    let input = createStream(`uai\n0751234J`);
-    mockApi("0751234J", "2018_2019", {
-      data: [
-        {
-          id_mesure: "taux_emploi_6_mois",
-          valeur_mesure: 6,
-          dimensions: [
-            {
-              id_formation_apprentissage: "12345678",
-            },
-          ],
-        },
-      ],
-    });
-
-    let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
-
-    let found = await formationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
-      uai: "0751234J",
-      code_formation: "12345678",
-      millesime: "2018_2019",
-      filiere: "apprentissage",
-      taux_emploi_6_mois: 6,
-    });
-    assert.ok(found._meta.date_import);
-    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
-  });
-
   it("Vérifie qu'on fusionne les mesures d'une formation", async () => {
     let input = createStream(`uai\n0751234J`);
     mockApi("0751234J", "2018_2019", {
@@ -160,6 +130,7 @@ describe("importFormationsStats", () => {
         },
       ],
     });
+    await insertCFD({ code_formation: "12345678" });
 
     let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
 
@@ -194,6 +165,8 @@ describe("importFormationsStats", () => {
         },
       ],
     });
+    await insertCFD({ code_formation: "12345678" });
+    await insertCFD({ code_formation: "87456123" });
 
     let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
 
@@ -232,6 +205,8 @@ describe("importFormationsStats", () => {
         },
       ],
     });
+    await insertCFD({ code_formation: "12345678" });
+    await insertCFD({ code_formation: "87456123" });
 
     let stats = await importFormationsStats({ input, millesimes: ["2018_2019", "2020_2021"] });
 

@@ -38,7 +38,7 @@ export function schema() {
       ),
     },
     {
-      required: ["uai", "millesime", "code_formation", "filiere"],
+      required: ["uai", "millesime", "code_formation", "filiere", "diplome"],
       additionalProperties: false,
     }
   );

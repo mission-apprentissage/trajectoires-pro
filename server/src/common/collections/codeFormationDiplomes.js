@@ -34,11 +34,11 @@ export function schema() {
     {
       required: [
         "code_formation",
+        "libelle",
         "code_formation_alternatifs",
         "mef",
         "mef_stats_9",
         "mef_stats_11",
-        "libelle",
         "_meta",
       ],
       additionalProperties: false,

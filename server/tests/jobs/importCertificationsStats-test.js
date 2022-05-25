@@ -101,33 +101,6 @@ describe("importCertificationsStats", () => {
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
-  it("Vérifie qu'on peut importer les stats sans diplome", async () => {
-    mockApi("2020", "apprentissage", {
-      data: [
-        {
-          id_mesure: "taux_emploi_6_mois",
-          valeur_mesure: 6,
-          dimensions: [
-            {
-              id_formation_apprentissage: "12345678",
-            },
-          ],
-        },
-      ],
-    });
-
-    await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
-
-    let found = await certificationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
-      millesime: "2020",
-      code_formation: "12345678",
-      filiere: "apprentissage",
-      taux_emploi_6_mois: 6,
-    });
-    assert.ok(found._meta.date_import);
-  });
-
   it("Vérifie qu'on fusionne les mesures pour une même certification", async () => {
     mockApi("2020", "apprentissage", {
       data: [
@@ -151,6 +124,7 @@ describe("importCertificationsStats", () => {
         },
       ],
     });
+    await insertCFD({ code_formation: "12345678" });
 
     let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
 
@@ -187,6 +161,7 @@ describe("importCertificationsStats", () => {
         },
       ],
     });
+    await insertCFD({ code_formation: "12345678" });
 
     await importCertificationsStats({ millesimes: ["2019", "2020"], filieres: ["apprentissage"] });
 
@@ -220,6 +195,8 @@ describe("importCertificationsStats", () => {
         },
       ],
     });
+    await insertCFD({ code_formation: "12345678" });
+    await insertCFD({ code_formation: "67890" });
 
     let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
 

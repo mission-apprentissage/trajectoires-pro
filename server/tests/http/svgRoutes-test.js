@@ -66,6 +66,7 @@ describe("svgRoutes", () => {
       await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
         taux_emploi_6_mois: 50,
@@ -84,6 +85,7 @@ describe("svgRoutes", () => {
       await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
         taux_emploi_6_mois: 50,
@@ -106,6 +108,7 @@ describe("svgRoutes", () => {
       await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
         taux_poursuite_etudes: 0,
@@ -137,6 +140,7 @@ describe("svgRoutes", () => {
       await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
       });
@@ -190,6 +194,7 @@ describe("svgRoutes", () => {
         code_formation: "23830024203",
         millesime: "2018",
         filiere: "apprentissage",
+        diplome: { code: "4", libelle: "BAC" },
       });
       const response = await httpClient.get("/api/svg/code_formation/23830024203/millesime/2018");
 

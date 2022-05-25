@@ -38,6 +38,6 @@ export function schema() {
         { required: ["date_import"] }
       ),
     },
-    { required: ["millesime", "code_formation", "filiere"], additionalProperties: false }
+    { required: ["millesime", "code_formation", "filiere", "diplome"], additionalProperties: false }
   );
 }

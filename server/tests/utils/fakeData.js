@@ -10,9 +10,10 @@ export function insertFormationsStats(custom = {}) {
       {},
       {
         uai: createUAI(faker.helpers.replaceSymbols("075####")),
-        code_formation: generateCodeFormation(),
         millesime: "2018_2019",
         filiere: "apprentissage",
+        code_formation: generateCodeFormation("4"),
+        diplome: { code: "4", libelle: "BAC" },
         nb_annee_term: generateStats(),
         nb_en_emploi_12_mois: generateStats(),
         nb_en_emploi_6_mois: generateStats(),
@@ -36,7 +37,8 @@ export function insertCertificationsStats(custom = {}) {
       {},
       {
         millesime: "2020",
-        code_formation: generateCodeFormation(),
+        code_formation: generateCodeFormation("4"),
+        diplome: { code: "4", libelle: "BAC" },
         filiere: "apprentissage",
         nb_annee_term: generateStats(),
         nb_poursuite_etudes: generateStats(),
