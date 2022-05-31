@@ -10,6 +10,8 @@ import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { certificationsStats } from "../../common/collections/collections.js";
+import { getRates } from "../../common/rateLevels.js";
+import { renderTemplate } from "../utils/templates.js";
 
 export default () => {
   const router = express.Router();
@@ -74,26 +76,42 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/certifications/code_formation/:code_formation/millesime/:millesime",
+    "/api/inserjeunes/certifications/code_formation/:code_formation/millesime/:millesime.:ext?",
     tryCatch(async (req, res) => {
-      const { code_formation, millesime } = await validate(
+      const { code_formation, millesime, direction, theme, ext } = await validate(
         { ...req.params, ...req.query },
         {
           code_formation: Joi.string().required(),
           millesime: Joi.string().required(),
+          ...validators.svg(),
         }
       );
 
-      let found = await certificationsStats().findOne(
+      let stats = await certificationsStats().findOne(
         { code_formation, millesime },
         { projection: { _id: 0, _meta: 0 } }
       );
 
-      if (!found) {
+      if (!stats) {
         throw Boom.notFound("Code formation et/ou millésime invalide");
       }
 
-      return res.json(found);
+      if (ext === "svg") {
+        const rates = getRates(stats);
+        if (rates.length === 0) {
+          return res.status(404).send("Donnée non disponible");
+        }
+
+        const svg = await renderTemplate("formation", rates, {
+          theme,
+          direction,
+        });
+
+        res.setHeader("content-type", "image/svg+xml");
+        return res.status(200).send(svg);
+      } else {
+        return res.json(stats);
+      }
     })
   );
 

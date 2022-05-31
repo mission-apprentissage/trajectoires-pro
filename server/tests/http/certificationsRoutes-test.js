@@ -2,6 +2,7 @@ import assert from "assert";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertCertificationsStats } from "../utils/fakeData.js";
+import { dbCollection } from "../../src/common/mongodb.js";
 
 describe("certificationsRoutes", () => {
   function getAuthHeaders() {
@@ -245,6 +246,66 @@ describe("certificationsRoutes", () => {
       error: "Not Found",
       message: "Code formation et/ou millésime invalide",
       statusCode: 404,
+    });
+  });
+
+  describe("svg", () => {
+    it("Vérifie qu'on peut obtenir une image SVG", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({
+        millesime: "2020",
+        code_formation: "23830024203",
+        filiere: "apprentissage",
+        taux_poursuite_etudes: 5,
+      });
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/certifications/code_formation/23830024203/millesime/2020.svg"
+      );
+
+      assert.strictEqual(response.status, 200);
+      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+      assert.ok(response.data.includes("5%"));
+      assert.ok(response.data.includes("sont en emploi 6 mois"));
+      assert.ok(response.data.includes("poursuivent leurs études"));
+    });
+
+    it("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/certifications/code_formation/23830024203/millesime/2022-2021.svg"
+      );
+
+      assert.strictEqual(response.status, 404);
+      assert.strictEqual(response.data.message, "Code formation et/ou millésime invalide");
+    });
+
+    it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
+      const { httpClient } = await startServer();
+      await dbCollection("certificationsStats").insertOne({
+        code_formation: "23830024203",
+        millesime: "2018",
+        filiere: "apprentissage",
+        diplome: { code: "4", libelle: "BAC" },
+      });
+      const response = await httpClient.get(
+        "/api/inserjeunes/certifications/code_formation/23830024203/millesime/2018.svg"
+      );
+
+      assert.strictEqual(response.status, 404);
+      assert.strictEqual(response.data, "Donnée non disponible");
+    });
+
+    it("Vérifie qu'on obtient une erreur avec une direction invalide", async () => {
+      await insertCertificationsStats({ code_formation: "23830024203", millesime: "2018" });
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/certifications/code_formation/23830024203/millesime/2018.svg?direction=diagonal"
+      );
+
+      assert.strictEqual(response.status, 400);
     });
   });
 });

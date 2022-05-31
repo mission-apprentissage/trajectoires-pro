@@ -10,6 +10,8 @@ import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
 import { formationsStats } from "../../common/collections/collections.js";
+import { getRates } from "../../common/rateLevels.js";
+import { renderTemplate } from "../utils/templates.js";
 
 export default () => {
   const router = express.Router();
@@ -81,9 +83,9 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/formations/uai/:uai/code_formation/:code_formation/millesime/:millesime",
+    "/api/inserjeunes/formations/uai/:uai/code_formation/:code_formation/millesime/:millesime.:ext?",
     tryCatch(async (req, res) => {
-      const { uai, code_formation, millesime } = await validate(
+      const { uai, code_formation, millesime, direction, theme, ext } = await validate(
         { ...req.params, ...req.query },
         {
           uai: Joi.string()
@@ -91,19 +93,35 @@ export default () => {
             .required(),
           code_formation: Joi.string().required(),
           millesime: Joi.string().required(),
+          ...validators.svg(),
         }
       );
 
-      let found = await formationsStats().findOne(
-        { uai, code_formation, millesime },
+      let stats = await formationsStats().findOne(
+        { uai, code_formation, millesime: formatMillesime(millesime) },
         { projection: { _id: 0, _meta: 0 } }
       );
 
-      if (!found) {
+      if (!stats) {
         throw Boom.notFound("UAI, code formation et/ou millésime invalide");
       }
 
-      return res.json(found);
+      if (ext === "svg") {
+        const rates = getRates(stats);
+        if (rates.length === 0) {
+          return res.status(404).send("Donnée non disponible");
+        }
+
+        const svg = await renderTemplate("formation", rates, {
+          theme,
+          direction,
+        });
+
+        res.setHeader("content-type", "image/svg+xml");
+        return res.status(200).send(svg);
+      } else {
+        return res.json(stats);
+      }
     })
   );
 
