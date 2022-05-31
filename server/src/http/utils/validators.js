@@ -26,7 +26,7 @@ export function pagination() {
   };
 }
 
-export function stats() {
+export function svg() {
   return {
     direction: Joi.string().valid("horizontal", "vertical"),
     theme: Joi.string().valid("dsfr", "onisep"),

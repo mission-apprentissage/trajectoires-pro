@@ -93,7 +93,7 @@ export default () => {
             .required(),
           code_formation: Joi.string().required(),
           millesime: Joi.string().required(),
-          ...validators.stats(),
+          ...validators.svg(),
         }
       );
 
