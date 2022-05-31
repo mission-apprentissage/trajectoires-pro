@@ -74,10 +74,10 @@ export async function importFormationsStats(options = {}) {
     writeData(
       async (stats) => {
         const uai = stats.uai;
-        const query = { uai: uai, code_formation: stats.code_formation, millesime: stats.millesime };
+        const query = { uai: uai, code_certification: stats.code_certification, millesime: stats.millesime };
 
         try {
-          const cfd = await getCFD(stats.code_formation);
+          const cfd = await getCFD(stats.code_certification);
 
           const diplome = cfd?.diplome;
           if (!diplome) {

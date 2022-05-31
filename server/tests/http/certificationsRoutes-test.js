@@ -15,7 +15,7 @@ describe("certificationsRoutes", () => {
     const { httpClient } = await startServer();
     await insertCertificationsStats({
       millesime: "2020",
-      code_formation: "12345678",
+      code_certification: "12345678",
       filiere: "apprentissage",
       nb_annee_term: 1,
       nb_poursuite_etudes: 2,
@@ -38,7 +38,7 @@ describe("certificationsRoutes", () => {
       certifications: [
         {
           millesime: "2020",
-          code_formation: "12345678",
+          code_certification: "12345678",
           filiere: "apprentissage",
           diplome: { code: "4", libelle: "BAC" },
           nb_annee_term: 1,
@@ -109,8 +109,8 @@ describe("certificationsRoutes", () => {
 
   it("Vérifie qu'on peut obtenir les stats de formations pour code formation", async () => {
     const { httpClient } = await startServer();
-    await insertCertificationsStats({ code_formation: "12345" });
-    await insertCertificationsStats({ code_formation: "67890" });
+    await insertCertificationsStats({ code_certification: "12345" });
+    await insertCertificationsStats({ code_certification: "67890" });
 
     const response = await httpClient.get(`/api/inserjeunes/certifications?codes_formation=12345`, {
       headers: {
@@ -119,7 +119,7 @@ describe("certificationsRoutes", () => {
     });
 
     assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.data.certifications[0].code_formation, "12345");
+    assert.strictEqual(response.data.certifications[0].code_certification, "12345");
     assert.strictEqual(response.data.pagination.total, 1);
   });
 
@@ -127,7 +127,7 @@ describe("certificationsRoutes", () => {
     const { httpClient } = await startServer();
     await insertCertificationsStats({
       millesime: "2020",
-      code_formation: "12345678",
+      code_certification: "12345678",
       filiere: "apprentissage",
       nb_annee_term: 1,
       nb_poursuite_etudes: 2,
@@ -149,7 +149,7 @@ describe("certificationsRoutes", () => {
     assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
     assert.deepStrictEqual(
       response.data,
-      `code_formation;filiere;millesime;nb_annee_term;nb_poursuite_etudes;nb_en_emploi_12_mois;nb_en_emploi_6_mois;taux_poursuite_etudes;taux_emploi_12_mois;taux_emploi_6_mois;taux_rupture_contrats
+      `code_certification;filiere;millesime;nb_annee_term;nb_poursuite_etudes;nb_en_emploi_12_mois;nb_en_emploi_6_mois;taux_poursuite_etudes;taux_emploi_12_mois;taux_emploi_6_mois;taux_rupture_contrats
 12345678;apprentissage;2020;1;2;3;4;5;6;7;8
 `
     );
@@ -205,7 +205,7 @@ describe("certificationsRoutes", () => {
     const { httpClient } = await startServer();
     await insertCertificationsStats({
       millesime: "2020",
-      code_formation: "12345678",
+      code_certification: "12345678",
       filiere: "apprentissage",
       nb_annee_term: 1,
       nb_poursuite_etudes: 2,
@@ -217,12 +217,12 @@ describe("certificationsRoutes", () => {
       taux_rupture_contrats: 8,
     });
 
-    const response = await httpClient.get(`/api/inserjeunes/certifications/code_formation/12345678/millesime/2020`);
+    const response = await httpClient.get(`/api/inserjeunes/certifications/code_certification/12345678/millesime/2020`);
 
     assert.strictEqual(response.status, 200);
     assert.deepStrictEqual(response.data, {
       millesime: "2020",
-      code_formation: "12345678",
+      code_certification: "12345678",
       filiere: "apprentissage",
       diplome: { code: "4", libelle: "BAC" },
       nb_annee_term: 1,
@@ -239,7 +239,9 @@ describe("certificationsRoutes", () => {
   it("Vérifie qu'on retourne une 404 si la formation est inconnue", async () => {
     const { httpClient } = await startServer();
 
-    const response = await httpClient.get(`/api/inserjeunes/certifications/code_formation/12345678/millesime/INCONNUE`);
+    const response = await httpClient.get(
+      `/api/inserjeunes/certifications/code_certification/12345678/millesime/INCONNUE`
+    );
 
     assert.strictEqual(response.status, 404);
     assert.deepStrictEqual(response.data, {
@@ -254,13 +256,13 @@ describe("certificationsRoutes", () => {
       const { httpClient } = await startServer();
       await insertCertificationsStats({
         millesime: "2020",
-        code_formation: "23830024203",
+        code_certification: "23830024203",
         filiere: "apprentissage",
         taux_poursuite_etudes: 5,
       });
 
       const response = await httpClient.get(
-        "/api/inserjeunes/certifications/code_formation/23830024203/millesime/2020.svg"
+        "/api/inserjeunes/certifications/code_certification/23830024203/millesime/2020.svg"
       );
 
       assert.strictEqual(response.status, 200);
@@ -274,7 +276,7 @@ describe("certificationsRoutes", () => {
       const { httpClient } = await startServer();
 
       const response = await httpClient.get(
-        "/api/inserjeunes/certifications/code_formation/23830024203/millesime/2022-2021.svg"
+        "/api/inserjeunes/certifications/code_certification/23830024203/millesime/2022-2021.svg"
       );
 
       assert.strictEqual(response.status, 404);
@@ -284,13 +286,13 @@ describe("certificationsRoutes", () => {
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
       const { httpClient } = await startServer();
       await dbCollection("certificationsStats").insertOne({
-        code_formation: "23830024203",
+        code_certification: "23830024203",
         millesime: "2018",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
       });
       const response = await httpClient.get(
-        "/api/inserjeunes/certifications/code_formation/23830024203/millesime/2018.svg"
+        "/api/inserjeunes/certifications/code_certification/23830024203/millesime/2018.svg"
       );
 
       assert.strictEqual(response.status, 404);
@@ -298,11 +300,11 @@ describe("certificationsRoutes", () => {
     });
 
     it("Vérifie qu'on obtient une erreur avec une direction invalide", async () => {
-      await insertCertificationsStats({ code_formation: "23830024203", millesime: "2018" });
+      await insertCertificationsStats({ code_certification: "23830024203", millesime: "2018" });
       const { httpClient } = await startServer();
 
       const response = await httpClient.get(
-        "/api/inserjeunes/certifications/code_formation/23830024203/millesime/2018.svg?direction=diagonal"
+        "/api/inserjeunes/certifications/code_certification/23830024203/millesime/2018.svg?direction=diagonal"
       );
 
       assert.strictEqual(response.status, 400);

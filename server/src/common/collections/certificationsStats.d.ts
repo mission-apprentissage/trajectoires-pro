@@ -9,7 +9,7 @@ import { ObjectId } from "mongodb";
 export interface CertificationsStats {
   _id?: ObjectId;
   millesime: string;
-  code_formation: string;
+  code_certification: string;
   filiere: "apprentissage" | "pro";
   nb_annee_term?: number;
   nb_poursuite_etudes?: number;

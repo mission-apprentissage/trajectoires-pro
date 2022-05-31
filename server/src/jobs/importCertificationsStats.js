@@ -34,10 +34,10 @@ export async function importCertificationsStats(options = {}) {
     flattenArray(),
     writeData(
       async (stats) => {
-        const query = { millesime: stats.millesime, code_formation: stats.code_formation };
+        const query = { millesime: stats.millesime, code_certification: stats.code_certification };
 
         try {
-          const cfd = await getCFD(stats.code_formation);
+          const cfd = await getCFD(stats.code_certification);
 
           const diplome = cfd?.diplome;
           if (!diplome) {

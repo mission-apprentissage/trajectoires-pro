@@ -34,7 +34,7 @@ export default () => {
         "certificationsStats",
         {
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
-          ...(codes_formation.length > 0 ? { code_formation: { $in: codes_formation } } : {}),
+          ...(codes_formation.length > 0 ? { code_certification: { $in: codes_formation } } : {}),
         },
         {
           limit: items_par_page,
@@ -48,7 +48,7 @@ export default () => {
         addCsvHeaders(res);
         extensionTransformer = transformIntoCSV({
           columns: {
-            code_formation: (f) => f.code_formation,
+            code_certification: (f) => f.code_certification,
             filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,
             nb_annee_term: (f) => f.nb_annee_term,
@@ -76,19 +76,19 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/certifications/code_formation/:code_formation/millesime/:millesime.:ext?",
+    "/api/inserjeunes/certifications/code_certification/:code_certification/millesime/:millesime.:ext?",
     tryCatch(async (req, res) => {
-      const { code_formation, millesime, direction, theme, ext } = await validate(
+      const { code_certification, millesime, direction, theme, ext } = await validate(
         { ...req.params, ...req.query },
         {
-          code_formation: Joi.string().required(),
+          code_certification: Joi.string().required(),
           millesime: Joi.string().required(),
           ...validators.svg(),
         }
       );
 
       let stats = await certificationsStats().findOne(
-        { code_formation, millesime },
+        { code_certification, millesime },
         { projection: { _id: 0, _meta: 0 } }
       );
 

@@ -5,10 +5,10 @@ export const name = "formationsStats";
 
 export function indexes() {
   return [
-    [{ uai: 1, code_formation: 1, millesime: 1 }, { unique: true }],
+    [{ uai: 1, code_certification: 1, millesime: 1 }, { unique: true }],
     [{ uai: 1 }],
     [{ millesime: 1 }],
-    [{ code_formation: 1 }],
+    [{ code_certification: 1 }],
     [{ filiere: 1 }],
   ];
 }
@@ -19,7 +19,7 @@ export function schema() {
       _id: objectId(),
       uai: string(),
       millesime: string(),
-      code_formation: string(),
+      code_certification: string(),
       filiere: string({ enum: ["apprentissage", "pro"] }),
       nb_annee_term: integer(),
       nb_poursuite_etudes: integer(),
@@ -38,7 +38,7 @@ export function schema() {
       ),
     },
     {
-      required: ["uai", "millesime", "code_formation", "filiere", "diplome"],
+      required: ["uai", "millesime", "code_certification", "filiere", "diplome"],
       additionalProperties: false,
     }
   );

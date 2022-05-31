@@ -5,9 +5,9 @@ export const name = "certificationsStats";
 
 export function indexes() {
   return [
-    [{ millesime: 1, code_formation: 1 }, { unique: true }],
+    [{ millesime: 1, code_certification: 1 }, { unique: true }],
     [{ millesime: 1 }],
-    [{ code_formation: 1 }],
+    [{ code_certification: 1 }],
     [{ filiere: 1 }],
     [{ "certification.code_formation": 1 }],
     [{ "certification.alias.code": 1 }],
@@ -19,7 +19,7 @@ export function schema() {
     {
       _id: objectId(),
       millesime: string(),
-      code_formation: string(),
+      code_certification: string(),
       filiere: string({ enum: ["apprentissage", "pro"] }),
       nb_annee_term: integer(),
       nb_poursuite_etudes: integer(),
@@ -38,6 +38,6 @@ export function schema() {
         { required: ["date_import"] }
       ),
     },
-    { required: ["millesime", "code_formation", "filiere", "diplome"], additionalProperties: false }
+    { required: ["millesime", "code_certification", "filiere", "diplome"], additionalProperties: false }
   );
 }

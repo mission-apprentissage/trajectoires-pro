@@ -15,7 +15,7 @@ describe("formationsRoutes", () => {
     const { httpClient } = await startServer();
     await insertFormationsStats({
       uai: "0751234J",
-      code_formation: "12345678",
+      code_certification: "12345678",
       millesime: "2018_2019",
       filiere: "apprentissage",
       nb_annee_term: 1,
@@ -39,7 +39,7 @@ describe("formationsRoutes", () => {
       formations: [
         {
           uai: "0751234J",
-          code_formation: "12345678",
+          code_certification: "12345678",
           millesime: "2018_2019",
           filiere: "apprentissage",
           diplome: { code: "4", libelle: "BAC" },
@@ -127,8 +127,8 @@ describe("formationsRoutes", () => {
 
   it("Vérifie qu'on peut obtenir les stats de formations pour code formation", async () => {
     const { httpClient } = await startServer();
-    await insertFormationsStats({ code_formation: "12345" });
-    await insertFormationsStats({ code_formation: "67890" });
+    await insertFormationsStats({ code_certification: "12345" });
+    await insertFormationsStats({ code_certification: "67890" });
 
     const response = await httpClient.get(`/api/inserjeunes/formations?codes_formation=12345`, {
       headers: {
@@ -137,7 +137,7 @@ describe("formationsRoutes", () => {
     });
 
     assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.data.formations[0].code_formation, "12345");
+    assert.strictEqual(response.data.formations[0].code_certification, "12345");
     assert.strictEqual(response.data.pagination.total, 1);
   });
 
@@ -145,7 +145,7 @@ describe("formationsRoutes", () => {
     const { httpClient } = await startServer();
     await insertFormationsStats({
       uai: "0751234J",
-      code_formation: "12345678",
+      code_certification: "12345678",
       millesime: "2018_2019",
       filiere: "apprentissage",
       nb_annee_term: 1,
@@ -168,7 +168,7 @@ describe("formationsRoutes", () => {
     assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
     assert.deepStrictEqual(
       response.data,
-      `uai;code_formation;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
+      `uai;code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
 0751234J;12345678;apprentissage;2018_2019;1;2;3;4;5;6;7;8
 `
     );
@@ -224,7 +224,7 @@ describe("formationsRoutes", () => {
     const { httpClient } = await startServer();
     await insertFormationsStats({
       uai: "0751234J",
-      code_formation: "12345678",
+      code_certification: "12345678",
       millesime: "2018_2019",
       filiere: "apprentissage",
       nb_annee_term: 1,
@@ -238,13 +238,13 @@ describe("formationsRoutes", () => {
     });
 
     const response = await httpClient.get(
-      `/api/inserjeunes/formations/uai/0751234J/code_formation/12345678/millesime/2018_2019`
+      `/api/inserjeunes/formations/uai/0751234J/code_certification/12345678/millesime/2018_2019`
     );
 
     assert.strictEqual(response.status, 200);
     assert.deepStrictEqual(response.data, {
       uai: "0751234J",
-      code_formation: "12345678",
+      code_certification: "12345678",
       millesime: "2018_2019",
       filiere: "apprentissage",
       diplome: { code: "4", libelle: "BAC" },
@@ -263,7 +263,7 @@ describe("formationsRoutes", () => {
     const { httpClient } = await startServer();
 
     const response = await httpClient.get(
-      `/api/inserjeunes/formations/uai/0751234J/code_formation/12345678/millesime/INCONNUE`
+      `/api/inserjeunes/formations/uai/0751234J/code_certification/12345678/millesime/INCONNUE`
     );
 
     assert.strictEqual(response.status, 404);
@@ -278,7 +278,7 @@ describe("formationsRoutes", () => {
     function createDefaultStats() {
       return insertFormationsStats({
         uai: "0751234J",
-        code_formation: "1022105",
+        code_certification: "1022105",
         millesime: "2021_2022",
         taux_emploi_6_mois: 50,
       });
@@ -289,7 +289,7 @@ describe("formationsRoutes", () => {
       await createDefaultStats();
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg"
+        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg"
       );
 
       assert.strictEqual(response.status, 200);
@@ -304,7 +304,7 @@ describe("formationsRoutes", () => {
       await createDefaultStats();
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg?direction=horizontal"
+        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg?direction=horizontal"
       );
 
       assert.strictEqual(response.status, 200);
@@ -316,7 +316,7 @@ describe("formationsRoutes", () => {
       const { httpClient } = await startServer();
       await formationsStats().insertOne({
         uai: "0751234J",
-        code_formation: "1022105",
+        code_certification: "1022105",
         diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
@@ -324,7 +324,7 @@ describe("formationsRoutes", () => {
       });
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg"
+        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg"
       );
 
       assert.strictEqual(response.status, 200);
@@ -337,7 +337,7 @@ describe("formationsRoutes", () => {
       const { httpClient } = await startServer();
       await formationsStats().insertOne({
         uai: "0751234J",
-        code_formation: "1022105",
+        code_certification: "1022105",
         diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
@@ -345,7 +345,7 @@ describe("formationsRoutes", () => {
       });
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg?direction=horizontal"
+        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg?direction=horizontal"
       );
 
       assert.strictEqual(response.status, 200);
@@ -360,7 +360,7 @@ describe("formationsRoutes", () => {
       const { httpClient } = await startServer();
       await formationsStats().insertOne({
         uai: "0751234J",
-        code_formation: "1022105",
+        code_certification: "1022105",
         diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
@@ -369,7 +369,7 @@ describe("formationsRoutes", () => {
       });
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg"
+        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg"
       );
 
       assert.strictEqual(response.status, 200);
@@ -385,7 +385,7 @@ describe("formationsRoutes", () => {
       const { httpClient } = await startServer();
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234P/code_formation/1022101/millesime/2022-2021.svg"
+        "/api/inserjeunes/formations/uai/0751234P/code_certification/1022101/millesime/2022-2021.svg"
       );
 
       assert.strictEqual(response.status, 404);
@@ -396,14 +396,14 @@ describe("formationsRoutes", () => {
       const { httpClient } = await startServer();
       await formationsStats().insertOne({
         uai: "0751234J",
-        code_formation: "1022105",
+        code_certification: "1022105",
         diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
       });
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg"
+        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg"
       );
 
       assert.strictEqual(response.status, 404);
@@ -414,7 +414,7 @@ describe("formationsRoutes", () => {
       const { httpClient } = await startServer();
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0010001/code_formation/23220023440/millesime/2020-2019.svg"
+        "/api/inserjeunes/formations/uai/0010001/code_certification/23220023440/millesime/2020-2019.svg"
       );
 
       assert.strictEqual(response.status, 400);
@@ -426,7 +426,7 @@ describe("formationsRoutes", () => {
       await createDefaultStats();
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg?direction=diagonal"
+        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg?direction=diagonal"
       );
 
       assert.strictEqual(response.status, 400);
