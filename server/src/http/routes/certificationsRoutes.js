@@ -76,26 +76,28 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/certifications/code_certification/:code_certification/millesime/:millesime.:ext?",
+    "/api/inserjeunes/certifications/code_certification/:code_certification.:ext?",
     tryCatch(async (req, res) => {
       const { code_certification, millesime, direction, theme, ext } = await validate(
         { ...req.params, ...req.query },
         {
           code_certification: Joi.string().required(),
-          millesime: Joi.string().required(),
+          millesime: Joi.string(),
           ...validators.svg(),
         }
       );
 
-      let stats = await certificationsStats().findOne(
-        { code_certification, millesime },
-        { projection: { _id: 0, _meta: 0 } }
-      );
+      const results = await certificationsStats()
+        .find({ code_certification, ...(millesime ? { millesime } : {}) }, { projection: { _id: 0, _meta: 0 } })
+        .limit(1)
+        .sort({ millesime: -1 })
+        .toArray();
 
-      if (!stats) {
+      if (results.length === 0) {
         throw Boom.notFound("Code formation et/ou millésime invalide");
       }
 
+      const stats = results[0];
       if (ext === "svg") {
         const rates = getRates(stats);
         if (rates.length === 0) {
