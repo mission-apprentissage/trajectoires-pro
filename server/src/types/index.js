@@ -1,3 +1,6 @@
-import { generateTypes } from "./generateTypes.js";
+import "dotenv/config";
+import { generateMongodbDocumentTypes } from "./generateMongodbDocumentTypes.js";
 
-generateTypes();
+(async function () {
+  await generateMongodbDocumentTypes();
+})();

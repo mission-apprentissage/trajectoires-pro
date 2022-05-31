@@ -1,4 +1,4 @@
-import { codeFormationDiplomes } from "../collections/index.js";
+import { codeFormationDiplomes } from "../collections/collections.js";
 
 export function getCFD(code) {
   return codeFormationDiplomes().findOne({

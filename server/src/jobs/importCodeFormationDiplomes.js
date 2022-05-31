@@ -1,10 +1,10 @@
 import { mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
-import { codeFormationDiplomes } from "../common/collections/index.js";
 import bunyan from "../common/logger.js";
 import { getBCNTable, loadMefs } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { pick, range } from "lodash-es";
 import { getDiplome } from "../common/actions/getDiplome.js";
+import { codeFormationDiplomes } from "../common/collections/collections.js";
 
 const logger = bunyan.child({ context: "import" });
 

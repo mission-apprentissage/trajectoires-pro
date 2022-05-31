@@ -7,9 +7,9 @@ import { checkApiKey } from "../middlewares/authMiddleware.js";
 import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
-import { formationsStats } from "../../common/collections/index.js";
 import Boom from "boom";
 import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
+import { formationsStats } from "../../common/collections/collections.js";
 
 export default () => {
   const router = express.Router();

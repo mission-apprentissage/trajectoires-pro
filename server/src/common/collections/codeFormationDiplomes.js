@@ -1,5 +1,5 @@
-import { arrayOf, date, object, objectId, string } from "./schemas/jsonSchemaTypes.js";
-import { diplomeSchema } from "./schemas/diplomeSchema.js";
+import { arrayOf, date, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 
 export const name = "codeFormationDiplomes";
 

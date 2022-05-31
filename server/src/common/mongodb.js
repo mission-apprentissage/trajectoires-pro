@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 import config from "../config.js";
-import schemas from "./collections/schemas.js";
+import { getCollectionDescriptors } from "./collections/collections.js";
 import bunyan from "./logger.js";
 import { writeData } from "oleoduc";
 
@@ -72,7 +72,7 @@ export function clearCollection(name) {
 export async function configureIndexes(options = {}) {
   await ensureInitialization();
   await Promise.all(
-    Object.values(schemas).map(async ({ name, indexes }) => {
+    getCollectionDescriptors().map(async ({ name, indexes }) => {
       let shouldDropIndexes = options.dropIndexes || false;
       let dbCol = dbCollection(name);
 
@@ -97,7 +97,7 @@ export async function configureIndexes(options = {}) {
 export async function configureValidation() {
   await ensureInitialization();
   await Promise.all(
-    Object.values(schemas).map(async ({ name, schema }) => {
+    getCollectionDescriptors().map(async ({ name, schema }) => {
       await createCollectionIfNeeded(name);
 
       if (!schema) {

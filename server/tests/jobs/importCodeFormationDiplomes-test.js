@@ -2,7 +2,7 @@ import assert from "assert";
 import { merge, omit } from "lodash-es";
 import { importCodeFormationDiplomes } from "../../src/jobs/importCodeFormationDiplomes.js";
 import { createStream } from "../utils/testUtils.js";
-import { codeFormationDiplomes } from "../../src/common/collections/index.js";
+import { codeFormationDiplomes } from "../../src/common/collections/collections.js";
 
 function getBcnTables(custom = {}) {
   return merge(

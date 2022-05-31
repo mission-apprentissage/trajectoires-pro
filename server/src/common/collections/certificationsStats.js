@@ -1,5 +1,5 @@
-import { date, integer, object, objectId, string } from "./schemas/jsonSchemaTypes.js";
-import { diplomeSchema } from "./schemas/diplomeSchema.js";
+import { date, integer, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 
 export const name = "certificationsStats";
 
