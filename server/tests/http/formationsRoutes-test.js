@@ -2,6 +2,7 @@ import assert from "assert";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertFormationsStats } from "../utils/fakeData.js";
+import { formationsStats } from "../../src/common/collections/collections.js";
 
 describe("formationsRoutes", () => {
   function getAuthHeaders() {
@@ -270,6 +271,166 @@ describe("formationsRoutes", () => {
       error: "Not Found",
       message: "UAI, code formation et/ou millésime invalide",
       statusCode: 404,
+    });
+  });
+
+  describe("svg", () => {
+    function createDefaultStats() {
+      return insertFormationsStats({
+        uai: "0751234J",
+        code_formation: "1022105",
+        millesime: "2021_2022",
+        taux_emploi_6_mois: 50,
+      });
+    }
+
+    it("Vérifie qu'on peut obtenir une image SVG", async () => {
+      const { httpClient } = await startServer();
+      await createDefaultStats();
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg"
+      );
+
+      assert.strictEqual(response.status, 200);
+      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+      assert.ok(response.data.includes("50%"));
+      assert.ok(response.data.includes("sont en emploi 6 mois"));
+      assert.ok(response.data.includes("poursuivent leurs études"));
+    });
+
+    it("Vérifie qu'on peut obtenir une image SVG horizontale", async () => {
+      const { httpClient } = await startServer();
+      await createDefaultStats();
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg?direction=horizontal"
+      );
+
+      assert.strictEqual(response.status, 200);
+      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+      assert.ok(response.data.includes(`width="700"`));
+    });
+
+    it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (vertical)", async () => {
+      const { httpClient } = await startServer();
+      await formationsStats().insertOne({
+        uai: "0751234J",
+        code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
+        millesime: "2021_2022",
+        filiere: "apprentissage",
+        taux_emploi_6_mois: 50,
+      });
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg"
+      );
+
+      assert.strictEqual(response.status, 200);
+      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+      assert.ok(response.data.includes(`width="320"`));
+      assert.ok(response.data.includes(`height="268"`));
+    });
+
+    it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (horizontale)", async () => {
+      const { httpClient } = await startServer();
+      await formationsStats().insertOne({
+        uai: "0751234J",
+        code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
+        millesime: "2021_2022",
+        filiere: "apprentissage",
+        taux_emploi_6_mois: 50,
+      });
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg?direction=horizontal"
+      );
+
+      assert.strictEqual(response.status, 200);
+      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+      assert.ok(response.data.includes(`width="585"`));
+      assert.ok(response.data.includes("50%"));
+      assert.ok(response.data.includes("sont en emploi 6 mois"));
+      assert.ok(!response.data.includes("poursuivent leurs études"));
+    });
+
+    it("Vérifie qu'on peut obtenir une image SVG avec une donnée égale à 0", async () => {
+      const { httpClient } = await startServer();
+      await formationsStats().insertOne({
+        uai: "0751234J",
+        code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
+        millesime: "2021_2022",
+        filiere: "apprentissage",
+        taux_poursuite_etudes: 0,
+        taux_emploi_6_mois: 50,
+      });
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg"
+      );
+
+      assert.strictEqual(response.status, 200);
+      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+      assert.ok(response.data.includes(`width="320"`));
+      assert.ok(response.data.includes(`height="323"`));
+      assert.ok(response.data.includes("50%"));
+      assert.ok(response.data.includes("sont en emploi 6 mois"));
+      assert.ok(response.data.includes("poursuivent leurs études"));
+    });
+
+    it("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/formations/uai/0751234P/code_formation/1022101/millesime/2022-2021.svg"
+      );
+
+      assert.strictEqual(response.status, 404);
+      assert.strictEqual(response.data.message, "UAI, code formation et/ou millésime invalide");
+    });
+
+    it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
+      const { httpClient } = await startServer();
+      await formationsStats().insertOne({
+        uai: "0751234J",
+        code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
+        millesime: "2021_2022",
+        filiere: "apprentissage",
+      });
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg"
+      );
+
+      assert.strictEqual(response.status, 404);
+      assert.strictEqual(response.data, "Donnée non disponible");
+    });
+
+    it("Vérifie qu'on obtient une erreur quand le format de l'UAI est invalide", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/formations/uai/0010001/code_formation/23220023440/millesime/2020-2019.svg"
+      );
+
+      assert.strictEqual(response.status, 400);
+      assert.strictEqual(response.data.message, "Erreur de validation");
+    });
+
+    it("Vérifie qu'on obtient une erreur avec une direction invalide", async () => {
+      const { httpClient } = await startServer();
+      await createDefaultStats();
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/formations/uai/0751234J/code_formation/1022105/millesime/2022-2021.svg?direction=diagonal"
+      );
+
+      assert.strictEqual(response.status, 400);
+      assert.strictEqual(response.data.message, "Erreur de validation");
     });
   });
 });

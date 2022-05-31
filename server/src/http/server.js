@@ -8,7 +8,6 @@ import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import { tryCatch } from "./middlewares/tryCatchMiddleware.js";
 import { corsMiddleware } from "./middlewares/corsMiddleware.js";
 import { dbCollection } from "../common/mongodb.js";
-import svg from "./routes/svgRoutes.js";
 import formationsRoutes from "./routes/formationsRoutes.js";
 import certificationsRoutes from "./routes/certificationsRoutes.js";
 import swaggerRoutes from "./routes/swaggerRoutes.js";
@@ -21,7 +20,6 @@ export default async () => {
   app.use(mongoSanitize({ replaceWith: "_" }));
   app.use(corsMiddleware());
   app.use(logMiddleware());
-  app.use(svg());
   app.use(formationsRoutes());
   app.use(certificationsRoutes());
   app.use(swaggerRoutes());

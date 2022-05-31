@@ -26,6 +26,14 @@ export function pagination() {
   };
 }
 
+export function stats() {
+  return {
+    direction: Joi.string().valid("horizontal", "vertical"),
+    theme: Joi.string().valid("dsfr", "onisep"),
+    ext: Joi.string().valid("svg"),
+  };
+}
+
 export function validate(obj, validators) {
   return Joi.object(validators).validateAsync(obj, { abortEarly: false });
 }
