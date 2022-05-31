@@ -77,11 +77,14 @@ const labels = /** @type {const} */ ({
 /**
  * Create on array of rates to feed the ejs template
  *
- * @param {InserJeunesData} inserJeunesData
+ * @param {InserJeunesData} stats
  * @returns {Array<{rate: number | undefined, labels: string[], level: import("../types").RateLevel}>}
  */
-const getRates = ({ taux_emploi_6_mois, taux_poursuite_etudes, filiere, diplome }) => {
-  return Object.entries({ taux_emploi_6_mois, taux_poursuite_etudes })
+const getRates = (stats) => {
+  return Object.entries({
+    taux_emploi_6_mois: stats.taux_emploi_6_mois,
+    taux_poursuite_etudes: stats.taux_poursuite_etudes,
+  })
     .filter(([, value]) => !!value || value === 0)
     .map(([key, value]) => {
       return {
@@ -90,7 +93,7 @@ const getRates = ({ taux_emploi_6_mois, taux_poursuite_etudes, filiere, diplome 
         level:
           key === "taux_poursuite_etudes"
             ? "info"
-            : getRateLevel(/** @type {keyof typeof labels} */ (key), value, filiere, diplome),
+            : getRateLevel(/** @type {keyof typeof labels} */ (key), value, stats.filiere, stats.diplome?.libelle),
       };
     });
 };
@@ -117,16 +120,11 @@ export default () => {
 
       const { direction = "vertical", theme = "dsfr" } = query;
 
-      const stats = await formationsStats().findOne(
-        {
-          uai,
-          code_formation,
-          millesime: formatMillesime(millesime),
-        },
-        {
-          projection: { taux_emploi_6_mois: 1, taux_poursuite_etudes: 1, filiere: 1 },
-        }
-      );
+      const stats = await formationsStats().findOne({
+        uai,
+        code_formation,
+        millesime: formatMillesime(millesime),
+      });
 
       if (!stats) {
         return res.status(404).send("UAI, code formation et/ou millésime invalide");

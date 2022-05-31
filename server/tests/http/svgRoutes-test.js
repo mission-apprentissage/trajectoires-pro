@@ -2,6 +2,7 @@ import assert from "assert";
 import { startServer } from "../utils/testUtils.js";
 import { dbCollection } from "../../src/common/mongodb.js";
 import { insertFormationsStats, insertCertificationsStats } from "../utils/fakeData.js";
+import { formationsStats } from "../../src/common/collections/index.js";
 
 describe("svgRoutes", () => {
   describe("formation", () => {
@@ -62,9 +63,10 @@ describe("svgRoutes", () => {
 
     it("should display only one data if present - vertical", async () => {
       const { httpClient } = await startServer();
-      await dbCollection("formationsStats").insertOne({
+      await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
         taux_emploi_6_mois: 50,
@@ -80,9 +82,10 @@ describe("svgRoutes", () => {
 
     it("should display only one data if present - horizontal", async () => {
       const { httpClient } = await startServer();
-      await dbCollection("formationsStats").insertOne({
+      await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
         taux_emploi_6_mois: 50,
@@ -102,9 +105,10 @@ describe("svgRoutes", () => {
 
     it("should display data if value is 0", async () => {
       const { httpClient } = await startServer();
-      await dbCollection("formationsStats").insertOne({
+      await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
         taux_poursuite_etudes: 0,
@@ -133,9 +137,10 @@ describe("svgRoutes", () => {
 
     it("should return a 404 if data exists but rates are empty", async () => {
       const { httpClient } = await startServer();
-      await dbCollection("formationsStats").insertOne({
+      await formationsStats().insertOne({
         uai: "0751234J",
         code_formation: "1022105",
+        diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
       });
@@ -189,6 +194,7 @@ describe("svgRoutes", () => {
         code_formation: "23830024203",
         millesime: "2018",
         filiere: "apprentissage",
+        diplome: { code: "4", libelle: "BAC" },
       });
       const response = await httpClient.get("/api/svg/code_formation/23830024203/millesime/2018");
 

@@ -1,8 +1,9 @@
 import bunyan from "../common/logger.js";
 import { Readable } from "stream";
-import { dbCollection } from "../common/mongodb.js";
 import { InserJeunes } from "../common/InserJeunes.js";
-import { writeData, oleoduc, transformData, flattenArray } from "oleoduc";
+import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
+import { certificationsStats } from "../common/collections/index.js";
+import { getCFD } from "../common/actions/getCFD.js";
 
 const logger = bunyan.child({ context: "import" });
 
@@ -36,33 +37,42 @@ export async function importCertificationsStats(options = {}) {
         const query = { millesime: stats.millesime, code_formation: stats.code_formation };
 
         try {
-          const res = await dbCollection("certificationsStats").updateOne(
+          const cfd = await getCFD(stats.code_formation);
+
+          const diplome = cfd?.diplome;
+          if (!diplome) {
+            logger.warn(`Impossible de trouver le diplome pour la stats`, query);
+          }
+
+          const res = await certificationsStats().updateOne(
             query,
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
               },
-              $set: stats,
+              $set: {
+                ...stats,
+                ...(diplome ? { diplome } : {}),
+              },
             },
             { upsert: true }
           );
 
           if (res.upsertedCount) {
-            logger.info("Nouvelle certification ajoutée", query);
+            logger.info("Nouvelle stats de certification ajoutée", query);
             jobStats.created++;
           } else if (res.modifiedCount) {
             jobStats.updated++;
-            logger.debug("Certification mise à jour", query);
+            logger.debug("Stats de certification mise à jour", query);
           } else {
-            logger.trace("Certification déjà à jour", query);
+            logger.trace("Stats de certification déjà à jour", query);
           }
         } catch (e) {
           handleError(e, query);
         }
       },
       { parallel: 10 }
-    ),
-    { onError: (e) => handleError(e) }
+    )
   );
 
   return jobStats;

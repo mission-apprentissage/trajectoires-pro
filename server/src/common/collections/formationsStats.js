@@ -1,4 +1,5 @@
-import { object, objectId, string, integer, date } from "./schemas/jsonSchemaTypes.js";
+import { date, integer, object, objectId, string } from "./schemas/jsonSchemaTypes.js";
+import { diplomeSchema } from "./schemas/diplomeSchema.js";
 
 export const name = "formationsStats";
 
@@ -28,6 +29,7 @@ export function schema() {
       taux_poursuite_etudes: integer(),
       taux_emploi_12_mois: integer(),
       taux_emploi_6_mois: integer(),
+      diplome: diplomeSchema(),
       _meta: object(
         {
           date_import: date(),
@@ -35,6 +37,9 @@ export function schema() {
         { required: ["date_import"] }
       ),
     },
-    { required: ["uai", "millesime", "code_formation", "filiere"], additionalProperties: false }
+    {
+      required: ["uai", "millesime", "code_formation", "filiere", "diplome"],
+      additionalProperties: false,
+    }
   );
 }

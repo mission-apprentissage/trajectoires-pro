@@ -24,4 +24,12 @@ function logs() {
   return dbCollection("logs");
 }
 
-export { logs, formationsStats, certificationsStats };
+/**
+ * @typedef {import("mongodb").Collection<import("./certifications.js").Mefs>} CertificationsCollection
+ * @returns {CertificationsCollection}
+ */
+function codeFormationDiplomes() {
+  return dbCollection("codeFormationDiplomes");
+}
+
+export { logs, codeFormationDiplomes, formationsStats, certificationsStats };

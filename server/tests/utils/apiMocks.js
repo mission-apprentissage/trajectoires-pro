@@ -1,5 +1,6 @@
 import nock from "nock"; // eslint-disable-line node/no-unpublished-import
 import { InserJeunesApi } from "../../src/common/api/InserJeunesApi.js";
+import { generateCodeFormation } from "./testUtils.js";
 
 function createNock(baseUrl, options = {}) {
   let client = nock(baseUrl);
@@ -59,7 +60,7 @@ export function mockInserJeunesApi(callback, options) {
               valeur_mesure: 6,
               dimensions: [
                 {
-                  id_formation_apprentissage: "12345678",
+                  id_formation_apprentissage: generateCodeFormation(),
                 },
               ],
             },
@@ -102,7 +103,7 @@ export function mockInserJeunesApi(callback, options) {
               valeur_mesure: 6,
               dimensions: [
                 {
-                  id_formation_apprentissage: "12345",
+                  id_formation_apprentissage: generateCodeFormation(),
                 },
               ],
             },
