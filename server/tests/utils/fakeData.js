@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublished-import
 import { merge } from "lodash-es";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
-import { generateCodeFormation, generateStats } from "./testUtils.js";
+import { generateCodeCertification, generateStats } from "./testUtils.js";
 import {
   certificationsStats,
   codeFormationDiplomes,
@@ -16,7 +16,7 @@ export function insertFormationsStats(custom = {}) {
         uai: createUAI(faker.helpers.replaceSymbols("075####")),
         millesime: "2018_2019",
         filiere: "apprentissage",
-        code_formation: generateCodeFormation("4"),
+        code_certification: generateCodeCertification("4"),
         diplome: { code: "4", libelle: "BAC" },
         nb_annee_term: generateStats(),
         nb_en_emploi_12_mois: generateStats(),
@@ -41,7 +41,7 @@ export function insertCertificationsStats(custom = {}) {
       {},
       {
         millesime: "2020",
-        code_formation: generateCodeFormation("4"),
+        code_certification: generateCodeCertification("4"),
         diplome: { code: "4", libelle: "BAC" },
         filiere: "apprentissage",
         nb_annee_term: generateStats(),
@@ -63,7 +63,7 @@ export function insertCFD(custom = {}) {
     merge(
       {},
       {
-        code_formation: generateCodeFormation("4"),
+        code_formation: faker.helpers.replaceSymbols(`4#######`),
         code_formation_alternatifs: [],
         mef: [],
         mef_stats_9: [],

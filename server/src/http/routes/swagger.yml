@@ -17,7 +17,7 @@ paths:
         - ApiKeyAuth: []
       parameters:
         - $ref: "#/components/parameters/millesimes"
-        - $ref: "#/components/parameters/codes_formation"
+        - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
       responses:
@@ -40,7 +40,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/millesimes"
-        - $ref: "#/components/parameters/codes_formation"
+        - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
       responses:
@@ -54,13 +54,13 @@ paths:
           $ref: "#/components/responses/404"
 
 
-  /api/inserjeunes/certifications/code_formation/:code_formation/millesime/:millesime:
+  /api/inserjeunes/certifications/code_certification/:code_certification/millesime/:millesime:
     get:
       description: Obtenir une certification et ses statistiques
       tags:
         - Publique
       parameters:
-        - $ref: "#/components/parameters/code_formation"
+        - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
       responses:
         200:
@@ -82,7 +82,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/uais"
         - $ref: "#/components/parameters/millesimes"
-        - $ref: "#/components/parameters/codes_formation"
+        - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
       responses:
@@ -106,7 +106,7 @@ paths:
         - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/uais"
         - $ref: "#/components/parameters/millesimes"
-        - $ref: "#/components/parameters/codes_formation"
+        - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
       responses:
@@ -119,14 +119,14 @@ paths:
         404:
           $ref: "#/components/responses/404"
 
-  /api/inserjeunes/formations/uai/{uai}/code_formation/{code_formation}/millesime/{millesime}:
+  /api/inserjeunes/formations/uai/{uai}/code_certification/{code_certification}/millesime/{millesime}:
     get:
       description: Obtenir une formation et ses statistiques
       tags:
         - Publique
       parameters:
         - $ref: "#/components/parameters/uai"
-        - $ref: "#/components/parameters/code_formation"
+        - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
       responses:
         200:
@@ -148,10 +148,10 @@ components:
       schema:
         type: string
 
-    codes_formation:
-      name: codes_formation
+    code_certifications:
+      name: code_certifications
       in: query
-      description: Permet de filtrer la recherche avec un ou plusieurs codes formations séparés par des virgules.
+      description: Permet de filtrer la recherche avec un ou plusieurs codes de certification séparés par des virgules.
       schema:
         type: string
 
@@ -197,8 +197,8 @@ components:
         type: string
         pattern: '^[0-9]{7}[A-Z]{1}$'
 
-    code_formation:
-      name: code_formation
+    code_certification:
+      name: code_certification
       in: path
       required: true
       schema:
@@ -238,7 +238,7 @@ components:
       properties:
         millesime:
           type: string
-        code_formation:
+        code_certification:
           type: string
         filiere:
           type: string
@@ -275,7 +275,7 @@ components:
           type: string
         millesime:
           type: string
-        code_formation:
+        code_certification:
           type: string
         filiere:
           type: string

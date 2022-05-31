@@ -29,6 +29,6 @@ export function generateStats() {
   return parseInt(faker.random.numeric(2));
 }
 
-export function generateCodeFormation(prefix = "#") {
+export function generateCodeCertification(prefix = "#") {
   return faker.helpers.replaceSymbols(`${prefix}#######`);
 }

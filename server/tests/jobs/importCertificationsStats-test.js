@@ -49,7 +49,7 @@ describe("importCertificationsStats", () => {
       millesime: "2020",
       filiere: "apprentissage",
       taux_emploi_6_mois: 6,
-      code_formation: "12345678",
+      code_certification: "12345678",
       diplome: {
         code: "4",
         libelle: "BAC",
@@ -90,7 +90,7 @@ describe("importCertificationsStats", () => {
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       filiere: "pro",
       millesime: "2020",
-      code_formation: "09876543210",
+      code_certification: "09876543210",
       taux_emploi_6_mois: 6,
       diplome: {
         code: "4",
@@ -200,9 +200,9 @@ describe("importCertificationsStats", () => {
 
     let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
 
-    let found = await certificationsStats().findOne({ code_formation: "12345678" });
+    let found = await certificationsStats().findOne({ code_certification: "12345678" });
     assert.deepStrictEqual(found.taux_emploi_12_mois, 12);
-    found = await certificationsStats().findOne({ code_formation: "67890" });
+    found = await certificationsStats().findOne({ code_certification: "67890" });
     assert.deepStrictEqual(found.taux_emploi_12_mois, 13);
     assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
   });
@@ -223,7 +223,7 @@ describe("importCertificationsStats", () => {
     });
     await insertCertificationsStats({
       millesime: "2020",
-      code_formation: "12345678",
+      code_certification: "12345678",
       filiere: "apprentissage",
       taux_emploi_6_mois: -1,
     });

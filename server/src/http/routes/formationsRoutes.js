@@ -20,7 +20,7 @@ export default () => {
     "/api/inserjeunes/formations.:ext?",
     checkApiKey(),
     tryCatch(async (req, res) => {
-      const { uais, millesimes, codes_formation, page, items_par_page, ext } = await validate(
+      const { uais, millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
         {
           uais: arrayOf(
@@ -29,7 +29,7 @@ export default () => {
               .required()
           ).default([]),
           millesimes: arrayOf(Joi.string().required()).default([]),
-          codes_formation: arrayOf(Joi.string().required()).default([]),
+          code_certifications: arrayOf(Joi.string().required()).default([]),
           ...validators.exports(),
           ...validators.pagination(),
         }
@@ -40,7 +40,7 @@ export default () => {
         {
           ...(uais.length > 0 ? { uai: { $in: uais } } : {}),
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
-          ...(codes_formation.length > 0 ? { code_formation: { $in: codes_formation } } : {}),
+          ...(code_certifications.length > 0 ? { code_certification: { $in: code_certifications } } : {}),
         },
         {
           limit: items_par_page,
@@ -55,7 +55,7 @@ export default () => {
         extensionTransformer = transformIntoCSV({
           columns: {
             uai: (f) => f.uai,
-            code_formation: (f) => f.code_formation,
+            code_certification: (f) => f.code_certification,
             filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,
             nb_annee_term: (f) => f.nb_annee_term,
@@ -83,22 +83,22 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/formations/uai/:uai/code_formation/:code_formation/millesime/:millesime.:ext?",
+    "/api/inserjeunes/formations/uai/:uai/code_certification/:code_certification/millesime/:millesime.:ext?",
     tryCatch(async (req, res) => {
-      const { uai, code_formation, millesime, direction, theme, ext } = await validate(
+      const { uai, code_certification, millesime, direction, theme, ext } = await validate(
         { ...req.params, ...req.query },
         {
           uai: Joi.string()
             .pattern(/^[0-9]{7}[A-Z]{1}$/)
             .required(),
-          code_formation: Joi.string().required(),
+          code_certification: Joi.string().required(),
           millesime: Joi.string().required(),
           ...validators.svg(),
         }
       );
 
       let stats = await formationsStats().findOne(
-        { uai, code_formation, millesime: formatMillesime(millesime) },
+        { uai, code_certification, millesime: formatMillesime(millesime) },
         { projection: { _id: 0, _meta: 0 } }
       );
 

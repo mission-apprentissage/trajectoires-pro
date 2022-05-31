@@ -6,13 +6,13 @@ function getFiliere(dimension) {
   return dimension["id_formation_apprentissage"] ? "apprentissage" : "pro";
 }
 
-function getCodeFormation(dimension) {
+function getCodeCertification(dimension) {
   return dimension["id_formation_apprentissage"] || dimension["id_mefstat11"];
 }
 
 function filterFormationStats() {
   return filterData((data) => {
-    return data.dimensions.filter(getCodeFormation).length > 0;
+    return data.dimensions.filter(getCodeCertification).length > 0;
   });
 }
 
@@ -20,14 +20,14 @@ function groupByFormation(uai, millesime) {
   return accumulateData(
     (acc, stats) => {
       const dimension = stats.dimensions[0];
-      const codeFormation = getCodeFormation(dimension);
+      const code = getCodeCertification(dimension);
 
-      const index = acc.findIndex((item) => item.code_formation === codeFormation);
+      const index = acc.findIndex((item) => item.code_certification === code);
 
       if (index === -1) {
         acc.push({
           uai,
-          code_formation: codeFormation,
+          code_certification: code,
           millesime,
           filiere: getFiliere(dimension),
           [stats.id_mesure]: stats.valeur_mesure,
@@ -46,14 +46,14 @@ function groupByCertification(millesime) {
   return accumulateData(
     (acc, stats) => {
       const dimension = stats.dimensions[0];
-      const codeFormation = getCodeFormation(dimension);
-      const index = acc.findIndex((item) => item.code_formation === codeFormation);
+      const code = getCodeCertification(dimension);
+      const index = acc.findIndex((item) => item.code_certification === code);
 
       if (index === -1) {
         acc.push({
           millesime,
           filiere: getFiliere(dimension),
-          code_formation: codeFormation,
+          code_certification: code,
           [stats.id_mesure]: stats.valeur_mesure,
         });
       } else {
