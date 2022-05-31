@@ -2,9 +2,11 @@ import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublis
 import { merge } from "lodash-es";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
 import { generateCodeFormation, generateStats } from "./testUtils.js";
-import { codeFormationDiplomes } from "../../src/common/collections/codeFormationDiplomes.js";
-import { formationsStats } from "../../src/common/collections/formationsStats.js";
-import { certificationsStats } from "../../src/common/collections/certificationsStats.js";
+import {
+  certificationsStats,
+  codeFormationDiplomes,
+  formationsStats,
+} from "../../src/common/collections/collections.js";
 
 export function insertFormationsStats(custom = {}) {
   return formationsStats().insertOne(

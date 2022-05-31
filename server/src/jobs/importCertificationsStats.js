@@ -3,7 +3,7 @@ import { Readable } from "stream";
 import { InserJeunes } from "../common/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { getCFD } from "../common/actions/getCFD.js";
-import { certificationsStats } from "../common/collections/certificationsStats.js";
+import { certificationsStats } from "../common/collections/collections.js";
 
 const logger = bunyan.child({ context: "import" });
 

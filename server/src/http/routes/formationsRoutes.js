@@ -9,7 +9,7 @@ import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
-import { formationsStats } from "../../common/collections/formationsStats.js";
+import { formationsStats } from "../../common/collections/collections.js";
 
 export default () => {
   const router = express.Router();

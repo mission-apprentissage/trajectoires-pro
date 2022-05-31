@@ -9,8 +9,7 @@ import { getRateLevel } from "../../common/rateLevels.js";
 import { formatMillesime } from "../utils/formatters.js";
 import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
 import { getDirname } from "../../common/esmUtils.js";
-import { formationsStats } from "../../common/collections/formationsStats.js";
-import { certificationsStats } from "../../common/collections/certificationsStats.js";
+import { certificationsStats, formationsStats } from "../../common/collections/collections.js";
 
 const __dirname = getDirname(import.meta.url);
 

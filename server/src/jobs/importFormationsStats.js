@@ -6,7 +6,7 @@ import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/InserJeunes.js";
 import { getCFD } from "../common/actions/getCFD.js";
-import { formationsStats } from "../common/collections/formationsStats.js";
+import { formationsStats } from "../common/collections/collections.js";
 
 const logger = bunyan.child({ context: "import" });
 

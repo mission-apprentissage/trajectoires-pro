@@ -4,7 +4,7 @@ import { getBCNTable, loadMefs } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { pick, range } from "lodash-es";
 import { getDiplome } from "../common/actions/getDiplome.js";
-import { codeFormationDiplomes } from "../common/collections/codeFormationDiplomes.js";
+import { codeFormationDiplomes } from "../common/collections/collections.js";
 
 const logger = bunyan.child({ context: "import" });
 

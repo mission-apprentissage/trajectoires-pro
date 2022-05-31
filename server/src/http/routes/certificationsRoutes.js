@@ -9,7 +9,7 @@ import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
-import { certificationsStats } from "../../common/collections/certificationsStats.js";
+import { certificationsStats } from "../../common/collections/collections.js";
 
 export default () => {
   const router = express.Router();

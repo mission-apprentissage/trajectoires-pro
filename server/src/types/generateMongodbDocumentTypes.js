@@ -1,7 +1,7 @@
 import { writeFile } from "fs/promises";
 import path from "path";
 import { compile } from "json-schema-to-typescript";
-import { getCollections } from "../common/collections/getCollections.js";
+import { getCollectionDescriptors } from "../common/collections/collections.js";
 import { getDirname, packageJson } from "../common/esmUtils.js";
 
 const disableAdditionalProperties = (node) => {
@@ -51,7 +51,7 @@ const prepareJsonSchema = (jsonSchema) => {
 
 export function generateMongodbDocumentTypes() {
   return Promise.all(
-    getCollections().map(async ({ name, schema }) => {
+    getCollectionDescriptors().map(async ({ name, schema }) => {
       const jsonSchema = prepareJsonSchema(schema());
       const filePath = path.resolve(getDirname(import.meta.url), `../common/collections/${name}.d.ts`);
 
