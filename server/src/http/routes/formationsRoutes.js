@@ -20,7 +20,7 @@ export default () => {
     "/api/inserjeunes/formations.:ext?",
     checkApiKey(),
     tryCatch(async (req, res) => {
-      const { uais, millesimes, codes_formation, page, items_par_page, ext } = await validate(
+      const { uais, millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
         {
           uais: arrayOf(
@@ -29,7 +29,7 @@ export default () => {
               .required()
           ).default([]),
           millesimes: arrayOf(Joi.string().required()).default([]),
-          codes_formation: arrayOf(Joi.string().required()).default([]),
+          code_certifications: arrayOf(Joi.string().required()).default([]),
           ...validators.exports(),
           ...validators.pagination(),
         }
@@ -40,7 +40,7 @@ export default () => {
         {
           ...(uais.length > 0 ? { uai: { $in: uais } } : {}),
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
-          ...(codes_formation.length > 0 ? { code_certification: { $in: codes_formation } } : {}),
+          ...(code_certifications.length > 0 ? { code_certification: { $in: code_certifications } } : {}),
         },
         {
           limit: items_par_page,

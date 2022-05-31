@@ -130,7 +130,7 @@ describe("formationsRoutes", () => {
     await insertFormationsStats({ code_certification: "12345" });
     await insertFormationsStats({ code_certification: "67890" });
 
-    const response = await httpClient.get(`/api/inserjeunes/formations?codes_formation=12345`, {
+    const response = await httpClient.get(`/api/inserjeunes/formations?code_certifications=12345`, {
       headers: {
         ...getAuthHeaders(),
       },
