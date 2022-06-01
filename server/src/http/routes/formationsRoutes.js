@@ -82,7 +82,7 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/formations/uai/:uai/code_certification/:code_certification.:ext?",
+    "/api/inserjeunes/formations/:uai-:code_certification.:ext?",
     tryCatch(async (req, res) => {
       const { uai, code_certification, millesime, direction, theme, ext } = await validate(
         { ...req.params, ...req.query },
