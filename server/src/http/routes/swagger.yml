@@ -10,7 +10,7 @@ info:
 paths:
   /api/inserjeunes/certifications:
     get:
-      description: Rechercher des certifications et leurs statistiques
+      description: Rechercher des statistiques de certifications
       security:
         - ApiKeyAuth: []
       parameters:
@@ -30,7 +30,7 @@ paths:
 
   /api/inserjeunes/certifications.{ext}:
     get:
-      description: Permet d'exporter des certifications et leurs statistiques
+      description: Exporter des statistiques de certifications
       security:
         - ApiKeyAuth: [ ]
       parameters:
@@ -52,7 +52,7 @@ paths:
 
   /api/inserjeunes/certifications/{code_certification}:
     get:
-      description: Obtenir une certification et ses statistiques
+      description: Obtenir les statistiques d'une certification
       parameters:
         - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
@@ -68,7 +68,7 @@ paths:
 
   /api/inserjeunes/formations:
     get:
-      description: Rechercher des formations et leurs statistiques
+      description: Rechercher des statistiques de formations
       security:
         - ApiKeyAuth: [ ]
       parameters:
@@ -89,7 +89,7 @@ paths:
 
   /api/inserjeunes/formations.{ext}:
     get:
-      description: Permet d'exporter des formations et leurs statistiques
+      description: Exporter des statistiques de formations
       security:
         - ApiKeyAuth: [ ]
       parameters:
@@ -111,7 +111,7 @@ paths:
 
   /api/inserjeunes/formations/{uai}-{code_certification}:
     get:
-      description: Obtenir une formation et ses statistiques
+      description: Obtenir des statistiques pour une formation
       parameters:
         - $ref: "#/components/parameters/uai"
         - $ref: "#/components/parameters/code_certification"
@@ -132,22 +132,28 @@ components:
     millesimes:
       name: millesimes
       in: query
-      description: Permet de filtrer la recherche avec un ou plusieurs millesimes séparés par des virgules.
+      description: |
+        Permet de filtrer la recherche avec un ou plusieurs millesimes séparés par des virgules.
+        
+        * Les millesimes des certifications sont des années (ex: 2020)
+        * Les millesimes des formations sont des périodes (ex: 2020_2021)
       schema:
         type: string
 
     code_certifications:
       name: code_certifications
       in: query
-      description: Permet de filtrer la recherche avec un ou plusieurs codes de certification séparés par des virgules.
+      description: |
+        Permet de filtrer la recherche avec un ou plusieurs codes de certification séparés par des virgules.
+        
+        Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
       schema:
         type: string
 
     uais:
       name: uais
       in: query
-      description: |
-        Permet de filtrer la recherche avec une ou plusieurs UAI séparées par des virgules.
+      description: Permet de filtrer la recherche avec une ou plusieurs UAI séparées par des virgules.
       schema:
         type: string
         pattern: '^[0-9]{7}[A-Z]{1}$'
@@ -194,6 +200,7 @@ components:
 
     code_certification:
       name: code_certification
+      description:  Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
       in: path
       required: true
       schema:
