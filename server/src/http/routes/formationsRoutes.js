@@ -83,7 +83,7 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/formations/uai/:uai/code_certification/:code_certification/millesime/:millesime.:ext?",
+    "/api/inserjeunes/formations/uai/:uai/code_certification/:code_certification.:ext?",
     tryCatch(async (req, res) => {
       const { uai, code_certification, millesime, direction, theme, ext } = await validate(
         { ...req.params, ...req.query },
@@ -92,20 +92,25 @@ export default () => {
             .pattern(/^[0-9]{7}[A-Z]{1}$/)
             .required(),
           code_certification: Joi.string().required(),
-          millesime: Joi.string().required(),
+          millesime: Joi.string(),
           ...validators.svg(),
         }
       );
 
-      let stats = await formationsStats().findOne(
-        { uai, code_certification, millesime: formatMillesime(millesime) },
-        { projection: { _id: 0, _meta: 0 } }
-      );
+      const results = await formationsStats()
+        .find(
+          { uai, code_certification, ...(millesime ? { millesime: formatMillesime(millesime) } : {}) },
+          { projection: { _id: 0, _meta: 0 } }
+        )
+        .limit(1)
+        .sort({ millesime: -1 })
+        .toArray();
 
-      if (!stats) {
+      if (results.length === 0) {
         throw Boom.notFound("UAI, code formation et/ou millésime invalide");
       }
 
+      const stats = results[0];
       if (ext === "svg") {
         const rates = getRates(stats);
         if (rates.length === 0) {

@@ -5,281 +5,306 @@ import { insertFormationsStats } from "../utils/fakeData.js";
 import { formationsStats } from "../../src/common/collections/collections.js";
 
 describe("formationsRoutes", () => {
-  function getAuthHeaders() {
-    return {
-      "x-api-key": config.inserJeunes.api.key,
-    };
-  }
+  describe("Recherche", () => {
+    function getAuthHeaders() {
+      return {
+        "x-api-key": config.inserJeunes.api.key,
+      };
+    }
 
-  it("Vérifie qu'on peut obtenir les stats d'une formation", async () => {
-    const { httpClient } = await startServer();
-    await insertFormationsStats({
-      uai: "0751234J",
-      code_certification: "12345678",
-      millesime: "2018_2019",
-      filiere: "apprentissage",
-      nb_annee_term: 1,
-      nb_en_emploi_12_mois: 2,
-      nb_en_emploi_6_mois: 3,
-      nb_poursuite_etudes: 4,
-      nb_sortant: 5,
-      taux_emploi_12_mois: 6,
-      taux_emploi_6_mois: 7,
-      taux_poursuite_etudes: 8,
-    });
+    it("Vérifie qu'on peut obtenir les stats d'une formation", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({
+        uai: "0751234J",
+        code_certification: "12345678",
+        millesime: "2018_2019",
+        filiere: "apprentissage",
+        nb_annee_term: 1,
+        nb_en_emploi_12_mois: 2,
+        nb_en_emploi_6_mois: 3,
+        nb_poursuite_etudes: 4,
+        nb_sortant: 5,
+        taux_emploi_12_mois: 6,
+        taux_emploi_6_mois: 7,
+        taux_poursuite_etudes: 8,
+      });
 
-    const response = await httpClient.get(`/api/inserjeunes/formations`, {
-      headers: {
-        ...getAuthHeaders(),
-      },
-    });
-
-    assert.strictEqual(response.status, 200);
-    assert.deepStrictEqual(response.data, {
-      formations: [
-        {
-          uai: "0751234J",
-          code_certification: "12345678",
-          millesime: "2018_2019",
-          filiere: "apprentissage",
-          diplome: { code: "4", libelle: "BAC" },
-          nb_annee_term: 1,
-          nb_en_emploi_12_mois: 2,
-          nb_en_emploi_6_mois: 3,
-          nb_poursuite_etudes: 4,
-          nb_sortant: 5,
-          taux_emploi_12_mois: 6,
-          taux_emploi_6_mois: 7,
-          taux_poursuite_etudes: 8,
+      const response = await httpClient.get(`/api/inserjeunes/formations`, {
+        headers: {
+          ...getAuthHeaders(),
         },
-      ],
-      pagination: {
-        nombre_de_page: 1,
-        page: 1,
-        items_par_page: 10,
-        total: 1,
-      },
-    });
-  });
+      });
 
-  it("Vérifie qu'on peut limiter le nombre de résultats", async () => {
-    const { httpClient } = await startServer();
-    await insertFormationsStats();
-    await insertFormationsStats();
-
-    const response = await httpClient.get(`/api/inserjeunes/formations?items_par_page=1`, {
-      headers: {
-        ...getAuthHeaders(),
-      },
-    });
-
-    assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.data.formations.length, 1);
-  });
-
-  it("Vérifie qu'on peut paginer les résultats", async () => {
-    const { httpClient } = await startServer();
-    await insertFormationsStats({ uai: "0751234J" });
-    await insertFormationsStats({ uai: "0751234X" });
-
-    const response = await httpClient.get(`/api/inserjeunes/formations?items_par_page=1&page=2`, {
-      headers: {
-        ...getAuthHeaders(),
-      },
+      assert.strictEqual(response.status, 200);
+      assert.deepStrictEqual(response.data, {
+        formations: [
+          {
+            uai: "0751234J",
+            code_certification: "12345678",
+            millesime: "2018_2019",
+            filiere: "apprentissage",
+            diplome: { code: "4", libelle: "BAC" },
+            nb_annee_term: 1,
+            nb_en_emploi_12_mois: 2,
+            nb_en_emploi_6_mois: 3,
+            nb_poursuite_etudes: 4,
+            nb_sortant: 5,
+            taux_emploi_12_mois: 6,
+            taux_emploi_6_mois: 7,
+            taux_poursuite_etudes: 8,
+          },
+        ],
+        pagination: {
+          nombre_de_page: 1,
+          page: 1,
+          items_par_page: 10,
+          total: 1,
+        },
+      });
     });
 
-    assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.data.formations.length, 1);
-    assert.strictEqual(response.data.formations[0].uai, "0751234X");
-  });
+    it("Vérifie qu'on peut limiter le nombre de résultats", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats();
+      await insertFormationsStats();
 
-  it("Vérifie qu'on peut obtenir les stats de formations pour un établissement", async () => {
-    const { httpClient } = await startServer();
-    await insertFormationsStats({ uai: "0751234J" });
-    await insertFormationsStats({ uai: "0751234X" });
+      const response = await httpClient.get(`/api/inserjeunes/formations?items_par_page=1`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
 
-    const response = await httpClient.get(`/api/inserjeunes/formations?uais=0751234J`, {
-      headers: {
-        ...getAuthHeaders(),
-      },
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.formations.length, 1);
     });
 
-    assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.data.formations[0].uai, "0751234J");
-    assert.strictEqual(response.data.pagination.total, 1);
-  });
+    it("Vérifie qu'on peut paginer les résultats", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({ uai: "0751234J" });
+      await insertFormationsStats({ uai: "0751234X" });
 
-  it("Vérifie qu'on peut obtenir les stats de formations pour un millesime", async () => {
-    const { httpClient } = await startServer();
-    await insertFormationsStats({ millesime: "2018_2019" });
-    await insertFormationsStats({ millesime: "2020_2021" });
+      const response = await httpClient.get(`/api/inserjeunes/formations?items_par_page=1&page=2`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
 
-    const response = await httpClient.get(`/api/inserjeunes/formations?millesimes=2018_2019`, {
-      headers: {
-        ...getAuthHeaders(),
-      },
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.formations.length, 1);
+      assert.strictEqual(response.data.formations[0].uai, "0751234X");
     });
 
-    assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.data.formations[0].millesime, "2018_2019");
-    assert.strictEqual(response.data.pagination.total, 1);
-  });
+    it("Vérifie qu'on peut obtenir les stats de formations pour un établissement", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({ uai: "0751234J" });
+      await insertFormationsStats({ uai: "0751234X" });
 
-  it("Vérifie qu'on peut obtenir les stats de formations pour code formation", async () => {
-    const { httpClient } = await startServer();
-    await insertFormationsStats({ code_certification: "12345" });
-    await insertFormationsStats({ code_certification: "67890" });
+      const response = await httpClient.get(`/api/inserjeunes/formations?uais=0751234J`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
 
-    const response = await httpClient.get(`/api/inserjeunes/formations?code_certifications=12345`, {
-      headers: {
-        ...getAuthHeaders(),
-      },
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.formations[0].uai, "0751234J");
+      assert.strictEqual(response.data.pagination.total, 1);
     });
 
-    assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.data.formations[0].code_certification, "12345");
-    assert.strictEqual(response.data.pagination.total, 1);
-  });
+    it("Vérifie qu'on peut obtenir les stats de formations pour un millesime", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({ millesime: "2018_2019" });
+      await insertFormationsStats({ millesime: "2020_2021" });
 
-  it("Vérifie qu'on peut exporter les données au format CSV", async () => {
-    const { httpClient } = await startServer();
-    await insertFormationsStats({
-      uai: "0751234J",
-      code_certification: "12345678",
-      millesime: "2018_2019",
-      filiere: "apprentissage",
-      nb_annee_term: 1,
-      nb_en_emploi_12_mois: 2,
-      nb_en_emploi_6_mois: 3,
-      nb_poursuite_etudes: 4,
-      nb_sortant: 5,
-      taux_emploi_12_mois: 6,
-      taux_emploi_6_mois: 7,
-      taux_poursuite_etudes: 8,
+      const response = await httpClient.get(`/api/inserjeunes/formations?millesimes=2018_2019`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.formations[0].millesime, "2018_2019");
+      assert.strictEqual(response.data.pagination.total, 1);
     });
 
-    const response = await httpClient.get(`/api/inserjeunes/formations.csv`, {
-      headers: {
-        ...getAuthHeaders(),
-      },
+    it("Vérifie qu'on peut obtenir les stats de formations pour code formation", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({ code_certification: "12345" });
+      await insertFormationsStats({ code_certification: "67890" });
+
+      const response = await httpClient.get(`/api/inserjeunes/formations?code_certifications=12345`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.formations[0].code_certification, "12345");
+      assert.strictEqual(response.data.pagination.total, 1);
     });
 
-    assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
-    assert.deepStrictEqual(
-      response.data,
-      `uai;code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
+    it("Vérifie qu'on peut exporter les données au format CSV", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({
+        uai: "0751234J",
+        code_certification: "12345678",
+        millesime: "2018_2019",
+        filiere: "apprentissage",
+        nb_annee_term: 1,
+        nb_en_emploi_12_mois: 2,
+        nb_en_emploi_6_mois: 3,
+        nb_poursuite_etudes: 4,
+        nb_sortant: 5,
+        taux_emploi_12_mois: 6,
+        taux_emploi_6_mois: 7,
+        taux_poursuite_etudes: 8,
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/formations.csv`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
+      assert.deepStrictEqual(
+        response.data,
+        `uai;code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_6_mois;taux_poursuite_etudes
 0751234J;12345678;apprentissage;2018_2019;1;2;3;4;5;6;7;8
 `
-    );
-  });
-
-  it("Vérifie qu'on retourne une 404 si les paramètres sont invalides", async () => {
-    const { httpClient } = await startServer();
-
-    const response = await httpClient.get(`/api/inserjeunes/formations?invalid=true`, {
-      headers: {
-        ...getAuthHeaders(),
-      },
+      );
     });
 
-    assert.strictEqual(response.status, 400);
-    assert.deepStrictEqual(response.data, {
-      details: [
-        {
-          context: {
-            child: "invalid",
-            key: "invalid",
-            label: "invalid",
-            value: "true",
-          },
-          message: '"invalid" is not allowed',
-          path: ["invalid"],
-          type: "object.unknown",
+    it("Vérifie qu'on retourne une 404 si les paramètres sont invalides", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get(`/api/inserjeunes/formations?invalid=true`, {
+        headers: {
+          ...getAuthHeaders(),
         },
-      ],
-      error: "Bad Request",
-      message: "Erreur de validation",
-      statusCode: 400,
+      });
+
+      assert.strictEqual(response.status, 400);
+      assert.deepStrictEqual(response.data, {
+        details: [
+          {
+            context: {
+              child: "invalid",
+              key: "invalid",
+              label: "invalid",
+              value: "true",
+            },
+            message: '"invalid" is not allowed',
+            path: ["invalid"],
+            type: "object.unknown",
+          },
+        ],
+        error: "Bad Request",
+        message: "Erreur de validation",
+        statusCode: 400,
+      });
+    });
+
+    it("Vérifie qu'on retourne une 401 sans apiKey", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get(`/api/inserjeunes/formations`);
+
+      assert.strictEqual(response.status, 401);
+    });
+
+    it("Vérifie qu'on peut passer l'apiKey en paramètre", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get(`/api/inserjeunes/formations?apiKey=${config.inserJeunes.api.key}`);
+
+      assert.strictEqual(response.status, 200);
     });
   });
 
-  it("Vérifie qu'on retourne une 401 sans apiKey", async () => {
-    const { httpClient } = await startServer();
+  describe("Obtention", () => {
+    it("Vérifie qu'on peut obtenir une formation", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({
+        uai: "0751234J",
+        code_certification: "12345678",
+        millesime: "2018_2019",
+      });
+      await insertFormationsStats({
+        uai: "0751234J",
+        filiere: "apprentissage",
+        code_certification: "12345678",
+        millesime: "2020_2021",
+        nb_annee_term: 1,
+        nb_en_emploi_12_mois: 2,
+        nb_en_emploi_6_mois: 3,
+        nb_poursuite_etudes: 4,
+        nb_sortant: 5,
+        taux_emploi_12_mois: 6,
+        taux_emploi_6_mois: 7,
+        taux_poursuite_etudes: 8,
+      });
 
-    const response = await httpClient.get(`/api/inserjeunes/formations`);
+      const response = await httpClient.get(`/api/inserjeunes/formations/uai/0751234J/code_certification/12345678`);
 
-    assert.strictEqual(response.status, 401);
-  });
-
-  it("Vérifie qu'on peut passer l'apiKey en paramètre", async () => {
-    const { httpClient } = await startServer();
-
-    const response = await httpClient.get(`/api/inserjeunes/formations?apiKey=${config.inserJeunes.api.key}`);
-
-    assert.strictEqual(response.status, 200);
-  });
-
-  it("Vérifie qu'on peut obtenir une formation", async () => {
-    const { httpClient } = await startServer();
-    await insertFormationsStats({
-      uai: "0751234J",
-      code_certification: "12345678",
-      millesime: "2018_2019",
-      filiere: "apprentissage",
-      nb_annee_term: 1,
-      nb_en_emploi_12_mois: 2,
-      nb_en_emploi_6_mois: 3,
-      nb_poursuite_etudes: 4,
-      nb_sortant: 5,
-      taux_emploi_12_mois: 6,
-      taux_emploi_6_mois: 7,
-      taux_poursuite_etudes: 8,
+      assert.strictEqual(response.status, 200);
+      assert.deepStrictEqual(response.data, {
+        uai: "0751234J",
+        code_certification: "12345678",
+        millesime: "2020_2021",
+        filiere: "apprentissage",
+        diplome: { code: "4", libelle: "BAC" },
+        nb_annee_term: 1,
+        nb_en_emploi_12_mois: 2,
+        nb_en_emploi_6_mois: 3,
+        nb_poursuite_etudes: 4,
+        nb_sortant: 5,
+        taux_emploi_12_mois: 6,
+        taux_emploi_6_mois: 7,
+        taux_poursuite_etudes: 8,
+      });
     });
 
-    const response = await httpClient.get(
-      `/api/inserjeunes/formations/uai/0751234J/code_certification/12345678/millesime/2018_2019`
-    );
+    it("Vérifie qu'on peut obtenir une formation et un millesime", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({
+        uai: "0751234J",
+        code_certification: "12345678",
+        millesime: "2018_2019",
+      });
+      await insertFormationsStats({
+        uai: "0751234J",
+        code_certification: "12345678",
+        millesime: "2020_2021",
+      });
 
-    assert.strictEqual(response.status, 200);
-    assert.deepStrictEqual(response.data, {
-      uai: "0751234J",
-      code_certification: "12345678",
-      millesime: "2018_2019",
-      filiere: "apprentissage",
-      diplome: { code: "4", libelle: "BAC" },
-      nb_annee_term: 1,
-      nb_en_emploi_12_mois: 2,
-      nb_en_emploi_6_mois: 3,
-      nb_poursuite_etudes: 4,
-      nb_sortant: 5,
-      taux_emploi_12_mois: 6,
-      taux_emploi_6_mois: 7,
-      taux_poursuite_etudes: 8,
+      const response = await httpClient.get(
+        `/api/inserjeunes/formations/uai/0751234J/code_certification/12345678?millesime=2018_2019`
+      );
+
+      assert.strictEqual(response.status, 200);
+      assert.deepStrictEqual(response.data.millesime, "2018_2019");
+    });
+
+    it("Vérifie qu'on retourne une 404 si la formation est inconnue", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get(`/api/inserjeunes/formations/uai/0751234J/code_certification/INCONNUE`);
+
+      assert.strictEqual(response.status, 404);
+      assert.deepStrictEqual(response.data, {
+        error: "Not Found",
+        message: "UAI, code formation et/ou millésime invalide",
+        statusCode: 404,
+      });
     });
   });
 
-  it("Vérifie qu'on retourne une 404 si la formation est inconnue", async () => {
-    const { httpClient } = await startServer();
-
-    const response = await httpClient.get(
-      `/api/inserjeunes/formations/uai/0751234J/code_certification/12345678/millesime/INCONNUE`
-    );
-
-    assert.strictEqual(response.status, 404);
-    assert.deepStrictEqual(response.data, {
-      error: "Not Found",
-      message: "UAI, code formation et/ou millésime invalide",
-      statusCode: 404,
-    });
-  });
-
-  describe("svg", () => {
+  describe("Widget", () => {
     function createDefaultStats() {
       return insertFormationsStats({
         uai: "0751234J",
         code_certification: "1022105",
-        millesime: "2021_2022",
         taux_emploi_6_mois: 50,
       });
     }
@@ -288,9 +313,7 @@ describe("formationsRoutes", () => {
       const { httpClient } = await startServer();
       await createDefaultStats();
 
-      const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg"
-      );
+      const response = await httpClient.get("/api/inserjeunes/formations/uai/0751234J/code_certification/1022105.svg");
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
@@ -304,7 +327,7 @@ describe("formationsRoutes", () => {
       await createDefaultStats();
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg?direction=horizontal"
+        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105.svg?direction=horizontal"
       );
 
       assert.strictEqual(response.status, 200);
@@ -323,9 +346,7 @@ describe("formationsRoutes", () => {
         taux_emploi_6_mois: 50,
       });
 
-      const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg"
-      );
+      const response = await httpClient.get("/api/inserjeunes/formations/uai/0751234J/code_certification/1022105.svg");
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
@@ -345,7 +366,7 @@ describe("formationsRoutes", () => {
       });
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg?direction=horizontal"
+        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105.svg?direction=horizontal"
       );
 
       assert.strictEqual(response.status, 200);
@@ -368,9 +389,7 @@ describe("formationsRoutes", () => {
         taux_emploi_6_mois: 50,
       });
 
-      const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg"
-      );
+      const response = await httpClient.get("/api/inserjeunes/formations/uai/0751234J/code_certification/1022105.svg");
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
@@ -384,9 +403,7 @@ describe("formationsRoutes", () => {
     it("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {
       const { httpClient } = await startServer();
 
-      const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234P/code_certification/1022101/millesime/2022-2021.svg"
-      );
+      const response = await httpClient.get("/api/inserjeunes/formations/uai/0751234P/code_certification/1022101.svg");
 
       assert.strictEqual(response.status, 404);
       assert.strictEqual(response.data.message, "UAI, code formation et/ou millésime invalide");
@@ -402,9 +419,7 @@ describe("formationsRoutes", () => {
         filiere: "apprentissage",
       });
 
-      const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg"
-      );
+      const response = await httpClient.get("/api/inserjeunes/formations/uai/0751234J/code_certification/1022105.svg");
 
       assert.strictEqual(response.status, 404);
       assert.strictEqual(response.data, "Donnée non disponible");
@@ -414,7 +429,7 @@ describe("formationsRoutes", () => {
       const { httpClient } = await startServer();
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0010001/code_certification/23220023440/millesime/2020-2019.svg"
+        "/api/inserjeunes/formations/uai/0010001/code_certification/23220023440.svg"
       );
 
       assert.strictEqual(response.status, 400);
@@ -426,7 +441,7 @@ describe("formationsRoutes", () => {
       await createDefaultStats();
 
       const response = await httpClient.get(
-        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105/millesime/2022-2021.svg?direction=diagonal"
+        "/api/inserjeunes/formations/uai/0751234J/code_certification/1022105.svg?direction=diagonal"
       );
 
       assert.strictEqual(response.status, 400);
