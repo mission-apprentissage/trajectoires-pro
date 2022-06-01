@@ -294,7 +294,7 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.status, 404);
       assert.deepStrictEqual(response.data, {
         error: "Not Found",
-        message: "UAI, code formation et/ou millésime invalide",
+        message: "Formation inconnue",
         statusCode: 404,
       });
     });
@@ -406,7 +406,7 @@ describe("formationsRoutes", () => {
       const response = await httpClient.get("/api/inserjeunes/formations/uai/0751234P/code_certification/1022101.svg");
 
       assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data.message, "UAI, code formation et/ou millésime invalide");
+      assert.strictEqual(response.data.message, "Formation inconnue");
     });
 
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
@@ -422,7 +422,7 @@ describe("formationsRoutes", () => {
       const response = await httpClient.get("/api/inserjeunes/formations/uai/0751234J/code_certification/1022105.svg");
 
       assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data, "Donnée non disponible");
+      assert.strictEqual(response.data, "Données statistiques non disponibles");
     });
 
     it("Vérifie qu'on obtient une erreur quand le format de l'UAI est invalide", async () => {

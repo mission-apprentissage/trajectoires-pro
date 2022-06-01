@@ -10,8 +10,7 @@ import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
 import { formationsStats } from "../../common/collections/collections.js";
-import { getRates } from "../../common/rateLevels.js";
-import { renderTemplate } from "../utils/templates.js";
+import { sendWidget } from "../utils/widget.js";
 
 export default () => {
   const router = express.Router();
@@ -107,23 +106,12 @@ export default () => {
         .toArray();
 
       if (results.length === 0) {
-        throw Boom.notFound("UAI, code formation et/ou millésime invalide");
+        throw Boom.notFound("Formation inconnue");
       }
 
       const stats = results[0];
       if (ext === "svg") {
-        const rates = getRates(stats);
-        if (rates.length === 0) {
-          return res.status(404).send("Donnée non disponible");
-        }
-
-        const svg = await renderTemplate("formation", rates, {
-          theme,
-          direction,
-        });
-
-        res.setHeader("content-type", "image/svg+xml");
-        return res.status(200).send(svg);
+        return sendWidget("formation", stats, res, { theme, direction });
       } else {
         return res.json(stats);
       }

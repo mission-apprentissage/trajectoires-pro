@@ -1,17 +1,16 @@
 import express from "express";
 import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
 import Joi from "joi";
-import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
-import { arrayOf, validate } from "../utils/validators.js";
 import * as validators from "../utils/validators.js";
+import { arrayOf, validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
-import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
-import Boom from "boom";
 import { certificationsStats } from "../../common/collections/collections.js";
-import { getRates } from "../../common/rateLevels.js";
-import { renderTemplate } from "../utils/templates.js";
+import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
+import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
+import Boom from "boom";
+import { sendWidget } from "../utils/widget.js";
 
 export default () => {
   const router = express.Router();
@@ -76,7 +75,7 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/certifications/code_certification/:code_certification.:ext?",
+    "/api/inserjeunes/certifications/:code_certification.:ext?",
     tryCatch(async (req, res) => {
       const { code_certification, millesime, direction, theme, ext } = await validate(
         { ...req.params, ...req.query },
@@ -94,23 +93,12 @@ export default () => {
         .toArray();
 
       if (results.length === 0) {
-        throw Boom.notFound("Code formation et/ou millésime invalide");
+        throw Boom.notFound("Certification inconnue");
       }
 
       const stats = results[0];
       if (ext === "svg") {
-        const rates = getRates(stats);
-        if (rates.length === 0) {
-          return res.status(404).send("Donnée non disponible");
-        }
-
-        const svg = await renderTemplate("formation", rates, {
-          theme,
-          direction,
-        });
-
-        res.setHeader("content-type", "image/svg+xml");
-        return res.status(200).send(svg);
+        return sendWidget("certification", stats, res, { theme, direction });
       } else {
         return res.json(stats);
       }
