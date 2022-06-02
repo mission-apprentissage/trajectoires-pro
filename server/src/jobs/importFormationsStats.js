@@ -1,14 +1,14 @@
 import { compose, flattenArray, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
 import { Readable } from "stream";
-import bunyan from "../common/logger.js";
 import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/InserJeunes.js";
 import { getCFD } from "../common/actions/getCFD.js";
 import { formationsStats } from "../common/collections/collections.js";
+import { getLoggerWithContext } from "../common/logger.js";
 
-const logger = bunyan.child({ context: "import" });
+const logger = getLoggerWithContext("import");
 
 function readCSV(stream) {
   return compose(stream, parseCsv());

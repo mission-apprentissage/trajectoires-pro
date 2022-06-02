@@ -1,9 +1,9 @@
-import bunyan from "../common/logger.js";
 import { closeMongodbConnection, connectToMongodb, configureValidation, configureIndexes } from "./mongodb.js";
 import prettyMilliseconds from "pretty-ms";
 import { isEmpty } from "lodash-es";
+import { getLoggerWithContext } from "./logger.js";
 
-const logger = bunyan.child({ context: "script" });
+const logger = getLoggerWithContext("script");
 
 process.on("unhandledRejection", (e) => logger.error(e));
 process.on("uncaughtException", (e) => logger.error(e));

@@ -1,11 +1,11 @@
-import bunyan from "../common/logger.js";
 import { Readable } from "stream";
 import { InserJeunes } from "../common/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { getCFD } from "../common/actions/getCFD.js";
 import { certificationsStats } from "../common/collections/collections.js";
+import { getLoggerWithContext } from "../common/logger.js";
 
-const logger = bunyan.child({ context: "import" });
+const logger = getLoggerWithContext("import");
 
 export async function importCertificationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };

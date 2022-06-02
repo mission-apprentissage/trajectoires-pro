@@ -2,9 +2,9 @@ import { RateLimitedApi } from "./RateLimitedApi.js";
 import config from "../../config.js";
 import { fetchStream, fetchJson } from "../utils/httpUtils.js";
 import { compose, transformData, accumulateData } from "oleoduc";
-import bunyan from "../logger.js";
+import { getLoggerWithContext } from "../logger.js";
 
-const logger = bunyan.child({ context: "api/inserjeunes" });
+const logger = getLoggerWithContext("api/inserjeunes");
 
 function fixJsonResponse() {
   return compose(

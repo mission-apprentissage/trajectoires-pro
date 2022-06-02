@@ -1,12 +1,12 @@
 import { mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
-import bunyan from "../common/logger.js";
 import { getBCNTable, loadMefs } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { pick, range } from "lodash-es";
 import { getDiplome } from "../common/actions/getDiplome.js";
 import { codeFormationDiplomes } from "../common/collections/collections.js";
+import { getLoggerWithContext } from "../common/logger.js";
 
-const logger = bunyan.child({ context: "import" });
+const logger = getLoggerWithContext("import");
 
 async function importCodeFormationDiplomes(options = {}) {
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };

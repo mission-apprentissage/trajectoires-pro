@@ -1,8 +1,8 @@
 import axios from "axios";
-import bunyan from "../logger.js";
 import { compose, transformData } from "oleoduc";
+import { getLoggerWithContext } from "../logger.js";
 
-const logger = bunyan.child({ context: "http" });
+const logger = getLoggerWithContext("http");
 
 async function _fetch(url, options = {}) {
   let { method = "GET", ...rest } = options;
