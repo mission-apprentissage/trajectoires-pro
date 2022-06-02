@@ -1,8 +1,8 @@
 import { RateLimiter } from "./RateLimiter.js";
 import { ApiError } from "./ApiError.js";
-import bunyan from "../logger.js";
+import { getLoggerWithContext } from "../logger.js";
 
-const logger = bunyan.child({ context: "api" });
+const logger = getLoggerWithContext("api");
 
 class RateLimitedApi {
   constructor(name, options = {}) {

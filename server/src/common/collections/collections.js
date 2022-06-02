@@ -13,7 +13,7 @@ export function getCollectionDescriptors() {
  * @returns {FormationsStatsCollection}
  */
 export function formationsStats() {
-  return dbCollection("formationsStats");
+  return dbCollection(formationsStatsDescriptor.name);
 }
 
 /**
@@ -21,7 +21,7 @@ export function formationsStats() {
  * @returns {CertificationsStatsCollection}
  */
 export function certificationsStats() {
-  return dbCollection("certificationsStats");
+  return dbCollection(certificationsStatsDescriptor.name);
 }
 
 /**
@@ -29,7 +29,7 @@ export function certificationsStats() {
  * @returns {CertificationsCollection}
  */
 export function codeFormationDiplomes() {
-  return dbCollection("codeFormationDiplomes");
+  return dbCollection(codeFormationDiplomesDescriptor.name);
 }
 
 /**
@@ -37,5 +37,5 @@ export function codeFormationDiplomes() {
  * @returns {LogsCollection}
  */
 export function logs() {
-  return dbCollection("logs");
+  return dbCollection(logsDescriptor.name);
 }

@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import config from "../config.js";
-import logger from "../common/logger.js";
+import { logger } from "../common/logger.js";
 import mongoSanitize from "express-mongo-sanitize";
 import { logMiddleware } from "./middlewares/logMiddleware.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";

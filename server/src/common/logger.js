@@ -2,9 +2,9 @@ import util from "util";
 import { throttle, omit, isEmpty } from "lodash-es";
 import bunyan from "bunyan";
 import BunyanSlack from "bunyan-slack";
-import config from "../config.js";
 import chalk from "chalk"; // eslint-disable-line node/no-unpublished-import
 import { compose, writeData, transformData } from "oleoduc";
+import config from "../config.js";
 
 function prettyPrintStream(outputName) {
   let levels = {
@@ -117,7 +117,7 @@ const createStreams = () => {
     });
 };
 
-export default bunyan.createLogger({
+export const logger = bunyan.createLogger({
   name: "trajectoire-pro",
   serializers: {
     ...bunyan.stdSerializers,
@@ -130,3 +130,7 @@ export default bunyan.createLogger({
   },
   streams: createStreams(),
 });
+
+export function getLoggerWithContext(context) {
+  return logger.child({ context });
+}
