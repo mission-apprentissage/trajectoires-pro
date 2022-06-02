@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { getDirname } from "../../common/esmUtils.js";
 import ejs from "ejs";
+import { getRates } from "../../common/rateLevels.js";
 
 const __dirname = getDirname(import.meta.url);
 
@@ -61,7 +62,7 @@ function getTemplate(type, options = {}) {
   return templates[type][direction] ?? templates[type].vertical ?? TEMPLATES.dsfr[type].vertical;
 }
 
-export function renderTemplate(type, rates, options) {
+function renderTemplate(type, rates, options) {
   const base64Font = loadBase64Font();
   const data = { base64Font, rates };
   const template = getTemplate(type, options);
@@ -69,4 +70,16 @@ export function renderTemplate(type, rates, options) {
   return ejs.renderFile(template, data, {
     async: true,
   });
+}
+
+export async function sendWidget(type, stats, res, options) {
+  const rates = getRates(stats);
+  if (rates.length === 0) {
+    return res.status(404).send("Données statistiques non disponibles");
+  }
+
+  const svg = await renderTemplate(type, rates, options);
+
+  res.setHeader("content-type", "image/svg+xml");
+  return res.status(200).send(svg);
 }

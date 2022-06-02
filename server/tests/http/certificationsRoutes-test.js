@@ -221,7 +221,7 @@ describe("certificationsRoutes", () => {
       });
       await insertCertificationsStats({ code_certification: "12345678", millesime: "2019" });
 
-      const response = await httpClient.get(`/api/inserjeunes/certifications/code_certification/12345678`);
+      const response = await httpClient.get(`/api/inserjeunes/certifications/12345678`);
 
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data, {
@@ -245,9 +245,7 @@ describe("certificationsRoutes", () => {
       await insertCertificationsStats({ code_certification: "12345678", millesime: "2018" });
       await insertCertificationsStats({ code_certification: "12345678", millesime: "2019" });
 
-      const response = await httpClient.get(
-        `/api/inserjeunes/certifications/code_certification/12345678?millesime=2018`
-      );
+      const response = await httpClient.get(`/api/inserjeunes/certifications/12345678?millesime=2018`);
 
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data.millesime, "2018");
@@ -256,12 +254,12 @@ describe("certificationsRoutes", () => {
     it("Vérifie qu'on retourne une 404 si la certification est inconnue", async () => {
       const { httpClient } = await startServer();
 
-      const response = await httpClient.get(`/api/inserjeunes/certifications/code_certification/INCONNUE`);
+      const response = await httpClient.get(`/api/inserjeunes/certifications/INCONNUE`);
 
       assert.strictEqual(response.status, 404);
       assert.deepStrictEqual(response.data, {
         error: "Not Found",
-        message: "Code formation et/ou millésime invalide",
+        message: "Certification inconnue",
         statusCode: 404,
       });
     });
@@ -276,7 +274,7 @@ describe("certificationsRoutes", () => {
         taux_poursuite_etudes: 5,
       });
 
-      const response = await httpClient.get("/api/inserjeunes/certifications/code_certification/23830024203.svg");
+      const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg");
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
@@ -288,10 +286,10 @@ describe("certificationsRoutes", () => {
     it("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {
       const { httpClient } = await startServer();
 
-      const response = await httpClient.get("/api/inserjeunes/certifications/code_certification/INCONNUE.svg");
+      const response = await httpClient.get("/api/inserjeunes/certifications/INCONNUE.svg");
 
       assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data.message, "Code formation et/ou millésime invalide");
+      assert.strictEqual(response.data.message, "Certification inconnue");
     });
 
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
@@ -302,19 +300,17 @@ describe("certificationsRoutes", () => {
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
       });
-      const response = await httpClient.get("/api/inserjeunes/certifications/code_certification/23830024203.svg");
+      const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg");
 
       assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data, "Donnée non disponible");
+      assert.strictEqual(response.data, "Données statistiques non disponibles");
     });
 
     it("Vérifie qu'on obtient une erreur avec une direction invalide", async () => {
       await insertCertificationsStats({ code_certification: "23830024203", millesime: "2018" });
       const { httpClient } = await startServer();
 
-      const response = await httpClient.get(
-        "/api/inserjeunes/certifications/code_certification/23830024203.svg?direction=diagonal"
-      );
+      const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg?direction=diagonal");
 
       assert.strictEqual(response.status, 400);
     });

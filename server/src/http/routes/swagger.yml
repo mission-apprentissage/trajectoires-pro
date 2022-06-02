@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Trajectoires pro
-  description: Documentation de l'API publique de Trajectoires pro
+  description: Documentation de l'API  Trajectoires Pro
   license:
     name: MIT License
     url: https://raw.githubusercontent.com/mission-apprentissage/trajectoires-pro/main/LICENSE
@@ -10,9 +10,7 @@ info:
 paths:
   /api/inserjeunes/certifications:
     get:
-      description: Rechercher des certifications et leurs statistiques
-      tags:
-        - Publique
+      description: Rechercher des statistiques de certifications
       security:
         - ApiKeyAuth: []
       parameters:
@@ -32,9 +30,7 @@ paths:
 
   /api/inserjeunes/certifications.{ext}:
     get:
-      description: Permet d'exporter des certifications et leurs statistiques
-      tags:
-        - Publique
+      description: Exporter des statistiques de certifications
       security:
         - ApiKeyAuth: [ ]
       parameters:
@@ -54,11 +50,9 @@ paths:
           $ref: "#/components/responses/404"
 
 
-  /api/inserjeunes/certifications/code_certification/:code_certification/millesime/:millesime:
+  /api/inserjeunes/certifications/{code_certification}:
     get:
-      description: Obtenir une certification et ses statistiques
-      tags:
-        - Publique
+      description: Obtenir les statistiques d'une certification
       parameters:
         - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
@@ -74,9 +68,7 @@ paths:
 
   /api/inserjeunes/formations:
     get:
-      description: Rechercher des formations et leurs statistiques
-      tags:
-        - Publique
+      description: Rechercher des statistiques de formations
       security:
         - ApiKeyAuth: [ ]
       parameters:
@@ -97,9 +89,7 @@ paths:
 
   /api/inserjeunes/formations.{ext}:
     get:
-      description: Permet d'exporter des formations et leurs statistiques
-      tags:
-        - Publique
+      description: Exporter des statistiques de formations
       security:
         - ApiKeyAuth: [ ]
       parameters:
@@ -119,11 +109,9 @@ paths:
         404:
           $ref: "#/components/responses/404"
 
-  /api/inserjeunes/formations/uai/{uai}/code_certification/{code_certification}/millesime/{millesime}:
+  /api/inserjeunes/formations/{uai}-{code_certification}:
     get:
-      description: Obtenir une formation et ses statistiques
-      tags:
-        - Publique
+      description: Obtenir des statistiques pour une formation
       parameters:
         - $ref: "#/components/parameters/uai"
         - $ref: "#/components/parameters/code_certification"
@@ -144,22 +132,28 @@ components:
     millesimes:
       name: millesimes
       in: query
-      description: Permet de filtrer la recherche avec un ou plusieurs millesimes séparés par des virgules.
+      description: |
+        Permet de filtrer la recherche avec un ou plusieurs millesimes séparés par des virgules.
+        
+        * Les millesimes des certifications sont des années (ex: 2020)
+        * Les millesimes des formations sont des périodes (ex: 2020_2021)
       schema:
         type: string
 
     code_certifications:
       name: code_certifications
       in: query
-      description: Permet de filtrer la recherche avec un ou plusieurs codes de certification séparés par des virgules.
+      description: |
+        Permet de filtrer la recherche avec un ou plusieurs codes de certification séparés par des virgules.
+        
+        Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
       schema:
         type: string
 
     uais:
       name: uais
       in: query
-      description: |
-        Permet de filtrer la recherche avec une ou plusieurs UAI séparées par des virgules.
+      description: Permet de filtrer la recherche avec une ou plusieurs UAI séparées par des virgules.
       schema:
         type: string
         pattern: '^[0-9]{7}[A-Z]{1}$'
@@ -188,6 +182,13 @@ components:
         enum: [ "json", "csv" ]
         default: json
 
+    millesime:
+      name: millesime
+      in: query
+      required: true
+      schema:
+        type: string
+
     # Path parameters
     uai:
       name: uai
@@ -199,13 +200,7 @@ components:
 
     code_certification:
       name: code_certification
-      in: path
-      required: true
-      schema:
-        type: string
-
-    millesime:
-      name: millesime
+      description:  Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
       in: path
       required: true
       schema:
