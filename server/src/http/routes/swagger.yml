@@ -66,6 +66,22 @@ paths:
         404:
           $ref: "#/components/responses/404"
 
+  /api/inserjeunes/certifications/{code_certification}.svg:
+    get:
+      description: Génère une image SVG (widget) avec les statistiques d'une certification
+      parameters:
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesime"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
   /api/inserjeunes/formations:
     get:
       description: Rechercher des statistiques de formations
@@ -111,7 +127,24 @@ paths:
 
   /api/inserjeunes/formations/{uai}-{code_certification}:
     get:
-      description: Obtenir des statistiques pour une formation
+      description: Obtenir des statistiques d'une formation
+      parameters:
+        - $ref: "#/components/parameters/uai"
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesime"
+      responses:
+        200:
+          $ref: "#/components/responses/FormationResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/formations/{uai}-{code_certification}.svg:
+    get:
+      description: Génère une image SVG (widget) avec les statistiques d'une formation
       parameters:
         - $ref: "#/components/parameters/uai"
         - $ref: "#/components/parameters/code_certification"
