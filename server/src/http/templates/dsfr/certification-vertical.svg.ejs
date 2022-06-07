@@ -1,4 +1,4 @@
-<% const height = rates.length === 1 ? 268 : 323 %>
+<% const height = rates.length === 1 ? 258 : 323 %>
 
 <svg width="320" height="<%= height %>" viewBox="0 0 320 <%= height %>" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect x="0.5" y="0.5" width="319" height="<%= height -1 %>" fill="white" />
@@ -100,7 +100,7 @@
     font-style="italic"
     letter-spacing="0em"
   >
-    <tspan x="30" y="289.312">Chiffres issus du site InserJeunes</tspan>
+    <tspan x="30" y="<%= height - 34 %>">Chiffres issus du site InserJeunes</tspan>
   </text>
 
   <defs>
