@@ -1,11 +1,20 @@
+// @ts-check
+
 import * as logsDescriptor from "./logs.js";
 import * as codeFormationDiplomesDescriptor from "./codeFormationDiplomes.js";
 import * as formationsStatsDescriptor from "./formationsStats.js";
 import * as certificationsStatsDescriptor from "./certificationsStats.js";
+import * as consumptionsDescriptor from "./consumptions.js";
 import { dbCollection } from "../mongodb.js";
 
 export function getCollectionDescriptors() {
-  return [logsDescriptor, codeFormationDiplomesDescriptor, formationsStatsDescriptor, certificationsStatsDescriptor];
+  return [
+    logsDescriptor,
+    codeFormationDiplomesDescriptor,
+    formationsStatsDescriptor,
+    certificationsStatsDescriptor,
+    consumptionsDescriptor,
+  ];
 }
 
 /**
@@ -25,8 +34,8 @@ export function certificationsStats() {
 }
 
 /**
- * @typedef {import("mongodb").Collection<import("./certifications.js").Mefs>} CertificationsCollection
- * @returns {CertificationsCollection}
+ * @typedef {import("mongodb").Collection<import("./codeFormationDiplomes").CodeFormationDiplomes>} CodeFormationDiplomesCollection
+ * @returns {CodeFormationDiplomesCollection}
  */
 export function codeFormationDiplomes() {
   return dbCollection(codeFormationDiplomesDescriptor.name);
@@ -38,4 +47,11 @@ export function codeFormationDiplomes() {
  */
 export function logs() {
   return dbCollection(logsDescriptor.name);
+}
+/**
+ * @typedef {import("mongodb").Collection<import("./consumptions").Consumptions>} ConsumptionsCollection
+ * @returns {ConsumptionsCollection}
+ */
+export function consumptions() {
+  return dbCollection(consumptionsDescriptor.name);
 }
