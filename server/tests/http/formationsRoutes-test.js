@@ -347,7 +347,7 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes(`width="320"`));
-      assert.ok(response.data.includes(`height="268"`));
+      assert.ok(response.data.includes(`height="258"`));
     });
 
     it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (horizontale)", async () => {
@@ -365,7 +365,7 @@ describe("formationsRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes(`width="585"`));
+      assert.ok(response.data.includes(`width="700"`));
       assert.ok(response.data.includes("50%"));
       assert.ok(response.data.includes("sont en emploi 6 mois"));
       assert.ok(!response.data.includes("poursuivent leurs études"));
