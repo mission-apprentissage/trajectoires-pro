@@ -63,7 +63,7 @@ function loadBase64Font() {
  * @param {keyof typeof TEMPLATES.dsfr} type
  * @param {object} options
  */
-function getTemplate(type, options = {}) {
+function getTemplate(type: keyof typeof TEMPLATES.dsfr, options: { theme?: string; direction?: string } = {}) {
   const { theme = "dsfr", direction = "vertical" } = options;
   const templates = TEMPLATES[theme] ?? TEMPLATES.dsfr;
   return templates[type][direction] ?? templates[type].vertical ?? TEMPLATES.dsfr[type].vertical;
