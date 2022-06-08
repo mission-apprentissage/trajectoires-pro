@@ -1,9 +1,6 @@
 //@ts-check
 import { metricsMiddleware } from "./metricsMiddleware.js";
 
-/**
- * @type  {import("../types").AsyncTryCatchHandler}
- */
 export function tryCatch(callback) {
   return async (req, res, next) => {
     try {
