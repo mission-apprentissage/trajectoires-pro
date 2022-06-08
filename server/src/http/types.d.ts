@@ -6,5 +6,3 @@ export type AsyncTryCatchHandler<P = core.ParamsDictionary, ResBody = any, ReqBo
     ...args: Parameters<express.RequestHandler<P, ResBody, ReqBody, ReqQuery>>
   ) => ReturnType<express.NextFunction>
 ) => express.RequestHandler<P, ResBody, ReqBody, ReqQuery>;
-
-export type RateLevel = "success" | "info" | "warning" | "danger";

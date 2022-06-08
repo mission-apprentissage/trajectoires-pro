@@ -1,4 +1,10 @@
 // @ts-check
+/**
+ * @typedef {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number, filiere?:"apprentissage" | "pro", diplome?:{libelle:string}}} InserJeunesData
+ */
+/**
+ * @typedef {"success" | "info" | "warning" | "danger"} RateLevel
+ */
 
 const RATE_LEVELS = {
   taux_emploi_6_mois: {
@@ -47,7 +53,7 @@ export function getRateLevel(key, value, filiere, diplome) {
  * Create on array of rates to feed the ejs template
  *
  * @param {InserJeunesData} stats
- * @returns {Array<{rate: number | undefined, labels: string[], level: import("../types").RateLevel}>}
+ * @returns {Array<{rate: number | undefined, labels: string[], level: RateLevel}>}
  */
 export const getRates = (stats) => {
   return Object.entries({

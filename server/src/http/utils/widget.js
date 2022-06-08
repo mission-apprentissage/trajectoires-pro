@@ -6,9 +6,6 @@ import { getRates } from "../../common/rateLevels.js";
 
 const __dirname = getDirname(import.meta.url);
 
-/**
- * @typedef {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number, filiere?:"apprentissage" | "pro", diplome?:string}} InserJeunesData
- */
 const TEMPLATES = {
   dsfr: {
     // local : action de formation (formation donnée dans un établissement donné)
