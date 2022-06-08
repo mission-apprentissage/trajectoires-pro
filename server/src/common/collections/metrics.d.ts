@@ -6,15 +6,15 @@
  */
 import { ObjectId } from "mongodb";
 
-export const name = "consumptions";
+export const name = "metrics";
 
-export interface Consumptions {
+export interface Metrics {
   _id?: ObjectId;
   time: Date;
   consumer: string;
   url: string;
   extension?: string;
   uai?: string;
-  code_certication?: string;
+  code_certification?: string;
   v?: number;
 }

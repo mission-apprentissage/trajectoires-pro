@@ -1,9 +1,9 @@
 // @ts-check
 
-import { consumptions } from "../../common/collections/collections.js";
+import { metrics } from "../../common/collections/collections.js";
 import { logger } from "../../common/logger.js";
 
-export const consumptionMiddleware = async (req) => {
+export const metricsMiddleware = async (req) => {
   try {
     const referer = req.headers["referer"] && req.headers["referer"].split("/")[2];
     const origin = req.headers["origin"] && req.headers["origin"].split("/")[2];
@@ -17,7 +17,7 @@ export const consumptionMiddleware = async (req) => {
     const uai = req.params?.uai;
     const code_certification = req.params?.code_certification;
 
-    await consumptions().insertOne({
+    await metrics().insertOne({
       time,
       consumer,
       url,

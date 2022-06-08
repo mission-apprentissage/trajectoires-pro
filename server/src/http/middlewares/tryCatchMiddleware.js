@@ -1,5 +1,5 @@
 //@ts-check
-import { consumptionMiddleware } from "./consumptionMiddleware.js";
+import { metricsMiddleware } from "./metricsMiddleware.js";
 
 /**
  * @type  {import("../types").AsyncTryCatchHandler}
@@ -7,7 +7,7 @@ import { consumptionMiddleware } from "./consumptionMiddleware.js";
 export function tryCatch(callback) {
   return async (req, res, next) => {
     try {
-      await consumptionMiddleware(req);
+      await metricsMiddleware(req);
       await callback(req, res, next);
     } catch (e) {
       //Force the async routes to be handled by the error middleware

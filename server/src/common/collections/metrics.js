@@ -1,6 +1,6 @@
 import { date, integer, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
 
-export const name = "consumptions";
+export const name = "metrics";
 
 export function indexes() {
   return [

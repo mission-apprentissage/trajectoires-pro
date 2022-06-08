@@ -1,9 +1,9 @@
 import assert from "assert";
 import { startServer } from "../utils/testUtils.js";
 import { insertFormationsStats } from "../utils/fakeData.js";
-import { consumptions } from "../../src/common/collections/collections.js";
+import { metrics } from "../../src/common/collections/collections.js";
 
-describe("consumptionMiddleware", () => {
+describe("metricsMiddleware", () => {
   it("checks that we track usage of the api", async () => {
     const { httpClient } = await startServer();
     await insertFormationsStats({
@@ -14,7 +14,7 @@ describe("consumptionMiddleware", () => {
 
     await httpClient.get(`/api/inserjeunes/formations/0751234J-12345678?millesime=2018_2019`);
 
-    const results = await consumptions()
+    const results = await metrics()
       .find({}, { projection: { _id: 0, consumer: 1, url: 1, extension: 1 } })
       .toArray();
     assert.strictEqual(results.length, 1);
@@ -34,7 +34,7 @@ describe("consumptionMiddleware", () => {
 
     await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
 
-    const results = await consumptions()
+    const results = await metrics()
       .find({}, { projection: { _id: 0, consumer: 1, url: 1, extension: 1 } })
       .toArray();
     assert.strictEqual(results.length, 1);

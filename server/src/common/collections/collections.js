@@ -4,7 +4,7 @@ import * as logsDescriptor from "./logs.js";
 import * as codeFormationDiplomesDescriptor from "./codeFormationDiplomes.js";
 import * as formationsStatsDescriptor from "./formationsStats.js";
 import * as certificationsStatsDescriptor from "./certificationsStats.js";
-import * as consumptionsDescriptor from "./consumptions.js";
+import * as metricsDescriptor from "./metrics.js";
 import { dbCollection } from "../mongodb.js";
 
 export function getCollectionDescriptors() {
@@ -13,7 +13,7 @@ export function getCollectionDescriptors() {
     codeFormationDiplomesDescriptor,
     formationsStatsDescriptor,
     certificationsStatsDescriptor,
-    consumptionsDescriptor,
+    metricsDescriptor,
   ];
 }
 
@@ -49,9 +49,9 @@ export function logs() {
   return dbCollection(logsDescriptor.name);
 }
 /**
- * @typedef {import("mongodb").Collection<import("./consumptions").Consumptions>} ConsumptionsCollection
- * @returns {ConsumptionsCollection}
+ * @typedef {import("mongodb").Collection<import("./metrics").Metrics>} MetricsCollection
+ * @returns {MetricsCollection}
  */
-export function consumptions() {
-  return dbCollection(consumptionsDescriptor.name);
+export function metrics() {
+  return dbCollection(metricsDescriptor.name);
 }
