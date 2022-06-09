@@ -12,10 +12,10 @@ export interface CodeFormationDiplomes {
   _id?: ObjectId;
   code_formation: string;
   libelle: string;
-  code_formation_alternatifs: array;
-  mef: array;
-  mef_stats_9: array;
-  mef_stats_11: array;
+  code_formation_alternatifs: string[];
+  mef: string[];
+  mef_stats_9: string[];
+  mef_stats_11: string[];
   diplome?: {
     code: string;
     libelle: string;

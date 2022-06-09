@@ -18,7 +18,7 @@ export function getCollectionDescriptors() {
 }
 
 /**
- * @typedef {import("mongodb").Collection<import("./formationsStats").FormationsStats>} FormationsStatsCollection
+ * @typedef {import("mongodb").Collection<import("./formationsStats.js").FormationsStats>} FormationsStatsCollection
  * @returns {FormationsStatsCollection}
  */
 export function formationsStats() {
@@ -26,7 +26,7 @@ export function formationsStats() {
 }
 
 /**
- * @typedef {import("mongodb").Collection<import("./certificationsStats").CertificationsStats>} CertificationsStatsCollection
+ * @typedef {import("mongodb").Collection<import("./certificationsStats.js").CertificationsStats>} CertificationsStatsCollection
  * @returns {CertificationsStatsCollection}
  */
 export function certificationsStats() {
@@ -34,7 +34,7 @@ export function certificationsStats() {
 }
 
 /**
- * @typedef {import("mongodb").Collection<import("./codeFormationDiplomes").CodeFormationDiplomes>} CodeFormationDiplomesCollection
+ * @typedef {import("mongodb").Collection<import("./codeFormationDiplomes.js").CodeFormationDiplomes>} CodeFormationDiplomesCollection
  * @returns {CodeFormationDiplomesCollection}
  */
 export function codeFormationDiplomes() {
@@ -42,14 +42,14 @@ export function codeFormationDiplomes() {
 }
 
 /**
- * @typedef {import("mongodb").Collection<import("./logs").Logs>} LogsCollection
+ * @typedef {import("mongodb").Collection<import("./logs.js").Logs>} LogsCollection
  * @returns {LogsCollection}
  */
 export function logs() {
   return dbCollection(logsDescriptor.name);
 }
 /**
- * @typedef {import("mongodb").Collection<import("./metrics").Metrics>} MetricsCollection
+ * @typedef {import("mongodb").Collection<import("./metrics.js").Metrics>} MetricsCollection
  * @returns {MetricsCollection}
  */
 export function metrics() {

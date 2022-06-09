@@ -21,10 +21,13 @@ const bsonTypeToTsTypeMap = {
   date: "Date",
   bool: "boolean",
   objectId: "ObjectId",
+  array: "Array",
 };
 
 const computeBsonTypes = (node) => {
-  if (node.bsonType !== "object" && !(node.bsonType === "string" && node.enum)) {
+  if (node.bsonType === "array") {
+    node.tsType = `${bsonTypeToTsTypeMap[node.items.bsonType] ?? node.items.bsonType}[]`;
+  } else if (node.bsonType !== "object" && !(node.bsonType === "string" && node.enum)) {
     node.tsType = bsonTypeToTsTypeMap[node.bsonType] ?? node.bsonType;
   }
 
