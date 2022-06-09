@@ -49,6 +49,16 @@ services:
     networks:
       - trajectoires_pro_network
 
+  metabase:
+    image: metabase/metabase:v0.43.2
+    container_name: trajectoires_pro_metabase
+    mem_limit: 2g
+    depends_on:
+      - mongodb
+    restart: always
+    networks:
+      - trajectoires_pro_network
+
 networks:
   trajectoires_pro_network:
     name: trajectoires_pro_network
