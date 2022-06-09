@@ -39,6 +39,7 @@ services:
       - trajectoires_pro_metabase_data:/data:z
     environment:
       - MB_DB_FILE=/data/metabase.db
+      - MB_SITE_URL=http://localhost/metabase
 
 volumes:
   trajectoires_pro_mongodb_data:
