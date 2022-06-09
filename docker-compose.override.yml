@@ -34,6 +34,12 @@ services:
     volumes:
       - trajectoires_pro_mongodb_data:/data:z
 
+  metabase:
+    volumes:
+      - trajectoires_pro_metabase_data:/data:z
+    environment:
+      - MB_DB_FILE=/data/metabase.db
+
 volumes:
   trajectoires_pro_mongodb_data:
     driver: local
@@ -44,3 +50,6 @@ volumes:
   trajectoires_pro_server_data:
     driver: local
     name: trajectoires_pro_server_data
+  trajectoires_pro_metabase_data:
+    driver: local
+    name: trajectoires_pro_metabase_data
