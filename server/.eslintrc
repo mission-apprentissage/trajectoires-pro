@@ -1,7 +1,13 @@
 {
   "root": true,
-  "extends": ["eslint:recommended", "plugin:node/recommended", "plugin:prettier/recommended"],
-  "plugins": ["mocha"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "plugin:prettier/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript"
+  ],
+  "plugins": ["mocha", "import"],
   "env": {
     "node": true,
     "es6": true,
@@ -14,6 +20,7 @@
   "rules": {
     "mocha/no-skipped-tests": "error",
     "mocha/no-exclusive-tests": "error",
+    "import/no-unresolved": "error",
     "node/no-missing-import": "off"
   },
   "overrides": [
@@ -23,5 +30,15 @@
         "node/no-unpublished-require": 0
       }
     }
-  ]
+  ],
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      }
+    }
+  }
 }
