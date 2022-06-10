@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */ // disabled because env-var is still a commonJS module
 import env from "env-var";
 
 const config = {
