@@ -12,4 +12,5 @@ WORKDIR /app
 
 VOLUME /data
 EXPOSE 5000
+RUN yarn build
 CMD ["yarn", "start"]
