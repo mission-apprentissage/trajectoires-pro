@@ -10,7 +10,7 @@ import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
 import { formationsStats } from "../../common/collections/collections.js";
-import { sendWidget } from "../utils/widget.js";
+import { sendWidget } from "../utils/widget.ts";
 
 export default () => {
   const router = express.Router();

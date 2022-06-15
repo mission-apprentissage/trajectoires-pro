@@ -1,7 +1,7 @@
 {
   "name": "mna-trajectoires-pro-server",
   "version": "0.0.1",
-  "description": "[MNA] App Template",
+  "description": "[MNA] Trajectoires Pro",
   "repository": "https://github.com/mission-apprentissage/trajectoires-pro.git",
   "private": false,
   "author": "MNA",
@@ -9,19 +9,17 @@
   "module": "src/index.js",
   "type": "module",
   "scripts": {
-    "prebuild": "rimraf dist/",
-    "build": "tsc",
-    "postbuild": "copyfiles -u 1 src/**/*.yml src/http/templates/**/* src/http/templates/**/**/* dist/",
-    "start": "yarn build && nodemon --ignore tests/ dist/index.js",
-    "debug": "yarn build && nodemon --inspect=0.0.0.0 --signal SIGINT --ignore tests/ dist/index.js",
-    "test": "TRAJECTOIRES_PRO_LOG_LEVEL=fatal mocha --inline-diffs --exit tests/**/*-test.js",
-    "cli": "yarn build && TRAJECTOIRES_PRO_LOG_DESTINATIONS=stderr node src/cli.js",
+    "ts": "node --loader ts-node/esm",
+    "ts:generate": "node src/types/index.js",
+    "start": "nodemon --ext 'ts,js,cjs,json' --ignore 'tests/' --exec 'yarn ts src/index.js'",
+    "debug": "yarn start --inspect=0.0.0.0 --signal SIGINT",
+    "cli": "TRAJECTOIRES_PRO_LOG_DESTINATIONS=stderr yarn ts src/cli.js",
+    "test": "yarn ts:generate && TRAJECTOIRES_PRO_LOG_LEVEL=fatal mocha --inline-diffs --exit tests/**/*-test.js",
     "coverage": "nyc --temp-dir .coverage/.nyc_output --report-dir .coverage --reporter=lcov --reporter=html yarn test",
     "lint": "eslint src/ tests/",
     "migration:create": "migrate-mongo create",
     "migration:up": "migrate-mongo up",
-    "migration:down": "migrate-mongo down",
-    "ts:generate": "node src/types/index.js"
+    "migration:down": "migrate-mongo down"
   },
   "dependencies": {
     "axios": "0.27.2",
@@ -69,7 +67,6 @@
     "@typescript-eslint/parser": "5.27.1",
     "axiosist": "0.10.0",
     "chalk": "4.1.2",
-    "copyfiles": "2.4.1",
     "eslint": "7.1.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-import-resolver-typescript": "2.7.1",
@@ -84,7 +81,6 @@
     "nodemon": "2.0.16",
     "nyc": "15.1.0",
     "prettier": "2.6.2",
-    "rimraf": "3.0.2",
     "ts-node": "10.8.1",
     "typescript": "4.7.3"
   },
