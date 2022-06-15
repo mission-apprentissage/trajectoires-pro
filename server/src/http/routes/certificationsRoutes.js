@@ -33,7 +33,14 @@ export default () => {
         "certificationsStats",
         {
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
-          ...(code_certifications.length > 0 ? { code_certification: { $in: code_certifications } } : {}),
+          ...(code_certifications.length > 0
+            ? {
+                $or: [
+                  { code_certification: { $in: code_certifications } },
+                  { code_certification_alternatifs: { $in: code_certifications } },
+                ],
+              }
+            : {}),
         },
         {
           limit: items_par_page,

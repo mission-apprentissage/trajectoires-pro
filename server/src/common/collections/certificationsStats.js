@@ -1,4 +1,4 @@
-import { date, integer, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { arrayOf, date, integer, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 
 export const name = "certificationsStats";
@@ -20,6 +20,7 @@ export function schema() {
       _id: objectId(),
       millesime: string(),
       code_certification: string(),
+      code_certification_alternatifs: arrayOf(string()),
       filiere: string({ enum: ["apprentissage", "pro"] }),
       nb_annee_term: integer(),
       nb_poursuite_etudes: integer(),
@@ -38,6 +39,9 @@ export function schema() {
         { required: ["date_import"] }
       ),
     },
-    { required: ["millesime", "code_certification", "filiere", "diplome"], additionalProperties: false }
+    {
+      required: ["millesime", "code_certification", "code_certification_alternatifs", "filiere", "diplome"],
+      additionalProperties: false,
+    }
   );
 }

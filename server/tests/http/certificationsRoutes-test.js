@@ -40,6 +40,7 @@ describe("certificationsRoutes", () => {
           {
             millesime: "2020",
             code_certification: "12345678",
+            code_certification_alternatifs: [],
             filiere: "apprentissage",
             diplome: { code: "4", libelle: "BAC" },
             nb_annee_term: 1,
@@ -114,6 +115,22 @@ describe("certificationsRoutes", () => {
       await insertCertificationsStats({ code_certification: "67890" });
 
       const response = await httpClient.get(`/api/inserjeunes/certifications?code_certifications=12345`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.certifications[0].code_certification, "12345");
+      assert.strictEqual(response.data.pagination.total, 1);
+    });
+
+    it("Vérifie qu'on peut obtenir les stats de formations pour code alternatif", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({ code_certification: "12345", code_certification_alternatifs: ["A_12345"] });
+      await insertCertificationsStats({ code_certification: "67890", code_certification_alternatifs: ["A_67890"] });
+
+      const response = await httpClient.get(`/api/inserjeunes/certifications?code_certifications=A_12345`, {
         headers: {
           ...getAuthHeaders(),
         },
@@ -227,6 +244,7 @@ describe("certificationsRoutes", () => {
       assert.deepStrictEqual(response.data, {
         millesime: "2020",
         code_certification: "12345678",
+        code_certification_alternatifs: [],
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
         nb_annee_term: 1,
@@ -296,6 +314,7 @@ describe("certificationsRoutes", () => {
       const { httpClient } = await startServer();
       await dbCollection("certificationsStats").insertOne({
         code_certification: "23830024203",
+        code_certification_alternatifs: [],
         millesime: "2018",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },

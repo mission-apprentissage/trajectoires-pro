@@ -36,6 +36,7 @@ describe("importCertificationsStats", () => {
     });
     await insertCFD({
       code_formation: "12345678",
+      code_formation_alternatifs: ["87654321"],
       diplome: {
         code: "4",
         libelle: "BAC",
@@ -50,6 +51,7 @@ describe("importCertificationsStats", () => {
       filiere: "apprentissage",
       taux_emploi_6_mois: 6,
       code_certification: "12345678",
+      code_certification_alternatifs: ["87654321"],
       diplome: {
         code: "4",
         libelle: "BAC",
@@ -91,6 +93,7 @@ describe("importCertificationsStats", () => {
       filiere: "pro",
       millesime: "2020",
       code_certification: "09876543210",
+      code_certification_alternatifs: [],
       taux_emploi_6_mois: 6,
       diplome: {
         code: "4",

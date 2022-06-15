@@ -94,6 +94,11 @@ export async function importFormationsStats(options = {}) {
                 ...stats,
                 ...(diplome ? { diplome } : {}),
               },
+              $addToSet: {
+                code_certification_alternatifs: {
+                  $each: cfd?.code_formation_alternatifs || [],
+                },
+              },
             },
             { upsert: true }
           );

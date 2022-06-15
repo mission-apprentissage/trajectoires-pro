@@ -142,6 +142,22 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.data.pagination.total, 1);
     });
 
+    it("Vérifie qu'on peut obtenir les stats de formations pour code alternatif", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({ code_certification: "12345", code_certification_alternatifs: ["A_12345"] });
+      await insertFormationsStats({ code_certification: "67890", code_certification_alternatifs: ["A_67890"] });
+
+      const response = await httpClient.get(`/api/inserjeunes/formations?code_certifications=A_12345`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.formations[0].code_certification, "12345");
+      assert.strictEqual(response.data.pagination.total, 1);
+    });
+
     it("Vérifie qu'on peut exporter les données au format CSV", async () => {
       const { httpClient } = await startServer();
       await insertFormationsStats({
