@@ -11,6 +11,7 @@ import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
 import { sendWidget } from "../utils/widget.js";
+import { aggregateCertificationsStatsByFiliere } from "../../common/certifications.js";
 
 export default () => {
   const router = express.Router();
@@ -74,34 +75,62 @@ export default () => {
     })
   );
 
+  const handleSingleCertification = async (res, params) => {
+    const { code_certification, millesime, direction, theme, ext } = params;
+
+    const results = await certificationsStats()
+      .find({ code_certification, ...(millesime ? { millesime } : {}) }, { projection: { _id: 0, _meta: 0 } })
+      .limit(1)
+      .sort({ millesime: -1 })
+      .toArray();
+
+    if (results.length === 0) {
+      throw Boom.notFound("Certification inconnue");
+    }
+
+    const stats = results[0];
+    if (ext === "svg") {
+      return sendWidget("certification", stats, res, { theme, direction });
+    } else {
+      return res.json(stats);
+    }
+  };
+
+  const handleMultipleCertifications = async (res, params) => {
+    const { codes_certifications, millesime } = params;
+
+    const results = await certificationsStats()
+      .find(
+        { code_certification: { $in: codes_certifications }, ...(millesime ? { millesime } : {}) },
+        { projection: { _id: 0, _meta: 0 } }
+      )
+      .sort({ millesime: -1 })
+      .toArray();
+
+    if (results.length === 0) {
+      throw Boom.notFound("Certifications inconnues");
+    }
+
+    const mergedStats = aggregateCertificationsStatsByFiliere(results);
+    return res.json(mergedStats);
+  };
+
   router.get(
-    "/api/inserjeunes/certifications/:code_certification.:ext?",
+    "/api/inserjeunes/certifications/:codes_certifications.:ext?",
     tryCatch(async (req, res) => {
-      const { code_certification, millesime, direction, theme, ext } = await validate(
+      const { codes_certifications, ...params } = await validate(
         { ...req.params, ...req.query },
         {
-          code_certification: Joi.string().required(),
+          codes_certifications: arrayOf(Joi.string().required()).default([]).min(1),
           millesime: Joi.string(),
           ...validators.svg(),
         }
       );
 
-      const results = await certificationsStats()
-        .find({ code_certification, ...(millesime ? { millesime } : {}) }, { projection: { _id: 0, _meta: 0 } })
-        .limit(1)
-        .sort({ millesime: -1 })
-        .toArray();
-
-      if (results.length === 0) {
-        throw Boom.notFound("Certification inconnue");
+      if (codes_certifications.length === 1) {
+        return await handleSingleCertification(res, { ...params, code_certification: codes_certifications[0] });
       }
-
-      const stats = results[0];
-      if (ext === "svg") {
-        return sendWidget("certification", stats, res, { theme, direction });
-      } else {
-        return res.json(stats);
-      }
+      return await handleMultipleCertifications(res, { ...params, codes_certifications });
     })
   );
 
