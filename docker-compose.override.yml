@@ -18,7 +18,7 @@ services:
     stdin_open: true
 
   server:
-    command: ["yarn", "dev"]
+    command: ["yarn", "debug"]
     ports:
       - "127.0.0.1:9229:9229" # Allows remote debugging
     volumes:
