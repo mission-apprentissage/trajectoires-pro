@@ -5,7 +5,7 @@ const customJoi = Joi.extend((joi) => ({
   base: joi.array(),
   // eslint-disable-next-line no-unused-vars
   coerce(value, helpers) {
-    return { value: value.split ? value.split(",") : value };
+    return { value: value.split ? value.split(/,|\|/) : value };
   },
 }));
 
