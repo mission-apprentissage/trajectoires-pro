@@ -7,6 +7,7 @@ import { importCertificationsStats } from "./jobs/importCertificationsStats.js";
 import { promiseAllProps } from "./common/utils/asyncUtils.js";
 import { InserJeunes } from "./common/InserJeunes.js";
 import { importCodeFormationDiplomes } from "./jobs/importCodeFormationDiplomes.js";
+import { generateStats } from "./jobs/generateStats.js";
 
 function asArray(v) {
   return v.split(",");
@@ -38,6 +39,15 @@ cli
         ...(stats.includes("formations") ? { formations: importFormationsStats({ input: file, inserjeunes }) } : {}),
         ...(stats.includes("certifications") ? { certifications: importCertificationsStats({ inserjeunes }) } : {}),
       });
+    });
+  });
+
+cli
+  .command("generateStats")
+  .description("Génère des stats en utilisatn les codes formation alternatifs")
+  .action(() => {
+    runScript(() => {
+      return generateStats();
     });
   });
 

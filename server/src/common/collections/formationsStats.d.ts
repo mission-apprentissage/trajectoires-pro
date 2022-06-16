@@ -28,5 +28,6 @@ export interface FormationsStats {
   };
   _meta?: {
     date_import: Date;
+    generated: boolean;
   };
 }

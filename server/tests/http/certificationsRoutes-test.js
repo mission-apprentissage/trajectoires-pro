@@ -299,6 +299,10 @@ describe("certificationsRoutes", () => {
         millesime: "2018",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
+        _meta: {
+          date_import: new Date(),
+          generated: false,
+        },
       });
       const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg");
 

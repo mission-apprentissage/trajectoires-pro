@@ -28,6 +28,7 @@ export function insertFormationsStats(custom = {}) {
         taux_poursuite_etudes: generateStats(),
         _meta: {
           date_import: new Date(),
+          generated: false,
         },
       },
       custom
@@ -52,6 +53,10 @@ export function insertCertificationsStats(custom = {}) {
         taux_emploi_12_mois: generateStats(),
         taux_emploi_6_mois: generateStats(),
         taux_rupture_contrats: generateStats(),
+        _meta: {
+          date_import: new Date(),
+          generated: false,
+        },
       },
       custom
     )
