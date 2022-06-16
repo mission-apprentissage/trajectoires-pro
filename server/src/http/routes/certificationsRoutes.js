@@ -97,7 +97,7 @@ export default () => {
   };
 
   const handleMultipleCertifications = async (res, params) => {
-    const { codes_certifications, millesime } = params;
+    const { codes_certifications, millesime, direction, theme, ext } = params;
 
     const results = await certificationsStats()
       .find(
@@ -112,7 +112,15 @@ export default () => {
     }
 
     const mergedStats = aggregateCertificationsStatsByFiliere(results);
-    return res.json(mergedStats);
+    if (ext !== "svg") {
+      return res.json(mergedStats);
+    }
+
+    if (Object.keys(mergedStats).length === 1) {
+      return sendWidget("certification", Object.values(mergedStats)[0], res, { theme, direction });
+    }
+
+    return sendWidget("filieres", mergedStats, res, { theme, direction });
   };
 
   router.get(

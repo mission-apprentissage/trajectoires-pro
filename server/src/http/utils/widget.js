@@ -18,6 +18,11 @@ const TEMPLATES = {
       vertical: path.join(__dirname, `../templates/dsfr/certification-vertical.svg.ejs`),
       horizontal: path.join(__dirname, `../templates/dsfr/certification-horizontal.svg.ejs`),
     },
+    // national + filieres apprentissage & pro
+    filieres: {
+      vertical: path.join(__dirname, `../templates/dsfr/filieres-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `../templates/dsfr/filieres-horizontal.svg.ejs`),
+    },
   },
   onisep: {
     // local : action de formation (formation donnée dans un établissement donné)
@@ -70,9 +75,17 @@ function renderTemplate(type, rates, options) {
 }
 
 export async function sendWidget(type, stats, res, options) {
-  const rates = getRates(stats);
-  if (rates.length === 0) {
-    return res.status(404).send("Données statistiques non disponibles");
+  let rates = [];
+  if (type === "filieres") {
+    rates = { pro: getRates(stats.pro), apprentissage: getRates(stats.apprentissage) };
+    if (rates.pro.length === 0 && rates.apprentissage.length === 0) {
+      return res.status(404).send("Données statistiques non disponibles");
+    }
+  } else {
+    rates = getRates(stats);
+    if (rates.length === 0) {
+      return res.status(404).send("Données statistiques non disponibles");
+    }
   }
 
   const svg = await renderTemplate(type, rates, options);

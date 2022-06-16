@@ -18,6 +18,8 @@ const aggregateStats = (stats) => {
   const aggregatedStats = stats.reduce((acc, curr) => {
     acc["codes_certifications"] = [...(acc["codes_certifications"] ?? []), curr.code_certification];
     acc["millesime"] = curr.millesime;
+    acc["filiere"] = curr.filiere;
+    acc["diplome"] = curr.diplome;
     acc["nb_annee_term"] = (acc["nb_annee_term"] ?? 0) + (curr.nb_annee_term ?? 0);
     acc["nb_en_emploi_12_mois"] = (acc["nb_en_emploi_12_mois"] ?? 0) + (curr.nb_en_emploi_12_mois ?? 0);
     acc["nb_en_emploi_6_mois"] = (acc["nb_en_emploi_6_mois"] ?? 0) + (curr.nb_en_emploi_6_mois ?? 0);

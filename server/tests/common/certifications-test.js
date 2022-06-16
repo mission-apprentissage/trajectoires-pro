@@ -64,6 +64,11 @@ describe("aggregateCertificationsStatsByFiliere", () => {
     assert.deepStrictEqual(aggregateCertificationsStatsByFiliere(certifications), {
       apprentissage: {
         codes_certifications: ["3301144", "3301145"],
+        diplome: {
+          code: "5",
+          libelle: "BTS",
+        },
+        filiere: "apprentissage",
         millesime: "2020",
         nb_annee_term: 3200,
         nb_en_emploi_12_mois: 1000,
@@ -152,6 +157,11 @@ describe("aggregateCertificationsStatsByFiliere", () => {
     assert.deepStrictEqual(aggregateCertificationsStatsByFiliere(certifications), {
       apprentissage: {
         codes_certifications: ["3301144", "3301145"],
+        diplome: {
+          code: "5",
+          libelle: "BTS",
+        },
+        filiere: "apprentissage",
         millesime: "2020",
         nb_annee_term: 3200,
         nb_en_emploi_12_mois: 1000,
@@ -164,6 +174,11 @@ describe("aggregateCertificationsStatsByFiliere", () => {
       },
       pro: {
         codes_certifications: ["3301146", "3301147"],
+        diplome: {
+          code: "5",
+          libelle: "BTS",
+        },
+        filiere: "pro",
         millesime: "2020",
         nb_annee_term: 5000,
         nb_en_emploi_12_mois: 520,
