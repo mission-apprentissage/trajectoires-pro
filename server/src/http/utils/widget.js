@@ -35,6 +35,11 @@ const TEMPLATES = {
       vertical: path.join(__dirname, `../templates/onisep/certification-vertical.svg.ejs`),
       horizontal: path.join(__dirname, `../templates/onisep/certification-horizontal.svg.ejs`),
     },
+    // national + filieres apprentissage & pro
+    filieres: {
+      vertical: path.join(__dirname, `../templates/onisep/filieres-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `../templates/onisep/filieres-horizontal.svg.ejs`),
+    },
   },
 };
 
