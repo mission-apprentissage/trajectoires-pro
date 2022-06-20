@@ -1,6 +1,11 @@
 <% const height = rates.length === 1 ? 258 : 323 %>
 
 <svg width="320" height="<%= height %>" viewBox="0 0 320 <%= height %>" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <% if(meta.title) { %>
+  <title><%= meta.title %></title>
+  <% } %> <% if(meta.description) { %>
+  <desc><%= meta.description%></desc>
+  <% } %>
   <rect x="0.5" y="0.5" width="319" height="<%= height -1 %>" fill="white" />
   <rect x="0.5" y="0.5" width="319" height="<%= height -1 %>" stroke="#E5E5E5" />
   <rect width="320" height="106" fill="#F5F5FE" />

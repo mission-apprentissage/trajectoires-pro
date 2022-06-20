@@ -11,6 +11,7 @@ import Boom from "boom";
 import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
 import { formationsStats } from "../../common/collections/collections.js";
 import { sendWidget } from "../utils/widget.js";
+import { getMetadata } from "../utils/metadata.js";
 
 export default () => {
   const router = express.Router();
@@ -110,6 +111,7 @@ export default () => {
       }
 
       const stats = results[0];
+      stats._meta = { ...stats._meta, ...getMetadata("certification", stats) };
       if (ext === "svg") {
         return sendWidget("formation", stats, res, { theme, direction });
       } else {

@@ -12,6 +12,7 @@ import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
 import { sendWidget } from "../utils/widget.js";
 import { aggregateCertificationsStatsByFiliere } from "../../common/certifications.js";
+import { getMetadata } from "../utils/metadata.js";
 
 export default () => {
   const router = express.Router();
@@ -89,6 +90,7 @@ export default () => {
     }
 
     const stats = results[0];
+    stats._meta = { ...stats._meta, ...getMetadata("certification", stats) };
     if (ext === "svg") {
       return sendWidget("certification", stats, res, { theme, direction });
     } else {
