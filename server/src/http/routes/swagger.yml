@@ -32,7 +32,7 @@ paths:
     get:
       description: Exporter des statistiques de certifications
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/millesimes"
@@ -48,7 +48,6 @@ paths:
           $ref: "#/components/responses/401"
         404:
           $ref: "#/components/responses/404"
-
 
   /api/inserjeunes/certifications/{code_certification}:
     get:
@@ -72,9 +71,45 @@ paths:
       parameters:
         - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/direction"
+        - $ref: "#/components/parameters/theme"
+      responses:
+        200:
+          $ref: "#/components/responses/SVGResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/certifications/{codes_certifications}:
+    get:
+      description: Obtenir les statistiques d'une ou plusieurs certifications
+      parameters:
+        - $ref: "#/components/parameters/codes_certifications_path"
+        - $ref: "#/components/parameters/millesime"
       responses:
         200:
           $ref: "#/components/responses/CertificationResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/certifications/{codes_certifications}.svg:
+    get:
+      description: Génère une image SVG (widget) avec les statistiques d'une ou plusieurs certifications
+      parameters:
+        - $ref: "#/components/parameters/codes_certifications_path"
+        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/direction"
+        - $ref: "#/components/parameters/theme"
+      responses:
+        200:
+          $ref: "#/components/responses/SVGResponse"
         400:
           $ref: "#/components/responses/400"
         401:
@@ -86,7 +121,7 @@ paths:
     get:
       description: Rechercher des statistiques de formations
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - $ref: "#/components/parameters/uais"
         - $ref: "#/components/parameters/millesimes"
@@ -107,7 +142,7 @@ paths:
     get:
       description: Exporter des statistiques de formations
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/uais"
@@ -149,9 +184,11 @@ paths:
         - $ref: "#/components/parameters/uai"
         - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/direction"
+        - $ref: "#/components/parameters/theme"
       responses:
         200:
-          $ref: "#/components/responses/FormationResponse"
+          $ref: "#/components/responses/SVGResponse"
         400:
           $ref: "#/components/responses/400"
         401:
@@ -167,7 +204,7 @@ components:
       in: query
       description: |
         Permet de filtrer la recherche avec un ou plusieurs millesimes séparés par des virgules.
-        
+
         * Les millesimes des certifications sont des années (ex: 2020)
         * Les millesimes des formations sont des périodes (ex: 2020_2021)
       schema:
@@ -177,8 +214,8 @@ components:
       name: code_certifications
       in: query
       description: |
-        Permet de filtrer la recherche avec un ou plusieurs codes de certification séparés par des virgules.
-        
+        Permet de filtrer la recherche avec un ou plusieurs codes de certification séparés par des virgules ou des |.
+
         Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
       schema:
         type: string
@@ -189,7 +226,7 @@ components:
       description: Permet de filtrer la recherche avec une ou plusieurs UAI séparées par des virgules.
       schema:
         type: string
-        pattern: '^[0-9]{7}[A-Z]{1}$'
+        pattern: "^[0-9]{7}[A-Z]{1}$"
 
     page:
       name: page
@@ -206,21 +243,30 @@ components:
         type: integer
         default: 10
 
-    ext:
-      name: ext
-      in: path
-      required: true
-      schema:
-        type: string
-        enum: [ "json", "csv" ]
-        default: json
-
     millesime:
       name: millesime
       in: query
-      required: true
+      required: false
       schema:
         type: string
+
+    direction:
+      name: direction
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: ["vertical", "horizontal"]
+        default: "vertical"
+
+    theme:
+      name: theme
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: ["dsfr", "onisep"]
+        default: "dsfr"
 
     # Path parameters
     uai:
@@ -229,15 +275,38 @@ components:
       required: true
       schema:
         type: string
-        pattern: '^[0-9]{7}[A-Z]{1}$'
+        pattern: "^[0-9]{7}[A-Z]{1}$"
+        example: "0060033D"
 
     code_certification:
       name: code_certification
-      description:  Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
+      description: Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
       in: path
       required: true
       schema:
         type: string
+        example: "32221031409"
+
+    codes_certifications_path:
+      name: codes_certifications
+      required: true
+      in: path
+      description: |
+        Plusieurs codes de certification séparés par des virgules ou des |.
+
+        Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
+      schema:
+        type: string
+        example: "32221031409|32221033001|23110022133|01033410|44633521"
+
+    ext:
+      name: ext
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: ["json", "csv"]
+        default: json
 
   schemas:
     Error:
@@ -270,7 +339,7 @@ components:
           type: string
         filiere:
           type: string
-          enum: [ "apprentissage", "pro" ]
+          enum: ["apprentissage", "pro"]
         nb_annee_term:
           type: number
         nb_poursuite_etudes:
@@ -307,7 +376,7 @@ components:
           type: string
         filiere:
           type: string
-          enum: [ "apprentissage", "pro" ]
+          enum: ["apprentissage", "pro"]
         nb_annee_term:
           type: number
         nb_poursuite_etudes:
@@ -332,77 +401,83 @@ components:
             date_import:
               type: string
 
-
   responses:
     400:
       description: Bad Request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
     401:
       description: L'api key est manquante ou invalide
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
     404:
       description: Not Found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
 
     CertificationsResponse:
       description: La liste des certifications avec leurs statistiques
       content:
-        '*/*':
+        "*/*":
           schema:
             type: object
             properties:
               organismes:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Certification'
+                  $ref: "#/components/schemas/Certification"
               meta:
                 type: object
                 properties:
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: "#/components/schemas/Pagination"
                 description: Informations complémentaires
 
     FormationsResponse:
       description: La liste des formations avec leurs statistiques
       content:
-        '*/*':
+        "*/*":
           schema:
             type: object
             properties:
               organismes:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Formation'
+                  $ref: "#/components/schemas/Formation"
               meta:
                 type: object
                 properties:
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: "#/components/schemas/Pagination"
                 description: Informations complémentaires
 
     FormationResponse:
       description: Une formation avec ses statistiques
       content:
-        '*/*':
+        "*/*":
           schema:
-            $ref: '#/components/schemas/Formation'
+            $ref: "#/components/schemas/Formation"
 
     CertificationResponse:
       description: Une certification avec ses statistiques
       content:
-        '*/*':
+        "*/*":
           schema:
-            $ref: '#/components/schemas/Certification'
+            $ref: "#/components/schemas/Certification"
 
+    SVGResponse:
+      description: Une image SVG
+      content:
+        "image/svg+xml":
+          schema:
+            type: string
+            format: xml
 
   securitySchemes:
     ApiKeyAuth:
