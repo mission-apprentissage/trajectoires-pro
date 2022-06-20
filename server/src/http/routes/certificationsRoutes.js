@@ -12,7 +12,7 @@ import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
 import { sendWidget } from "../utils/widget.js";
 import { aggregateCertificationsStatsByFiliere } from "../../common/certifications.js";
-import { getMetadata } from "../utils/metadata.js";
+import { getMetadata } from "../../common/metadata.js";
 
 export default () => {
   const router = express.Router();
@@ -118,7 +118,7 @@ export default () => {
       return res.json(mergedStats);
     }
 
-    if (Object.keys(mergedStats).length === 1) {
+    if (Object.keys(mergedStats).filter((key) => key !== "_meta").length === 1) {
       return sendWidget("certification", Object.values(mergedStats)[0], res, { theme, direction });
     }
 

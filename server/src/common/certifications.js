@@ -1,8 +1,9 @@
 // @ts-check
+import { getMetadata } from "./metadata.js";
 
 /**
  * @typedef {import("../common/collections/certificationsStats").CertificationsStats} CertificationsStats
- * @typedef {{ codes_certifications: string[], millesime: string, nb_annee_term: number, nb_en_emploi_12_mois: number, nb_en_emploi_6_mois: number, nb_poursuite_etudes: number, nb_sortant: number, taux_emploi_12_mois: number, taux_emploi_6_mois: number, taux_poursuite_etudes: number }} AggregatedStats
+ * @typedef {{ codes_certifications: string[], millesime: string, nb_annee_term: number, nb_en_emploi_12_mois: number, nb_en_emploi_6_mois: number, nb_poursuite_etudes: number, nb_sortant: number, taux_emploi_12_mois: number, taux_emploi_6_mois: number, taux_poursuite_etudes: number, _meta: {title: string, description: string} }} AggregatedStats
  */
 
 /**
@@ -39,12 +40,13 @@ const aggregateStats = (stats) => {
     (aggregatedStats.nb_poursuite_etudes / aggregatedStats.nb_annee_term) * 100
   );
 
+  aggregatedStats._meta = getMetadata("certifications", stats);
   return aggregatedStats;
 };
 
 /**
  * @param {CertificationsStats[]} certificationsStats
- * @returns {{pro?:AggregatedStats, apprentissage?:AggregatedStats}}
+ * @returns {{pro?:AggregatedStats, apprentissage?:AggregatedStats, _meta?: {title: string, description: string}}}
  */
 export const aggregateCertificationsStatsByFiliere = (certificationsStats) => {
   // keep only one millesime
@@ -57,6 +59,7 @@ export const aggregateCertificationsStatsByFiliere = (certificationsStats) => {
   const mergedStats = {
     ...(proStats ? { pro: proStats } : {}),
     ...(apprentissageStats ? { apprentissage: apprentissageStats } : {}),
+    ...(proStats || apprentissageStats ? { _meta: getMetadata("certifications", stats) } : {}),
   };
 
   return mergedStats;

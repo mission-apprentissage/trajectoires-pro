@@ -11,7 +11,7 @@ import Boom from "boom";
 import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
 import { formationsStats } from "../../common/collections/collections.js";
 import { sendWidget } from "../utils/widget.js";
-import { getMetadata } from "../utils/metadata.js";
+import { getMetadata } from "../../common/metadata.js";
 
 export default () => {
   const router = express.Router();
