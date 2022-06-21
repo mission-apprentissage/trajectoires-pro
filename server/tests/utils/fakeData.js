@@ -52,6 +52,9 @@ export function insertCertificationsStats(custom = {}) {
         taux_emploi_12_mois: generateStats(),
         taux_emploi_6_mois: generateStats(),
         taux_rupture_contrats: generateStats(),
+        _meta: {
+          date_import: new Date(),
+        },
       },
       custom
     )

@@ -24,6 +24,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
           code: "5",
           libelle: "BTS",
         },
+        _meta: {
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
+        },
       },
       {
         millesime: "2020",
@@ -40,6 +43,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
         diplome: {
           code: "5",
           libelle: "BTS",
+        },
+        _meta: {
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
         },
       },
       {
@@ -58,6 +64,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
           code: "5",
           libelle: "BTS",
         },
+        _meta: {
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
+        },
       },
     ];
 
@@ -65,8 +74,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
       apprentissage: {
         _meta: {
           description:
-            "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 3301144 (BTS filière apprentissage), 3301145 (BTS filière apprentissage)",
+            "Données InserJeunes du millesime 2020 aggrégées pour les certifications (maille nationale): 3301144 - BTS filière apprentissage, 3301145 - BTS filière apprentissage. Date d'import: 01/10/2021.",
           title: "Certifications: 3301144, 3301145",
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
         },
         codes_certifications: ["3301144", "3301145"],
         diplome: {
@@ -86,8 +96,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
       },
       _meta: {
         description:
-          "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 3301144 (BTS filière apprentissage), 3301145 (BTS filière apprentissage)",
+          "Données InserJeunes du millesime 2020 aggrégées pour les certifications (maille nationale): 3301144 - BTS filière apprentissage, 3301145 - BTS filière apprentissage. Date d'import: 01/10/2021.",
         title: "Certifications: 3301144, 3301145",
+        date_import: new Date("2021-10-01T00:00:00.000Z"),
       },
     });
   });
@@ -110,6 +121,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
           code: "5",
           libelle: "BTS",
         },
+        _meta: {
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
+        },
       },
       {
         millesime: "2020",
@@ -126,6 +140,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
         diplome: {
           code: "5",
           libelle: "BTS",
+        },
+        _meta: {
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
         },
       },
       {
@@ -144,6 +161,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
           code: "5",
           libelle: "BTS",
         },
+        _meta: {
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
+        },
       },
       {
         millesime: "2020",
@@ -161,6 +181,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
           code: "5",
           libelle: "BTS",
         },
+        _meta: {
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
+        },
       },
     ];
 
@@ -168,8 +191,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
       apprentissage: {
         _meta: {
           description:
-            "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 3301144 (BTS filière apprentissage), 3301145 (BTS filière apprentissage)",
+            "Données InserJeunes du millesime 2020 aggrégées pour les certifications (maille nationale): 3301144 - BTS filière apprentissage, 3301145 - BTS filière apprentissage. Date d'import: 01/10/2021.",
           title: "Certifications: 3301144, 3301145",
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
         },
         codes_certifications: ["3301144", "3301145"],
         diplome: {
@@ -190,8 +214,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
       pro: {
         _meta: {
           description:
-            "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 3301146 (BTS filière pro), 3301147 (BTS filière pro)",
+            "Données InserJeunes du millesime 2020 aggrégées pour les certifications (maille nationale): 3301146 - BTS filière pro, 3301147 - BTS filière pro. Date d'import: 01/10/2021.",
           title: "Certifications: 3301146, 3301147",
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
         },
         codes_certifications: ["3301146", "3301147"],
         diplome: {
@@ -211,8 +236,9 @@ describe("aggregateCertificationsStatsByFiliere", () => {
       },
       _meta: {
         description:
-          "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 3301144 (BTS filière apprentissage), 3301145 (BTS filière apprentissage), 3301146 (BTS filière pro), 3301147 (BTS filière pro)",
+          "Données InserJeunes du millesime 2020 aggrégées pour les certifications (maille nationale): 3301144 - BTS filière apprentissage, 3301145 - BTS filière apprentissage, 3301146 - BTS filière pro, 3301147 - BTS filière pro. Date d'import: 01/10/2021.",
         title: "Certifications: 3301144, 3301145, 3301146, 3301147",
+        date_import: new Date("2021-10-01T00:00:00.000Z"),
       },
     });
   });

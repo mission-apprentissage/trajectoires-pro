@@ -218,6 +218,9 @@ describe("certificationsRoutes", () => {
         taux_emploi_12_mois: 6,
         taux_emploi_6_mois: 7,
         taux_rupture_contrats: 8,
+        _meta: {
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
+        },
       });
       await insertCertificationsStats({ code_certification: "12345678", millesime: "2019" });
 
@@ -238,8 +241,9 @@ describe("certificationsRoutes", () => {
         taux_emploi_6_mois: 7,
         taux_rupture_contrats: 8,
         _meta: {
+          date_import: "2021-10-01T00:00:00.000Z",
           description:
-            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millesime 2020",
+            "Données InserJeunes pour la certification (maille nationale) 12345678 - BAC filière apprentissage  pour le millesime 2020. Date d'import 01/10/2021.",
           title: "certification 12345678",
         },
       });
@@ -289,7 +293,7 @@ describe("certificationsRoutes", () => {
       assert.ok(response.data.includes("<title>certification 23830024203</title>"));
       assert.ok(
         response.data.includes(
-          "<desc>Données InserJeunes pour la certification 23830024203 (BAC filière apprentissage) pour le millesime 2020</desc>"
+          "<desc>Données InserJeunes pour la certification (maille nationale) 23830024203 - BAC filière apprentissage  pour le millesime 2020. Date d&#39;import 21/06/2022.</desc>"
         )
       );
     });
@@ -310,6 +314,9 @@ describe("certificationsRoutes", () => {
         millesime: "2018",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
+        _meta: {
+          date_import: new Date("2021-10-01T00:00:00.000Z"),
+        },
       });
       const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg");
 
@@ -326,7 +333,7 @@ describe("certificationsRoutes", () => {
       assert.strictEqual(response.status, 400);
     });
 
-    it("Vérifie qu'on peut obtient une image avec les deux filières", async () => {
+    it("Vérifie qu'on obtient une image avec les deux filières", async () => {
       const { httpClient } = await startServer();
       await insertCertificationsStats({
         code_certification: "23830024203",
@@ -364,7 +371,7 @@ describe("certificationsRoutes", () => {
       assert.ok(response.data.includes("<title>Certifications: 23830024203, 23830024202</title>"));
       assert.ok(
         response.data.includes(
-          "<desc>Données InserJeunes du millesime 2020 aggrégées pour les certifications: 23830024203 (BAC filière apprentissage), 23830024202 (BAC filière pro)</desc>"
+          "<desc>Données InserJeunes du millesime 2020 aggrégées pour les certifications (maille nationale): 23830024203 - BAC filière apprentissage, 23830024202 - BAC filière pro. Date d&#39;import: 21/06/2022.</desc>"
         )
       );
     });
