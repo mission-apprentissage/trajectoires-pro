@@ -91,7 +91,7 @@ paths:
         - $ref: "#/components/parameters/millesime"
       responses:
         200:
-          $ref: "#/components/responses/CertificationResponse"
+          $ref: "#/components/responses/AggregatedCertificationsResponse"
         400:
           $ref: "#/components/responses/400"
         401:
@@ -365,6 +365,11 @@ components:
           properties:
             date_import:
               type: string
+            title:
+              type: string
+            description:
+              type: string
+
     Formation:
       type: object
       properties:
@@ -399,6 +404,10 @@ components:
             - date_import
           properties:
             date_import:
+              type: string
+            title:
+              type: string
+            description:
               type: string
 
   responses:
@@ -470,6 +479,18 @@ components:
         "*/*":
           schema:
             $ref: "#/components/schemas/Certification"
+
+    AggregatedCertificationsResponse:
+      description: Statistiques aggrégées de plusieurs certifications
+      content:
+        "*/*":
+          schema:
+            type: object
+            properties:
+              pro: 
+                $ref: "#/components/schemas/Certification"
+              apprentissage: 
+                $ref: "#/components/schemas/Certification"
 
     SVGResponse:
       description: Une image SVG

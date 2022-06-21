@@ -69,9 +69,9 @@ function getTemplate(type, options = {}) {
   return templates[type][direction] ?? templates[type].vertical ?? TEMPLATES.dsfr[type].vertical;
 }
 
-function renderTemplate(type, rates, options) {
+function renderTemplate(type, rates, meta, options) {
   const base64Font = loadBase64Font();
-  const data = { base64Font, rates };
+  const data = { base64Font, rates, meta };
   const template = getTemplate(type, options);
 
   return ejs.renderFile(template, data, {
@@ -93,7 +93,7 @@ export async function sendWidget(type, stats, res, options) {
     }
   }
 
-  const svg = await renderTemplate(type, rates, options);
+  const svg = await renderTemplate(type, rates, stats._meta, options);
 
   res.setHeader("content-type", "image/svg+xml");
   return res.status(200).send(svg);

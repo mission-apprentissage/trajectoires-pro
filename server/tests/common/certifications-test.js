@@ -63,6 +63,11 @@ describe("aggregateCertificationsStatsByFiliere", () => {
 
     assert.deepStrictEqual(aggregateCertificationsStatsByFiliere(certifications), {
       apprentissage: {
+        _meta: {
+          description:
+            "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 3301144 (BTS filière apprentissage), 3301145 (BTS filière apprentissage)",
+          title: "Certifications: 3301144, 3301145",
+        },
         codes_certifications: ["3301144", "3301145"],
         diplome: {
           code: "5",
@@ -78,6 +83,11 @@ describe("aggregateCertificationsStatsByFiliere", () => {
         taux_emploi_12_mois: 56,
         taux_emploi_6_mois: 75,
         taux_poursuite_etudes: 44,
+      },
+      _meta: {
+        description:
+          "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 3301144 (BTS filière apprentissage), 3301145 (BTS filière apprentissage)",
+        title: "Certifications: 3301144, 3301145",
       },
     });
   });
@@ -156,6 +166,11 @@ describe("aggregateCertificationsStatsByFiliere", () => {
 
     assert.deepStrictEqual(aggregateCertificationsStatsByFiliere(certifications), {
       apprentissage: {
+        _meta: {
+          description:
+            "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 3301144 (BTS filière apprentissage), 3301145 (BTS filière apprentissage)",
+          title: "Certifications: 3301144, 3301145",
+        },
         codes_certifications: ["3301144", "3301145"],
         diplome: {
           code: "5",
@@ -173,6 +188,11 @@ describe("aggregateCertificationsStatsByFiliere", () => {
         taux_poursuite_etudes: 44,
       },
       pro: {
+        _meta: {
+          description:
+            "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 3301146 (BTS filière pro), 3301147 (BTS filière pro)",
+          title: "Certifications: 3301146, 3301147",
+        },
         codes_certifications: ["3301146", "3301147"],
         diplome: {
           code: "5",
@@ -188,6 +208,11 @@ describe("aggregateCertificationsStatsByFiliere", () => {
         taux_emploi_12_mois: 43,
         taux_emploi_6_mois: 58,
         taux_poursuite_etudes: 18,
+      },
+      _meta: {
+        description:
+          "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 3301144 (BTS filière apprentissage), 3301145 (BTS filière apprentissage), 3301146 (BTS filière pro), 3301147 (BTS filière pro)",
+        title: "Certifications: 3301144, 3301145, 3301146, 3301147",
       },
     });
   });
