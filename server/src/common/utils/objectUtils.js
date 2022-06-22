@@ -1,4 +1,4 @@
-import { pickBy, isNil, sortBy, isArray } from "lodash-es";
+import { pickBy, isNil, isArray } from "lodash-es";
 
 export function omitNil(obj) {
   if (isArray(obj)) {
@@ -8,19 +8,14 @@ export function omitNil(obj) {
   return pickBy(obj, (v) => !isNil(v));
 }
 
-export function mergeArray(existingArray, newArray, discriminator, options = {}) {
-  const updated = newArray.map((element) => {
-    const previous = existingArray.find((e) => e[discriminator] === element[discriminator]) || {};
-    return {
-      ...previous,
-      ...element,
-      ...(options.merge ? options.merge(previous, element) : {}),
-    };
-  });
-
-  const untouched = existingArray.filter((p) => {
-    return !updated.map((u) => u[discriminator]).includes(p[discriminator]);
-  });
-
-  return sortBy([...updated, ...untouched], discriminator);
+export function flattenObject(obj, parent, res = {}) {
+  for (let key in obj) {
+    const propName = parent ? parent + "." + key : key;
+    if (typeof obj[key] == "object" && !Array.isArray(obj[key]) && !(obj[key] instanceof Date)) {
+      flattenObject(obj[key], propName, res);
+    } else {
+      res[propName] = obj[key];
+    }
+  }
+  return res;
 }

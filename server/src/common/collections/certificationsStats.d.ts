@@ -26,7 +26,8 @@ export interface CertificationsStats {
     code: string;
     libelle: string;
   };
-  _meta?: {
+  _meta: {
     date_import: Date;
+    generated: boolean;
   };
 }

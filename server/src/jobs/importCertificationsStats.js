@@ -49,6 +49,7 @@ export async function importCertificationsStats(options = {}) {
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
+                "_meta.generated": false,
               },
               $set: {
                 ...stats,

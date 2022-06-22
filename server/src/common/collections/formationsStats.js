@@ -1,4 +1,4 @@
-import { date, integer, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { boolean, date, integer, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 
 export const name = "formationsStats";
@@ -33,8 +33,9 @@ export function schema() {
       _meta: object(
         {
           date_import: date(),
+          generated: boolean(),
         },
-        { required: ["date_import"] }
+        { required: ["date_import", "generated"] }
       ),
     },
     {
