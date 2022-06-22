@@ -38,6 +38,7 @@ describe("importFormationsStats", () => {
     });
     await insertCFD({
       code_formation: "12345678",
+      code_formation_alternatifs: ["87654321"],
       diplome: {
         code: "4",
         libelle: "BAC",
@@ -50,6 +51,7 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       uai: "0751234J",
       code_certification: "12345678",
+      code_certification_alternatifs: ["87654321"],
       millesime: "2018_2019",
       filiere: "apprentissage",
       taux_emploi_6_mois: 6,
@@ -79,6 +81,7 @@ describe("importFormationsStats", () => {
     });
     await insertCFD({
       code_formation: "00000000",
+      code_formation_alternatifs: [],
       mef: ["00000000000"],
       mef_stats_11: ["09876543210"],
       mef_stats_9: ["00000000000"],
@@ -94,6 +97,7 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       uai: "0751234J",
       code_certification: "09876543210",
+      code_certification_alternatifs: [],
       millesime: "2018_2019",
       filiere: "pro",
       taux_emploi_6_mois: 6,

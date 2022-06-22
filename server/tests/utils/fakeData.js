@@ -42,6 +42,7 @@ export function insertCertificationsStats(custom = {}) {
       {
         millesime: "2020",
         code_certification: generateCodeCertification("4"),
+        code_certification_alternatifs: [],
         diplome: { code: "4", libelle: "BAC" },
         filiere: "apprentissage",
         nb_annee_term: generateStats(),

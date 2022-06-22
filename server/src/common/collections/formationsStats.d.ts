@@ -13,6 +13,7 @@ export interface FormationsStats {
   uai: string;
   millesime: string;
   code_certification: string;
+  code_certification_alternatifs?: string[];
   filiere: "apprentissage" | "pro";
   nb_annee_term?: number;
   nb_poursuite_etudes?: number;
