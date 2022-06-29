@@ -12,4 +12,5 @@ WORKDIR /app
 
 VOLUME /data
 EXPOSE 5000
+ENV TS_NODE_OPTIONS "--transpileOnly"
 CMD ["yarn", "start"]

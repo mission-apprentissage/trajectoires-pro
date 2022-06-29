@@ -10,7 +10,7 @@ import { certificationsStats } from "../../common/db/collections/collections.js"
 import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
-import { sendWidget } from "../utils/widget.js";
+import { sendWidget } from "../utils/widget.ts";
 import { aggregateCertificationsStatsByFiliere } from "../../common/certifications.js";
 import { getMetadata } from "../../common/metadata.js";
 

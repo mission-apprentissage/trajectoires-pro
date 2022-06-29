@@ -4,5 +4,5 @@
   "recursive": true,
   "require": "tests/utils/mochaGlobalFixtures.js",
   "reporter": "tests/utils/mochaReporter.cjs",
-  "node-option": ["experimental-specifier-resolution=node", "loader=ts-node/esm"]
+  "node-option": ["loader=ts-node/esm"]
 }

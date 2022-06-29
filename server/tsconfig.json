@@ -1,14 +1,13 @@
 {
+  "extends": "ts-node/node16/tsconfig.json",
   "compilerOptions": {
     "module": "NodeNext",
-    "target": "es6",
     "sourceMap": true,
     "outDir": "./dist",
-    "moduleResolution": "NodeNext",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "checkJs": false
+    "checkJs": false,
+    "strict": false,
+    "incremental": true,
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "tests"]
