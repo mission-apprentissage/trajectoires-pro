@@ -2,6 +2,7 @@
 
 import * as logsDescriptor from "./logs.js";
 import * as codeFormationDiplomesDescriptor from "./codeFormationDiplomes.js";
+import * as mefsDescriptor from "./mefs.js";
 import * as formationsStatsDescriptor from "./formationsStats.js";
 import * as certificationsStatsDescriptor from "./certificationsStats.js";
 import * as metricsDescriptor from "./metrics.js";
@@ -11,6 +12,7 @@ export function getCollectionDescriptors() {
   return [
     logsDescriptor,
     codeFormationDiplomesDescriptor,
+    mefsDescriptor,
     formationsStatsDescriptor,
     certificationsStatsDescriptor,
     metricsDescriptor,
@@ -42,12 +44,21 @@ export function codeFormationDiplomes() {
 }
 
 /**
+ * @typedef {import("mongodb").Collection<import("./codeFormationDiplomes.js").CodeFormationDiplomes>} CodeFormationDiplomesCollection
+ * @returns {CodeFormationDiplomesCollection}
+ */
+export function mefs() {
+  return dbCollection(mefsDescriptor.name);
+}
+
+/**
  * @typedef {import("mongodb").Collection<import("./logs.js").Logs>} LogsCollection
  * @returns {LogsCollection}
  */
 export function logs() {
   return dbCollection(logsDescriptor.name);
 }
+
 /**
  * @typedef {import("mongodb").Collection<import("./metrics.js").Metrics>} MetricsCollection
  * @returns {MetricsCollection}

@@ -1,7 +1,7 @@
 import assert from "assert";
 import { importCertificationsStats } from "../../src/jobs/importCertificationsStats.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
-import { insertCFD, insertCertificationsStats } from "../utils/fakeData.js";
+import { insertCFD, insertCertificationsStats, insertMEF } from "../utils/fakeData.js";
 import { omit } from "lodash-es";
 import { certificationsStats } from "../../src/common/collections/collections.js";
 
@@ -67,21 +67,16 @@ describe("importCertificationsStats", () => {
           valeur_mesure: 6,
           dimensions: [
             {
-              id_mefstat11: "09876543210",
+              id_mefstat11: "12345678900",
             },
           ],
         },
       ],
     });
-    await insertCFD({
-      code_formation: "00000000",
-      mef: ["00000000000"],
-      mef_stats_11: ["09876543210"],
-      mef_stats_9: ["00000000000"],
-      diplome: {
-        code: "4",
-        libelle: "BAC",
-      },
+    await insertMEF({
+      mef: "1234567890",
+      mef_stat_11: "12345678900",
+      diplome: { code: "4", libelle: "BAC" },
     });
 
     let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["voie_pro_sco_educ_nat"] });
@@ -90,7 +85,7 @@ describe("importCertificationsStats", () => {
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       filiere: "pro",
       millesime: "2020",
-      code_certification: "09876543210",
+      code_certification: "12345678900",
       taux_emploi_6_mois: 6,
       diplome: {
         code: "4",

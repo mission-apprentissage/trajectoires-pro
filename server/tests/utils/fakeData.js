@@ -6,6 +6,7 @@ import {
   certificationsStats,
   codeFormationDiplomes,
   formationsStats,
+  mefs,
 } from "../../src/common/collections/collections.js";
 
 export function insertFormationsStats(custom = {}) {
@@ -63,13 +64,29 @@ export function insertCFD(custom = {}) {
     merge(
       {},
       {
-        code_formation: faker.helpers.replaceSymbols(`4#######`),
+        code_formation: faker.helpers.replaceSymbols("4#######"),
         code_formation_alternatifs: [],
-        mef: [],
-        mef_stats_9: [],
-        mef_stats_11: [],
         libelle: "BAC PRO BATIMENT",
         diplome: { code: "4", libelle: "BAC" },
+        _meta: { date_import: new Date() },
+      },
+      custom
+    )
+  );
+}
+
+export function insertMEF(custom = {}) {
+  return mefs().insertOne(
+    merge(
+      {},
+      {
+        mef: faker.helpers.replaceSymbols("##########"),
+        mef_stat_9: faker.helpers.replaceSymbols("#########"),
+        mef_stat_11: faker.helpers.replaceSymbols("###########"),
+        code_formation_diplome: faker.helpers.replaceSymbols("4#######"),
+        date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
+        diplome: { code: "4", libelle: "BAC" },
+        libelle: "BAC PRO",
         _meta: { date_import: new Date() },
       },
       custom

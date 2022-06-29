@@ -1,19 +1,21 @@
-import { arrayOf, date, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { date, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 
-export const name = "codeFormationDiplomes";
+export const name = "mefs";
 
 export function indexes() {
-  return [[{ code_formation: 1 }, { unique: true }], [{ code_formation_alternatifs: 1 }]];
+  return [[{ mef: 1 }, { unique: true }]];
 }
 
 export function schema() {
   return object(
     {
       _id: objectId(),
-      code_formation: string(),
+      mef: string(),
+      mef_stat_9: string(),
+      mef_stat_11: string(),
       libelle: string(),
-      code_formation_alternatifs: arrayOf(string()),
+      code_formation_diplome: string(),
       date_fermeture: date(),
       diplome: diplomeSchema(),
       _meta: object(
@@ -24,7 +26,7 @@ export function schema() {
       ),
     },
     {
-      required: ["code_formation", "libelle", "code_formation_alternatifs", "_meta"],
+      required: ["mef", "mef_stat_9", "mef_stat_11", "libelle", "code_formation_diplome", "_meta"],
       additionalProperties: false,
     }
   );
