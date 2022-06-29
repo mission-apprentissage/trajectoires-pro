@@ -7,7 +7,7 @@ import { importCertificationsStats } from "./jobs/importCertificationsStats.js";
 import { promiseAllProps } from "./common/utils/asyncUtils.js";
 import { InserJeunes } from "./common/InserJeunes.js";
 import { importMefs } from "./jobs/importMefs.js";
-import { importCodeFormationDiplomes } from "./jobs/importCodeFormationDiplomes.js";
+import { importCfds } from "./jobs/importCfds.js";
 
 function asArray(v) {
   return v.split(",");
@@ -19,7 +19,7 @@ cli
   .action(() => {
     runScript(() => {
       return promiseAllProps({
-        cfd: importCodeFormationDiplomes(),
+        cfd: importCfds(),
         mef: importMefs(),
       });
     });

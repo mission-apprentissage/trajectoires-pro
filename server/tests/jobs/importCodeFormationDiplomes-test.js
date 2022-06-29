@@ -1,8 +1,8 @@
 import assert from "assert";
 import { merge, omit } from "lodash-es";
-import { importCodeFormationDiplomes } from "../../src/jobs/importCodeFormationDiplomes.js";
+import { importCfds } from "../../src/jobs/importCfds.js";
 import { createStream } from "../utils/testUtils.js";
-import { codeFormationDiplomes } from "../../src/common/collections/collections.js";
+import { cfds } from "../../src/common/collections/collections.js";
 
 function getBcnTables(custom = {}) {
   return merge(
@@ -17,7 +17,7 @@ function getBcnTables(custom = {}) {
 
 describe("importCodeFormationDiplomes", () => {
   it("Vérifie qu'on peut importer les codes formation (apprentissage)", async () => {
-    let stats = await importCodeFormationDiplomes(
+    let stats = await importCfds(
       getBcnTables({
         V_FORMATION_DIPLOME:
           createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|LIBELLE_COURT|LIBELLE_STAT_33|DATE_FERMETURE
@@ -25,7 +25,7 @@ describe("importCodeFormationDiplomes", () => {
       })
     );
 
-    const found = await codeFormationDiplomes().findOne({}, { projection: { _id: 0 } });
+    const found = await cfds().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       code_formation: "40023203",
       libelle: "BAC PRO BATIMENT",
@@ -41,7 +41,7 @@ describe("importCodeFormationDiplomes", () => {
   });
 
   it("Vérifie qu'on peut importer les codes formation (secondaire)", async () => {
-    let stats = await importCodeFormationDiplomes(
+    let stats = await importCfds(
       getBcnTables({
         N_FORMATION_DIPLOME: createStream(
           `FORMATION_DIPLOME|ANCIEN_DIPLOME_1|NOUVEAU_DIPLOME_1|LIBELLE_COURT|LIBELLE_STAT_33
@@ -50,7 +50,7 @@ describe("importCodeFormationDiplomes", () => {
       })
     );
 
-    const found = await codeFormationDiplomes().findOne({}, { projection: { _id: 0 } });
+    const found = await cfds().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       code_formation: "12345678",
       code_formation_alternatifs: [],
@@ -65,7 +65,7 @@ describe("importCodeFormationDiplomes", () => {
   });
 
   it("Vérifie qu'on peut importer un code formation avec des codes alternatifs", async () => {
-    await importCodeFormationDiplomes(
+    await importCfds(
       getBcnTables({
         N_FORMATION_DIPLOME: createStream(
           `FORMATION_DIPLOME|ANCIEN_DIPLOME_1|NOUVEAU_DIPLOME_1|LIBELLE_COURT|LIBELLE_STAT_33
@@ -74,18 +74,18 @@ describe("importCodeFormationDiplomes", () => {
       })
     );
 
-    const found = await codeFormationDiplomes().findOne({}, { projection: { _id: 0 } });
+    const found = await cfds().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found.code_formation_alternatifs, ["32031211", "51033003"]);
   });
 
   it("Vérifie qu'on peut gérer les codes formation avec diplome inconnu", async () => {
-    let stats = await importCodeFormationDiplomes(
+    let stats = await importCfds(
       getBcnTables({
         N_FORMATION_DIPLOME: createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME\n99999902|999`),
       })
     );
 
-    let found = await codeFormationDiplomes().findOne({ code_formation: "99999902" }, { projection: { _id: 0 } });
+    let found = await cfds().findOne({ code_formation: "99999902" }, { projection: { _id: 0 } });
     assert.ok(!found.diplome);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0, total: 1 });
   });
