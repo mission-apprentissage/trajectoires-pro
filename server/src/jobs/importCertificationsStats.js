@@ -1,9 +1,10 @@
 import { Readable } from "stream";
 import { InserJeunes } from "../common/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
-import { getCFD } from "../common/actions/getCFD.js";
+import { findDiplome } from "../common/actions/findDiplome.js";
 import { certificationsStats } from "../common/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
+import { omitNil } from "../common/utils/objectUtils.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -37,12 +38,7 @@ export async function importCertificationsStats(options = {}) {
         const query = { millesime: stats.millesime, code_certification: stats.code_certification };
 
         try {
-          const cfd = await getCFD(stats.code_certification);
-
-          const diplome = cfd?.diplome;
-          if (!diplome) {
-            logger.warn(`Impossible de trouver le diplome pour la stats`, query);
-          }
+          const diplome = await findDiplome(stats.code_certification);
 
           const res = await certificationsStats().updateOne(
             query,
@@ -50,10 +46,10 @@ export async function importCertificationsStats(options = {}) {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
               },
-              $set: {
+              $set: omitNil({
                 ...stats,
-                ...(diplome ? { diplome } : {}),
-              },
+                diplome,
+              }),
             },
             { upsert: true }
           );

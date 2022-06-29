@@ -1,16 +1,15 @@
 import { mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
-import { getBCNTable, loadMefs } from "../common/bcn.js";
+import { asDiplome, getBCNTable } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { pick, range } from "lodash-es";
-import { getDiplome } from "../common/actions/getDiplome.js";
 import { codeFormationDiplomes } from "../common/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
+import { parseAsUTCDate } from "../common/utils/dateUtils.js";
 
 const logger = getLoggerWithContext("import");
 
-async function importCodeFormationDiplomes(options = {}) {
+export async function importCodeFormationDiplomes(options = {}) {
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
-  const mefs = await loadMefs(options);
 
   await oleoduc(
     mergeStreams(
@@ -19,37 +18,19 @@ async function importCodeFormationDiplomes(options = {}) {
     ),
     transformData((data) => {
       const code_formation = data["FORMATION_DIPLOME"];
-      const libelle = `${data["LIBELLE_COURT"]} ${data["LIBELLE_STAT_33"]}`;
-
+      const dateFermeture = data["DATE_FERMETURE"];
       const codeFormationAlternatifs = range(1, 7)
         .flatMap((value) => [`ANCIEN_DIPLOME_${value}`, `NOUVEAU_DIPLOME_${value}`])
         .map((columnName) => data[columnName])
         .filter((v) => v);
 
-      const codeMefs = mefs
-        .filter((m) => m["FORMATION_DIPLOME"] === code_formation)
-        .reduce(
-          (acc, m) => {
-            return {
-              mef: omitNil([...acc.mef, m.MEF]),
-              mef_stats_9: omitNil([...acc.mef_stats_9, m.MEF_STAT_9]),
-              mef_stats_11: omitNil([...acc.mef_stats_11, m.MEF_STAT_11]),
-            };
-          },
-          {
-            mef: [],
-            mef_stats_9: [],
-            mef_stats_11: [],
-          }
-        );
-
-      return omitNil({
+      return {
         code_formation,
-        libelle,
-        diplome: getDiplome(code_formation),
+        libelle: `${data["LIBELLE_COURT"]} ${data["LIBELLE_STAT_33"]}`,
+        diplome: asDiplome(code_formation),
         code_formation_alternatifs: codeFormationAlternatifs,
-        ...codeMefs,
-      });
+        date_fermeture: parseAsUTCDate(dateFermeture),
+      };
     }),
     writeData(
       async (cfd) => {
@@ -59,7 +40,7 @@ async function importCodeFormationDiplomes(options = {}) {
           stats.total++;
 
           if (!cfd.diplome) {
-            logger.warn(`Diplome inconnu pour le code formation ${code_formation}`);
+            logger.warn(`Diplome inconnu pour le CFD ${code_formation}`);
           }
 
           const res = await codeFormationDiplomes().updateOne(
@@ -67,31 +48,31 @@ async function importCodeFormationDiplomes(options = {}) {
               code_formation,
             },
             {
-              $setOnInsert: {
+              $setOnInsert: omitNil({
                 "_meta.date_import": new Date(),
                 ...pick(cfd, ["code_formation", "libelle", "diplome"]),
-              },
+              }),
+              $set: omitNil({
+                date_fermeture: cfd.date_fermeture,
+              }),
               $addToSet: {
                 code_formation_alternatifs: { $each: cfd.code_formation_alternatifs },
-                mef: { $each: cfd.mef },
-                mef_stats_9: { $each: cfd.mef_stats_9 },
-                mef_stats_11: { $each: cfd.mef_stats_11 },
               },
             },
             { upsert: true }
           );
 
           if (res.upsertedCount) {
-            logger.info(`Nouveau code formation ${code_formation} ajouté`);
+            logger.info(`Nouveau CFD ${code_formation} ajouté`);
             stats.created++;
           } else if (res.modifiedCount) {
-            logger.info(`Code formation ${code_formation} mis à jour`);
+            logger.info(`CFD ${code_formation} mis à jour`);
             stats.updated++;
           } else {
-            logger.trace(`Code formation ${code_formation} déjà à jour`);
+            logger.trace(`CFD ${code_formation} déjà à jour`);
           }
         } catch (e) {
-          logger.error(e, `Impossible d'importer le code formation  ${code_formation}`);
+          logger.error(e, `Impossible d'importer le CFD  ${code_formation}`);
           stats.failed++;
         }
       },
@@ -101,5 +82,3 @@ async function importCodeFormationDiplomes(options = {}) {
 
   return stats;
 }
-
-export { importCodeFormationDiplomes };

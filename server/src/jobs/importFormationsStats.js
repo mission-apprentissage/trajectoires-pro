@@ -4,7 +4,7 @@ import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/InserJeunes.js";
-import { getCFD } from "../common/actions/getCFD.js";
+import { findDiplome } from "../common/actions/findDiplome.js";
 import { formationsStats } from "../common/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 
@@ -77,12 +77,7 @@ export async function importFormationsStats(options = {}) {
         const query = { uai: uai, code_certification: stats.code_certification, millesime: stats.millesime };
 
         try {
-          const cfd = await getCFD(stats.code_certification);
-
-          const diplome = cfd?.diplome;
-          if (!diplome) {
-            logger.warn(`Impossible de trouver le diplome pour la stats`, query);
-          }
+          const diplome = await findDiplome(stats.code_certification);
 
           const res = await formationsStats().updateOne(
             query,

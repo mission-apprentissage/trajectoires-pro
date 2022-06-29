@@ -6,6 +6,7 @@ import { importFormationsStats } from "./jobs/importFormationsStats.js";
 import { importCertificationsStats } from "./jobs/importCertificationsStats.js";
 import { promiseAllProps } from "./common/utils/asyncUtils.js";
 import { InserJeunes } from "./common/InserJeunes.js";
+import { importMefs } from "./jobs/importMefs.js";
 import { importCodeFormationDiplomes } from "./jobs/importCodeFormationDiplomes.js";
 
 function asArray(v) {
@@ -13,11 +14,14 @@ function asArray(v) {
 }
 
 cli
-  .command("importCodeFormationDiplomes")
-  .description("Import les CFD depuis la BCN")
+  .command("importBCN")
+  .description("Import les CFD et MEF depuis la BCN")
   .action(() => {
     runScript(() => {
-      return importCodeFormationDiplomes();
+      return promiseAllProps({
+        cfd: importCodeFormationDiplomes(),
+        mef: importMefs(),
+      });
     });
   });
 

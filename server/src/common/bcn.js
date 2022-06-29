@@ -3,6 +3,42 @@ import { fetchStream } from "./utils/httpUtils.js";
 import iconv from "iconv-lite";
 import { parseCsv } from "./utils/csvUtils.js";
 
+const ANCIENS_NIVEAUX_MAPPER = {
+  5: "3",
+  4: "4",
+  3: "5",
+  2: "6",
+  1: "7",
+  0: "0", //Mention complémentaire
+};
+
+const NIVEAUX_LIBELLES = {
+  0: "MC",
+  3: "CAP",
+  4: "BAC",
+  5: "BTS",
+  6: "LIC",
+  7: "MASTER",
+};
+
+export function asDiplome(codeFormation) {
+  if (!codeFormation) {
+    return null;
+  }
+
+  const niveau = codeFormation.substring(0, 1);
+  const code = ANCIENS_NIVEAUX_MAPPER[niveau];
+
+  if (!code) {
+    return null;
+  }
+
+  return {
+    code: code,
+    libelle: NIVEAUX_LIBELLES[code],
+  };
+}
+
 export async function getBCNTable(tableName, options = {}) {
   let stream =
     options[tableName] ||
@@ -23,20 +59,4 @@ export async function getBCNTable(tableName, options = {}) {
     ),
     parseCsv({ delimiter: "|" })
   );
-}
-
-export async function loadMefs(options) {
-  const table = await getBCNTable("N_MEF", options);
-
-  const array = [];
-  for await (const data of table) {
-    array.push({
-      MEF: data.MEF,
-      FORMATION_DIPLOME: data.FORMATION_DIPLOME,
-      MEF_STAT_11: data.MEF_STAT_11,
-      MEF_STAT_9: data.MEF_STAT_9,
-    });
-  }
-
-  return array;
 }
