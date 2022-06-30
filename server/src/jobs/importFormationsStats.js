@@ -4,9 +4,10 @@ import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/InserJeunes.js";
-import { findDiplome } from "../common/actions/findDiplome.js";
 import { formationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
+import { omitNil } from "../common/utils/objectUtils.js";
+import { findCodeCertification } from "../common/actions/findCodeCertification.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -77,7 +78,7 @@ export async function importFormationsStats(options = {}) {
         const query = { uai: uai, code_certification: stats.code_certification, millesime: stats.millesime };
 
         try {
-          const diplome = await findDiplome(stats.code_certification);
+          const certification = await findCodeCertification(stats.code_certification);
 
           const res = await formationsStats().updateOne(
             query,
@@ -85,10 +86,10 @@ export async function importFormationsStats(options = {}) {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
               },
-              $set: {
+              $set: omitNil({
                 ...stats,
-                ...(diplome ? { diplome } : {}),
-              },
+                diplome: certification?.diplome,
+              }),
             },
             { upsert: true }
           );

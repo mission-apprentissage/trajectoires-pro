@@ -1,9 +1,10 @@
-import { asDiplome, getBCNTable } from "../common/bcn.js";
+import { getBCNTable } from "../common/bcn.js";
 import { oleoduc, writeData } from "oleoduc";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { mefs } from "../common/db/collections/collections.js";
 import { parseAsUTCDate } from "../common/utils/dateUtils.js";
+import { getDiplome } from "../common/diplomes.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -21,7 +22,7 @@ export async function importMefs(options = {}) {
         stats.total++;
 
         try {
-          const diplome = asDiplome(codeFormationDiplome);
+          const diplome = getDiplome(codeFormationDiplome);
           if (!diplome) {
             logger.warn(`Diplome inconnu pour le mef ${mef}`);
           }

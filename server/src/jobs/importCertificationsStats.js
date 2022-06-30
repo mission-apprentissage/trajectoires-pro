@@ -1,10 +1,10 @@
 import { Readable } from "stream";
 import { InserJeunes } from "../common/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
-import { findDiplome } from "../common/actions/findDiplome.js";
 import { certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
+import { findCodeCertification } from "../common/actions/findCodeCertification.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -38,7 +38,7 @@ export async function importCertificationsStats(options = {}) {
         const query = { millesime: stats.millesime, code_certification: stats.code_certification };
 
         try {
-          const diplome = await findDiplome(stats.code_certification);
+          const certification = await findCodeCertification(stats.code_certification);
 
           const res = await certificationsStats().updateOne(
             query,
@@ -48,7 +48,7 @@ export async function importCertificationsStats(options = {}) {
               },
               $set: omitNil({
                 ...stats,
-                diplome,
+                diplome: certification?.diplome,
               }),
             },
             { upsert: true }
