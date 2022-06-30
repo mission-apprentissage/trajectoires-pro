@@ -1,7 +1,7 @@
 // @ts-check
 
 import * as logsDescriptor from "./logs.js";
-import * as codeFormationDiplomesDescriptor from "./codeFormationDiplomes.js";
+import * as cfdsDescriptor from "./cfds.js";
 import * as mefsDescriptor from "./mefs.js";
 import * as formationsStatsDescriptor from "./formationsStats.js";
 import * as certificationsStatsDescriptor from "./certificationsStats.js";
@@ -11,7 +11,7 @@ import { dbCollection } from "../mongodb.js";
 export function getCollectionDescriptors() {
   return [
     logsDescriptor,
-    codeFormationDiplomesDescriptor,
+    cfdsDescriptor,
     mefsDescriptor,
     formationsStatsDescriptor,
     certificationsStatsDescriptor,
@@ -36,15 +36,15 @@ export function certificationsStats() {
 }
 
 /**
- * @typedef {import("mongodb").Collection<import("./codeFormationDiplomes.js").CodeFormationDiplomes>} CodeFormationDiplomesCollection
+ * @typedef {import("mongodb").Collection<import("./cfds.js").CodeFormationDiplomes>} CodeFormationDiplomesCollection
  * @returns {CodeFormationDiplomesCollection}
  */
-export function codeFormationDiplomes() {
-  return dbCollection(codeFormationDiplomesDescriptor.name);
+export function cfds() {
+  return dbCollection(cfdsDescriptor.name);
 }
 
 /**
- * @typedef {import("mongodb").Collection<import("./codeFormationDiplomes.js").CodeFormationDiplomes>} CodeFormationDiplomesCollection
+ * @typedef {import("mongodb").Collection<import("./cfds.js").CodeFormationDiplomes>} CodeFormationDiplomesCollection
  * @returns {CodeFormationDiplomesCollection}
  */
 export function mefs() {

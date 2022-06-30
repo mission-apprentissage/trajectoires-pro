@@ -2,13 +2,13 @@ import { mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
 import { asDiplome, getBCNTable } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { pick, range } from "lodash-es";
-import { codeFormationDiplomes } from "../common/collections/collections.js";
+import { cfds } from "../common/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { parseAsUTCDate } from "../common/utils/dateUtils.js";
 
 const logger = getLoggerWithContext("import");
 
-export async function importCodeFormationDiplomes(options = {}) {
+export async function importCfds(options = {}) {
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
 
   await oleoduc(
@@ -43,7 +43,7 @@ export async function importCodeFormationDiplomes(options = {}) {
             logger.warn(`Diplome inconnu pour le CFD ${code_formation}`);
           }
 
-          const res = await codeFormationDiplomes().updateOne(
+          const res = await cfds().updateOne(
             {
               code_formation,
             },

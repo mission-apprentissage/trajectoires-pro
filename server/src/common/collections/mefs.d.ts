@@ -6,16 +6,16 @@
  */
 import { ObjectId } from "mongodb";
 
-export const name = "codeFormationDiplomes";
+export const name = "mefs";
 
-export interface CodeFormationDiplomes {
+export interface Mefs {
   _id?: ObjectId;
-  code_formation: string;
+  mef: string;
+  mef_stat_9: string;
+  mef_stat_11: string;
   libelle: string;
-  code_formation_alternatifs: string[];
-  mef: string[];
-  mef_stats_9: string[];
-  mef_stats_11: string[];
+  code_formation_diplome: string;
+  date_fermeture?: Date;
   diplome?: {
     code: string;
     libelle: string;
