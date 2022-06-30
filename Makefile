@@ -29,6 +29,3 @@ hooks:
 	chmod +x misc/git-hooks/*
 
 ci: install lint coverage
-
-types:
-	yarn --cwd server ts:generate
