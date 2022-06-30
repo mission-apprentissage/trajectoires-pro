@@ -1,5 +1,5 @@
 import { MongoMemoryServer } from "mongodb-memory-server"; // eslint-disable-line node/no-unpublished-import
-import { connectToMongodb, getDatabase, configureValidation, configureIndexes } from "../../src/common/mongodb.js";
+import { connectToMongodb, getDatabase, configureValidation, configureIndexes } from "../../src/common/db/mongodb.js";
 
 let mongodHolder;
 

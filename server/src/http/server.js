@@ -7,7 +7,7 @@ import { logMiddleware } from "./middlewares/logMiddleware.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import { tryCatch } from "./middlewares/tryCatchMiddleware.js";
 import { corsMiddleware } from "./middlewares/corsMiddleware.js";
-import { dbCollection } from "../common/mongodb.js";
+import { dbCollection } from "../common/db/mongodb.js";
 import formationsRoutes from "./routes/formationsRoutes.js";
 import certificationsRoutes from "./routes/certificationsRoutes.js";
 import swaggerRoutes from "./routes/swaggerRoutes.js";

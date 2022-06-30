@@ -5,7 +5,7 @@ import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/InserJeunes.js";
 import { findDiplome } from "../common/actions/findDiplome.js";
-import { formationsStats } from "../common/collections/collections.js";
+import { formationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 
 const logger = getLoggerWithContext("import");
