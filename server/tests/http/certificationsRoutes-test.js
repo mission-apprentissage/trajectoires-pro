@@ -319,7 +319,7 @@ describe("certificationsRoutes", () => {
       const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg");
 
       assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data.message, "Statistiques non disponibles");
+      assert.strictEqual(response.data.message, "Données non disponibles");
     });
 
     it("Vérifie qu'on obtient une erreur avec une direction invalide", async () => {

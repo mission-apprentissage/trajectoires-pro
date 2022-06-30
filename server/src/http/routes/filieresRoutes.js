@@ -5,10 +5,9 @@ import * as validators from "../utils/validators.js";
 import { arrayOf, validate } from "../utils/validators.js";
 import { certificationsStats } from "../../common/db/collections/collections.js";
 import Boom from "boom";
-import { sendFilieresWidget } from "../widget/widget.js";
+import { sendWidget, widgetifyStats } from "../widget/widget.js";
 import { computeFilieresStats } from "../../common/filieres.js";
 import { omitNil } from "../../common/utils/objectUtils.js";
-import { getRates } from "../../common/rateLevels.js";
 
 async function getFilieresStats(codes_certifications, millesime) {
   const stats = await certificationsStats()
@@ -42,19 +41,28 @@ export default () => {
 
       const stats = await getFilieresStats(codes_certifications, millesime);
 
-      if (ext !== "svg") {
-        return res.json(stats);
+      if (ext === "svg") {
+        return sendWidget("filieres", stats, res, {
+          theme,
+          direction,
+          widgetify: (stats) => {
+            const data = {
+              stats: {
+                pro: widgetifyStats(stats.pro),
+                apprentissage: widgetifyStats(stats.apprentissage),
+              },
+              meta: stats._meta,
+            };
+
+            if (data.stats.pro.length === 0 && data.stats.apprentissage.length === 0) {
+              throw Boom.notFound("Données non disponibles");
+            }
+
+            return data;
+          },
+        });
       } else {
-        const rates = {
-          pro: getRates(stats.pro),
-          apprentissage: getRates(stats.apprentissage),
-        };
-
-        if (rates.pro.length === 0 && rates.apprentissage.length === 0) {
-          throw Boom.notFound("Statistiques non disponibles");
-        }
-
-        return sendFilieresWidget(stats, rates, res, { theme, direction });
+        return res.json(stats);
       }
     })
   );

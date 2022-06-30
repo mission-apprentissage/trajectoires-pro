@@ -21,10 +21,10 @@
   </text>
 
   <!-- first block starts here -->
-  <g class="<%= rates[0].level %>">
+  <g class="<%= stats[0].niveau %>">
     <rect x="30" y="127" width="90" height="35" rx="4" class="bg" />
 
-    <g transform="translate(40,137)"><%- await include(`../assets/${rates[0].level}-icon.svg.ejs`); %></g>
+    <g transform="translate(40,137)"><%- await include(`../assets/${stats[0].niveau}-icon.svg.ejs`); %></g>
 
     <text
       class="label"
@@ -35,7 +35,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="59" y="155.438"><%= rates[0].rate %>%</tspan>
+      <tspan x="59" y="155.438"><%= stats[0].valeur %>%</tspan>
     </text>
 
     <text
@@ -46,22 +46,22 @@
       font-size="14"
       letter-spacing="0em"
     >
-      <% if(rates[0].labels.length===1) { %>
-      <tspan x="130" y="150.125"><%= rates[0].labels[0] %></tspan>
+      <% if(stats[0].libelles.length===1) { %>
+      <tspan x="130" y="150.125"><%= stats[0].libelles[0] %></tspan>
       <% } else { %>
-      <tspan x="130" y="140.125"><%= rates[0].labels[0] %></tspan>
-      <tspan x="130" y="160.125"><%= rates[0].labels[1] %></tspan>
+      <tspan x="130" y="140.125"><%= stats[0].libelles[0] %></tspan>
+      <tspan x="130" y="160.125"><%= stats[0].libelles[1] %></tspan>
       <% } %>
     </text>
   </g>
   <!-- end first block -->
 
   <!-- second block starts here -->
-  <% if(rates.length > 1) { %>
-  <g class="<%= rates[1].level %>">
+  <% if(stats.length > 1) { %>
+  <g class="<%= stats[1].niveau %>">
     <rect x="365" y="127" width="90" height="35" rx="4" class="bg" />
 
-    <g transform="translate(375,137)"><%- await include(`../assets/${rates[1].level}-icon.svg.ejs`); %></g>
+    <g transform="translate(375,137)"><%- await include(`../assets/${stats[1].niveau}-icon.svg.ejs`); %></g>
 
     <text
       class="label"
@@ -72,7 +72,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="394" y="155.438"><%= rates[1].rate %>%</tspan>
+      <tspan x="394" y="155.438"><%= stats[1].valeur %>%</tspan>
     </text>
     <text
       fill="#3A3A3A"
@@ -82,11 +82,11 @@
       font-size="14"
       letter-spacing="0em"
     >
-      <% if(rates[1].labels.length === 1) { %>
-      <tspan x="465" y="150.125"><%= rates[1].labels[0] %></tspan>
+      <% if(stats[1].libelles.length === 1) { %>
+      <tspan x="465" y="150.125"><%= stats[1].libelles[0] %></tspan>
       <% } else { %>
-      <tspan x="465" y="140.125"><%= rates[1].labels[0] %></tspan>
-      <tspan x="465" y="160.125"><%= rates[1].labels[1] %></tspan>
+      <tspan x="465" y="140.125"><%= stats[1].libelles[0] %></tspan>
+      <tspan x="465" y="160.125"><%= stats[1].libelles[1] %></tspan>
       <% } %>
     </text>
   </g>

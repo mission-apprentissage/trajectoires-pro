@@ -39,10 +39,10 @@
     <tspan x="23" y="147.875">fin de la formation</tspan>
   </text>
 
-  <g class="<%= rates.apprentissage[0].level %>">
+  <g class="<%= stats.apprentissage[0].niveau %>">
     <rect x="23" y="165" width="90" height="35" rx="4" class="bg" />
 
-    <g transform="translate(31,175)"><%- await include(`../assets/${rates.apprentissage[0].level}-icon.svg.ejs`); %></g>
+    <g transform="translate(31,175)"><%- await include(`../assets/${stats.apprentissage[0].niveau}-icon.svg.ejs`); %></g>
 
     <text
       class="label"
@@ -53,7 +53,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="50.5" y="193.438"><%= rates.apprentissage[0].rate %>%</tspan>
+      <tspan x="50.5" y="193.438"><%= stats.apprentissage[0].valeur %>%</tspan>
     </text>
 
     <text
@@ -68,10 +68,10 @@
     </text>
   </g>
 
-  <g class="<%= rates.pro[0].level %>">
+  <g class="<%= stats.pro[0].niveau %>">
     <rect x="182" y="165" width="90" height="35" rx="4" class="bg" />
 
-    <g transform="translate(190,175)"><%- await include(`../assets/${rates.pro[0].level}-icon.svg.ejs`); %></g>
+    <g transform="translate(190,175)"><%- await include(`../assets/${stats.pro[0].niveau}-icon.svg.ejs`); %></g>
 
     <text
       class="label"
@@ -82,7 +82,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="209.5" y="193.438"><%= rates.pro[0].rate %>%</tspan>
+      <tspan x="209.5" y="193.438"><%= stats.pro[0].valeur %>%</tspan>
     </text>
     <text
       fill="#3A3A3A"
@@ -109,11 +109,11 @@
     <tspan x="<%= 23 + rightOffset %>" y="127.875">Poursuivent leurs &#xe9;tudes</tspan>
   </text>
 
-  <g class="<%= rates.apprentissage[1].level %>">
+  <g class="<%= stats.apprentissage[1].niveau %>">
     <rect x="<%= 23 + rightOffset %>" y="165" width="90" height="35" rx="4" class="bg" />
 
     <g transform="translate(<%= 31 + rightOffset %>,175)">
-      <%- await include(`../assets/${rates.apprentissage[1].level}-icon.svg.ejs`); %>
+      <%- await include(`../assets/${stats.apprentissage[1].niveau}-icon.svg.ejs`); %>
     </g>
 
     <text
@@ -125,7 +125,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="<%= 50.5 + rightOffset %>" y="193.438"><%= rates.apprentissage[1].rate %>%</tspan>
+      <tspan x="<%= 50.5 + rightOffset %>" y="193.438"><%= stats.apprentissage[1].valeur %>%</tspan>
     </text>
     <text
       fill="#3A3A3A"
@@ -139,11 +139,11 @@
     </text>
   </g>
 
-  <g class="<%= rates.pro[1].level %>">
+  <g class="<%= stats.pro[1].niveau %>">
     <rect x="<%= 182 + rightOffset %>" y="165" width="90" height="35" rx="4" class="bg" />
 
     <g transform="translate(<%= 190 + rightOffset %>,175)">
-      <%- await include(`../assets/${rates.pro[1].level}-icon.svg.ejs`); %>
+      <%- await include(`../assets/${stats.pro[1].niveau}-icon.svg.ejs`); %>
     </g>
 
     <text
@@ -155,7 +155,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="<%= 209.5 + rightOffset %>" y="193.438"><%= rates.pro[1].rate %>%</tspan>
+      <tspan x="<%= 209.5 + rightOffset %>" y="193.438"><%= stats.pro[1].valeur %>%</tspan>
     </text>
     <text
       fill="#3A3A3A"

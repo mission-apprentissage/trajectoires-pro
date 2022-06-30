@@ -1,17 +1,17 @@
 import express from "express";
 import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
 import Joi from "joi";
-import { arrayOf, validate } from "../utils/validators.js";
 import * as validators from "../utils/validators.js";
+import { arrayOf, validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
 import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
-import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
+import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { formationsStats } from "../../common/db/collections/collections.js";
-import { sendWidget } from "../widget/widget.js";
 import { getMetadata } from "../../common/metadata.js";
+import { sendWidget } from "../widget/widget.js";
 
 export default () => {
   const router = express.Router();

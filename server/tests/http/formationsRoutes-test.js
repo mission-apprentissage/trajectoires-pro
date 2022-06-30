@@ -435,7 +435,7 @@ describe("formationsRoutes", () => {
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
 
       assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data.message, "Statistiques non disponibles");
+      assert.strictEqual(response.data.message, "Données non disponibles");
     });
 
     it("Vérifie qu'on obtient une erreur quand le format de l'UAI est invalide", async () => {

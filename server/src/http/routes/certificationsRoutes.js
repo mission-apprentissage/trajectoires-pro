@@ -10,9 +10,9 @@ import { certificationsStats } from "../../common/db/collections/collections.js"
 import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
-import { sendWidget } from "../widget/widget.js";
 import { getMetadata } from "../../common/metadata.js";
 import { omitNil } from "../../common/utils/objectUtils.js";
+import { sendWidget } from "../widget/widget.js";
 
 export default () => {
   const router = express.Router();

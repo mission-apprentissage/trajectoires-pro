@@ -1,5 +1,8 @@
 import path from "path";
-import { getDirname } from "../../common/esmUtils.js";
+import { getDirname } from "../../../common/esmUtils.js";
+import fs from "fs";
+import Boom from "boom";
+import ejs from "ejs";
 
 const __dirname = getDirname(import.meta.url);
 
@@ -39,3 +42,30 @@ export const templates = {
     },
   },
 };
+
+let base64Font = "";
+function loadBase64Font() {
+  if (!base64Font) {
+    const buffer = fs.readFileSync(path.join(__dirname, `./assets/fonts/Marianne-Regular.woff`));
+    base64Font = buffer.toString("base64");
+  }
+  return base64Font;
+}
+
+export function getTemplate(templateName, options = {}) {
+  const theme = options.theme || "dsfr";
+  const direction = options.direction || "vertical";
+  const variantes = templates[theme] ?? templates.dsfr;
+
+  const template = variantes?.[templateName]?.[direction];
+  if (!template) {
+    throw Boom.badRequest("Paramètres du widget invalides");
+  }
+
+  return template;
+}
+
+export function renderTemplate(template, data) {
+  const base64Font = loadBase64Font();
+  return ejs.renderFile(template, { base64Font, ...data }, { async: true });
+}
