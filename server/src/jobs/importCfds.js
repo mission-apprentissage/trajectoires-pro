@@ -34,18 +34,16 @@ export async function importCfds(options = {}) {
     }),
     writeData(
       async (cfd) => {
-        const { code_formation } = cfd;
+        stats.total++;
+
+        if (!cfd.diplome) {
+          logger.warn(`Diplome inconnu pour le CFD ${cfd.code_formation}`);
+        }
 
         try {
-          stats.total++;
-
-          if (!cfd.diplome) {
-            logger.warn(`Diplome inconnu pour le CFD ${code_formation}`);
-          }
-
           const res = await cfds().updateOne(
             {
-              code_formation,
+              code_formation: cfd.code_formation,
             },
             {
               $setOnInsert: omitNil({
@@ -63,16 +61,16 @@ export async function importCfds(options = {}) {
           );
 
           if (res.upsertedCount) {
-            logger.info(`Nouveau CFD ${code_formation} ajouté`);
+            logger.info(`Nouveau CFD ${cfd.code_formation} ajouté`);
             stats.created++;
           } else if (res.modifiedCount) {
-            logger.info(`CFD ${code_formation} mis à jour`);
+            logger.info(`CFD ${cfd.code_formation} mis à jour`);
             stats.updated++;
           } else {
-            logger.trace(`CFD ${code_formation} déjà à jour`);
+            logger.trace(`CFD ${cfd.code_formation} déjà à jour`);
           }
         } catch (e) {
-          logger.error(e, `Impossible d'importer le CFD  ${code_formation}`);
+          logger.error(e, `Impossible d'importer le CFD  ${cfd.code_formation}`);
           stats.failed++;
         }
       },
