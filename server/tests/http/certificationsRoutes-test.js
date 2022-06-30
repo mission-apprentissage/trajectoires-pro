@@ -319,7 +319,7 @@ describe("certificationsRoutes", () => {
       const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg");
 
       assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data, "Données statistiques non disponibles");
+      assert.strictEqual(response.data.message, "Statistiques non disponibles");
     });
 
     it("Vérifie qu'on obtient une erreur avec une direction invalide", async () => {
@@ -329,47 +329,6 @@ describe("certificationsRoutes", () => {
       const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg?direction=diagonal");
 
       assert.strictEqual(response.status, 400);
-    });
-
-    it("Vérifie qu'on peut obtient une image avec les deux filières", async () => {
-      const { httpClient } = await startServer();
-      await Promise.all([
-        insertCertificationsStats({
-          code_certification: "23830024203",
-          filiere: "apprentissage",
-          taux_poursuite_etudes: 5,
-          taux_emploi_6_mois: 50,
-          millesime: "2020",
-          nb_annee_term: 100,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_6_mois: 25,
-          nb_sortant: 50,
-        }),
-        insertCertificationsStats({
-          code_certification: "23830024202",
-          filiere: "pro",
-          taux_poursuite_etudes: 10,
-          taux_emploi_6_mois: 25,
-          millesime: "2020",
-          nb_annee_term: 100,
-          nb_poursuite_etudes: 10,
-          nb_en_emploi_6_mois: 15,
-          nb_sortant: 60,
-        }),
-      ]);
-
-      const response = await httpClient.get("/api/inserjeunes/certifications/23830024203|23830024202.svg");
-
-      assert.strictEqual(response.status, 200);
-      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes("Apprentissage"));
-      assert.ok(response.data.includes("Voie scolaire"));
-      assert.ok(response.data.includes("<title>Certifications: 23830024203, 23830024202</title>"));
-      assert.ok(
-        response.data.includes(
-          "<desc>Données InserJeunes du millesime 2020 aggrégées pour les certifications: 23830024203 (BAC filière apprentissage), 23830024202 (BAC filière pro)</desc>"
-        )
-      );
     });
   });
 });

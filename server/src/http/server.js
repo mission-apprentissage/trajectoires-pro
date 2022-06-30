@@ -10,6 +10,7 @@ import { corsMiddleware } from "./middlewares/corsMiddleware.js";
 import { dbCollection } from "../common/db/mongodb.js";
 import formationsRoutes from "./routes/formationsRoutes.js";
 import certificationsRoutes from "./routes/certificationsRoutes.js";
+import filieresRoutes from "./routes/filieresRoutes.js";
 import swaggerRoutes from "./routes/swaggerRoutes.js";
 import { packageJson } from "../common/esmUtils.js";
 
@@ -20,8 +21,9 @@ export default async () => {
   app.use(mongoSanitize({ replaceWith: "_" }));
   app.use(corsMiddleware());
   app.use(logMiddleware());
-  app.use(formationsRoutes());
   app.use(certificationsRoutes());
+  app.use(formationsRoutes());
+  app.use(filieresRoutes());
   app.use(swaggerRoutes());
 
   app.get(

@@ -10,7 +10,7 @@ import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
 import { formationsStats } from "../../common/db/collections/collections.js";
-import { sendWidget } from "../utils/widget.js";
+import { sendWidget } from "../widget/widget.js";
 import { getMetadata } from "../../common/metadata.js";
 
 export default () => {

@@ -1,9 +1,9 @@
 import assert from "assert";
-import { aggregateCertificationsStatsByFiliere } from "../../src/common/certifications.js";
+import { computeFilieresStats } from "../../src/common/filieres.js";
 
-describe("aggregateCertificationsStatsByFiliere", () => {
+describe("filieres", () => {
   it("should handle empty data", () => {
-    assert.deepStrictEqual(aggregateCertificationsStatsByFiliere([]), {});
+    assert.deepStrictEqual(computeFilieresStats([]), {});
   });
 
   it("should aggregate certifications stats for one filiere, and keep only 1 millesime", () => {
@@ -61,7 +61,7 @@ describe("aggregateCertificationsStatsByFiliere", () => {
       },
     ];
 
-    assert.deepStrictEqual(aggregateCertificationsStatsByFiliere(certifications), {
+    assert.deepStrictEqual(computeFilieresStats(certifications), {
       apprentissage: {
         _meta: {
           description:
@@ -164,7 +164,7 @@ describe("aggregateCertificationsStatsByFiliere", () => {
       },
     ];
 
-    assert.deepStrictEqual(aggregateCertificationsStatsByFiliere(certifications), {
+    assert.deepStrictEqual(computeFilieresStats(certifications), {
       apprentissage: {
         _meta: {
           description:

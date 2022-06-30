@@ -1,6 +1,6 @@
 import { getMetadata } from "./metadata.js";
 
-const aggregateStats = (stats) => {
+function aggregateStats(stats) {
   if (stats.length === 0) {
     return null;
   }
@@ -32,21 +32,19 @@ const aggregateStats = (stats) => {
 
   aggregatedStats._meta = getMetadata("certifications", stats);
   return aggregatedStats;
-};
+}
 
-export const aggregateCertificationsStatsByFiliere = (certificationsStats) => {
+export const computeFilieresStats = (certificationsStats) => {
   // keep only one millesime
-  const stats = certificationsStats.filter(({ millesime }) => millesime === certificationsStats[0].millesime);
+  const stats = certificationsStats.filter((s) => s.millesime === certificationsStats[0].millesime);
 
   // aggregate by filiere
   const proStats = aggregateStats(stats.filter(({ filiere }) => filiere === "pro"));
   const apprentissageStats = aggregateStats(stats.filter(({ filiere }) => filiere === "apprentissage"));
 
-  const mergedStats = {
+  return {
     ...(proStats ? { pro: proStats } : {}),
     ...(apprentissageStats ? { apprentissage: apprentissageStats } : {}),
     ...(proStats || apprentissageStats ? { _meta: getMetadata("certifications", stats) } : {}),
   };
-
-  return mergedStats;
 };
