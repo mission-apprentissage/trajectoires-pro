@@ -15,9 +15,6 @@
     "cli": "TRAJECTOIRES_PRO_LOG_DESTINATIONS=stderr node src/cli.js",
     "coverage": "nyc --temp-dir .coverage/.nyc_output --report-dir .coverage --reporter=lcov --reporter=html yarn test",
     "lint": "eslint src/ tests/",
-    "migration:create": "migrate-mongo create",
-    "migration:up": "migrate-mongo up",
-    "migration:down": "migrate-mongo down",
     "ts:generate": "node src/types/index.js"
   },
   "dependencies": {
@@ -40,7 +37,6 @@
     "json-schema-to-typescript": "10.1.5",
     "lodash-es": "4.17.21",
     "luxon": "2.3.2",
-    "migrate-mongo": "9.0.0",
     "mongodb": "4.5.0",
     "oleoduc": "0.7.0",
     "passport": "0.5.2",
