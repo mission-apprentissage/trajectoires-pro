@@ -8,6 +8,7 @@ import { promiseAllProps } from "./common/utils/asyncUtils.js";
 import { InserJeunes } from "./common/InserJeunes.js";
 import { importMefs } from "./jobs/importMefs.js";
 import { importCfds } from "./jobs/importCfds.js";
+import { migrate } from "./jobs/migrate.js";
 
 function asArray(v) {
   return v.split(",");
@@ -42,6 +43,16 @@ cli
         ...(stats.includes("formations") ? { formations: importFormationsStats({ input: file, inserjeunes }) } : {}),
         ...(stats.includes("certifications") ? { certifications: importCertificationsStats({ inserjeunes }) } : {}),
       });
+    });
+  });
+
+cli
+  .command("migrate")
+  .description("Execute les scripts de migration")
+  .option("--dropIndexes", "Supprime les anciens indexes")
+  .action((options) => {
+    runScript(() => {
+      return migrate(options);
     });
   });
 
