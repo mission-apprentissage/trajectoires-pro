@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { program as cli } from "commander";
-import { createReadStream } from "fs";
+import { createReadStream, createWriteStream } from "fs";
 import { runScript } from "./common/runScript.js";
 import { importFormationsStats } from "./jobs/importFormationsStats.js";
 import { importCertificationsStats } from "./jobs/importCertificationsStats.js";
@@ -9,6 +9,8 @@ import { InserJeunes } from "./common/InserJeunes.js";
 import { importMefs } from "./jobs/importMefs.js";
 import { importCfds } from "./jobs/importCfds.js";
 import { migrate } from "./jobs/migrate.js";
+import { writeToStdout } from "oleoduc";
+import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
 
 function asArray(v) {
   return v.split(",");
@@ -43,6 +45,18 @@ cli
         ...(stats.includes("formations") ? { formations: importFormationsStats({ input: file, inserjeunes }) } : {}),
         ...(stats.includes("certifications") ? { certifications: importCertificationsStats({ inserjeunes }) } : {}),
       });
+    });
+  });
+
+cli
+  .command("exportCodeCertifications")
+  .description("Permet de savoir si des codes certifications sont fermés")
+  .option("--out [out]", "Fichier cible dans lequel sera stocké l'export (defaut: stdout)", createWriteStream)
+  .action(({ out }) => {
+    runScript(async () => {
+      const output = out || writeToStdout();
+
+      await exportCodeCertifications(output);
     });
   });
 
