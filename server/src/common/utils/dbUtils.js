@@ -1,4 +1,4 @@
-import { dbCollection } from "../mongodb.js";
+import { dbCollection } from "../db/mongodb.js";
 
 export async function findAndPaginate(collectionName, query, options = {}) {
   let collection = dbCollection(collectionName);

@@ -1,7 +1,7 @@
 import assert from "assert";
 import { startServer } from "../utils/testUtils.js";
 import { insertFormationsStats } from "../utils/fakeData.js";
-import { metrics } from "../../src/common/collections/collections.js";
+import { metrics } from "../../src/common/db/collections/collections.js";
 
 describe("metricsMiddleware", () => {
   it("checks that we track usage of the api", async () => {

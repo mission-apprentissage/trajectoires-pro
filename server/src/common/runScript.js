@@ -1,4 +1,4 @@
-import { closeMongodbConnection, connectToMongodb, configureValidation, configureIndexes } from "./mongodb.js";
+import { closeMongodbConnection, connectToMongodb, configureValidation, configureIndexes } from "./db/mongodb.js";
 import prettyMilliseconds from "pretty-ms";
 import { isEmpty } from "lodash-es";
 import { getLoggerWithContext } from "./logger.js";

@@ -2,7 +2,7 @@ import assert from "assert";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertCertificationsStats } from "../utils/fakeData.js";
-import { dbCollection } from "../../src/common/mongodb.js";
+import { dbCollection } from "../../src/common/db/mongodb.js";
 
 describe("certificationsRoutes", () => {
   describe("Recherche", () => {

@@ -1,7 +1,7 @@
 import assert from "assert";
 import { merge, omit } from "lodash-es";
 import { createStream } from "../utils/testUtils.js";
-import { mefs } from "../../src/common/collections/collections.js";
+import { mefs } from "../../src/common/db/collections/collections.js";
 import { importMefs } from "../../src/jobs/importMefs.js";
 
 function getBcnTables(custom = {}) {

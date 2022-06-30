@@ -2,7 +2,7 @@ import assert from "assert";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertFormationsStats } from "../utils/fakeData.js";
-import { formationsStats } from "../../src/common/collections/collections.js";
+import { formationsStats } from "../../src/common/db/collections/collections.js";
 
 describe("formationsRoutes", () => {
   describe("Recherche", () => {
