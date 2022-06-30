@@ -38,16 +38,16 @@ export function certificationsStats() {
 }
 
 /**
- * @typedef {import("mongodb").Collection<import("./cfds.js").CodeFormationDiplomes>} CodeFormationDiplomesCollection
- * @returns {CodeFormationDiplomesCollection}
+ * @typedef {import("mongodb").Collection<import("./cfds.js").Cfds>} Cfds
+ * @returns {Cfds}
  */
 export function cfds() {
   return dbCollection(cfdsDescriptor.name);
 }
 
 /**
- * @typedef {import("mongodb").Collection<import("./cfds.js").CodeFormationDiplomes>} CodeFormationDiplomesCollection
- * @returns {CodeFormationDiplomesCollection}
+ * @typedef {import("mongodb").Collection<import("./mefs.js").Mefs>} Mefs
+ * @returns {Mefs}
  */
 export function mefs() {
   return dbCollection(mefsDescriptor.name);

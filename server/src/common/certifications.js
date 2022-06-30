@@ -2,7 +2,7 @@
 import { getMetadata } from "./metadata.js";
 
 /**
- * @typedef {import("./db/collections/certificationsStats").CertificationsStats} CertificationsStats
+ * @typedef {import("./db/collections/certificationsStats.js").CertificationsStats} CertificationsStats
  * @typedef {{ codes_certifications: string[], millesime: string, nb_annee_term: number, nb_en_emploi_12_mois: number, nb_en_emploi_6_mois: number, nb_poursuite_etudes: number, nb_sortant: number, taux_emploi_12_mois: number, taux_emploi_6_mois: number, taux_poursuite_etudes: number, _meta: {title: string, description: string} }} AggregatedStats
  */
 
