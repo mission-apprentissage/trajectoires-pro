@@ -1,5 +1,15 @@
+// @ts-check
 import { getMetadata } from "./metadata.js";
 
+/**
+ * @typedef {import("./db/collections/certificationsStats").CertificationsStats} CertificationsStats
+ * @typedef {{ codes_certifications: string[], millesime: string, nb_annee_term: number, nb_en_emploi_12_mois: number, nb_en_emploi_6_mois: number, nb_poursuite_etudes: number, nb_sortant: number, taux_emploi_12_mois: number, taux_emploi_6_mois: number, taux_poursuite_etudes: number, _meta: {title: string, description: string} }} AggregatedStats
+ */
+
+/**
+ * @param {CertificationsStats[]} stats
+ * @returns {AggregatedStats}
+ */
 const aggregateStats = (stats) => {
   if (stats.length === 0) {
     return null;
@@ -17,7 +27,7 @@ const aggregateStats = (stats) => {
     acc["nb_poursuite_etudes"] = (acc["nb_poursuite_etudes"] ?? 0) + (curr.nb_poursuite_etudes ?? 0);
     acc["nb_sortant"] = (acc["nb_sortant"] ?? 0) + (curr.nb_sortant ?? 0);
     return acc;
-  }, {});
+  }, /** @type {AggregatedStats} */ ({}));
 
   // compute rates
   aggregatedStats["taux_emploi_12_mois"] = Math.round(
@@ -34,6 +44,10 @@ const aggregateStats = (stats) => {
   return aggregatedStats;
 };
 
+/**
+ * @param {CertificationsStats[]} certificationsStats
+ * @returns {{pro?:AggregatedStats, apprentissage?:AggregatedStats, _meta?: {title: string, description: string}}}
+ */
 export const aggregateCertificationsStatsByFiliere = (certificationsStats) => {
   // keep only one millesime
   const stats = certificationsStats.filter(({ millesime }) => millesime === certificationsStats[0].millesime);

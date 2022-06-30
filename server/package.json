@@ -14,7 +14,8 @@
     "test": "TRAJECTOIRES_PRO_LOG_LEVEL=fatal mocha --inline-diffs --exit tests/**/*-test.js",
     "cli": "TRAJECTOIRES_PRO_LOG_DESTINATIONS=stderr node src/cli.js",
     "coverage": "nyc --temp-dir .coverage/.nyc_output --report-dir .coverage --reporter=lcov --reporter=html yarn test",
-    "lint": "eslint src/ tests/"
+    "lint": "eslint src/ tests/",
+    "ts:generate": "node src/types/index.js"
   },
   "dependencies": {
     "axios": "0.27.2",

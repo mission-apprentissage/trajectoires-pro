@@ -1,3 +1,11 @@
+// @ts-check
+/**
+ * @typedef {{taux_emploi_6_mois?: number, taux_poursuite_etudes?: number, filiere?:"apprentissage" | "pro", diplome?:{libelle:string}}} InserJeunesData
+ */
+/**
+ * @typedef {"success" | "info" | "warning" | "danger"} RateLevel
+ */
+
 const RATE_LEVELS = {
   taux_emploi_6_mois: {
     pro: {
@@ -18,11 +26,19 @@ const RATE_LEVELS = {
   default: { warning: 25, success: 50 },
 };
 
-const LABELS = {
+const LABELS = /** @type {const} */ ({
   taux_emploi_6_mois: ["sont en emploi 6 mois", "après la fin de la formation."],
   taux_poursuite_etudes: ["poursuivent leurs études."],
-};
+});
 
+/**
+ * Get a level to adjust icon and style in the template for this data
+ *
+ * @param {"taux_emploi_6_mois" | "taux_poursuite_etudes"} key
+ * @param {number} value
+ * @param {"apprentissage"|"pro"} filiere
+ * @param {string} diplome
+ */
 export function getRateLevel(key, value, filiere, diplome) {
   const levels =
     RATE_LEVELS[key]?.[filiere]?.[diplome] ??
@@ -33,6 +49,12 @@ export function getRateLevel(key, value, filiere, diplome) {
   return value < levels.success ? (value < levels.warning ? "danger" : "warning") : "success";
 }
 
+/**
+ * Create on array of rates to feed the ejs template
+ *
+ * @param {InserJeunesData} stats
+ * @returns {Array<{rate: number | undefined, labels: string[], level: RateLevel}>}
+ */
 export const getRates = (stats) => {
   return Object.entries({
     taux_emploi_6_mois: stats.taux_emploi_6_mois,
@@ -40,7 +62,12 @@ export const getRates = (stats) => {
   })
     .filter(([, value]) => !!value || value === 0)
     .map(([key, value]) => {
-      const level = getRateLevel(key, value, stats.filiere, stats.diplome?.libelle);
+      const level = getRateLevel(
+        /** @type {keyof typeof LABELS} */ (key),
+        value,
+        stats.filiere,
+        stats.diplome?.libelle
+      );
 
       return {
         rate: value,
