@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */ // disabled because nock is still a commonJS module
 import "./testConfig.js";
 import { stopMongod, removeAll, startMongod } from "./mongoMemoryServer.js";
 import nock from "nock"; // eslint-disable-line node/no-unpublished-import

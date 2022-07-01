@@ -1,5 +1,5 @@
 import { oleoduc, transformData, transformIntoCSV } from "oleoduc";
-import { certificationsStats } from "../common/db/collections/collections.js";
+import { certificationsStats } from "../common/db/collections.js";
 import { findCodeCertification } from "../common/actions/findCodeCertification.js";
 import { pick } from "lodash-es";
 import { dateAsString } from "../common/utils/stringUtils.js";

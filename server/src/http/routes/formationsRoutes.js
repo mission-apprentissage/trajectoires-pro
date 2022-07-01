@@ -9,7 +9,7 @@ import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
-import { formationsStats } from "../../common/db/collections/collections.js";
+import { formationsStats } from "../../common/db/collections.js";
 import { sendWidget } from "../utils/widget.js";
 import { getMetadata } from "../../common/metadata.js";
 

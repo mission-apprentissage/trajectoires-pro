@@ -1,4 +1,6 @@
-import { metrics } from "../../common/db/collections/collections.js";
+// @ts-check
+
+import { metrics } from "../../common/db/collections.js";
 import { logger } from "../../common/logger.js";
 
 export const metricsMiddleware = async (req) => {

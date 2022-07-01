@@ -1,3 +1,4 @@
+//@ts-check
 import { metricsMiddleware } from "./metricsMiddleware.js";
 
 export function tryCatch(callback) {
