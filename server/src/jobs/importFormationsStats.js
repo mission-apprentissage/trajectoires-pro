@@ -4,10 +4,9 @@ import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/InserJeunes.js";
-import { formationsStats } from "../common/db/collections/collections.js";
+import { bcn, formationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { findCodeCertification } from "../common/actions/findCodeCertification.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -78,7 +77,7 @@ export async function importFormationsStats(options = {}) {
         const query = { uai: uai, code_certification: stats.code_certification, millesime: stats.millesime };
 
         try {
-          const certification = await findCodeCertification(stats.code_certification);
+          const certification = await bcn().findOne({ code_certification: stats.code_certification });
 
           const res = await formationsStats().updateOne(
             query,

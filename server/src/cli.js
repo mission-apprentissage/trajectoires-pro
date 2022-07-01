@@ -6,11 +6,10 @@ import { importFormationsStats } from "./jobs/importFormationsStats.js";
 import { importCertificationsStats } from "./jobs/importCertificationsStats.js";
 import { promiseAllProps } from "./common/utils/asyncUtils.js";
 import { InserJeunes } from "./common/InserJeunes.js";
-import { importMefs } from "./jobs/importMefs.js";
-import { importCfds } from "./jobs/importCfds.js";
 import { migrate } from "./jobs/migrate.js";
 import { writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
+import { importBCN } from "./jobs/importBCN.js";
 
 function asArray(v) {
   return v.split(",");
@@ -21,10 +20,7 @@ cli
   .description("Import les CFD et MEF depuis la BCN")
   .action(() => {
     runScript(() => {
-      return promiseAllProps({
-        cfd: importCfds(),
-        mef: importMefs(),
-      });
+      return importBCN();
     });
   });
 

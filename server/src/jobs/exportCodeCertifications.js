@@ -1,6 +1,5 @@
 import { oleoduc, transformData, transformIntoCSV } from "oleoduc";
-import { certificationsStats } from "../common/db/collections/collections.js";
-import { findCodeCertification } from "../common/actions/findCodeCertification.js";
+import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { dateAsString } from "../common/utils/stringUtils.js";
 
 export function exportCodeCertifications(output) {
@@ -17,7 +16,7 @@ export function exportCodeCertifications(output) {
       ])
       .stream(),
     transformData(async ({ code_certification, filiere }) => {
-      let code = await findCodeCertification(code_certification);
+      let code = await bcn().findOne({ code_certification: code_certification });
 
       return {
         code_certification,
