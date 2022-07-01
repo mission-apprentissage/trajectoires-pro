@@ -361,12 +361,6 @@ describe("certificationsRoutes", () => {
       assert.ok(response.data.includes("25%"));
       assert.ok(response.data.includes("Apprentissage"));
       assert.ok(response.data.includes("Voie scolaire"));
-      assert.ok(response.data.includes("<title>Certifications: 23830024203, 23830024202</title>"));
-      assert.ok(
-        response.data.includes(
-          "<desc>Données InserJeunes du millesime 2020 aggrégées pour les certifications: 23830024203 (BAC filière apprentissage), 23830024202 (BAC filière pro)</desc>"
-        )
-      );
     });
   });
 });

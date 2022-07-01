@@ -35,7 +35,7 @@ describe("importCertificationsStats", () => {
       ],
     });
     await insertCFD({
-      code_formation: "12345678",
+      code_certification: "12345678",
       diplome: {
         code: "4",
         libelle: "BAC",
@@ -74,8 +74,7 @@ describe("importCertificationsStats", () => {
       ],
     });
     await insertMEF({
-      mef: "1234567890",
-      mef_stat_11: "12345678900",
+      code_certification: "12345678900",
       diplome: { code: "4", libelle: "BAC" },
     });
 
@@ -119,7 +118,7 @@ describe("importCertificationsStats", () => {
         },
       ],
     });
-    await insertCFD({ code_formation: "12345678" });
+    await insertCFD({ code_certification: "12345678" });
 
     let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
 
@@ -156,7 +155,7 @@ describe("importCertificationsStats", () => {
         },
       ],
     });
-    await insertCFD({ code_formation: "12345678" });
+    await insertCFD({ code_certification: "12345678" });
 
     await importCertificationsStats({ millesimes: ["2019", "2020"], filieres: ["apprentissage"] });
 
@@ -190,8 +189,8 @@ describe("importCertificationsStats", () => {
         },
       ],
     });
-    await insertCFD({ code_formation: "12345678" });
-    await insertCFD({ code_formation: "67890" });
+    await insertCFD({ code_certification: "12345678" });
+    await insertCFD({ code_certification: "67890" });
 
     let stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
 

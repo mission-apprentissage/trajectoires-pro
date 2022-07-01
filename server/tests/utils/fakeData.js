@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublis
 import { merge } from "lodash-es";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
 import { generateCodeCertification, generateStats } from "./testUtils.js";
-import { certificationsStats, cfds, formationsStats, mefs } from "../../src/common/db/collections/collections.js";
+import { certificationsStats, bcn, formationsStats } from "../../src/common/db/collections/collections.js";
 
 export function insertFormationsStats(custom = {}) {
   return formationsStats().insertOne(
@@ -55,12 +55,12 @@ export function insertCertificationsStats(custom = {}) {
 }
 
 export function insertCFD(custom = {}) {
-  return cfds().insertOne(
+  return bcn().insertOne(
     merge(
       {},
       {
-        code_formation: faker.helpers.replaceSymbols("4#######"),
-        code_formation_alternatifs: [],
+        type: "cfd",
+        code_certification: faker.helpers.replaceSymbols("4#######"),
         libelle: "BAC PRO BATIMENT",
         diplome: { code: "4", libelle: "BAC" },
         _meta: { date_import: new Date() },
@@ -71,14 +71,12 @@ export function insertCFD(custom = {}) {
 }
 
 export function insertMEF(custom = {}) {
-  return mefs().insertOne(
+  return bcn().insertOne(
     merge(
       {},
       {
-        mef: faker.helpers.replaceSymbols("##########"),
-        mef_stat_9: faker.helpers.replaceSymbols("#########"),
-        mef_stat_11: faker.helpers.replaceSymbols("###########"),
-        code_formation_diplome: faker.helpers.replaceSymbols("4#######"),
+        type: "mef",
+        code_certification: faker.helpers.replaceSymbols("###########"),
         date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
         diplome: { code: "4", libelle: "BAC" },
         libelle: "BAC PRO",
