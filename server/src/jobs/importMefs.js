@@ -2,7 +2,7 @@ import { getBCNTable } from "../common/bcn.js";
 import { oleoduc, writeData } from "oleoduc";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { mefs } from "../common/db/collections/collections.js";
+import { mefs } from "../common/db/collections.js";
 import { parseAsUTCDate } from "../common/utils/dateUtils.js";
 import { getDiplome } from "../common/diplomes.js";
 

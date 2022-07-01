@@ -2,7 +2,7 @@ import assert from "assert";
 import { merge, omit } from "lodash-es";
 import { importCfds } from "../../src/jobs/importCfds.js";
 import { createStream } from "../utils/testUtils.js";
-import { cfds } from "../../src/common/db/collections/collections.js";
+import { cfds } from "../../src/common/db/collections.js";
 
 function getBcnTables(custom = {}) {
   return merge(

@@ -2,7 +2,7 @@ import { mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
 import { getBCNTable } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { pick, range } from "lodash-es";
-import { cfds } from "../common/db/collections/collections.js";
+import { cfds } from "../common/db/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { parseAsUTCDate } from "../common/utils/dateUtils.js";
 import { getDiplome } from "../common/diplomes.js";

@@ -1,7 +1,7 @@
 import { Readable } from "stream";
 import { InserJeunes } from "../common/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
-import { certificationsStats } from "../common/db/collections/collections.js";
+import { certificationsStats } from "../common/db/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findCodeCertification } from "../common/actions/findCodeCertification.js";

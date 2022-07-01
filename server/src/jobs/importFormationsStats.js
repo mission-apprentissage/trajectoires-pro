@@ -4,7 +4,7 @@ import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/InserJeunes.js";
-import { formationsStats } from "../common/db/collections/collections.js";
+import { formationsStats } from "../common/db/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findCodeCertification } from "../common/actions/findCodeCertification.js";

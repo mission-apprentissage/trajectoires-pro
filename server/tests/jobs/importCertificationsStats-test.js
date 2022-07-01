@@ -3,7 +3,7 @@ import { importCertificationsStats } from "../../src/jobs/importCertificationsSt
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
 import { insertCFD, insertCertificationsStats, insertMEF } from "../utils/fakeData.js";
 import { omit } from "lodash-es";
-import { certificationsStats } from "../../src/common/db/collections/collections.js";
+import { certificationsStats } from "../../src/common/db/collections.js";
 
 describe("importCertificationsStats", () => {
   function mockApi(millesime, filiere, response) {

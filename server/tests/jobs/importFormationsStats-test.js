@@ -4,7 +4,7 @@ import { importFormationsStats } from "../../src/jobs/importFormationsStats.js";
 import { createStream } from "../utils/testUtils.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
 import { insertCFD, insertFormationsStats, insertMEF } from "../utils/fakeData.js";
-import { formationsStats } from "../../src/common/db/collections/collections.js";
+import { formationsStats } from "../../src/common/db/collections.js";
 
 describe("importFormationsStats", () => {
   function mockApi(uai, millesime, response) {

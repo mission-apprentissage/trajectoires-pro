@@ -6,7 +6,7 @@ import { arrayOf, validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
-import { certificationsStats } from "../../common/db/collections/collections.js";
+import { certificationsStats } from "../../common/db/collections.js";
 import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
