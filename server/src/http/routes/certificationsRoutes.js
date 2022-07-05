@@ -80,7 +80,7 @@ export default () => {
     const { code_certification, millesime, direction, theme, ext } = params;
 
     const results = await certificationsStats()
-      .find({ code_certification, ...(millesime ? { millesime } : {}) }, { projection: { _id: 0, _meta: 0 } })
+      .find({ code_certification, ...(millesime ? { millesime } : {}) }, { projection: { _id: 0 } })
       .limit(1)
       .sort({ millesime: -1 })
       .toArray();
@@ -104,7 +104,7 @@ export default () => {
     const results = await certificationsStats()
       .find(
         { code_certification: { $in: codes_certifications }, ...(millesime ? { millesime } : {}) },
-        { projection: { _id: 0, _meta: 0 } }
+        { projection: { _id: 0 } }
       )
       .sort({ millesime: -1 })
       .toArray();

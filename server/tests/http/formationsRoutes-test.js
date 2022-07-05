@@ -243,6 +243,9 @@ describe("formationsRoutes", () => {
         taux_emploi_12_mois: 6,
         taux_emploi_6_mois: 7,
         taux_poursuite_etudes: 8,
+        _meta: {
+          date_import: new Date("2022-06-21T16:22:56.412Z"),
+        },
       });
 
       const response = await httpClient.get(`/api/inserjeunes/formations/0751234J-12345678`);
@@ -263,9 +266,10 @@ describe("formationsRoutes", () => {
         taux_emploi_6_mois: 7,
         taux_poursuite_etudes: 8,
         _meta: {
+          date_import: "2022-06-21T16:22:56.412Z",
           description:
-            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) dispensée par l'établissement 0751234J, pour le millesime 2020_2021",
-          title: "certification 12345678, établissement 0751234J",
+            "Données InserJeunes pour la formation (maille établissement) 12345678 - BAC filière apprentissage  dispensée par l'établissement 0751234J, pour le millesime 2020_2021. Date d'import 21/06/2022.",
+          title: "formation 12345678, établissement 0751234J",
         },
       });
     });
@@ -309,6 +313,9 @@ describe("formationsRoutes", () => {
         uai: "0751234J",
         code_certification: "1022105",
         taux_emploi_6_mois: 50,
+        _meta: {
+          date_import: new Date("2022-06-21T16:22:56.412Z"),
+        },
       });
     }
 
@@ -323,10 +330,10 @@ describe("formationsRoutes", () => {
       assert.ok(response.data.includes("50%"));
       assert.ok(response.data.includes("sont en emploi 6 mois"));
       assert.ok(response.data.includes("poursuivent leurs études"));
-      assert.ok(response.data.includes("<title>certification 1022105, établissement 0751234J</title>"));
+      assert.ok(response.data.includes("<title>formation 1022105, établissement 0751234J</title>"));
       assert.ok(
         response.data.includes(
-          "<desc>Données InserJeunes pour la certification 1022105 (BAC filière apprentissage) dispensée par l&#39;établissement 0751234J, pour le millesime 2018_2019</desc>"
+          "<desc>Données InserJeunes pour la formation (maille établissement) 1022105 - BAC filière apprentissage  dispensée par l&#39;établissement 0751234J, pour le millesime 2018_2019. Date d&#39;import 21/06/2022.</desc>"
         )
       );
     });
@@ -351,6 +358,9 @@ describe("formationsRoutes", () => {
         millesime: "2021_2022",
         filiere: "apprentissage",
         taux_emploi_6_mois: 50,
+        _meta: {
+          date_import: new Date("2022-06-21T16:22:56.412Z"),
+        },
       });
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
@@ -370,6 +380,9 @@ describe("formationsRoutes", () => {
         millesime: "2021_2022",
         filiere: "apprentissage",
         taux_emploi_6_mois: 50,
+        _meta: {
+          date_import: new Date("2022-06-21T16:22:56.412Z"),
+        },
       });
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?direction=horizontal");
@@ -392,6 +405,9 @@ describe("formationsRoutes", () => {
         filiere: "apprentissage",
         taux_poursuite_etudes: 0,
         taux_emploi_6_mois: 50,
+        _meta: {
+          date_import: new Date("2022-06-21T16:22:56.412Z"),
+        },
       });
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
@@ -422,6 +438,9 @@ describe("formationsRoutes", () => {
         diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
+        _meta: {
+          date_import: new Date("2022-06-21T16:22:56.412Z"),
+        },
       });
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");

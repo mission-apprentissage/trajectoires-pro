@@ -100,7 +100,7 @@ export default () => {
       const results = await formationsStats()
         .find(
           { uai, code_certification, ...(millesime ? { millesime: formatMillesime(millesime) } : {}) },
-          { projection: { _id: 0, _meta: 0 } }
+          { projection: { _id: 0 } }
         )
         .limit(1)
         .sort({ millesime: -1 })
@@ -111,7 +111,7 @@ export default () => {
       }
 
       const stats = results[0];
-      stats._meta = { ...stats._meta, ...getMetadata("certification", stats) };
+      stats._meta = { ...stats._meta, ...getMetadata("formation", stats) };
       if (ext === "svg") {
         return sendWidget("formation", stats, res, { theme, direction });
       } else {
