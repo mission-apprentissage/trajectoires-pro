@@ -357,10 +357,6 @@ describe("certificationsRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes("5%"));
-      assert.ok(response.data.includes("50%"));
-      assert.ok(response.data.includes("10%"));
-      assert.ok(response.data.includes("25%"));
       assert.ok(response.data.includes("Apprentissage"));
       assert.ok(response.data.includes("Voie scolaire"));
       assert.ok(response.data.includes("<title>Certifications: 23830024203, 23830024202</title>"));
