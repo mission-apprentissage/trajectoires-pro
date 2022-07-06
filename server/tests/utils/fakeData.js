@@ -4,6 +4,10 @@ import { createUAI } from "../../src/common/utils/validationUtils.js";
 import { generateCodeCertification, generateStats } from "./testUtils.js";
 import { certificationsStats, bcn, formationsStats } from "../../src/common/db/collections/collections.js";
 
+function createCodeFormationDiplome() {
+  return faker.helpers.replaceSymbols("4#######");
+}
+
 export function insertFormationsStats(custom = {}) {
   return formationsStats().insertOne(
     merge(
@@ -60,7 +64,8 @@ export function insertCFD(custom = {}) {
       {},
       {
         type: "cfd",
-        code_certification: faker.helpers.replaceSymbols("4#######"),
+        code_certification: createCodeFormationDiplome(),
+        code_formation_diplome: createCodeFormationDiplome(),
         libelle: "BAC PRO BATIMENT",
         diplome: { code: "4", libelle: "BAC" },
         _meta: { date_import: new Date() },
@@ -77,6 +82,7 @@ export function insertMEF(custom = {}) {
       {
         type: "mef",
         code_certification: faker.helpers.replaceSymbols("###########"),
+        code_formation_diplome: createCodeFormationDiplome(),
         date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
         diplome: { code: "4", libelle: "BAC" },
         libelle: "BAC PRO",

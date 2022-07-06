@@ -29,6 +29,7 @@ describe("importBCN", () => {
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       type: "mef",
       code_certification: "99999999911",
+      code_formation_diplome: "40023203",
       date_fermeture: new Date("2022-08-31T00:00:00.000Z"),
       diplome: { code: "4", libelle: "BAC" },
       libelle: "BAC PRO",
@@ -63,6 +64,7 @@ describe("importBCN", () => {
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       type: "cfd",
       code_certification: "40023203",
+      code_formation_diplome: "40023203",
       libelle: "BAC PRO BATIMENT",
       date_fermeture: new Date("2022-08-31T00:00:00.000Z"),
       diplome: {
@@ -88,6 +90,7 @@ describe("importBCN", () => {
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       type: "cfd",
       code_certification: "12345678",
+      code_formation_diplome: "12345678",
       libelle: "BAC PRO BATIMENT",
       diplome: {
         code: "7",
