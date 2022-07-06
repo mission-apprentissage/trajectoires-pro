@@ -19,6 +19,8 @@ async function getFilieresStats(codes_certifications, millesime) {
           millesime: { $first: "$millesime" },
           diplome: { $first: "$diplome" },
           nb_annee_term: sumOf("$nb_annee_term"),
+          nb_en_emploi_24_mois: sumOf("$nb_en_emploi_24_mois"),
+          nb_en_emploi_18_mois: sumOf("$nb_en_emploi_18_mois"),
           nb_en_emploi_12_mois: sumOf("$nb_en_emploi_12_mois"),
           nb_en_emploi_6_mois: sumOf("$nb_en_emploi_6_mois"),
           nb_poursuite_etudes: sumOf("$nb_poursuite_etudes"),
@@ -31,6 +33,8 @@ async function getFilieresStats(codes_certifications, millesime) {
             $mergeObjects: [
               "$$ROOT",
               {
+                taux_emploi_24_mois: percentage("$nb_en_emploi_24_mois", "$nb_sortant"),
+                taux_emploi_18_mois: percentage("$nb_en_emploi_18_mois", "$nb_sortant"),
                 taux_emploi_12_mois: percentage("$nb_en_emploi_12_mois", "$nb_sortant"),
                 taux_emploi_6_mois: percentage("$nb_en_emploi_6_mois", "$nb_sortant"),
                 taux_poursuite_etudes: percentage("$nb_poursuite_etudes", "$nb_annee_term"),
