@@ -1,5 +1,5 @@
 import { Readable } from "stream";
-import { InserJeunes } from "../common/inserJeunes/InserJeunes.js";
+import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";

@@ -3,7 +3,7 @@ import { Readable } from "stream";
 import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
-import { InserJeunes } from "../common/inserJeunes/InserJeunes.js";
+import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { bcn, formationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
