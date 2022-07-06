@@ -52,7 +52,7 @@ function loadBase64Font() {
   return base64Font;
 }
 
-export function getTemplate(templateName, options = {}) {
+function getTemplate(templateName, options = {}) {
   const theme = options.theme || "dsfr";
   const direction = options.direction || "vertical";
   const variantes = templates[theme] ?? templates.dsfr;
@@ -65,7 +65,8 @@ export function getTemplate(templateName, options = {}) {
   return template;
 }
 
-export function renderTemplate(template, data) {
+export function renderSVG(templateName, data, options) {
   const base64Font = loadBase64Font();
+  const template = getTemplate(templateName, options);
   return ejs.renderFile(template, { base64Font, ...data }, { async: true });
 }

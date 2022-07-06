@@ -4,14 +4,12 @@ import Joi from "joi";
 import * as validators from "../utils/validators.js";
 import { arrayOf, validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
-import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
+import { addCsvHeaders, addJsonHeaders, sendStats } from "../utils/responseUtils.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { formationsStats } from "../../common/db/collections/collections.js";
-import { getMetadata } from "../../common/metadata.js";
-import { buildWidget, widgetify } from "../widget/widget.js";
 
 export default () => {
   const router = express.Router();
@@ -111,17 +109,7 @@ export default () => {
       }
 
       const stats = results[0];
-      stats._meta = { ...stats._meta, ...getMetadata("certification", stats) };
-
-      if (ext !== "svg") {
-        return res.json(stats);
-      } else {
-        const data = widgetify(stats);
-        const widget = await buildWidget("formation", data, { theme, direction });
-
-        res.setHeader("content-type", "image/svg+xml");
-        return res.status(200).send(widget);
-      }
+      return sendStats(stats, res, { direction, theme, ext });
     })
   );
 

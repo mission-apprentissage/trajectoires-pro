@@ -7,11 +7,7 @@
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
 >
-  <% if(meta.title) { %>
-  <title><%= meta.title %></title>
-  <% } %> <% if(meta.description) { %>
-  <desc><%= meta.description%></desc>
-  <% } %>
+  <%- await include('../common/description'); %>
   <rect
     x="2"
     y="2"

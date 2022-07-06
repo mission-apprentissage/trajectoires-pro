@@ -242,9 +242,9 @@ describe("certificationsRoutes", () => {
         taux_emploi_6_mois: 7,
         taux_rupture_contrats: 8,
         _meta: {
-          description:
+          titre: "Certification 12345678",
+          details:
             "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millesime 2020",
-          title: "certification 12345678",
         },
       });
     });
@@ -290,7 +290,7 @@ describe("certificationsRoutes", () => {
       assert.ok(response.data.includes("5%"));
       assert.ok(response.data.includes("sont en emploi 6 mois"));
       assert.ok(response.data.includes("poursuivent leurs études"));
-      assert.ok(response.data.includes("<title>certification 23830024203</title>"));
+      assert.ok(response.data.includes("<title>Certification 23830024203</title>"));
       assert.ok(
         response.data.includes(
           "<desc>Données InserJeunes pour la certification 23830024203 (BAC filière apprentissage) pour le millesime 2020</desc>"
@@ -338,45 +338,29 @@ describe("certificationsRoutes", () => {
       await insertCertificationsStats({
         code_certification: "23830024203",
         filiere: "apprentissage",
-        taux_poursuite_etudes: 5,
-        taux_emploi_6_mois: 6,
-        taux_emploi_12_mois: 12,
         millesime: "2020",
-        nb_annee_term: 100,
-        nb_poursuite_etudes: 5,
-        nb_en_emploi_6_mois: 6,
-        nb_en_emploi_12_mois: 12,
         nb_sortant: 100,
+        nb_annee_term: 50,
+        nb_poursuite_etudes: 5,
+        nb_en_emploi_6_mois: 50,
+        nb_en_emploi_12_mois: 25,
       });
       await insertCertificationsStats({
         code_certification: "23830024202",
         filiere: "pro",
-        taux_poursuite_etudes: 10,
-        taux_emploi_6_mois: 6,
-        taux_emploi_12_mois: 12,
         millesime: "2020",
-        nb_annee_term: 100,
-        nb_poursuite_etudes: 10,
-        nb_en_emploi_6_mois: 6,
-        nb_en_emploi_12_mois: 12,
         nb_sortant: 100,
+        nb_annee_term: 50,
+        nb_poursuite_etudes: 5,
+        nb_en_emploi_6_mois: 50,
+        nb_en_emploi_12_mois: 25,
       });
 
       const response = await httpClient.get("/api/inserjeunes/certifications/23830024203|23830024202");
 
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data, {
-        _meta: {
-          description:
-            "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 23830024203 (BAC filière apprentissage), 23830024202 (BAC filière pro)",
-          title: "Certifications: 23830024203, 23830024202",
-        },
         apprentissage: {
-          _meta: {
-            description:
-              "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 23830024203 (BAC filière apprentissage)",
-            title: "Certifications: 23830024203",
-          },
           codes_certifications: ["23830024203"],
           diplome: {
             code: "4",
@@ -384,21 +368,17 @@ describe("certificationsRoutes", () => {
           },
           filiere: "apprentissage",
           millesime: "2020",
-          nb_annee_term: 100,
-          nb_en_emploi_12_mois: 12,
-          nb_en_emploi_6_mois: 6,
-          nb_poursuite_etudes: 5,
           nb_sortant: 100,
-          taux_emploi_12_mois: 12,
-          taux_emploi_6_mois: 6,
-          taux_poursuite_etudes: 5,
+          nb_annee_term: 50,
+          nb_poursuite_etudes: 5,
+          nb_en_emploi_6_mois: 50,
+          nb_en_emploi_12_mois: 25,
+          //computed
+          taux_poursuite_etudes: 10,
+          taux_emploi_6_mois: 50,
+          taux_emploi_12_mois: 25,
         },
         pro: {
-          _meta: {
-            description:
-              "Données InserJeunes du millesime 2020 aggrégées pour les certifications: 23830024202 (BAC filière pro)",
-            title: "Certifications: 23830024202",
-          },
           codes_certifications: ["23830024202"],
           diplome: {
             code: "4",
@@ -406,14 +386,15 @@ describe("certificationsRoutes", () => {
           },
           filiere: "pro",
           millesime: "2020",
-          nb_annee_term: 100,
-          nb_en_emploi_12_mois: 12,
-          nb_en_emploi_6_mois: 6,
-          nb_poursuite_etudes: 10,
           nb_sortant: 100,
-          taux_emploi_12_mois: 12,
-          taux_emploi_6_mois: 6,
+          nb_annee_term: 50,
+          nb_poursuite_etudes: 5,
+          nb_en_emploi_6_mois: 50,
+          nb_en_emploi_12_mois: 25,
+          //computed
           taux_poursuite_etudes: 10,
+          taux_emploi_6_mois: 50,
+          taux_emploi_12_mois: 25,
         },
       });
     });
@@ -449,14 +430,12 @@ describe("certificationsRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+      assert.ok(response.data.includes("5%"));
+      assert.ok(response.data.includes("50%"));
+      assert.ok(response.data.includes("10%"));
+      assert.ok(response.data.includes("25%"));
       assert.ok(response.data.includes("Apprentissage"));
       assert.ok(response.data.includes("Voie scolaire"));
-      assert.ok(response.data.includes("<title>Certifications: 23830024203, 23830024202</title>"));
-      assert.ok(
-        response.data.includes(
-          "<desc>Données InserJeunes du millesime 2020 aggrégées pour les certifications: 23830024203 (BAC filière apprentissage), 23830024202 (BAC filière pro)</desc>"
-        )
-      );
     });
   });
 });

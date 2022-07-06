@@ -1,5 +1,5 @@
 import assert from "assert";
-import { widgetifyStats } from "../../src/http/widget/widget.js";
+import { prepareStatsForWidget } from "../../src/http/widget/widget.js";
 
 describe("widget", () => {
   it("Doit calculer les taux pour le widget", () => {
@@ -11,7 +11,7 @@ describe("widget", () => {
       taux_poursuite_etudes: 80,
     };
 
-    assert.deepStrictEqual(widgetifyStats(stats), [
+    assert.deepStrictEqual(prepareStatsForWidget(stats), [
       {
         valeur: 80,
         niveau: "success",
@@ -34,7 +34,7 @@ describe("widget", () => {
       taux_poursuite_etudes: 25,
     };
 
-    const rates = widgetifyStats(stats);
+    const rates = prepareStatsForWidget(stats);
 
     assert.deepStrictEqual(rates[0].niveau, "warning");
     assert.deepStrictEqual(rates[1].niveau, "info");
@@ -49,7 +49,7 @@ describe("widget", () => {
       taux_poursuite_etudes: 5,
     };
 
-    const rates = widgetifyStats(stats);
+    const rates = prepareStatsForWidget(stats);
 
     assert.deepStrictEqual(rates[0].niveau, "danger");
     assert.deepStrictEqual(rates[1].niveau, "info");

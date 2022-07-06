@@ -1,7 +1,6 @@
-import { getTemplate, renderTemplate } from "./templates/templates.js";
+import { renderSVG } from "./templates/templates.js";
 import { isNil } from "lodash-es";
 import { findSeuil } from "./seuils.js";
-import Boom from "boom";
 
 function getNiveau(stats, name) {
   const seuil = findSeuil(stats, name);
@@ -14,7 +13,7 @@ function getNiveau(stats, name) {
   return found?.niveau;
 }
 
-export const widgetifyStats = (stats) => {
+export const prepareStatsForWidget = (stats) => {
   return [
     {
       valeur: stats.taux_emploi_6_mois,
@@ -29,15 +28,17 @@ export const widgetifyStats = (stats) => {
   ].filter((t) => !isNil(t.valeur));
 };
 
-export function widgetify(stats) {
-  const data = { stats: widgetifyStats(stats), meta: stats._meta };
-  if (data.stats.length === 0) {
-    throw Boom.notFound("Données non disponibles");
-  }
-  return data;
+export function isWidgetAvailable(stats) {
+  return !!stats.taux_emploi_6_mois || !!stats.taux_poursuite_etudes;
 }
 
-export async function buildWidget(templateName, data, options = {}) {
-  const template = getTemplate(templateName, options);
-  return renderTemplate(template, data);
+export function buildWidget(templateName, data, options = {}) {
+  return renderSVG(
+    templateName,
+    {
+      stats: data.stats || [],
+      description: data.description || {},
+    },
+    options
+  );
 }

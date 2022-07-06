@@ -7,11 +7,9 @@ import { checkApiKey } from "../middlewares/authMiddleware.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import { certificationsStats } from "../../common/db/collections/collections.js";
-import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
+import { addCsvHeaders, addJsonHeaders, sendStats } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
-import { getMetadata } from "../../common/metadata.js";
-import { buildWidget, widgetify } from "../widget/widget.js";
 import { sendFilieresStats } from "../../common/filieres.js";
 
 export default () => {
@@ -89,16 +87,14 @@ export default () => {
       );
 
       if (params.codes_certifications.length > 1) {
+        //FIXME les filières doivent être gérées dans une autre route
         return sendFilieresStats(params, res);
       }
 
       const { codes_certifications, millesime, direction, theme, ext } = params;
-      const codeCertification = codes_certifications[0];
+      const code_certification = codes_certifications[0];
       const results = await certificationsStats()
-        .find(
-          { code_certification: codeCertification, ...(millesime ? { millesime } : {}) },
-          { projection: { _id: 0, _meta: 0 } }
-        )
+        .find({ code_certification, ...(millesime ? { millesime } : {}) }, { projection: { _id: 0, _meta: 0 } })
         .limit(1)
         .sort({ millesime: -1 })
         .toArray();
@@ -108,17 +104,7 @@ export default () => {
       }
 
       const stats = results[0];
-      stats._meta = { ...stats._meta, ...getMetadata("certification", stats) };
-
-      if (ext !== "svg") {
-        return res.json(stats);
-      } else {
-        const data = widgetify(stats);
-        const widget = await buildWidget("certification", data, { theme, direction });
-
-        res.setHeader("content-type", "image/svg+xml");
-        return res.status(200).send(widget);
-      }
+      return sendStats(stats, res, { direction, theme, ext });
     })
   );
 

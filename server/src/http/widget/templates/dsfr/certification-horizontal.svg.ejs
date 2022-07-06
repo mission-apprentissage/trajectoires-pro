@@ -1,10 +1,5 @@
 <svg width="700" height="239" viewBox="0 0 700 239" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <% if(meta.title) { %>
-        <title><%= meta.title %></title>
-    <% } %>
-    <% if(meta.description) { %>
-        <desc><%= meta.description %></desc>
-    <% } %>
+    <%- await include('../common/description'); %>
     <rect x="0.5" y="0.5" width="699" height="238" fill="white"/>
     <rect x="0.5" y="0.5" width="699" height="238" stroke="#E5E5E5"/>
     <rect width="700" height="86" fill="#F5F5FE"/>
