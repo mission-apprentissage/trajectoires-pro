@@ -73,8 +73,7 @@ export async function importFormationsStats(options = {}) {
     flattenArray(),
     writeData(
       async (stats) => {
-        const uai = stats.uai;
-        const query = { uai: uai, code_certification: stats.code_certification, millesime: stats.millesime };
+        const query = { uai: stats.uai, code_certification: stats.code_certification, millesime: stats.millesime };
 
         try {
           const certification = await bcn().findOne({ code_certification: stats.code_certification });

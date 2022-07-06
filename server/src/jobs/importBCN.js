@@ -80,7 +80,7 @@ export async function importBCN(options = {}) {
             logger.info(`Nouveau code ${data.code_certification} ajouté`);
             stats.created++;
           } else if (res.modifiedCount) {
-            logger.info(`Code ${data.code_certification} mis à jour`);
+            logger.debug(`Code ${data.code_certification} mis à jour`);
             stats.updated++;
           } else {
             logger.trace(`Code ${data.code_certification} déjà à jour`);
