@@ -13,6 +13,7 @@ export function schema() {
       _id: objectId(),
       type: string({ enum: ["mef", "cfd"] }),
       code_certification: string(),
+      code_formation_diplome: string(),
       date_fermeture: date(),
       libelle: string(),
       diplome: diplomeSchema(),
@@ -24,7 +25,7 @@ export function schema() {
       ),
     },
     {
-      required: ["type", "code_certification", "libelle", "_meta"],
+      required: ["type", "code_certification", "code_formation_diplome", "libelle", "_meta"],
       additionalProperties: true,
     }
   );

@@ -1,7 +1,6 @@
 import { compose, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
 import { getBCNTable } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { pick } from "lodash-es";
 import { bcn } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { parseAsUTCDate } from "../common/utils/dateUtils.js";
@@ -16,13 +15,14 @@ export async function streamCfds(options = {}) {
       await getBCNTable("N_FORMATION_DIPLOME", options)
     ),
     transformData((data) => {
-      const code_formation = data["FORMATION_DIPLOME"];
+      const cfd = data["FORMATION_DIPLOME"];
 
       return {
         type: "cfd",
-        code_certification: code_formation,
+        code_certification: cfd,
+        code_formation_diplome: cfd,
         libelle: `${data["LIBELLE_COURT"]} ${data["LIBELLE_STAT_33"]}`,
-        diplome: getDiplome(code_formation),
+        diplome: getDiplome(cfd),
         date_fermeture: parseAsUTCDate(data["DATE_FERMETURE"]),
       };
     })
@@ -36,12 +36,14 @@ export async function streamMefs(options = {}) {
     stream,
     transformData((data) => {
       const mefstat11 = data["MEF_STAT_11"];
+      const cfd = data["FORMATION_DIPLOME"];
 
       return {
         type: "mef",
         code_certification: mefstat11,
+        code_formation_diplome: cfd,
         libelle: data["LIBELLE_LONG"],
-        diplome: getDiplome(data["FORMATION_DIPLOME"]),
+        diplome: getDiplome(cfd),
         date_fermeture: parseAsUTCDate(data["DATE_FERMETURE"]),
       };
     })
@@ -70,9 +72,7 @@ export async function importBCN(options = {}) {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
               },
-              $set: omitNil({
-                ...pick(data, ["code_certification", "libelle", "diplome", "type", "date_fermeture"]),
-              }),
+              $set: omitNil(data),
             },
             { upsert: true }
           );
