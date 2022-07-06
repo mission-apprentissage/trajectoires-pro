@@ -17,6 +17,7 @@ describe("formationsRoutes", () => {
       await insertFormationsStats({
         uai: "0751234J",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         millesime: "2018_2019",
         filiere: "apprentissage",
         nb_annee_term: 1,
@@ -41,6 +42,7 @@ describe("formationsRoutes", () => {
           {
             uai: "0751234J",
             code_certification: "12345678",
+            code_formation_diplome: "12345678",
             millesime: "2018_2019",
             filiere: "apprentissage",
             diplome: { code: "4", libelle: "BAC" },
@@ -234,6 +236,7 @@ describe("formationsRoutes", () => {
         uai: "0751234J",
         filiere: "apprentissage",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         millesime: "2020_2021",
         nb_annee_term: 1,
         nb_en_emploi_12_mois: 2,
@@ -251,6 +254,7 @@ describe("formationsRoutes", () => {
       assert.deepStrictEqual(response.data, {
         uai: "0751234J",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         millesime: "2020_2021",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
@@ -347,6 +351,7 @@ describe("formationsRoutes", () => {
       await formationsStats().insertOne({
         uai: "0751234J",
         code_certification: "1022105",
+        code_formation_diplome: "12345678",
         diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
@@ -366,6 +371,7 @@ describe("formationsRoutes", () => {
       await formationsStats().insertOne({
         uai: "0751234J",
         code_certification: "1022105",
+        code_formation_diplome: "12345678",
         diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
@@ -387,6 +393,7 @@ describe("formationsRoutes", () => {
       await formationsStats().insertOne({
         uai: "0751234J",
         code_certification: "1022105",
+        code_formation_diplome: "12345678",
         diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",
@@ -419,6 +426,7 @@ describe("formationsRoutes", () => {
       await formationsStats().insertOne({
         uai: "0751234J",
         code_certification: "1022105",
+        code_formation_diplome: "12345678",
         diplome: { code: "4", libelle: "BAC" },
         millesime: "2021_2022",
         filiere: "apprentissage",

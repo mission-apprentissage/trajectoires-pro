@@ -17,6 +17,7 @@ describe("certificationsRoutes", () => {
       await insertCertificationsStats({
         millesime: "2020",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 1,
         nb_poursuite_etudes: 2,
@@ -40,6 +41,7 @@ describe("certificationsRoutes", () => {
           {
             millesime: "2020",
             code_certification: "12345678",
+            code_formation_diplome: "12345678",
             filiere: "apprentissage",
             diplome: { code: "4", libelle: "BAC" },
             nb_annee_term: 1,
@@ -209,6 +211,7 @@ describe("certificationsRoutes", () => {
       await insertCertificationsStats({
         millesime: "2020",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 1,
         nb_poursuite_etudes: 2,
@@ -227,6 +230,7 @@ describe("certificationsRoutes", () => {
       assert.deepStrictEqual(response.data, {
         millesime: "2020",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
         nb_annee_term: 1,
@@ -307,6 +311,7 @@ describe("certificationsRoutes", () => {
       const { httpClient } = await startServer();
       await dbCollection("certificationsStats").insertOne({
         code_certification: "23830024203",
+        code_formation_diplome: "12345678",
         millesime: "2018",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },

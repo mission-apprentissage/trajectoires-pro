@@ -87,6 +87,7 @@ export async function importFormationsStats(options = {}) {
               },
               $set: omitNil({
                 ...stats,
+                code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
               }),
             },
