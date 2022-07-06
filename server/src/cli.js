@@ -5,7 +5,7 @@ import { runScript } from "./common/runScript.js";
 import { importFormationsStats } from "./jobs/importFormationsStats.js";
 import { importCertificationsStats } from "./jobs/importCertificationsStats.js";
 import { promiseAllProps } from "./common/utils/asyncUtils.js";
-import { InserJeunes } from "./common/InserJeunes.js";
+import { InserJeunes } from "./common/inserJeunes/InserJeunes.js";
 import { migrate } from "./jobs/migrate.js";
 import { writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";

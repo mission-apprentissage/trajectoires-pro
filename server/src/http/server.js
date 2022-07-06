@@ -11,7 +11,7 @@ import { dbCollection } from "../common/db/mongodb.js";
 import formationsRoutes from "./routes/formationsRoutes.js";
 import certificationsRoutes from "./routes/certificationsRoutes.js";
 import swaggerRoutes from "./routes/swaggerRoutes.js";
-import { packageJson } from "../common/esmUtils.js";
+import { packageJson } from "../common/utils/esmUtils.js";
 
 export default async () => {
   const app = express();

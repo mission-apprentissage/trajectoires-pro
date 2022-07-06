@@ -1,5 +1,5 @@
 import path from "path";
-import { getDirname } from "../../../common/esmUtils.js";
+import { getDirname } from "../../../common/utils/esmUtils.js";
 import fs from "fs";
 import Boom from "boom";
 import ejs from "ejs";

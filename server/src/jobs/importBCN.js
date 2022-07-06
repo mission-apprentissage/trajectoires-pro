@@ -1,10 +1,9 @@
 import { compose, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
-import { getBCNTable } from "../common/bcn.js";
+import { getBCNTable, getDiplome } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { bcn } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { parseAsUTCDate } from "../common/utils/dateUtils.js";
-import { getDiplome } from "../common/diplomes.js";
 
 const logger = getLoggerWithContext("import");
 

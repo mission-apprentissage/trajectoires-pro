@@ -1,5 +1,5 @@
 import nock from "nock"; // eslint-disable-line node/no-unpublished-import
-import { InserJeunesApi } from "../../src/common/api/InserJeunesApi.js";
+import { InserJeunesApi } from "../../src/common/inserJeunes/InserJeunesApi.js";
 import { generateCodeCertification } from "./testUtils.js";
 
 function createNock(baseUrl, options = {}) {

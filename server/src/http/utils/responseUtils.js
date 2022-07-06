@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { getDescription } from "../../common/metadata.js";
+import { buildDescription } from "../../common/stats/description.js";
 import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../widget/widget.js";
 import Boom from "boom";
 
@@ -15,7 +15,7 @@ export function addCsvHeaders(res, options = {}) {
 
 export async function sendStats(stats, res, options = {}) {
   const { ext, theme, direction } = options;
-  const description = getDescription(stats);
+  const description = buildDescription(stats);
   const metadata = { ...stats._meta, ...description };
 
   if (ext !== "svg") {

@@ -1,4 +1,4 @@
-import { RateLimitedApi } from "./RateLimitedApi.js";
+import { RateLimitedApi } from "../api/RateLimitedApi.js";
 import config from "../../config.js";
 import { fetchStream, fetchJson } from "../utils/httpUtils.js";
 import { compose, transformData, accumulateData } from "oleoduc";

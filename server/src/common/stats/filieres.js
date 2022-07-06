@@ -1,8 +1,8 @@
-import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../http/widget/widget.js";
-import { certificationsStats } from "./db/collections/collections.js";
+import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../../http/widget/widget.js";
+import { certificationsStats } from "../db/collections/collections.js";
 import Boom from "boom";
-import { omitNil } from "./utils/objectUtils.js";
-import { percentage, sumOf } from "./utils/mongodbUtils.js";
+import { omitNil } from "../utils/objectUtils.js";
+import { percentage, sumOf } from "../utils/mongodbUtils.js";
 import { isEmpty } from "lodash-es";
 
 async function getFilieresStats(codes_certifications, millesime) {

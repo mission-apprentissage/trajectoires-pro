@@ -1,6 +1,6 @@
 import { filterData, accumulateData, flattenArray, oleoduc, writeData } from "oleoduc";
-import { InserJeunesApi } from "./api/InserJeunesApi.js";
-import { streamNestedJsonArray } from "./utils/streamUtils.js";
+import { InserJeunesApi } from "./InserJeunesApi.js";
+import { streamNestedJsonArray } from "../utils/streamUtils.js";
 
 function getFiliere(dimension) {
   return dimension["id_formation_apprentissage"] ? "apprentissage" : "pro";
