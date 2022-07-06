@@ -1,4 +1,8 @@
 import { getMetadata } from "./metadata.js";
+import { buildWidget, widgetifyStats } from "../http/widget/widget.js";
+import { certificationsStats } from "./db/collections/collections.js";
+import { omitNil } from "./utils/objectUtils.js";
+import Boom from "boom";
 
 function aggregateStats(stats) {
   if (stats.length === 0) {
@@ -34,17 +38,54 @@ function aggregateStats(stats) {
   return aggregatedStats;
 }
 
-export const computeFilieresStats = (certificationsStats) => {
-  // keep only one millesime
-  const stats = certificationsStats.filter((s) => s.millesime === certificationsStats[0].millesime);
+export function computeFilieresStats(statsArray) {
+  const stats = statsArray.filter((s) => s.millesime === statsArray[0].millesime); // FIXME keep only one millesime
+  const proStats = stats.filter(({ filiere }) => filiere === "pro");
+  const apprentissageStats = stats.filter(({ filiere }) => filiere === "apprentissage");
 
-  // aggregate by filiere
-  const proStats = aggregateStats(stats.filter(({ filiere }) => filiere === "pro"));
-  const apprentissageStats = aggregateStats(stats.filter(({ filiere }) => filiere === "apprentissage"));
+  return omitNil({
+    pro: aggregateStats(proStats),
+    apprentissage: aggregateStats(apprentissageStats),
+    _meta: getMetadata("certifications", stats),
+  });
+}
 
-  return {
-    ...(proStats ? { pro: proStats } : {}),
-    ...(apprentissageStats ? { apprentissage: apprentissageStats } : {}),
-    ...(proStats || apprentissageStats ? { _meta: getMetadata("certifications", stats) } : {}),
-  };
-};
+export async function sendFilieresStats(params, res) {
+  const { codes_certifications, millesime, direction, theme, ext } = params;
+  const results = await certificationsStats()
+    .find(
+      { code_certification: { $in: codes_certifications }, ...(millesime ? { millesime } : {}) },
+      {
+        projection: { _id: 0, _meta: 0 },
+      }
+    )
+    .sort({ millesime: -1 })
+    .toArray();
+
+  if (results.length === 0) {
+    throw Boom.notFound("Certifications inconnues");
+  }
+
+  const filiereStats = computeFilieresStats(results);
+
+  if (ext !== "svg") {
+    return res.json(filiereStats);
+  } else {
+    const data = {
+      stats: {
+        pro: widgetifyStats(filiereStats.pro),
+        apprentissage: widgetifyStats(filiereStats.apprentissage),
+      },
+      meta: filiereStats._meta,
+    };
+
+    if (data.stats.pro.length === 0 && data.stats.apprentissage.length === 0) {
+      throw Boom.notFound("Données non disponibles");
+    }
+
+    const widget = await buildWidget("filieres", data, { theme, direction });
+
+    res.setHeader("content-type", "image/svg+xml");
+    return res.status(200).send(widget);
+  }
+}

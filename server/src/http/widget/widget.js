@@ -14,14 +14,6 @@ function getNiveau(stats, name) {
   return found?.niveau;
 }
 
-function widgetify(stats) {
-  const data = { stats: widgetifyStats(stats), meta: stats._meta };
-  if (data.stats.length === 0) {
-    throw Boom.notFound("Données non disponibles");
-  }
-  return data;
-}
-
 export const widgetifyStats = (stats) => {
   return [
     {
@@ -37,11 +29,15 @@ export const widgetifyStats = (stats) => {
   ].filter((t) => !isNil(t.valeur));
 };
 
-export async function sendWidget(templateName, stats, res, options = {}) {
-  const callback = options.widgetify || widgetify;
-  const template = getTemplate(templateName, options);
-  const svg = await renderTemplate(template, callback(stats));
+export function widgetify(stats) {
+  const data = { stats: widgetifyStats(stats), meta: stats._meta };
+  if (data.stats.length === 0) {
+    throw Boom.notFound("Données non disponibles");
+  }
+  return data;
+}
 
-  res.setHeader("content-type", "image/svg+xml");
-  return res.status(200).send(svg);
+export async function buildWidget(templateName, data, options = {}) {
+  const template = getTemplate(templateName, options);
+  return renderTemplate(template, data);
 }

@@ -11,8 +11,8 @@ import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
 import { getMetadata } from "../../common/metadata.js";
-import { omitNil } from "../../common/utils/objectUtils.js";
-import { sendWidget } from "../widget/widget.js";
+import { buildWidget, widgetify } from "../widget/widget.js";
+import { sendFilieresStats } from "../../common/filieres.js";
 
 export default () => {
   const router = express.Router();
@@ -77,19 +77,28 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/certifications/:code_certification.:ext?",
+    "/api/inserjeunes/certifications/:codes_certifications.:ext?",
     tryCatch(async (req, res) => {
-      const { code_certification, millesime, direction, theme, ext } = await validate(
+      const params = await validate(
         { ...req.params, ...req.query },
         {
-          code_certification: Joi.string().required(),
+          codes_certifications: arrayOf(Joi.string().required()).default([]).min(1),
           millesime: Joi.string(),
           ...validators.svg(),
         }
       );
 
+      if (params.codes_certifications.length > 1) {
+        return sendFilieresStats(params, res);
+      }
+
+      const { codes_certifications, millesime, direction, theme, ext } = params;
+      const codeCertification = codes_certifications[0];
       const results = await certificationsStats()
-        .find(omitNil({ code_certification, millesime }), { projection: { _id: 0, _meta: 0 } })
+        .find(
+          { code_certification: codeCertification, ...(millesime ? { millesime } : {}) },
+          { projection: { _id: 0, _meta: 0 } }
+        )
         .limit(1)
         .sort({ millesime: -1 })
         .toArray();
@@ -101,10 +110,14 @@ export default () => {
       const stats = results[0];
       stats._meta = { ...stats._meta, ...getMetadata("certification", stats) };
 
-      if (ext === "svg") {
-        return sendWidget("certification", stats, res, { theme, direction });
-      } else {
+      if (ext !== "svg") {
         return res.json(stats);
+      } else {
+        const data = widgetify(stats);
+        const widget = await buildWidget("certification", data, { theme, direction });
+
+        res.setHeader("content-type", "image/svg+xml");
+        return res.status(200).send(widget);
       }
     })
   );
