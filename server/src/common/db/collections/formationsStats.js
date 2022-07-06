@@ -20,6 +20,7 @@ export function schema() {
       uai: string(),
       millesime: string(),
       code_certification: string(),
+      code_formation_diplome: string(),
       filiere: string({ enum: ["apprentissage", "pro"] }),
       nb_annee_term: integer(),
       nb_poursuite_etudes: integer(),
@@ -42,7 +43,7 @@ export function schema() {
       ),
     },
     {
-      required: ["uai", "millesime", "code_certification", "filiere", "diplome"],
+      required: ["uai", "millesime", "code_certification", "code_formation_diplome", "filiere", "diplome"],
       additionalProperties: false,
     }
   );

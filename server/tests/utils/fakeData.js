@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublis
 import { merge } from "lodash-es";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
 import { generateCodeCertification, generateStats } from "./testUtils.js";
-import { certificationsStats, bcn, formationsStats } from "../../src/common/db/collections/collections.js";
+import { bcn, certificationsStats, formationsStats } from "../../src/common/db/collections/collections.js";
 
 function createCodeFormationDiplome() {
   return faker.helpers.replaceSymbols("4#######");
@@ -17,6 +17,7 @@ export function insertFormationsStats(custom = {}) {
         millesime: "2018_2019",
         filiere: "apprentissage",
         code_certification: generateCodeCertification("4"),
+        code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
         nb_annee_term: generateStats(),
         nb_en_emploi_12_mois: generateStats(),
@@ -42,6 +43,7 @@ export function insertCertificationsStats(custom = {}) {
       {
         millesime: "2020",
         code_certification: generateCodeCertification("4"),
+        code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
         filiere: "apprentissage",
         nb_annee_term: generateStats(),
