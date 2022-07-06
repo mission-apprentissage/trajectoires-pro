@@ -7,9 +7,12 @@ import { importCertificationsStats } from "./jobs/importCertificationsStats.js";
 import { promiseAllProps } from "./common/utils/asyncUtils.js";
 import { InserJeunes } from "./common/InserJeunes.js";
 import { migrate } from "./jobs/migrate.js";
-import { writeToStdout } from "oleoduc";
+import { oleoduc, transformData, transformIntoCSV, writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
 import { importBCN } from "./jobs/importBCN.js";
+import { parseCsv } from "./common/utils/csvUtils.js";
+import { ReferentielApi } from "./common/api/ReferentielApi.js";
+import { removeDiacritics } from "./common/utils/stringUtils.js";
 
 function asArray(v) {
   return v.split(",");
@@ -63,6 +66,44 @@ cli
   .action((options) => {
     runScript(() => {
       return migrate(options);
+    });
+  });
+
+cli
+  .command("region")
+  .argument("<file>", "Le fichier des établissements", createReadStream)
+  .option("--out [out]", "Fichier cible dans lequel sera stocké l'export (defaut: stdout)", createWriteStream)
+  .action((file, { out }) => {
+    runScript(async () => {
+      const referentielApi = new ReferentielApi();
+      const output = out || writeToStdout();
+
+      await oleoduc(
+        file,
+        parseCsv(),
+        transformData(
+          async (data) => {
+            const uai = data["n°UAI de l'établissement"];
+            const { organismes } = await referentielApi.searchOrganismes({ uais: uai, uai_potentiels: uai });
+            const organisme = organismes.find((o) => o.uai === uai) || organismes[0];
+            const region = organisme?.adresse?.region.nom.toUpperCase();
+
+            return {
+              uai,
+              region: data["Région"],
+              référentiel: region || "",
+              identique: !region
+                ? "Inconnu"
+                : removeDiacritics(region) === removeDiacritics(data["Région"])
+                ? "Oui"
+                : "Non",
+            };
+          },
+          { parallel: 5 }
+        ),
+        transformIntoCSV(),
+        output
+      );
     });
   });
 
