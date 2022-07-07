@@ -2,13 +2,19 @@ import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { promiseAllProps } from "../common/utils/asyncUtils.js";
 import { importFormationsStats } from "./importFormationsStats.js";
 import { importCertificationsStats } from "./importCertificationsStats.js";
+import { computeRegionStats } from "./computeRegionStats.js";
 
-export async function importStats() {
+export async function importStats(stats = []) {
   const inserjeunes = new InserJeunes(); //Permet de partager le rate limiter entre les deux imports
   await inserjeunes.login();
 
-  return promiseAllProps({
-    certifications: importCertificationsStats({ inserjeunes }),
-    formations: importFormationsStats({ inserjeunes }),
+  const results = promiseAllProps({
+    ...(stats.includes("certifications") ? { certifications: importCertificationsStats({ inserjeunes }) } : {}),
+    ...(stats.includes("formations") ? { formations: importFormationsStats({ inserjeunes }) } : {}),
   });
+
+  return {
+    ...results,
+    ...(stats.includes("regions") ? { regionales: await computeRegionStats() } : {}),
+  };
 }

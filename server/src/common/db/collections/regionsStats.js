@@ -1,15 +1,14 @@
 import { object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
-import { statsSchema } from "./jsonSchema/statsSchema.js";
 import { regionSchema } from "./jsonSchema/regionSchema.js";
+import { statsSchema } from "./jsonSchema/statsSchema.js";
 import { metaSchema } from "./jsonSchema/metaSchema.js";
 
-export const name = "formationsStats";
+export const name = "regionsStats";
 
 export function indexes() {
   return [
-    [{ uai: 1, code_certification: 1, millesime: 1 }, { unique: true }],
-    [{ uai: 1 }],
+    [{ "region.code": 1, code_certification: 1, millesime: 1 }, { unique: true }],
     [{ millesime: 1 }],
     [{ code_certification: 1 }],
     [{ filiere: 1 }],
@@ -20,18 +19,17 @@ export function schema() {
   return object(
     {
       _id: objectId(),
-      uai: string(),
+      region: regionSchema(),
       millesime: string(),
       code_certification: string(),
       code_formation_diplome: string(),
       filiere: string({ enum: ["apprentissage", "pro"] }),
       diplome: diplomeSchema(),
-      region: regionSchema(),
       ...statsSchema(),
       _meta: metaSchema(),
     },
     {
-      required: ["uai", "millesime", "code_certification", "code_formation_diplome", "filiere", "diplome", "region"],
+      required: ["region", "millesime", "code_certification", "code_formation_diplome", "filiere", "diplome"],
       additionalProperties: false,
     }
   );

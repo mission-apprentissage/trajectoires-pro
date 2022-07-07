@@ -1,5 +1,6 @@
 import * as logsDescriptor from "./logs.js";
 import * as formationsStatsDescriptor from "./formationsStats.js";
+import * as regionsStatsDescriptor from "./regionsStats.js";
 import * as certificationsStatsDescriptor from "./certificationsStats.js";
 import * as metricsDescriptor from "./metrics.js";
 import * as migrationsDescriptor from "./migrations.js";
@@ -10,6 +11,7 @@ export function getCollectionDescriptors() {
   return [
     logsDescriptor,
     formationsStatsDescriptor,
+    regionsStatsDescriptor,
     certificationsStatsDescriptor,
     metricsDescriptor,
     migrationsDescriptor,
@@ -19,6 +21,10 @@ export function getCollectionDescriptors() {
 
 export function formationsStats() {
   return dbCollection(formationsStatsDescriptor.name);
+}
+
+export function regionStats() {
+  return dbCollection(regionsStatsDescriptor.name);
 }
 
 export function certificationsStats() {
