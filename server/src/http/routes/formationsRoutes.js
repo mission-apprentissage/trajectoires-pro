@@ -10,6 +10,7 @@ import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { formationsStats } from "../../common/db/collections/collections.js";
+import { convertStatsNames } from "../../common/stats/statsNames.js";
 
 export default () => {
   const router = express.Router();
@@ -56,14 +57,7 @@ export default () => {
             code_certification: (f) => f.code_certification,
             filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,
-            nb_annee_term: (f) => f.nb_annee_term,
-            nb_en_emploi_12_mois: (f) => f.nb_en_emploi_12_mois,
-            nb_en_emploi_6_mois: (f) => f.nb_en_emploi_6_mois,
-            nb_poursuite_etudes: (f) => f.nb_poursuite_etudes,
-            nb_sortant: (f) => f.nb_sortant,
-            taux_emploi_12_mois: (f) => f.taux_emploi_12_mois,
-            taux_emploi_6_mois: (f) => f.taux_emploi_6_mois,
-            taux_poursuite_etudes: (f) => f.taux_poursuite_etudes,
+            ...convertStatsNames({}, (statName) => (f) => f[statName]),
           },
         });
       } else {
