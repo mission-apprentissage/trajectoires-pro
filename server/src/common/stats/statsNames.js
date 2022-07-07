@@ -1,10 +1,11 @@
-import { schema as formationSchema } from "../db/collections/formationsStats.js";
+import {
+  tauxFormationStatsSchema,
+  valeursFormationStatsSchema,
+} from "../db/collections/jsonSchema/statsFormationSchema.js";
 
 export function getStatsNames(options = {}) {
-  return Object.keys(formationSchema().properties)
-    .filter((k) => {
-      return k.startsWith("taux_") || k.startsWith("nb_");
-    })
+  return [tauxFormationStatsSchema(), valeursFormationStatsSchema()]
+    .flatMap((res) => Object.keys(res))
     .filter((k) => (options.prefix ? k.startsWith(options.prefix) : k));
 }
 
