@@ -11,18 +11,16 @@ jobs:
 
       # codecov server
       - name: Upload Server coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./server/.coverage
           name: codecov-server
           verbose: true
 
       # codecov ui
       - name: Upload UI coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./ui/coverage
           name: codecov-ui
           verbose: true
