@@ -7,6 +7,7 @@ import { writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
 import { importBCN } from "./jobs/importBCN.js";
 import { importStats } from "./jobs/importStats.js";
+import { asArray } from "./common/utils/stringUtils.js";
 
 cli
   .command("importBCN")
@@ -20,9 +21,14 @@ cli
 cli
   .command("importStats")
   .description("Importe les données statistiques de l'API InserJeunes")
-  .action(() => {
+  .argument("[stats]", "Le nom des stats à importer (formations,certifications)", asArray, [
+    "certifications",
+    "formations",
+    "regions",
+  ])
+  .action((options) => {
     runScript(() => {
-      return importStats();
+      return importStats(options);
     });
   });
 
