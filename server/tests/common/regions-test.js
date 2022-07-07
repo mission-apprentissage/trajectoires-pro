@@ -1,7 +1,7 @@
 import assert from "assert";
 import {
   findRegionByUai,
-  findRegionByName,
+  findRegionByNom,
   findRegionByCodeInsee,
   findRegionByCode,
   findRegionByAcademie,
@@ -27,8 +27,8 @@ describe("regions", () => {
   });
 
   it("Permet de trouver une région avec son nom", () => {
-    assert.deepStrictEqual(findRegionByName("Île-de-France").code, "11");
-    assert.deepStrictEqual(findRegionByName("ILE-DE-FRANCE").code, "11");
+    assert.deepStrictEqual(findRegionByNom("Île-de-France").code, "11");
+    assert.deepStrictEqual(findRegionByNom("ILE-DE-FRANCE").code, "11");
   });
 
   it("Permet de trouver une région avec son code", () => {

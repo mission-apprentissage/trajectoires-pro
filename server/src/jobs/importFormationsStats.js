@@ -7,6 +7,8 @@ import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { bcn, formationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
+import { findRegionByNom } from "../common/regions.js";
+import { pick } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
@@ -14,11 +16,13 @@ function readCSV(stream) {
   return compose(stream, parseCsv());
 }
 
-async function getDefaultCSV() {
+async function getDefaultEtablissementsCSV() {
   return compose(
     mergeStreams([
-      readCSV(await getFromStorage("depp-2022-etablissement-voie-pro-sco-2020-2019-maj2-112307.csv")),
-      readCSV(await getFromStorage("depp-2022-etablissement-apprentissage-2020-2019-maj2-112304.csv")),
+      readCSV(await getFromStorage("depp-2022-etablissement-2018-et-2019-pro.csv")),
+      readCSV(await getFromStorage("depp-2022-etablissement-2019-et-2020-pro.csv")),
+      readCSV(await getFromStorage("depp-2022-etablissement-2018-et-2019-apprentissage.csv")),
+      readCSV(await getFromStorage("depp-2022-etablissements-2019-et-2020-apprentissage.csv")),
     ]),
     transformData((line) => {
       return {
@@ -28,23 +32,24 @@ async function getDefaultCSV() {
   );
 }
 
-async function loadUaisFromCSV(input) {
-  const uais = new Set();
-  const stream = input ? readCSV(input) : await getDefaultCSV();
+async function loadEtablissementsFromCSV(input) {
+  const etablissements = [];
+  const stream = input ? readCSV(input) : await getDefaultEtablissementsCSV();
 
   await oleoduc(
     stream,
-    writeData((line) => {
-      const uai = line.uai;
-      if (isUAIValid(uai)) {
-        uais.add(uai);
+    writeData((data) => {
+      const uai = data["n°UAI de l'établissement"];
+      const region = findRegionByNom(data["Région"]);
+      if (isUAIValid(uai) && !etablissements.find((e) => e.uai === uai)) {
+        etablissements.push({ uai, region });
       } else {
         logger.warn(`UAI invalide détecté ${uai}`);
       }
     })
   );
 
-  return [...uais];
+  return etablissements;
 }
 
 export async function importFormationsStats(options = {}) {
@@ -55,24 +60,38 @@ export async function importFormationsStats(options = {}) {
   function handleError(e, context) {
     logger.error({ err: e, ...context }, `Impossible d'importer les stats pour la formation`);
     jobStats.failed++;
-    return null;
+    return null; //ignore chunk
   }
 
-  const uais = await loadUaisFromCSV(options.input);
-  const params = uais.flatMap((uai) => millesimes.map((millesime) => ({ uai, millesime })));
-  logger.info(`Import des stats pour ${params.length} formations et ${uais.length} établissements`);
+  const etablissements = await loadEtablissementsFromCSV(options.etablissements);
+  const params = etablissements.flatMap((etablissement) =>
+    millesimes.map((millesime) => ({ etablissement, millesime }))
+  );
+  logger.info(
+    `Import des stats pour ${params.length} formations, ${etablissements.length} établissements et ${millesimes.length} millesimes`
+  );
 
   await oleoduc(
     Readable.from(params),
     transformData(
-      async (params) => {
-        return ij.getFormationsStats(params.uai, params.millesime).catch((e) => handleError(e, params));
+      ({ etablissement, millesime }) => {
+        return ij
+          .getFormationsStats(etablissement.uai, millesime)
+          .then((array) => {
+            return array.map((stats) => {
+              return {
+                stats,
+                etablissement,
+              };
+            });
+          })
+          .catch((e) => handleError(e, params));
       },
       { parallel: 10 }
     ),
     flattenArray(),
     writeData(
-      async (stats) => {
+      async ({ etablissement, stats }) => {
         const query = { uai: stats.uai, code_certification: stats.code_certification, millesime: stats.millesime };
 
         try {
@@ -86,6 +105,7 @@ export async function importFormationsStats(options = {}) {
               },
               $set: omitNil({
                 ...stats,
+                region: pick(etablissement.region, ["code", "nom"]),
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
               }),
