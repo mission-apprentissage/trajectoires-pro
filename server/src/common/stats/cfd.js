@@ -4,6 +4,7 @@ import Boom from "boom";
 import { omitNil } from "../utils/objectUtils.js";
 import { $percentage, $sumOf } from "../utils/mongodbUtils.js";
 import { isEmpty } from "lodash-es";
+import { convertStatsNames } from "./statsNames.js";
 
 export async function getCFDStats(cfd, millesime) {
   const results = await certificationsStats()
@@ -19,13 +20,7 @@ export async function getCFDStats(cfd, millesime) {
           filiere: { $first: "$filiere" },
           millesime: { $first: "$millesime" },
           diplome: { $first: "$diplome" },
-          nb_annee_term: $sumOf("$nb_annee_term"),
-          nb_en_emploi_24_mois: $sumOf("$nb_en_emploi_24_mois"),
-          nb_en_emploi_18_mois: $sumOf("$nb_en_emploi_18_mois"),
-          nb_en_emploi_12_mois: $sumOf("$nb_en_emploi_12_mois"),
-          nb_en_emploi_6_mois: $sumOf("$nb_en_emploi_6_mois"),
-          nb_poursuite_etudes: $sumOf("$nb_poursuite_etudes"),
-          nb_sortant: $sumOf("$nb_sortant"),
+          ...convertStatsNames({ prefix: "nb_" }, (statName) => $sumOf(`$${statName}`)),
         },
       },
       {
@@ -34,11 +29,11 @@ export async function getCFDStats(cfd, millesime) {
             $mergeObjects: [
               "$$ROOT",
               {
-                taux_emploi_24_mois: $percentage("$nb_en_emploi_24_mois", "$nb_sortant"),
-                taux_emploi_18_mois: $percentage("$nb_en_emploi_18_mois", "$nb_sortant"),
-                taux_emploi_12_mois: $percentage("$nb_en_emploi_12_mois", "$nb_sortant"),
-                taux_emploi_6_mois: $percentage("$nb_en_emploi_6_mois", "$nb_sortant"),
                 taux_poursuite_etudes: $percentage("$nb_poursuite_etudes", "$nb_annee_term"),
+                ...convertStatsNames({ prefix: "taux_emploi" }, (statName) => {
+                  const suffix = statName.replace(/taux_emploi_/, "");
+                  return $percentage(`$nb_en_emploi_${suffix}`, "$nb_sortant");
+                }),
               },
             ],
           },
