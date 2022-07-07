@@ -72,17 +72,17 @@ export default () => {
   router.get(
     "/api/inserjeunes/certifications/:codes_certifications.:ext?",
     tryCatch(async (req, res) => {
-      const { codes_certifications, millesime, cfd, ...options } = await validate(
+      const { codes_certifications, millesime, vue, ...options } = await validate(
         { ...req.params, ...req.query },
         {
           codes_certifications: arrayOf(Joi.string().required()).default([]).min(1),
           millesime: Joi.string(),
-          cfd: Joi.boolean().default(false),
+          vue: Joi.string().valid("cfd"),
           ...validators.svg(),
         }
       );
 
-      if (cfd || codes_certifications.length > 1) {
+      if (vue === "cfd" || codes_certifications.length > 1) {
         const cfd = await findCodeFormationDiplome(codes_certifications[0]);
         const cfdStats = await getCFDStats(cfd, millesime);
         return sendCFDStats(cfdStats, res, options);
