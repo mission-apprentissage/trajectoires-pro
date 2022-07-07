@@ -12,6 +12,7 @@ import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
 import { getCFDStats, sendCFDStats } from "../../common/stats/cfd.js";
 import { findCodeFormationDiplome } from "../../common/bcn.js";
+import { convertStatsNames } from "../../common/stats/statsNames.js";
 
 export default () => {
   const router = express.Router();
@@ -51,14 +52,7 @@ export default () => {
             code_certification: (f) => f.code_certification,
             filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,
-            nb_annee_term: (f) => f.nb_annee_term,
-            nb_poursuite_etudes: (f) => f.nb_poursuite_etudes,
-            nb_en_emploi_12_mois: (f) => f.nb_en_emploi_12_mois,
-            nb_en_emploi_6_mois: (f) => f.nb_en_emploi_6_mois,
-            taux_poursuite_etudes: (f) => f.taux_poursuite_etudes,
-            taux_emploi_12_mois: (f) => f.taux_emploi_12_mois,
-            taux_emploi_6_mois: (f) => f.taux_emploi_6_mois,
-            taux_rupture_contrats: (f) => f.taux_rupture_contrats,
+            ...convertStatsNames({}, (statName) => (f) => f[statName]),
           },
         });
       } else {

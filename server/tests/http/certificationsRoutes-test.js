@@ -141,13 +141,18 @@ describe("certificationsRoutes", () => {
         code_certification: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 1,
-        nb_poursuite_etudes: 2,
-        nb_en_emploi_12_mois: 3,
-        nb_en_emploi_6_mois: 4,
-        taux_poursuite_etudes: 5,
-        taux_emploi_12_mois: 6,
-        taux_emploi_6_mois: 7,
-        taux_rupture_contrats: 8,
+        nb_en_emploi_12_mois: 2,
+        nb_en_emploi_18_mois: 3,
+        nb_en_emploi_24_mois: 4,
+        nb_en_emploi_6_mois: 5,
+        nb_poursuite_etudes: 6,
+        nb_sortant: 7,
+        taux_emploi_12_mois: 8,
+        taux_emploi_18_mois: 9,
+        taux_emploi_24_mois: 10,
+        taux_emploi_6_mois: 11,
+        taux_poursuite_etudes: 12,
+        taux_rupture_contrats: 13,
       });
 
       const response = await httpClient.get(`/api/inserjeunes/certifications.csv`, {
@@ -160,8 +165,8 @@ describe("certificationsRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `code_certification;filiere;millesime;nb_annee_term;nb_poursuite_etudes;nb_en_emploi_12_mois;nb_en_emploi_6_mois;taux_poursuite_etudes;taux_emploi_12_mois;taux_emploi_6_mois;taux_rupture_contrats
-12345678;apprentissage;2020;1;2;3;4;5;6;7;8
+        `code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_18_mois;taux_emploi_24_mois;taux_emploi_6_mois;taux_poursuite_etudes;taux_rupture_contrats
+12345678;apprentissage;2020;1;2;3;4;5;6;7;8;9;10;11;12;13
 `
       );
     });
