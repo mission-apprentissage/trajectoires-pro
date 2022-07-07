@@ -10,9 +10,7 @@ export function indexes() {
     [{ millesime: 1, code_certification: 1 }, { unique: true }],
     [{ millesime: 1 }],
     [{ code_certification: 1 }],
-    [{ filiere: 1 }],
-    [{ "certification.code_formation": 1 }],
-    [{ "certification.alias.code": 1 }],
+    [{ code_formation_diplome: 1 }],
   ];
 }
 
