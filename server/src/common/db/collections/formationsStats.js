@@ -12,7 +12,6 @@ export function indexes() {
     [{ uai: 1 }],
     [{ millesime: 1 }],
     [{ code_certification: 1 }],
-    [{ filiere: 1 }],
   ];
 }
 

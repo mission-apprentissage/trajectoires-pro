@@ -1,9 +1,14 @@
 import { configureIndexes, configureValidation, dbCollection } from "../common/db/mongodb.js";
+import { promiseAllProps } from "../common/utils/asyncUtils.js";
 
 const VERSION = 1;
 
 async function tasks() {
-  return dbCollection("codeFormationDiplomes").drop();
+  return promiseAllProps({
+    codeFormationDiplomes: dbCollection("codeFormationDiplomes").drop(),
+    certificationsStats: dbCollection("certificationsStats").drop(),
+    formationsStats: dbCollection("formationsStats").drop(),
+  });
 }
 
 async function _ensureMigrationCanBeRun() {
