@@ -1,5 +1,5 @@
 import assert from "assert";
-import { InserJeunesApi } from "../../src/common/api/InserJeunesApi.js";
+import { InserJeunesApi } from "../../src/common/inserjeunes/InserJeunesApi.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
 import { delay } from "../../src/common/utils/asyncUtils.js";
 

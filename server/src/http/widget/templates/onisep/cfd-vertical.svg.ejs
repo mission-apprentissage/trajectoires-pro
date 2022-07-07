@@ -1,4 +1,4 @@
-<% const height = 270 %> <% const width = 700 %> <% const rightOffset = 350 %>
+<% const height = 413 %> <% const width = 320 %>
 
 <svg
   width="<%= width %>"
@@ -7,11 +7,7 @@
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
 >
-  <% if(meta.title) { %>
-  <title><%= meta.title %></title>
-  <% } %> <% if(meta.description) { %>
-  <desc><%= meta.description%></desc>
-  <% } %>
+  <%- await include('../common/description'); %>
   <rect
     x="2"
     y="2"
@@ -31,7 +27,9 @@
     font-weight="bold"
     letter-spacing="0em"
   >
-    <tspan x="23" y="52.625">Que deviennent les apprenants apr&#xe8;s cette formation ?</tspan>
+    <tspan x="23" y="37.75">Que deviennent les</tspan>
+    <tspan x="23" y="61.75">apprenants apr&#xe8;s cette</tspan>
+    <tspan x="23" y="85.75">formation ?</tspan>
   </text>
 
   <text
@@ -42,12 +40,12 @@
     font-size="20"
     letter-spacing="0em"
   >
-    <tspan x="23" y="107.875">Sont en emploi 6 mois après la</tspan>
-    <tspan x="23" y="127.875">fin de la formation</tspan>
+    <tspan x="23" y="127.875">Sont en emploi 6 mois après la</tspan>
+    <tspan x="23" y="147.875">fin de la formation</tspan>
   </text>
 
   <g>
-    <rect x="23" y="145" width="90" height="35" rx="4" fill="#0D7B92" />
+    <rect x="23" y="165" width="90" height="35" rx="4" fill="#0D7B92" />
 
     <text
       fill="white"
@@ -58,7 +56,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="50.5" y="173.438"><%= rates.apprentissage[0].rate %>%</tspan>
+      <tspan x="50.5" y="193.438"><%= stats.apprentissage[0].valeur %>%</tspan>
     </text>
 
     <text
@@ -69,12 +67,13 @@
       font-size="16"
       letter-spacing="0em"
     >
-      <tspan x="23" y="198.125">Apprentissage</tspan>
+      <tspan x="23" y="218.125">Apprentissage</tspan>
     </text>
   </g>
 
   <g>
-    <rect x="182" y="145" width="90" height="35" rx="4" fill="#0D7B92" />
+    <rect x="182" y="165" width="90" height="35" rx="4" fill="#0D7B92" />
+
     <text
       fill="white"
       xml:space="preserve"
@@ -84,7 +83,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="209.5" y="173.438"><%= rates.pro[0].rate %>%</tspan>
+      <tspan x="209.5" y="193.438"><%= stats.pro[0].valeur %>%</tspan>
     </text>
     <text
       fill="black"
@@ -94,11 +93,11 @@
       font-size="16"
       letter-spacing="0em"
     >
-      <tspan x="182" y="198.125">Voie scolaire</tspan>
+      <tspan x="182" y="218.125">Voie scolaire</tspan>
     </text>
   </g>
 
-  <line x1="350" y1="87.875" x2="350" y2="208.125" stroke="#E5E5E5" />
+  <line x1="22" y1="238.5" x2="282" y2="238.5" stroke="#E5E5E5" />
 
   <text
     fill="black"
@@ -108,11 +107,11 @@
     font-size="20"
     letter-spacing="0em"
   >
-    <tspan x="<%= 23 + rightOffset %>" y="107.875">Poursuivent leurs &#xe9;tudes</tspan>
+    <tspan x="23" y="270.875">Poursuivent leurs &#xe9;tudes</tspan>
   </text>
 
   <g>
-    <rect x="<%= 23 + rightOffset %>" y="145" width="90" height="35" rx="4" fill="#0D7B92" />
+    <rect x="23" y="288" width="90" height="35" rx="4" fill="#0D7B92" />
 
     <text
       fill="white"
@@ -123,7 +122,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="<%= 50.5 + rightOffset %>" y="173.438"><%= rates.apprentissage[1].rate %>%</tspan>
+      <tspan x="50.5" y="316.438"><%= stats.apprentissage[1].valeur %>%</tspan>
     </text>
     <text
       fill="black"
@@ -133,12 +132,12 @@
       font-size="16"
       letter-spacing="0em"
     >
-      <tspan x="<%= 23 + rightOffset %>" y="198.125">Apprentissage</tspan>
+      <tspan x="23" y="342.125">Apprentissage</tspan>
     </text>
   </g>
 
   <g>
-    <rect x="<%= 182 + rightOffset %>" y="145" width="90" height="35" rx="4" fill="#0D7B92" />
+    <rect x="182" y="288" width="90" height="35" rx="4" fill="#0D7B92" />
 
     <text
       fill="white"
@@ -149,7 +148,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="<%= 209.5 + rightOffset %>" y="173.438"><%= rates.pro[1].rate %>%</tspan>
+      <tspan x="209.5" y="316.438"><%= stats.pro[1].valeur %>%</tspan>
     </text>
     <text
       fill="black"
@@ -159,7 +158,7 @@
       font-size="16"
       letter-spacing="0em"
     >
-      <tspan x="<%= 182 + rightOffset %>" y="198.125">Voie scolaire</tspan>
+      <tspan x="182" y="342.125">Voie scolaire</tspan>
     </text>
   </g>
 

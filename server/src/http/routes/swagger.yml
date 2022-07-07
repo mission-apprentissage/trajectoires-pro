@@ -83,15 +83,15 @@ paths:
         404:
           $ref: "#/components/responses/404"
 
-  /api/inserjeunes/certifications/{codes_certifications}:
+  /api/inserjeunes/filieres/{codes_certifications}:
     get:
       description: Obtenir les statistiques d'une ou plusieurs certifications
       parameters:
-        - $ref: "#/components/parameters/codes_certifications_path"
+        - $ref: "#/components/parameters/multiple_codes_certifications"
         - $ref: "#/components/parameters/millesime"
       responses:
         200:
-          $ref: "#/components/responses/AggregatedCertificationsResponse"
+          $ref: "#/components/responses/FilieresResponse"
         400:
           $ref: "#/components/responses/400"
         401:
@@ -99,11 +99,11 @@ paths:
         404:
           $ref: "#/components/responses/404"
 
-  /api/inserjeunes/certifications/{codes_certifications}.svg:
+  /api/inserjeunes/filieres/{codes_certifications}.svg:
     get:
       description: Génère une image SVG (widget) avec les statistiques d'une ou plusieurs certifications
       parameters:
-        - $ref: "#/components/parameters/codes_certifications_path"
+        - $ref: "#/components/parameters/multiple_codes_certifications"
         - $ref: "#/components/parameters/millesime"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
@@ -287,7 +287,7 @@ components:
         type: string
         example: "32221031409"
 
-    codes_certifications_path:
+    multiple_codes_certifications:
       name: codes_certifications
       required: true
       in: path
@@ -480,8 +480,8 @@ components:
           schema:
             $ref: "#/components/schemas/Certification"
 
-    AggregatedCertificationsResponse:
-      description: Statistiques aggrégées de plusieurs certifications
+    FilieresResponse:
+      description: Statistiques aggrégées par filière pour une ou plusieurs certifications
       content:
         "*/*":
           schema:

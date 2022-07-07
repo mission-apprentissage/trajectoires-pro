@@ -1,17 +1,15 @@
 import express from "express";
 import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
 import Joi from "joi";
-import { arrayOf, validate } from "../utils/validators.js";
 import * as validators from "../utils/validators.js";
+import { arrayOf, validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
-import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
+import { addCsvHeaders, addJsonHeaders, sendStats } from "../utils/responseUtils.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
-import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
+import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { formationsStats } from "../../common/db/collections/collections.js";
-import { sendWidget } from "../utils/widget.js";
-import { getMetadata } from "../../common/metadata.js";
 
 export default () => {
   const router = express.Router();
@@ -111,12 +109,7 @@ export default () => {
       }
 
       const stats = results[0];
-      stats._meta = { ...stats._meta, ...getMetadata("certification", stats) };
-      if (ext === "svg") {
-        return sendWidget("formation", stats, res, { theme, direction });
-      } else {
-        return res.json(stats);
-      }
+      return sendStats(stats, res, { direction, theme, ext });
     })
   );
 

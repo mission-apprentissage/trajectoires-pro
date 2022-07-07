@@ -1,10 +1,9 @@
 import { compose, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
-import { getBCNTable } from "../common/bcn.js";
+import { getBCNTable, getDiplome } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { bcn } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { parseAsUTCDate } from "../common/utils/dateUtils.js";
-import { getDiplome } from "../common/diplomes.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -81,7 +80,7 @@ export async function importBCN(options = {}) {
             logger.info(`Nouveau code ${data.code_certification} ajouté`);
             stats.created++;
           } else if (res.modifiedCount) {
-            logger.info(`Code ${data.code_certification} mis à jour`);
+            logger.debug(`Code ${data.code_certification} mis à jour`);
             stats.updated++;
           } else {
             logger.trace(`Code ${data.code_certification} déjà à jour`);

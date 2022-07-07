@@ -21,10 +21,14 @@ describe("formationsRoutes", () => {
         millesime: "2018_2019",
         filiere: "apprentissage",
         nb_annee_term: 1,
+        nb_en_emploi_24_mois: 24,
+        nb_en_emploi_18_mois: 18,
         nb_en_emploi_12_mois: 2,
         nb_en_emploi_6_mois: 3,
         nb_poursuite_etudes: 4,
         nb_sortant: 5,
+        taux_emploi_24_mois: 24,
+        taux_emploi_18_mois: 18,
         taux_emploi_12_mois: 6,
         taux_emploi_6_mois: 7,
         taux_poursuite_etudes: 8,
@@ -47,10 +51,14 @@ describe("formationsRoutes", () => {
             filiere: "apprentissage",
             diplome: { code: "4", libelle: "BAC" },
             nb_annee_term: 1,
+            nb_en_emploi_24_mois: 24,
+            nb_en_emploi_18_mois: 18,
             nb_en_emploi_12_mois: 2,
             nb_en_emploi_6_mois: 3,
             nb_poursuite_etudes: 4,
             nb_sortant: 5,
+            taux_emploi_24_mois: 24,
+            taux_emploi_18_mois: 18,
             taux_emploi_12_mois: 6,
             taux_emploi_6_mois: 7,
             taux_poursuite_etudes: 8,
@@ -239,10 +247,14 @@ describe("formationsRoutes", () => {
         code_formation_diplome: "12345678",
         millesime: "2020_2021",
         nb_annee_term: 1,
+        nb_en_emploi_24_mois: 24,
+        nb_en_emploi_18_mois: 18,
         nb_en_emploi_12_mois: 2,
         nb_en_emploi_6_mois: 3,
         nb_poursuite_etudes: 4,
         nb_sortant: 5,
+        taux_emploi_24_mois: 24,
+        taux_emploi_18_mois: 18,
         taux_emploi_12_mois: 6,
         taux_emploi_6_mois: 7,
         taux_poursuite_etudes: 8,
@@ -259,17 +271,21 @@ describe("formationsRoutes", () => {
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
         nb_annee_term: 1,
+        nb_en_emploi_24_mois: 24,
+        nb_en_emploi_18_mois: 18,
         nb_en_emploi_12_mois: 2,
         nb_en_emploi_6_mois: 3,
         nb_poursuite_etudes: 4,
         nb_sortant: 5,
+        taux_emploi_24_mois: 24,
+        taux_emploi_18_mois: 18,
         taux_emploi_12_mois: 6,
         taux_emploi_6_mois: 7,
         taux_poursuite_etudes: 8,
         _meta: {
-          description:
+          titre: "Certification 12345678, établissement 0751234J",
+          details:
             "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) dispensée par l'établissement 0751234J, pour le millesime 2020_2021",
-          title: "certification 12345678, établissement 0751234J",
         },
       });
     });
@@ -327,7 +343,7 @@ describe("formationsRoutes", () => {
       assert.ok(response.data.includes("50%"));
       assert.ok(response.data.includes("sont en emploi 6 mois"));
       assert.ok(response.data.includes("poursuivent leurs études"));
-      assert.ok(response.data.includes("<title>certification 1022105, établissement 0751234J</title>"));
+      assert.ok(response.data.includes("<title>Certification 1022105, établissement 0751234J</title>"));
       assert.ok(
         response.data.includes(
           "<desc>Données InserJeunes pour la certification 1022105 (BAC filière apprentissage) dispensée par l&#39;établissement 0751234J, pour le millesime 2018_2019</desc>"
@@ -435,7 +451,7 @@ describe("formationsRoutes", () => {
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
 
       assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data, "Données statistiques non disponibles");
+      assert.strictEqual(response.data.message, "Données non disponibles");
     });
 
     it("Vérifie qu'on obtient une erreur quand le format de l'UAI est invalide", async () => {

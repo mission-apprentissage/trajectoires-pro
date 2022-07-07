@@ -3,7 +3,7 @@ import { Readable } from "stream";
 import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
-import { InserJeunes } from "../common/InserJeunes.js";
+import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { bcn, formationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
@@ -73,8 +73,7 @@ export async function importFormationsStats(options = {}) {
     flattenArray(),
     writeData(
       async (stats) => {
-        const uai = stats.uai;
-        const query = { uai: uai, code_certification: stats.code_certification, millesime: stats.millesime };
+        const query = { uai: stats.uai, code_certification: stats.code_certification, millesime: stats.millesime };
 
         try {
           const certification = await bcn().findOne({ code_certification: stats.code_certification });

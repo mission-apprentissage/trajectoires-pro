@@ -1,14 +1,16 @@
-<% const height = 433 %>
+<% const height = 290 %> <% const width = 700 %> <% const rightOffset = 350 %>
 
-<svg width="320" height="<%= height %>" viewBox="0 0 320 <%= height %>" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <% if(meta.title) { %>
-  <title><%= meta.title %></title>
-  <% } %> <% if(meta.description) { %>
-  <desc><%= meta.description%></desc>
-  <% } %>
-  <rect x="0.5" y="0.5" width="319" height="<%= height - 1 %>" fill="white" />
-  <rect x="0.5" y="0.5" width="319" height="<%= height - 1 %>" stroke="#E5E5E5" />
-  <rect width="320" height="105" fill="#F5F5FE" />
+<svg
+  width="<%= width %>"
+  height="<%= height %>"
+  viewBox="0 0 <%= width %> <%= height %>"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <%- await include('../common/description'); %>
+  <rect x="0.5" y="0.5" width="<%= width - 1 %>" height="<%= height - 1 %>" fill="white" />
+  <rect x="0.5" y="0.5" width="<%= width - 1 %>" height="<%= height - 1 %>" stroke="#E5E5E5" />
+  <rect width="<%= width %>" height="86" fill="#F5F5FE" />
   <text
     fill="#3A3A3A"
     xml:space="preserve"
@@ -18,9 +20,7 @@
     font-weight="bold"
     letter-spacing="0em"
   >
-    <tspan x="23" y="37.75">Que deviennent les</tspan>
-    <tspan x="23" y="61.75">apprenants apr&#xe8;s cette</tspan>
-    <tspan x="23" y="85.75">formation ?</tspan>
+    <tspan x="30" y="52.625">Que deviennent les apprenants apr&#xe8;s cette formation ?</tspan>
   </text>
 
   <text
@@ -31,43 +31,14 @@
     font-size="18"
     letter-spacing="0em"
   >
-    <tspan x="23" y="147.875">Sont en emploi 6 mois après la</tspan>
-    <tspan x="23" y="167.875">fin de la formation</tspan>
+    <tspan x="23" y="127.875">Sont en emploi 6 mois après la</tspan>
+    <tspan x="23" y="147.875">fin de la formation</tspan>
   </text>
 
-  <g class="<%= rates.apprentissage[0].level %>">
-    <rect x="23" y="185" width="90" height="35" rx="4" class="bg" />
+  <g class="<%= stats.apprentissage[0].niveau %>">
+    <rect x="23" y="165" width="90" height="35" rx="4" class="bg" />
 
-    <g transform="translate(31,195)"><%- await include(`../assets/${rates.apprentissage[0].level}-icon.svg.ejs`); %></g>
-
-    <text
-      class="label"
-      xml:space="preserve"
-      style="white-space: pre"
-      font-family="Marianne"
-      font-size="25"
-      font-weight="bold"
-      letter-spacing="0em"
-    >
-      <tspan x="50.5" y="213.438"><%= rates.apprentissage[0].rate %>%</tspan>
-    </text>
-
-    <text
-      fill="#3A3A3A"
-      xml:space="preserve"
-      style="white-space: pre"
-      font-family="Marianne"
-      font-size="14"
-      letter-spacing="0em"
-    >
-      <tspan x="23" y="238.125">Apprentissage</tspan>
-    </text>
-  </g>
-
-  <g class="<%= rates.pro[0].level %>">
-    <rect x="182" y="185" width="90" height="35" rx="4" class="bg" />
-
-    <g transform="translate(190,195)"><%- await include(`../assets/${rates.pro[0].level}-icon.svg.ejs`); %></g>
+    <g transform="translate(31,175)"><%- await include(`../assets/${stats.apprentissage[0].niveau}-icon.svg.ejs`); %></g>
 
     <text
       class="label"
@@ -78,7 +49,36 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="209.5" y="213.438"><%= rates.pro[0].rate %>%</tspan>
+      <tspan x="50.5" y="193.438"><%= stats.apprentissage[0].valeur %>%</tspan>
+    </text>
+
+    <text
+      fill="#3A3A3A"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Marianne"
+      font-size="14"
+      letter-spacing="0em"
+    >
+      <tspan x="23" y="218.125">Apprentissage</tspan>
+    </text>
+  </g>
+
+  <g class="<%= stats.pro[0].niveau %>">
+    <rect x="182" y="165" width="90" height="35" rx="4" class="bg" />
+
+    <g transform="translate(190,175)"><%- await include(`../assets/${stats.pro[0].niveau}-icon.svg.ejs`); %></g>
+
+    <text
+      class="label"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Marianne"
+      font-size="25"
+      font-weight="bold"
+      letter-spacing="0em"
+    >
+      <tspan x="209.5" y="193.438"><%= stats.pro[0].valeur %>%</tspan>
     </text>
     <text
       fill="#3A3A3A"
@@ -88,11 +88,11 @@
       font-size="14"
       letter-spacing="0em"
     >
-      <tspan x="182" y="238.125">Voie scolaire</tspan>
+      <tspan x="182" y="218.125">Voie scolaire</tspan>
     </text>
   </g>
 
-  <line x1="22" y1="258.5" x2="282" y2="258.5" stroke="#E5E5E5" />
+  <line x1="350" y1="107.875" x2="350" y2="228.125" stroke="#E5E5E5" />
 
   <text
     fill="#000091"
@@ -102,13 +102,15 @@
     font-size="18"
     letter-spacing="0em"
   >
-    <tspan x="23" y="290.875">Poursuivent leurs &#xe9;tudes</tspan>
+    <tspan x="<%= 23 + rightOffset %>" y="127.875">Poursuivent leurs &#xe9;tudes</tspan>
   </text>
 
-  <g class="<%= rates.apprentissage[1].level %>">
-    <rect x="23" y="308" width="90" height="35" rx="4" class="bg" />
+  <g class="<%= stats.apprentissage[1].niveau %>">
+    <rect x="<%= 23 + rightOffset %>" y="165" width="90" height="35" rx="4" class="bg" />
 
-    <g transform="translate(31,318)"><%- await include(`../assets/${rates.apprentissage[1].level}-icon.svg.ejs`); %></g>
+    <g transform="translate(<%= 31 + rightOffset %>,175)">
+      <%- await include(`../assets/${stats.apprentissage[1].niveau}-icon.svg.ejs`); %>
+    </g>
 
     <text
       class="label"
@@ -119,7 +121,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="50.5" y="336.438"><%= rates.apprentissage[1].rate %>%</tspan>
+      <tspan x="<%= 50.5 + rightOffset %>" y="193.438"><%= stats.apprentissage[1].valeur %>%</tspan>
     </text>
     <text
       fill="#3A3A3A"
@@ -129,14 +131,16 @@
       font-size="14"
       letter-spacing="0em"
     >
-      <tspan x="23" y="362.125">Apprentissage</tspan>
+      <tspan x="<%= 23 + rightOffset %>" y="218.125">Apprentissage</tspan>
     </text>
   </g>
 
-  <g class="<%= rates.pro[1].level %>">
-    <rect x="182" y="308" width="90" height="35" rx="4" class="bg" />
+  <g class="<%= stats.pro[1].niveau %>">
+    <rect x="<%= 182 + rightOffset %>" y="165" width="90" height="35" rx="4" class="bg" />
 
-    <g transform="translate(190,318)"><%- await include(`../assets/${rates.pro[1].level}-icon.svg.ejs`); %></g>
+    <g transform="translate(<%= 190 + rightOffset %>,175)">
+      <%- await include(`../assets/${stats.pro[1].niveau}-icon.svg.ejs`); %>
+    </g>
 
     <text
       class="label"
@@ -147,7 +151,7 @@
       font-weight="bold"
       letter-spacing="0em"
     >
-      <tspan x="209.5" y="336.438"><%= rates.pro[1].rate %>%</tspan>
+      <tspan x="<%= 209.5 + rightOffset %>" y="193.438"><%= stats.pro[1].valeur %>%</tspan>
     </text>
     <text
       fill="#3A3A3A"
@@ -157,7 +161,7 @@
       font-size="14"
       letter-spacing="0em"
     >
-      <tspan x="182" y="362.125">Voie scolaire</tspan>
+      <tspan x="<%= 182 + rightOffset %>" y="218.125">Voie scolaire</tspan>
     </text>
   </g>
 
