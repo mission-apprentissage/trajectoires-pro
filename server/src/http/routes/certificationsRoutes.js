@@ -24,15 +24,12 @@ export default () => {
       const { millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
         {
-          millesimes: arrayOf(Joi.string().required()).default([]),
-          code_certifications: arrayOf(Joi.string().required()).default([]),
-          ...validators.exports(),
-          ...validators.pagination(),
+          ...validators.statsList(),
         }
       );
 
       let { find, pagination } = await findAndPaginate(
-        "certificationsStats",
+        certificationsStats(),
         {
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
           ...(code_certifications.length > 0 ? { code_certification: { $in: code_certifications } } : {}),
@@ -77,7 +74,7 @@ export default () => {
         {
           codes_certifications: arrayOf(Joi.string().required()).default([]).min(1),
           millesime: Joi.string(),
-          vue: Joi.string().valid("cfd"),
+          ...validators.vues(),
           ...validators.svg(),
         }
       );

@@ -34,11 +34,11 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/millesimes"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
+        - $ref: "#/components/parameters/ext"
       responses:
         200:
           $ref: "#/components/responses/CertificationsResponse"
@@ -72,7 +72,129 @@ paths:
       parameters:
         - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
-        - $ref: "#/components/parameters/cfd"
+        - $ref: "#/components/parameters/vue"
+        - $ref: "#/components/parameters/direction"
+        - $ref: "#/components/parameters/theme"
+      responses:
+        200:
+          $ref: "#/components/responses/SVGResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales:
+    get:
+      description: Rechercher des statistiques régionales
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationsResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales.{ext}:
+    get:
+      description: Exporter des statistiques régionales
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+        - $ref: "#/components/parameters/ext"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationsResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales/{code_region}:
+    get:
+      description: Rechercher des statistiques d'une région
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationsResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales/{code_region}.{ext}:
+    get:
+      description: Exporter des statistiques d'une région
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+        - $ref: "#/components/parameters/ext"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationsResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales/{code_region}/certifications/{code_certification}:
+    get:
+      description: Obtenir les statistiques d'une certification
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/vue"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales/{code_region}/certifications/{code_certification}.svg:
+    get:
+      description: Génère une image SVG (widget) avec les statistiques d'une certification
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/vue"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
       responses:
@@ -218,10 +340,10 @@ components:
       schema:
         type: string
 
-    cfd:
-      name: cfd
+    vue:
+      name: vue
       in: query
-      description: Affiche les statistiques par filière du code formation lié au code de certification
+      description: Retourne les statistiques transformées pour une vue (cfd)
       required: false
       schema:
         type: boolean
@@ -253,6 +375,37 @@ components:
         type: string
         pattern: "^[0-9]{7}[A-Z]{1}$"
         example: "0060033D"
+
+    code_region:
+      name: code_region
+      description: |
+       Le code d'une région
+
+        ```
+        84 Auvergne-Rhône-Alpes
+        27 Bourgogne-Franche-Comté
+        53 Bretagne
+        24 Centre-Val de Loire
+        00 Collectivités d'outre-mer
+        94 Corse
+        44 Grand Est
+        01 Guadeloupe
+        03 Guyane
+        32 Hauts-de-France
+        04 La Réunion
+        02 Martinique
+        06 Mayotte
+        28 Normandie
+        75 Nouvelle-Aquitaine
+        76 Occitanie
+        52 Pays de la Loire
+        93 Provence-Alpes-Côte d'Azur
+        11 Île-de-France
+        ```
+      in: path
+      required: true
+      schema:
+        type: string
 
     code_certification:
       name: code_certification

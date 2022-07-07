@@ -27,15 +27,12 @@ export default () => {
               .pattern(/^[0-9]{7}[A-Z]{1}$/)
               .required()
           ).default([]),
-          millesimes: arrayOf(Joi.string().required()).default([]),
-          code_certifications: arrayOf(Joi.string().required()).default([]),
-          ...validators.exports(),
-          ...validators.pagination(),
+          ...validators.statsList(),
         }
       );
 
       let { find, pagination } = await findAndPaginate(
-        "formationsStats",
+        formationsStats(),
         {
           ...(uais.length > 0 ? { uai: { $in: uais } } : {}),
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
