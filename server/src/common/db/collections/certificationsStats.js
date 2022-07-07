@@ -1,5 +1,6 @@
-import { date, integer, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { integer, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
+import { metaSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "certificationsStats";
 
@@ -36,12 +37,7 @@ export function schema() {
       taux_emploi_6_mois: integer(),
       taux_rupture_contrats: integer(),
       diplome: diplomeSchema(),
-      _meta: object(
-        {
-          date_import: date(),
-        },
-        { required: ["date_import"] }
-      ),
+      _meta: metaSchema(),
     },
     {
       required: ["millesime", "code_certification", "code_formation_diplome", "filiere", "diplome"],
