@@ -55,6 +55,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/cfd"
       responses:
         200:
           $ref: "#/components/responses/CertificationResponse"
@@ -71,40 +72,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
-        - $ref: "#/components/parameters/direction"
-        - $ref: "#/components/parameters/theme"
-      responses:
-        200:
-          $ref: "#/components/responses/SVGResponse"
-        400:
-          $ref: "#/components/responses/400"
-        401:
-          $ref: "#/components/responses/401"
-        404:
-          $ref: "#/components/responses/404"
-
-  /api/inserjeunes/filieres/{codes_certifications}:
-    get:
-      description: Obtenir les statistiques d'une ou plusieurs certifications
-      parameters:
-        - $ref: "#/components/parameters/multiple_codes_certifications"
-        - $ref: "#/components/parameters/millesime"
-      responses:
-        200:
-          $ref: "#/components/responses/FilieresResponse"
-        400:
-          $ref: "#/components/responses/400"
-        401:
-          $ref: "#/components/responses/401"
-        404:
-          $ref: "#/components/responses/404"
-
-  /api/inserjeunes/filieres/{codes_certifications}.svg:
-    get:
-      description: Génère une image SVG (widget) avec les statistiques d'une ou plusieurs certifications
-      parameters:
-        - $ref: "#/components/parameters/multiple_codes_certifications"
-        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/cfd"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
       responses:
@@ -249,6 +217,14 @@ components:
       required: false
       schema:
         type: string
+
+    cfd:
+      name: cfd
+      in: query
+      description: Affiche les statistiques par filière du code formation lié au code de certification
+      required: false
+      schema:
+        type: boolean
 
     direction:
       name: direction
