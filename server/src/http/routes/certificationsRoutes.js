@@ -10,7 +10,8 @@ import { certificationsStats } from "../../common/db/collections/collections.js"
 import { addCsvHeaders, addJsonHeaders, sendStats } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
-import { sendFilieresStats } from "../../common/stats/filieres.js";
+import { getFilieresStats, sendFilieresStats } from "../../common/stats/filieres.js";
+import { findCodeFormationDiplome } from "../../common/bcn.js";
 
 export default () => {
   const router = express.Router();
@@ -77,21 +78,22 @@ export default () => {
   router.get(
     "/api/inserjeunes/certifications/:codes_certifications.:ext?",
     tryCatch(async (req, res) => {
-      const params = await validate(
+      const { codes_certifications, millesime, cfd, ...options } = await validate(
         { ...req.params, ...req.query },
         {
           codes_certifications: arrayOf(Joi.string().required()).default([]).min(1),
           millesime: Joi.string(),
+          cfd: Joi.boolean().default(false),
           ...validators.svg(),
         }
       );
 
-      if (params.codes_certifications.length > 1) {
-        //FIXME les filières doivent être gérées dans une autre route
-        return sendFilieresStats(params, res);
+      if (cfd || codes_certifications.length > 1) {
+        const cfd = await findCodeFormationDiplome(codes_certifications[0]);
+        const filliereStats = await getFilieresStats(cfd, millesime);
+        return sendFilieresStats(filliereStats, res, options);
       }
 
-      const { codes_certifications, millesime, direction, theme, ext } = params;
       const code_certification = codes_certifications[0];
       const results = await certificationsStats()
         .find({ code_certification, ...(millesime ? { millesime } : {}) }, { projection: { _id: 0, _meta: 0 } })
@@ -104,7 +106,7 @@ export default () => {
       }
 
       const stats = results[0];
-      return sendStats(stats, res, { direction, theme, ext });
+      return sendStats(stats, res, options);
     })
   );
 

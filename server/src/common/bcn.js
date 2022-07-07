@@ -2,6 +2,7 @@ import { compose, transformData } from "oleoduc";
 import { fetchStream } from "./utils/httpUtils.js";
 import iconv from "iconv-lite";
 import { parseCsv } from "./utils/csvUtils.js";
+import { bcn } from "./db/collections/collections.js";
 
 const ANCIENS_NIVEAUX_MAPPER = {
   5: "3",
@@ -37,6 +38,11 @@ export function getDiplome(codeFormation) {
     code: code,
     libelle: NIVEAUX_LIBELLES[code],
   };
+}
+
+export async function findCodeFormationDiplome(codeCertification) {
+  const found = await bcn().findOne({ code_certification: codeCertification });
+  return found?.code_formation_diplome;
 }
 
 export async function getBCNTable(tableName, options = {}) {

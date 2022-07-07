@@ -5,16 +5,17 @@ import { omitNil } from "../utils/objectUtils.js";
 import { percentage, sumOf } from "../utils/mongodbUtils.js";
 import { isEmpty } from "lodash-es";
 
-async function getFilieresStats(codes_certifications, millesime) {
+export async function getFilieresStats(cfd, millesime) {
   const results = await certificationsStats()
     .aggregate([
       {
-        $match: { code_certification: { $in: codes_certifications }, ...(millesime ? { millesime } : {}) },
+        $match: { code_formation_diplome: cfd, ...(millesime ? { millesime } : {}) },
       },
       {
         $group: {
           _id: { filiere: "$filiere", millesime: "$millesime" },
           codes_certifications: { $push: "$code_certification" },
+          code_formation_diplome: { $first: "$code_formation_diplome" },
           filiere: { $first: "$filiere" },
           millesime: { $first: "$millesime" },
           diplome: { $first: "$diplome" },
@@ -67,10 +68,8 @@ async function getFilieresStats(codes_certifications, millesime) {
   });
 }
 
-export async function sendFilieresStats(params, res) {
-  const { codes_certifications, millesime, direction, theme, ext } = params;
-
-  let filliereStats = await getFilieresStats(codes_certifications, millesime);
+export async function sendFilieresStats(filliereStats, res, options = {}) {
+  const { direction, theme, ext } = options;
 
   if (isEmpty(filliereStats)) {
     throw Boom.notFound("Certifications inconnues");

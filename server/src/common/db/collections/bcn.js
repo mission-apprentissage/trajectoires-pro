@@ -4,7 +4,7 @@ import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 export const name = "bcn";
 
 export function indexes() {
-  return [[{ code_certification: 1 }, { unique: true }]];
+  return [[{ code_certification: 1 }, { unique: true }], [{ code_formation_diplome: 1 }]];
 }
 
 export function schema() {
