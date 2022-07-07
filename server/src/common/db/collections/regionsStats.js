@@ -1,7 +1,7 @@
 import { object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 import { regionSchema } from "./jsonSchema/regionSchema.js";
-import { tauxFormationStatsSchema, valeursFormationStatsSchema } from "./jsonSchema/statsFormationSchema.js";
+import { statsSchema } from "./jsonSchema/statsSchema.js";
 import { metaSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "regionsStats";
@@ -25,8 +25,7 @@ export function schema() {
       code_formation_diplome: string(),
       filiere: string({ enum: ["apprentissage", "pro"] }),
       diplome: diplomeSchema(),
-      ...valeursFormationStatsSchema(),
-      ...tauxFormationStatsSchema(),
+      ...statsSchema(),
       _meta: metaSchema(),
     },
     {

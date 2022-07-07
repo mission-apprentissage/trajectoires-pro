@@ -1,12 +1,7 @@
-import {
-  tauxFormationStatsSchema,
-  valeursFormationStatsSchema,
-} from "../db/collections/jsonSchema/statsFormationSchema.js";
+import { statsSchema } from "../db/collections/jsonSchema/statsSchema.js";
 
 export function getStatsNames(options = {}) {
-  return [tauxFormationStatsSchema(), valeursFormationStatsSchema()]
-    .flatMap((res) => Object.keys(res))
-    .filter((k) => (options.prefix ? k.startsWith(options.prefix) : k));
+  return Object.keys(statsSchema()).filter((k) => (options.prefix ? k.startsWith(options.prefix) : k));
 }
 
 export function convertStatsNames(options, converter) {
