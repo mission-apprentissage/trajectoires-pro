@@ -50,7 +50,7 @@ export function schema() {
       ),
     },
     {
-      required: ["uai", "millesime", "code_certification", "code_formation_diplome", "filiere", "diplome"],
+      required: ["uai", "millesime", "code_certification", "code_formation_diplome", "filiere", "diplome", "region"],
       additionalProperties: false,
     }
   );
