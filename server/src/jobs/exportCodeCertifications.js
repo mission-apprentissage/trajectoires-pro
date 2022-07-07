@@ -15,15 +15,18 @@ export function exportCodeCertifications(output) {
         },
       ])
       .stream(),
-    transformData(async ({ code_certification, filiere }) => {
-      let code = await bcn().findOne({ code_certification: code_certification });
+    transformData(
+      async ({ code_certification, filiere }) => {
+        let code = await bcn().findOne({ code_certification });
 
-      return {
-        code_certification,
-        filiere,
-        date_fermeture: dateAsString(code?.date_fermeture) || "",
-      };
-    }),
+        return {
+          code_certification,
+          filiere,
+          date_fermeture: dateAsString(code?.date_fermeture) || "",
+        };
+      },
+      { parallel: 10 }
+    ),
     transformIntoCSV(),
     output
   );

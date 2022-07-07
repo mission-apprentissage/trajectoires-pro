@@ -7,72 +7,102 @@ import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { bcn, formationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
+import { findRegionByNom } from "../common/regions.js";
+import { pick } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
-function readCSV(stream) {
-  return compose(stream, parseCsv());
-}
+async function convertEtablissementsIntoParameters(millesime) {
+  const files = [
+    `depp-2022-etablissements-${millesime}-pro.csv`,
+    `depp-2022-etablissements-${millesime}-apprentissage.csv`,
+  ];
 
-async function getDefaultCSV() {
+  const streams = await Promise.all(
+    files.map(async (fileName) => {
+      const stream = await getFromStorage(fileName);
+      return compose(stream, parseCsv());
+    })
+  );
+
   return compose(
-    mergeStreams([
-      readCSV(await getFromStorage("depp-2022-etablissement-voie-pro-sco-2020-2019-maj2-112307.csv")),
-      readCSV(await getFromStorage("depp-2022-etablissement-apprentissage-2020-2019-maj2-112304.csv")),
-    ]),
-    transformData((line) => {
+    mergeStreams(streams),
+    transformData((data) => {
       return {
-        uai: line["n°UAI de l'établissement"],
+        uai: data["n°UAI de l'établissement"],
+        region: data["Région"],
+        millesime,
       };
     })
   );
 }
 
-async function loadUaisFromCSV(input) {
-  const uais = new Set();
-  const stream = input ? readCSV(input) : await getDefaultCSV();
+async function streamDefaultParameters() {
+  return mergeStreams(
+    await convertEtablissementsIntoParameters("2018_2019"),
+    await convertEtablissementsIntoParameters("2019_2020")
+  );
+}
+
+async function loadParameters(parameters) {
+  const results = [];
+  const stream = parameters ? Readable.from(parameters) : await streamDefaultParameters();
 
   await oleoduc(
     stream,
-    writeData((line) => {
-      const uai = line.uai;
-      if (isUAIValid(uai)) {
-        uais.add(uai);
-      } else {
+    writeData((data) => {
+      const { uai, millesime } = data;
+
+      if (!isUAIValid(uai)) {
         logger.warn(`UAI invalide détecté ${uai}`);
+        return;
+      }
+
+      const index = results.findIndex((e) => e.uai === uai && e.millesime === millesime);
+      if (index === -1) {
+        results.push({ uai, millesime, region: findRegionByNom(data.region) });
       }
     })
   );
 
-  return [...uais];
+  return results;
 }
 
 export async function importFormationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
   const ij = options.inserjeunes || new InserJeunes();
-  const millesimes = options.millesimes || ["2018_2019", "2019_2020"];
 
   function handleError(e, context) {
-    logger.error({ err: e, ...context }, `Impossible d'importer les stats pour la formation`);
+    logger.error({ err: e, ...context }, `Impossible d'importer les stats`);
     jobStats.failed++;
-    return null;
+    return null; //ignore chunk
   }
 
-  const uais = await loadUaisFromCSV(options.input);
-  const params = uais.flatMap((uai) => millesimes.map((millesime) => ({ uai, millesime })));
-  logger.info(`Import des stats pour ${params.length} formations et ${uais.length} établissements`);
+  const parameters = await loadParameters(options.parameters);
+
+  logger.info(`Import des stats avec ${parameters.length} critères...`);
 
   await oleoduc(
-    Readable.from(params),
+    Readable.from(parameters),
     transformData(
-      async (params) => {
-        return ij.getFormationsStats(params.uai, params.millesime).catch((e) => handleError(e, params));
+      (params) => {
+        return ij
+          .getFormationsStats(params.uai, params.millesime)
+          .then((array) => {
+            return array.map((stats) => {
+              return {
+                stats,
+                params,
+              };
+            });
+          })
+          .catch((e) => handleError(e, params));
       },
       { parallel: 10 }
     ),
     flattenArray(),
     writeData(
-      async (stats) => {
+      async ({ params, stats }) => {
         const query = { uai: stats.uai, code_certification: stats.code_certification, millesime: stats.millesime };
 
         try {
@@ -86,6 +116,7 @@ export async function importFormationsStats(options = {}) {
               },
               $set: omitNil({
                 ...stats,
+                region: pick(params.region, ["code", "nom"]),
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
               }),

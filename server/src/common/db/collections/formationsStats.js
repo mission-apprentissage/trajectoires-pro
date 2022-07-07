@@ -35,6 +35,13 @@ export function schema() {
       taux_emploi_12_mois: integer(),
       taux_emploi_6_mois: integer(),
       diplome: diplomeSchema(),
+      region: object(
+        {
+          code: string(),
+          nom: string(),
+        },
+        { required: ["code", "nom"] }
+      ),
       _meta: object(
         {
           date_import: date(),
@@ -43,7 +50,7 @@ export function schema() {
       ),
     },
     {
-      required: ["uai", "millesime", "code_certification", "code_formation_diplome", "filiere", "diplome"],
+      required: ["uai", "millesime", "code_certification", "code_formation_diplome", "filiere", "diplome", "region"],
       additionalProperties: false,
     }
   );

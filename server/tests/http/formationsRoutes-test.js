@@ -3,6 +3,23 @@ import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertFormationsStats } from "../utils/fakeData.js";
 import { formationsStats } from "../../src/common/db/collections/collections.js";
+import { merge } from "lodash-es";
+
+function newFormationStats(custom = {}) {
+  return merge(
+    {},
+    {
+      uai: "0751234J",
+      code_certification: "1022105",
+      code_formation_diplome: "12345678",
+      diplome: { code: "4", libelle: "BAC" },
+      millesime: "2021_2022",
+      filiere: "apprentissage",
+      region: { code: "11", nom: "Île-de-France" },
+    },
+    custom
+  );
+}
 
 describe("formationsRoutes", () => {
   describe("Recherche", () => {
@@ -62,6 +79,7 @@ describe("formationsRoutes", () => {
             taux_emploi_12_mois: 6,
             taux_emploi_6_mois: 7,
             taux_poursuite_etudes: 8,
+            region: { code: "11", nom: "Île-de-France" },
           },
         ],
         pagination: {
@@ -282,6 +300,7 @@ describe("formationsRoutes", () => {
         taux_emploi_12_mois: 6,
         taux_emploi_6_mois: 7,
         taux_poursuite_etudes: 8,
+        region: { code: "11", nom: "Île-de-France" },
         _meta: {
           titre: "Certification 12345678, établissement 0751234J",
           details:
@@ -364,15 +383,9 @@ describe("formationsRoutes", () => {
 
     it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (vertical)", async () => {
       const { httpClient } = await startServer();
-      await formationsStats().insertOne({
-        uai: "0751234J",
-        code_certification: "1022105",
-        code_formation_diplome: "12345678",
-        diplome: { code: "4", libelle: "BAC" },
-        millesime: "2021_2022",
-        filiere: "apprentissage",
-        taux_emploi_6_mois: 50,
-      });
+      await formationsStats().insertOne(
+        newFormationStats({ uai: "0751234J", code_certification: "1022105", taux_emploi_6_mois: 50 })
+      );
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
 
@@ -384,15 +397,9 @@ describe("formationsRoutes", () => {
 
     it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (horizontale)", async () => {
       const { httpClient } = await startServer();
-      await formationsStats().insertOne({
-        uai: "0751234J",
-        code_certification: "1022105",
-        code_formation_diplome: "12345678",
-        diplome: { code: "4", libelle: "BAC" },
-        millesime: "2021_2022",
-        filiere: "apprentissage",
-        taux_emploi_6_mois: 50,
-      });
+      await formationsStats().insertOne(
+        newFormationStats({ uai: "0751234J", code_certification: "1022105", taux_emploi_6_mois: 50 })
+      );
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?direction=horizontal");
 
@@ -406,16 +413,14 @@ describe("formationsRoutes", () => {
 
     it("Vérifie qu'on peut obtenir une image SVG avec une donnée égale à 0", async () => {
       const { httpClient } = await startServer();
-      await formationsStats().insertOne({
-        uai: "0751234J",
-        code_certification: "1022105",
-        code_formation_diplome: "12345678",
-        diplome: { code: "4", libelle: "BAC" },
-        millesime: "2021_2022",
-        filiere: "apprentissage",
-        taux_poursuite_etudes: 0,
-        taux_emploi_6_mois: 50,
-      });
+      await formationsStats().insertOne(
+        newFormationStats({
+          uai: "0751234J",
+          code_certification: "1022105",
+          taux_poursuite_etudes: 0,
+          taux_emploi_6_mois: 50,
+        })
+      );
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
 
@@ -439,14 +444,7 @@ describe("formationsRoutes", () => {
 
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
       const { httpClient } = await startServer();
-      await formationsStats().insertOne({
-        uai: "0751234J",
-        code_certification: "1022105",
-        code_formation_diplome: "12345678",
-        diplome: { code: "4", libelle: "BAC" },
-        millesime: "2021_2022",
-        filiere: "apprentissage",
-      });
+      await formationsStats().insertOne(newFormationStats({ uai: "0751234J", code_certification: "1022105" }));
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
 

@@ -1,7 +1,6 @@
 import assert from "assert";
 import { omit } from "lodash-es";
 import { importFormationsStats } from "../../src/jobs/importFormationsStats.js";
-import { createStream } from "../utils/testUtils.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
 import { insertCFD, insertFormationsStats, insertMEF } from "../utils/fakeData.js";
 import { formationsStats } from "../../src/common/db/collections/collections.js";
@@ -22,7 +21,6 @@ describe("importFormationsStats", () => {
   }
 
   it("Vérifie qu'on peut importer les stats d'une formation (apprentissage)", async () => {
-    let input = createStream(`uai\n0751234J`);
     mockApi("0751234J", "2018_2019", {
       data: [
         {
@@ -45,7 +43,9 @@ describe("importFormationsStats", () => {
       },
     });
 
-    let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
+    let stats = await importFormationsStats({
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
 
     let found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
@@ -59,13 +59,16 @@ describe("importFormationsStats", () => {
         code: "4",
         libelle: "BAC",
       },
+      region: {
+        code: "76",
+        nom: "Occitanie",
+      },
     });
     assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
   it("Vérifie qu'on peut importer les stats d'une formation (mefstats11)", async () => {
-    let input = createStream(`uai\n0751234J`);
     mockApi("0751234J", "2018_2019", {
       data: [
         {
@@ -85,7 +88,9 @@ describe("importFormationsStats", () => {
       diplome: { code: "4", libelle: "BAC" },
     });
 
-    let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
+    let stats = await importFormationsStats({
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
 
     let found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
@@ -99,13 +104,16 @@ describe("importFormationsStats", () => {
         code: "4",
         libelle: "BAC",
       },
+      region: {
+        code: "76",
+        nom: "Occitanie",
+      },
     });
     assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
   it("Vérifie qu'on fusionne les mesures d'une formation", async () => {
-    let input = createStream(`uai\n0751234J`);
     mockApi("0751234J", "2018_2019", {
       data: [
         {
@@ -130,7 +138,9 @@ describe("importFormationsStats", () => {
     });
     await insertCFD({ code_certification: "12345678" });
 
-    let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
+    let stats = await importFormationsStats({
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
 
     let found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.strictEqual(found.taux_emploi_6_mois, 6);
@@ -140,7 +150,6 @@ describe("importFormationsStats", () => {
   });
 
   it("Vérifie qu'on peut importer les stats de plusieurs formations", async () => {
-    let input = createStream(`uai\n0751234J`);
     mockApi("0751234J", "2018_2019", {
       data: [
         {
@@ -166,7 +175,9 @@ describe("importFormationsStats", () => {
     await insertCFD({ code_certification: "12345678" });
     await insertCFD({ code_certification: "87456123" });
 
-    let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
+    let stats = await importFormationsStats({
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
 
     let found = await formationsStats().findOne({ code_certification: "12345678" });
     assert.strictEqual(found.taux_emploi_6_mois, 6);
@@ -176,7 +187,6 @@ describe("importFormationsStats", () => {
   });
 
   it("Vérifie qu'on peut importer les stats d'une formation sur plusieurs millesimes", async () => {
-    let input = createStream(`uai\n0751234J`);
     mockApi("0751234J", "2018_2019", {
       data: [
         {
@@ -190,7 +200,7 @@ describe("importFormationsStats", () => {
         },
       ],
     });
-    mockApi("0751234J", "2020_2021", {
+    mockApi("0751234J", "2019_2020", {
       data: [
         {
           id_mesure: "taux_emploi_6_mois",
@@ -204,19 +214,22 @@ describe("importFormationsStats", () => {
       ],
     });
     await insertCFD({ code_certification: "12345678" });
-    await insertCFD({ code_certification: "87456123" });
 
-    let stats = await importFormationsStats({ input, millesimes: ["2018_2019", "2020_2021"] });
+    let stats = await importFormationsStats({
+      parameters: [
+        { uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" },
+        { uai: "0751234J", region: "OCCITANIE", millesime: "2019_2020" },
+      ],
+    });
 
     let found = await formationsStats().findOne({ millesime: "2018_2019" });
     assert.strictEqual(found.taux_emploi_6_mois, 6);
-    found = await formationsStats().findOne({ millesime: "2020_2021" });
+    found = await formationsStats().findOne({ millesime: "2019_2020" });
     assert.strictEqual(found.taux_emploi_6_mois, 8);
     assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
   });
 
   it("Vérifie qu'on peut mettre à jour les stats d'une formation", async () => {
-    let input = createStream(`uai\n0751234J`);
     mockApi("0751234J", "2018_2019", {
       data: [
         {
@@ -237,7 +250,9 @@ describe("importFormationsStats", () => {
       taux_emploi_6_mois: -1,
     });
 
-    let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
+    let stats = await importFormationsStats({
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
 
     let found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found.taux_emploi_6_mois, 6);
@@ -245,7 +260,6 @@ describe("importFormationsStats", () => {
   });
 
   it("Vérifie qu'on peut gèrer les erreurs 400 de l'api", async () => {
-    let input = createStream(`uai\n0751234J`);
     mockInserJeunesApi((client, responses) => {
       client
         .post("/login")
@@ -258,7 +272,9 @@ describe("importFormationsStats", () => {
         .reply(400, { msg: "UAI incorrect ou agricole" });
     });
 
-    let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
+    let stats = await importFormationsStats({
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
 
     let count = await formationsStats().countDocuments({});
     assert.strictEqual(count, 0);
@@ -266,7 +282,6 @@ describe("importFormationsStats", () => {
   });
 
   it("Vérifie qu'on peut gèrer un json invalide", async () => {
-    let input = createStream(`uai\n0751234J`);
     mockInserJeunesApi((client, responses) => {
       client
         .post("/login")
@@ -279,7 +294,9 @@ describe("importFormationsStats", () => {
         .reply(200, "{json:");
     });
 
-    let stats = await importFormationsStats({ input, millesimes: ["2018_2019"] });
+    let stats = await importFormationsStats({
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
 
     let count = await formationsStats().countDocuments({});
     assert.strictEqual(count, 0);

@@ -31,6 +31,7 @@ export function insertFormationsStats(custom = {}) {
         taux_emploi_12_mois: generateStats(),
         taux_emploi_6_mois: generateStats(),
         taux_poursuite_etudes: generateStats(),
+        region: { code: "11", nom: "Île-de-France" },
         _meta: {
           date_import: new Date(),
         },
