@@ -27,6 +27,7 @@ describe("regions", () => {
   });
 
   it("Permet de trouver une région avec son nom", () => {
+    assert.deepStrictEqual(findRegionByNom(null), null);
     assert.deepStrictEqual(findRegionByNom("Île-de-France").code, "11");
     assert.deepStrictEqual(findRegionByNom("ILE-DE-FRANCE").code, "11");
   });

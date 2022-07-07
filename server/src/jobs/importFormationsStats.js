@@ -12,76 +12,87 @@ import { pick } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
-function readCSV(stream) {
-  return compose(stream, parseCsv());
-}
+async function convertEtablissementsIntoParameters(millesime) {
+  const files = [
+    `depp-2022-etablissements-${millesime}-pro.csv`,
+    `depp-2022-etablissements-${millesime}-apprentissage.csv`,
+  ];
 
-async function getDefaultEtablissementsCSV() {
+  const streams = await Promise.all(
+    files.map(async (fileName) => {
+      const stream = await getFromStorage(fileName);
+      return compose(stream, parseCsv());
+    })
+  );
+
   return compose(
-    mergeStreams([
-      readCSV(await getFromStorage("depp-2022-etablissement-2018-et-2019-pro.csv")),
-      readCSV(await getFromStorage("depp-2022-etablissement-2019-et-2020-pro.csv")),
-      readCSV(await getFromStorage("depp-2022-etablissement-2018-et-2019-apprentissage.csv")),
-      readCSV(await getFromStorage("depp-2022-etablissements-2019-et-2020-apprentissage.csv")),
-    ]),
-    transformData((line) => {
+    mergeStreams(streams),
+    transformData((data) => {
       return {
-        uai: line["n°UAI de l'établissement"],
+        uai: data["n°UAI de l'établissement"],
+        region: data["Région"],
+        millesime,
       };
     })
   );
 }
 
-async function loadEtablissementsFromCSV(input) {
-  const etablissements = [];
-  const stream = input ? readCSV(input) : await getDefaultEtablissementsCSV();
+async function streamDefaultParameters() {
+  return mergeStreams(
+    await convertEtablissementsIntoParameters("2018_2019"),
+    await convertEtablissementsIntoParameters("2019_2020")
+  );
+}
+
+async function loadParameters(parameters) {
+  const results = [];
+  const stream = parameters ? Readable.from(parameters) : await streamDefaultParameters();
 
   await oleoduc(
     stream,
     writeData((data) => {
-      const uai = data["n°UAI de l'établissement"];
-      const region = findRegionByNom(data["Région"]);
-      if (isUAIValid(uai) && !etablissements.find((e) => e.uai === uai)) {
-        etablissements.push({ uai, region });
-      } else {
+      const { uai, millesime } = data;
+
+      if (!isUAIValid(uai)) {
         logger.warn(`UAI invalide détecté ${uai}`);
+        return;
+      }
+
+      const index = results.findIndex((e) => e.uai === uai && e.millesime === millesime);
+      if (index === -1) {
+        results.push({ uai, millesime, region: findRegionByNom(data.region) });
       }
     })
   );
 
-  return etablissements;
+  return results;
 }
 
 export async function importFormationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
   const ij = options.inserjeunes || new InserJeunes();
-  const millesimes = options.millesimes || ["2018_2019", "2019_2020"];
 
   function handleError(e, context) {
-    logger.error({ err: e, ...context }, `Impossible d'importer les stats pour la formation`);
+    logger.error({ err: e, ...context }, `Impossible d'importer les stats`);
     jobStats.failed++;
     return null; //ignore chunk
   }
 
-  const etablissements = await loadEtablissementsFromCSV(options.etablissements);
-  const params = etablissements.flatMap((etablissement) =>
-    millesimes.map((millesime) => ({ etablissement, millesime }))
-  );
-  logger.info(
-    `Import des stats pour ${params.length} formations, ${etablissements.length} établissements et ${millesimes.length} millesimes`
-  );
+  const parameters = await loadParameters(options.parameters);
+
+  logger.info(`Import des stats avec ${parameters.length} critères...`);
 
   await oleoduc(
-    Readable.from(params),
+    Readable.from(parameters),
     transformData(
-      ({ etablissement, millesime }) => {
+      (params) => {
         return ij
-          .getFormationsStats(etablissement.uai, millesime)
+          .getFormationsStats(params.uai, params.millesime)
           .then((array) => {
             return array.map((stats) => {
               return {
                 stats,
-                etablissement,
+                params,
               };
             });
           })
@@ -91,7 +102,7 @@ export async function importFormationsStats(options = {}) {
     ),
     flattenArray(),
     writeData(
-      async ({ etablissement, stats }) => {
+      async ({ params, stats }) => {
         const query = { uai: stats.uai, code_certification: stats.code_certification, millesime: stats.millesime };
 
         try {
@@ -105,7 +116,7 @@ export async function importFormationsStats(options = {}) {
               },
               $set: omitNil({
                 ...stats,
-                region: pick(etablissement.region, ["code", "nom"]),
+                region: pick(params.region, ["code", "nom"]),
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
               }),

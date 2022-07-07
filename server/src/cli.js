@@ -1,16 +1,12 @@
 import "dotenv/config";
 import { program as cli } from "commander";
-import { createReadStream, createWriteStream } from "fs";
+import { createWriteStream } from "fs";
 import { runScript } from "./common/runScript.js";
 import { migrate } from "./jobs/migrate.js";
 import { writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
 import { importBCN } from "./jobs/importBCN.js";
 import { importStats } from "./jobs/importStats.js";
-
-function asArray(v) {
-  return v.split(",");
-}
 
 cli
   .command("importBCN")
@@ -24,19 +20,9 @@ cli
 cli
   .command("importStats")
   .description("Importe les données statistiques de l'API InserJeunes")
-  .argument("[types]", "Le nom des stats à importer (formations,certifications)", asArray, [
-    "certifications",
-    "regionales",
-    "formations",
-  ])
-  .option(
-    "--etablissements",
-    "Un fichier CSV avec la liste des etablissements pour lesquels on veut importer les stats",
-    createReadStream
-  )
-  .action((types, options) => {
-    runScript(async () => {
-      return importStats(types, options);
+  .action(() => {
+    runScript(() => {
+      return importStats();
     });
   });
 
