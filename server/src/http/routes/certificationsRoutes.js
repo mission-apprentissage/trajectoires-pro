@@ -10,7 +10,7 @@ import { certificationsStats } from "../../common/db/collections/collections.js"
 import { addCsvHeaders, addJsonHeaders, sendStats } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
-import { getFilieresStats, sendFilieresStats } from "../../common/stats/filieres.js";
+import { getCFDStats, sendCFDStats } from "../../common/stats/cfd.js";
 import { findCodeFormationDiplome } from "../../common/bcn.js";
 
 export default () => {
@@ -90,8 +90,8 @@ export default () => {
 
       if (cfd || codes_certifications.length > 1) {
         const cfd = await findCodeFormationDiplome(codes_certifications[0]);
-        const filliereStats = await getFilieresStats(cfd, millesime);
-        return sendFilieresStats(filliereStats, res, options);
+        const cfdStats = await getCFDStats(cfd, millesime);
+        return sendCFDStats(cfdStats, res, options);
       }
 
       const code_certification = codes_certifications[0];

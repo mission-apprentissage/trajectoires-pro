@@ -5,7 +5,7 @@ import { omitNil } from "../utils/objectUtils.js";
 import { percentage, sumOf } from "../utils/mongodbUtils.js";
 import { isEmpty } from "lodash-es";
 
-export async function getFilieresStats(cfd, millesime) {
+export async function getCFDStats(cfd, millesime) {
   const results = await certificationsStats()
     .aggregate([
       {
@@ -68,26 +68,26 @@ export async function getFilieresStats(cfd, millesime) {
   });
 }
 
-export async function sendFilieresStats(filliereStats, res, options = {}) {
+export async function sendCFDStats(cfdStats, res, options = {}) {
   const { direction, theme, ext } = options;
 
-  if (isEmpty(filliereStats)) {
+  if (isEmpty(cfdStats)) {
     throw Boom.notFound("Certifications inconnues");
   }
 
   if (ext !== "svg") {
-    return res.json(filliereStats);
+    return res.json(cfdStats);
   } else {
-    if (!isWidgetAvailable(filliereStats.pro) && !isWidgetAvailable(filliereStats.apprentissage)) {
+    if (!isWidgetAvailable(cfdStats.pro) && !isWidgetAvailable(cfdStats.apprentissage)) {
       throw Boom.notFound("Données non disponibles");
     }
 
     const widget = await buildWidget(
-      "filieres",
+      "cfd",
       {
         stats: {
-          pro: prepareStatsForWidget(filliereStats.pro),
-          apprentissage: prepareStatsForWidget(filliereStats.apprentissage),
+          pro: prepareStatsForWidget(cfdStats.pro),
+          apprentissage: prepareStatsForWidget(cfdStats.apprentissage),
         },
       },
       { theme, direction }
