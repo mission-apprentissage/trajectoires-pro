@@ -8,13 +8,13 @@ export async function importStats(stats = []) {
   const inserjeunes = new InserJeunes(); //Permet de partager le rate limiter entre les deux imports
   await inserjeunes.login();
 
-  const results = promiseAllProps({
+  const results = await promiseAllProps({
     ...(stats.includes("certifications") ? { certifications: importCertificationsStats({ inserjeunes }) } : {}),
     ...(stats.includes("formations") ? { formations: importFormationsStats({ inserjeunes }) } : {}),
   });
 
-  return {
+  return promiseAllProps({
     ...results,
     ...(stats.includes("regions") ? { regionales: await computeRegionStats() } : {}),
-  };
+  });
 }
