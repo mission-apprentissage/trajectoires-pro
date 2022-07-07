@@ -2,7 +2,7 @@ import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../../htt
 import { certificationsStats } from "../db/collections/collections.js";
 import Boom from "boom";
 import { omitNil } from "../utils/objectUtils.js";
-import { percentage, sumOf } from "../utils/mongodbUtils.js";
+import { $percentage, $sumOf } from "../utils/mongodbUtils.js";
 import { isEmpty } from "lodash-es";
 
 export async function getCFDStats(cfd, millesime) {
@@ -19,13 +19,13 @@ export async function getCFDStats(cfd, millesime) {
           filiere: { $first: "$filiere" },
           millesime: { $first: "$millesime" },
           diplome: { $first: "$diplome" },
-          nb_annee_term: sumOf("$nb_annee_term"),
-          nb_en_emploi_24_mois: sumOf("$nb_en_emploi_24_mois"),
-          nb_en_emploi_18_mois: sumOf("$nb_en_emploi_18_mois"),
-          nb_en_emploi_12_mois: sumOf("$nb_en_emploi_12_mois"),
-          nb_en_emploi_6_mois: sumOf("$nb_en_emploi_6_mois"),
-          nb_poursuite_etudes: sumOf("$nb_poursuite_etudes"),
-          nb_sortant: sumOf("$nb_sortant"),
+          nb_annee_term: $sumOf("$nb_annee_term"),
+          nb_en_emploi_24_mois: $sumOf("$nb_en_emploi_24_mois"),
+          nb_en_emploi_18_mois: $sumOf("$nb_en_emploi_18_mois"),
+          nb_en_emploi_12_mois: $sumOf("$nb_en_emploi_12_mois"),
+          nb_en_emploi_6_mois: $sumOf("$nb_en_emploi_6_mois"),
+          nb_poursuite_etudes: $sumOf("$nb_poursuite_etudes"),
+          nb_sortant: $sumOf("$nb_sortant"),
         },
       },
       {
@@ -34,11 +34,11 @@ export async function getCFDStats(cfd, millesime) {
             $mergeObjects: [
               "$$ROOT",
               {
-                taux_emploi_24_mois: percentage("$nb_en_emploi_24_mois", "$nb_sortant"),
-                taux_emploi_18_mois: percentage("$nb_en_emploi_18_mois", "$nb_sortant"),
-                taux_emploi_12_mois: percentage("$nb_en_emploi_12_mois", "$nb_sortant"),
-                taux_emploi_6_mois: percentage("$nb_en_emploi_6_mois", "$nb_sortant"),
-                taux_poursuite_etudes: percentage("$nb_poursuite_etudes", "$nb_annee_term"),
+                taux_emploi_24_mois: $percentage("$nb_en_emploi_24_mois", "$nb_sortant"),
+                taux_emploi_18_mois: $percentage("$nb_en_emploi_18_mois", "$nb_sortant"),
+                taux_emploi_12_mois: $percentage("$nb_en_emploi_12_mois", "$nb_sortant"),
+                taux_emploi_6_mois: $percentage("$nb_en_emploi_6_mois", "$nb_sortant"),
+                taux_poursuite_etudes: $percentage("$nb_poursuite_etudes", "$nb_annee_term"),
               },
             ],
           },
