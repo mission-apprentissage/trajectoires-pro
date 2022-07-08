@@ -58,7 +58,7 @@ export async function getFilieresStats(collection, cfd, millesime) {
       {
         $group: {
           _id: { filiere: "$filiere", millesime: "$millesime" },
-          codes_certifications: { $push: "$code_certification" },
+          codes_certifications: { $addToSet: "$code_certification" },
           code_formation_diplome: { $first: "$code_formation_diplome" },
           filiere: { $first: "$filiere" },
           millesime: { $first: "$millesime" },
