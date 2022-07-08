@@ -2,7 +2,7 @@ import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../../htt
 import { certificationsStats } from "../db/collections/collections.js";
 import Boom from "boom";
 import { omitNil } from "../utils/objectUtils.js";
-import { $tauxStats, $valeursStats } from "../utils/mongodbUtils.js";
+import { $computeTauxStats, $valeursStats } from "../utils/mongodbUtils.js";
 import { isEmpty } from "lodash-es";
 
 export async function getCFDStats(cfd, millesime) {
@@ -24,7 +24,7 @@ export async function getCFDStats(cfd, millesime) {
       },
       {
         $addFields: {
-          ...$tauxStats(),
+          ...$computeTauxStats(),
         },
       },
       {

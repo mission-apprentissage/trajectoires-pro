@@ -31,7 +31,7 @@ export function $valeursStats() {
   return convertStats(VALEURS, (statName) => $sumOf($(statName)));
 }
 
-export function $tauxStats() {
+export function $computeTauxStats() {
   const regles = getTauxReglesDeCalcul();
   return convertStats(TAUX, (statName) => {
     const regle = regles[statName];

@@ -2,7 +2,7 @@ import { oleoduc, writeData } from "oleoduc";
 import { formationsStats, regionStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { $tauxStats, $valeursStats } from "../common/utils/mongodbUtils.js";
+import { $computeTauxStats, $valeursStats } from "../common/utils/mongodbUtils.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -32,7 +32,7 @@ export async function computeRegionStats() {
         },
         {
           $addFields: {
-            ...$tauxStats(),
+            ...$computeTauxStats(),
           },
         },
         {

@@ -12,7 +12,7 @@ export function getStatsNames(options = {}) {
     });
 }
 
-export function convertStats(options, converter) {
+export function convertStats(options, converter = (s) => s) {
   return getStatsNames(options).reduce((acc, statName) => {
     const value = converter(statName);
     return {
