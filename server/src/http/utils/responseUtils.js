@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
-import { buildDescription } from "../../common/stats/description.js";
 import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../widget/widget.js";
 import Boom from "boom";
+import { buildDescription } from "../../common/stats/stats.js";
 
 export function addJsonHeaders(res) {
   res.setHeader("Content-Type", `application/json`);

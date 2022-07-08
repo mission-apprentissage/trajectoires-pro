@@ -11,7 +11,7 @@ export function $sumOf(field) {
 export function $percentage(dividend, divisor) {
   return {
     $cond: [
-      { $or: [{ $eq: [divisor, 0] }, { $not: [divisor] }, { $not: [dividend] }] },
+      { $or: [{ $eq: [divisor, 0] }, { $not: [divisor] }] },
       "$$REMOVE",
       {
         $round: {

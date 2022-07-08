@@ -155,7 +155,7 @@ describe("computeRegionStats", () => {
     assert.deepStrictEqual(found.taux_poursuite_etudes, 7);
   });
 
-  it("Vérifie qu'on ignore les taux avec des stats à 0", async () => {
+  it("Vérifie qu'on ignore les taux avec des diviseurs à 0", async () => {
     await Promise.all([
       insertFormationsStats({
         nb_sortant: 0,
@@ -173,7 +173,7 @@ describe("computeRegionStats", () => {
     assert.strictEqual(found.taux_emploi_6_mois, undefined);
   });
 
-  it("Vérifie qu'on ignore les taux avec des stats indisponibles", async () => {
+  it("Vérifie qu'on ignore les taux indisponibles", async () => {
     await Promise.all([
       insertNoStats(),
       insertFormationsStats({

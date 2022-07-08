@@ -1,7 +1,19 @@
 import assert from "assert";
-import { buildDescription } from "../../src/common/stats/description.js";
+import { buildDescription, getStatsNames } from "../../src/common/stats/stats.js";
 
-describe("description", () => {
+describe("statsNames", () => {
+  it("Permet de lister le nom de stats", () => {
+    const statsNames = getStatsNames();
+    assert.ok(statsNames.includes("nb_en_emploi_24_mois"));
+    assert.ok(statsNames.includes("nb_sortant"));
+    assert.ok(statsNames.includes("taux_emploi_24_mois"));
+  });
+
+  it("Permet de lister le nom de stats avec un prefix", () => {
+    const statsNames = getStatsNames({ prefix: "taux" });
+    assert.ok(!statsNames.includes("nb_en_emploi_24_mois"));
+  });
+
   it("Permet de construire une description pour une stats formation", () => {
     const description = buildDescription({
       code_certification: "12345",
