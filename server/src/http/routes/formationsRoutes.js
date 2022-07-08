@@ -19,7 +19,7 @@ export default () => {
     "/api/inserjeunes/formations.:ext?",
     checkApiKey(),
     tryCatch(async (req, res) => {
-      const { uais, millesimes, code_certifications, page, items_par_page, ext } = await validate(
+      const { uais, regions, millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
         {
           uais: arrayOf(
@@ -27,6 +27,7 @@ export default () => {
               .pattern(/^[0-9]{7}[A-Z]{1}$/)
               .required()
           ).default([]),
+          ...validators.regions(),
           ...validators.statsList(),
         }
       );
@@ -35,6 +36,7 @@ export default () => {
         formationsStats(),
         {
           ...(uais.length > 0 ? { uai: { $in: uais } } : {}),
+          ...(regions.length > 0 ? { "region.code": { $in: regions } } : {}),
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
           ...(code_certifications.length > 0 ? { code_certification: { $in: code_certifications } } : {}),
         },
@@ -100,7 +102,7 @@ export default () => {
       }
 
       const stats = results[0];
-      return sendStats(stats, res, { direction, theme, ext });
+      return sendStats("formation", stats, res, { direction, theme, ext });
     })
   );
 

@@ -14,6 +14,12 @@ export function arrayOf(itemSchema = Joi.string()) {
   return customJoi.arrayOf().items(itemSchema).single();
 }
 
+export function regions() {
+  return {
+    regions: arrayOf(Joi.string().valid(...getRegions().map((r) => r.code))).default([]),
+  };
+}
+
 export function region() {
   return {
     region: Joi.string().valid(...getRegions().map((r) => r.code)),

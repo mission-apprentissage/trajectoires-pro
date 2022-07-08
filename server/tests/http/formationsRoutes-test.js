@@ -154,6 +154,22 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.data.pagination.total, 1);
     });
 
+    it("Vérifie qu'on peut obtenir les stats de formations pour une région", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({ region: { code: "76", nom: "Occitanie" } });
+      await insertFormationsStats({ region: { code: "11", nom: "Île-de-France" } });
+
+      const response = await httpClient.get(`/api/inserjeunes/formations?regions=76`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.pagination.total, 1);
+      assert.strictEqual(response.data.formations[0].region.code, "76");
+    });
+
     it("Vérifie qu'on peut obtenir les stats de formations pour code formation", async () => {
       const { httpClient } = await startServer();
       await insertFormationsStats({ code_certification: "12345" });

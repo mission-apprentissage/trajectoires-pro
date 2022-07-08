@@ -1,12 +1,11 @@
 import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../../http/widget/widget.js";
-import { certificationsStats } from "../db/collections/collections.js";
 import Boom from "boom";
 import { omitNil } from "../utils/objectUtils.js";
 import { $computeTauxStats, $valeursStats } from "../utils/mongodbUtils.js";
 import { isEmpty } from "lodash-es";
 
-export async function getCFDStats(cfd, millesime) {
-  const results = await certificationsStats()
+export async function getCFDStats(collection, cfd, millesime) {
+  const results = await collection
     .aggregate([
       {
         $match: { code_formation_diplome: cfd, ...(millesime ? { millesime } : {}) },

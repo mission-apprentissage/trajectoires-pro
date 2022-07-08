@@ -81,7 +81,7 @@ export default () => {
 
       if (vue === "cfd" || codes_certifications.length > 1) {
         const cfd = await findCodeFormationDiplome(codes_certifications[0]);
-        const cfdStats = await getCFDStats(cfd, millesime);
+        const cfdStats = await getCFDStats(certificationsStats(), cfd, millesime);
         return sendCFDStats(cfdStats, res, options);
       }
 
@@ -97,7 +97,7 @@ export default () => {
       }
 
       const stats = results[0];
-      return sendStats(stats, res, options);
+      return sendStats("certification", stats, res, options);
     })
   );
 

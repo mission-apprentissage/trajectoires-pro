@@ -50,6 +50,7 @@ export default () => {
       const { millesimes, code_certifications, page, items_par_page, ...rest } = await validate(
         { ...req.query, ...req.params },
         {
+          ...validators.regions(),
           ...validators.statsList(),
         }
       );
@@ -117,7 +118,7 @@ export default () => {
 
       if (vue === "cfd") {
         const cfd = await findCodeFormationDiplome(code_certification);
-        const cfdStats = await getCFDStats(cfd, millesime);
+        const cfdStats = await getCFDStats(regionStats(), cfd, millesime);
         return sendCFDStats(cfdStats, res, options);
       }
 
@@ -135,7 +136,7 @@ export default () => {
       }
 
       const stats = results[0];
-      return sendStats(stats, res, options);
+      return sendStats("certification", stats, res, options);
     })
   );
 
