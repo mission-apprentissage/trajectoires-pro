@@ -10,7 +10,7 @@ import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { formationsStats } from "../../common/db/collections/collections.js";
-import { convertStats } from "../../common/stats/stats.js";
+import { convertStats } from "../../common/stats.js";
 
 export default () => {
   const router = express.Router();

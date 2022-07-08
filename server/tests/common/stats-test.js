@@ -1,5 +1,5 @@
 import assert from "assert";
-import { buildDescription, getStatsNames } from "../../src/common/stats/stats.js";
+import { buildDescription, getStatsNames } from "../../src/common/stats.js";
 
 describe("statsNames", () => {
   it("Permet de lister le nom de stats", () => {

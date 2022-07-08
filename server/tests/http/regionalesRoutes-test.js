@@ -396,7 +396,7 @@ describe("regionalesRoutes", () => {
         }),
       ]);
 
-      const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/12345678?vue=cfd");
+      const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/12345678?vue=filieres");
 
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data, {
@@ -523,7 +523,7 @@ describe("regionalesRoutes", () => {
         }),
       ]);
 
-      const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/12345678.svg?vue=cfd");
+      const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/12345678.svg?vue=filieres");
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
