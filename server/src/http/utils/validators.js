@@ -48,7 +48,7 @@ export function svg() {
 }
 export function vues() {
   return {
-    vue: Joi.string().valid("cfd"),
+    vue: Joi.string().valid("filieres"),
   };
 }
 

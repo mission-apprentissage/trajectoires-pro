@@ -9,7 +9,7 @@ import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findRegionByNom } from "../common/regions.js";
 import { pick } from "lodash-es";
-import { getMillesimes } from "../common/stats/stats.js";
+import { getMillesimes } from "../common/stats.js";
 
 const logger = getLoggerWithContext("import");
 

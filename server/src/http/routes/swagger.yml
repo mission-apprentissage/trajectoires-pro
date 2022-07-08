@@ -329,6 +329,7 @@ components:
       description: |
         Permet de filtrer la recherche avec un ou plusieurs codes de région séparés par des virgules.
         
+        Valeurs possibles :
          ```
          84 Auvergne-Rhône-Alpes
          27 Bourgogne-Franche-Comté
@@ -375,10 +376,16 @@ components:
     vue:
       name: vue
       in: query
-      description: Retourne les statistiques transformées pour une vue (cfd)
+      description: |
+        Retourne les statistiques représentées sous la forme d'une vue
+        
+        Valeurs possibles :
+         ```
+         filiere
+         ```
       required: false
       schema:
-        type: boolean
+        type: string
 
     direction:
       name: direction
@@ -417,6 +424,7 @@ components:
       description: |
         Le code INSEE d'une région
         
+        Valeurs possibles :
          ```
          84 Auvergne-Rhône-Alpes
          27 Bourgogne-Franche-Comté

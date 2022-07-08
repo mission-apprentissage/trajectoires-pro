@@ -1,4 +1,6 @@
-import { statsSchema } from "../db/collections/jsonSchema/statsSchema.js";
+import { statsSchema } from "./db/collections/jsonSchema/statsSchema.js";
+import { $computeTauxStats, $valeursStats } from "./utils/mongodbUtils.js";
+import { omitNil } from "./utils/objectUtils.js";
 
 export const ALL = {};
 export const TAUX = { prefix: "taux_" };
@@ -45,4 +47,50 @@ export function buildDescription(stats) {
       `Données InserJeunes pour la certification ${code_certification} (${diplome.libelle} filière ${filiere})` +
       `${uai ? ` dispensée par l'établissement ${uai},` : ""} pour le millesime ${millesime}`,
   };
+}
+
+export async function getFilieresStats(collection, cfd, millesime) {
+  const results = await collection
+    .aggregate([
+      {
+        $match: { code_formation_diplome: cfd, ...(millesime ? { millesime } : {}) },
+      },
+      {
+        $group: {
+          _id: { filiere: "$filiere", millesime: "$millesime" },
+          codes_certifications: { $addToSet: "$code_certification" },
+          code_formation_diplome: { $first: "$code_formation_diplome" },
+          filiere: { $first: "$filiere" },
+          millesime: { $first: "$millesime" },
+          diplome: { $first: "$diplome" },
+          ...$valeursStats(),
+        },
+      },
+      {
+        $addFields: {
+          ...$computeTauxStats(),
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $group: {
+          _id: "$millesime",
+          stats: { $push: "$$ROOT" },
+        },
+      },
+      {
+        $sort: { _id: -1 },
+      },
+    ])
+    .limit(1)
+    .toArray();
+
+  return omitNil({
+    pro: results[0]?.stats?.find((s) => s.filiere === "pro"),
+    apprentissage: results[0]?.stats?.find((s) => s.filiere === "apprentissage"),
+  });
 }

@@ -7,12 +7,11 @@ import { checkApiKey } from "../middlewares/authMiddleware.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import { certificationsStats } from "../../common/db/collections/collections.js";
-import { addCsvHeaders, addJsonHeaders, sendStats } from "../utils/responseUtils.js";
+import { addCsvHeaders, addJsonHeaders, sendFilieresStats, sendStats } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
-import { getCFDStats, sendCFDStats } from "../../common/stats/cfd.js";
 import { findCodeFormationDiplome } from "../../common/bcn.js";
-import { convertStats, ALL } from "../../common/stats/stats.js";
+import { convertStats, ALL, getFilieresStats } from "../../common/stats.js";
 
 export default () => {
   const router = express.Router();
@@ -79,10 +78,10 @@ export default () => {
         }
       );
 
-      if (vue === "cfd" || codes_certifications.length > 1) {
+      if (vue === "filieres" || codes_certifications.length > 1) {
         const cfd = await findCodeFormationDiplome(codes_certifications[0]);
-        const cfdStats = await getCFDStats(certificationsStats(), cfd, millesime);
-        return sendCFDStats(cfdStats, res, options);
+        const filieresStats = await getFilieresStats(certificationsStats(), cfd, millesime);
+        return sendFilieresStats(filieresStats, res, options);
       }
 
       const code_certification = codes_certifications[0];

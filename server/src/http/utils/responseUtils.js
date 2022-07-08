@@ -1,7 +1,8 @@
 import { DateTime } from "luxon";
 import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../widget/widget.js";
 import Boom from "boom";
-import { buildDescription } from "../../common/stats/stats.js";
+import { buildDescription } from "../../common/stats.js";
+import { isEmpty } from "lodash-es";
 
 export function addJsonHeaders(res) {
   res.setHeader("Content-Type", `application/json`);
@@ -26,6 +27,36 @@ export async function sendStats(type, stats, res, options = {}) {
     }
 
     const widget = await buildWidget(type, { stats: prepareStatsForWidget(stats), description }, { theme, direction });
+
+    res.setHeader("content-type", "image/svg+xml");
+    return res.status(200).send(widget);
+  }
+}
+
+export async function sendFilieresStats(filieresStats, res, options = {}) {
+  const { direction, theme, ext } = options;
+
+  if (isEmpty(filieresStats)) {
+    throw Boom.notFound("Certifications inconnues");
+  }
+
+  if (ext !== "svg") {
+    return res.json(filieresStats);
+  } else {
+    if (!isWidgetAvailable(filieresStats.pro) && !isWidgetAvailable(filieresStats.apprentissage)) {
+      throw Boom.notFound("Données non disponibles");
+    }
+
+    const widget = await buildWidget(
+      "cfd",
+      {
+        stats: {
+          pro: prepareStatsForWidget(filieresStats.pro),
+          apprentissage: prepareStatsForWidget(filieresStats.apprentissage),
+        },
+      },
+      { theme, direction }
+    );
 
     res.setHeader("content-type", "image/svg+xml");
     return res.status(200).send(widget);

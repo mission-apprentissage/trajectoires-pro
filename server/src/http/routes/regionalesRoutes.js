@@ -7,12 +7,11 @@ import { checkApiKey } from "../middlewares/authMiddleware.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import { regionStats } from "../../common/db/collections/collections.js";
-import { addCsvHeaders, addJsonHeaders, sendStats } from "../utils/responseUtils.js";
+import { addCsvHeaders, addJsonHeaders, sendFilieresStats, sendStats } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
-import { getCFDStats, sendCFDStats } from "../../common/stats/cfd.js";
 import { findCodeFormationDiplome } from "../../common/bcn.js";
-import { convertStats } from "../../common/stats/stats.js";
+import { convertStats, getFilieresStats } from "../../common/stats.js";
 
 export default () => {
   const router = express.Router();
@@ -116,10 +115,10 @@ export default () => {
         }
       );
 
-      if (vue === "cfd") {
+      if (vue === "filieres") {
         const cfd = await findCodeFormationDiplome(code_certification);
-        const cfdStats = await getCFDStats(regionStats(), cfd, millesime);
-        return sendCFDStats(cfdStats, res, options);
+        const filieresStats = await getFilieresStats(regionStats(), cfd, millesime);
+        return sendFilieresStats(filieresStats, res, options);
       }
 
       const results = await regionStats()

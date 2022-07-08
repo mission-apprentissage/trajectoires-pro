@@ -1,4 +1,4 @@
-import { convertStats, getTauxReglesDeCalcul, TAUX, VALEURS } from "../stats/stats.js";
+import { convertStats, getTauxReglesDeCalcul, TAUX, VALEURS } from "../stats.js";
 
 function $(v) {
   return `$${v}`;
