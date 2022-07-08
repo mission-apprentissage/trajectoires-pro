@@ -12,7 +12,7 @@ import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
 import { getCFDStats, sendCFDStats } from "../../common/stats/cfd.js";
 import { findCodeFormationDiplome } from "../../common/bcn.js";
-import { convertStatsNames } from "../../common/stats/statsNames.js";
+import { convertStats, ALL } from "../../common/stats/stats.js";
 
 export default () => {
   const router = express.Router();
@@ -49,7 +49,7 @@ export default () => {
             code_certification: (f) => f.code_certification,
             filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,
-            ...convertStatsNames({}, (statName) => (f) => f[statName]),
+            ...convertStats(ALL, (statName) => (f) => f[statName]),
           },
         });
       } else {

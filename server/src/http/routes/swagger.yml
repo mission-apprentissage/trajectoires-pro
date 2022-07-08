@@ -379,7 +379,7 @@ components:
     code_region:
       name: code_region
       description: |
-       Le code d'une région
+       Le code INSEE d'une région
 
         ```
         84 Auvergne-Rhône-Alpes

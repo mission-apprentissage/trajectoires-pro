@@ -2,8 +2,7 @@ import { oleoduc, writeData } from "oleoduc";
 import { formationsStats, regionStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { $sumOf } from "../common/utils/mongodbUtils.js";
-import { convertStatsNames } from "../common/stats/statsNames.js";
+import { $tauxStats, $valeursStats } from "../common/utils/mongodbUtils.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -11,7 +10,6 @@ export async function computeRegionStats() {
   const jobStats = { created: 0, updated: 0, failed: 0 };
 
   logger.info(`Import des stats régionales...`);
-
   await oleoduc(
     formationsStats()
       .aggregate([
@@ -29,13 +27,12 @@ export async function computeRegionStats() {
             code_certification: { $first: "$code_certification" },
             code_formation_diplome: { $first: "$code_formation_diplome" },
             diplome: { $first: "$diplome" },
-            ...convertStatsNames({ prefix: "nb_" }, (statName) => $sumOf(`$${statName}`)),
-            ...convertStatsNames({ prefix: "taux_" }, (statName) => ({ $avg: `$${statName}` })),
+            ...$valeursStats(),
           },
         },
         {
           $addFields: {
-            ...convertStatsNames({ prefix: "taux_" }, (statName) => ({ $round: `$${statName}` })),
+            ...$tauxStats(),
           },
         },
         {
