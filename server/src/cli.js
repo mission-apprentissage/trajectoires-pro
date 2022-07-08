@@ -24,7 +24,7 @@ cli
   .argument("[stats]", "Le nom des stats à importer (formations,certifications)", asArray, [
     "certifications",
     "formations",
-    "regions",
+    "regionales",
   ])
   .action((options) => {
     runScript(() => {

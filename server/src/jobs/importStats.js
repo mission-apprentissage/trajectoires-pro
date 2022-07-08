@@ -15,6 +15,6 @@ export async function importStats(stats = []) {
 
   return promiseAllProps({
     ...results,
-    ...(stats.includes("regions") ? { regionales: await computeRegionStats() } : {}),
+    ...(stats.includes("regionales") ? { regionales: await computeRegionStats() } : {}),
   });
 }
