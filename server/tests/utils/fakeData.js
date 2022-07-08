@@ -2,10 +2,70 @@ import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublis
 import { merge } from "lodash-es";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
 import { generateCodeCertification, generateStats } from "./testUtils.js";
-import { bcn, certificationsStats, formationsStats } from "../../src/common/db/collections/collections.js";
+import { bcn, certificationsStats, formationsStats, regionStats } from "../../src/common/db/collections/collections.js";
 
 function createCodeFormationDiplome() {
   return faker.helpers.replaceSymbols("4#######");
+}
+
+export function insertCertificationsStats(custom = {}) {
+  return certificationsStats().insertOne(
+    merge(
+      {},
+      {
+        millesime: "2020",
+        code_certification: generateCodeCertification("4"),
+        code_formation_diplome: createCodeFormationDiplome(),
+        diplome: { code: "4", libelle: "BAC" },
+        filiere: "apprentissage",
+        nb_annee_term: generateStats(),
+        nb_poursuite_etudes: generateStats(),
+        nb_en_emploi_24_mois: generateStats(),
+        nb_en_emploi_18_mois: generateStats(),
+        nb_en_emploi_12_mois: generateStats(),
+        nb_en_emploi_6_mois: generateStats(),
+        taux_poursuite_etudes: generateStats(),
+        taux_emploi_24_mois: generateStats(),
+        taux_emploi_18_mois: generateStats(),
+        taux_emploi_12_mois: generateStats(),
+        taux_emploi_6_mois: generateStats(),
+        taux_rupture_contrats: generateStats(),
+      },
+      custom
+    )
+  );
+}
+
+export function insertRegionalesStats(custom = {}) {
+  return regionStats().insertOne(
+    merge(
+      {},
+      {
+        region: { code: "11", nom: "Île-de-France" },
+        millesime: "2018_2019",
+        filiere: "apprentissage",
+        code_certification: generateCodeCertification("4"),
+        code_formation_diplome: createCodeFormationDiplome(),
+        diplome: { code: "4", libelle: "BAC" },
+        nb_annee_term: generateStats(),
+        nb_en_emploi_24_mois: generateStats(),
+        nb_en_emploi_18_mois: generateStats(),
+        nb_en_emploi_12_mois: generateStats(),
+        nb_en_emploi_6_mois: generateStats(),
+        nb_poursuite_etudes: generateStats(),
+        nb_sortant: generateStats(),
+        taux_emploi_24_mois: generateStats(),
+        taux_emploi_18_mois: generateStats(),
+        taux_emploi_12_mois: generateStats(),
+        taux_emploi_6_mois: generateStats(),
+        taux_poursuite_etudes: generateStats(),
+        _meta: {
+          date_import: new Date(),
+        },
+      },
+      custom
+    )
+  );
 }
 
 export function insertFormationsStats(custom = {}) {
@@ -35,34 +95,6 @@ export function insertFormationsStats(custom = {}) {
         _meta: {
           date_import: new Date(),
         },
-      },
-      custom
-    )
-  );
-}
-
-export function insertCertificationsStats(custom = {}) {
-  return certificationsStats().insertOne(
-    merge(
-      {},
-      {
-        millesime: "2020",
-        code_certification: generateCodeCertification("4"),
-        code_formation_diplome: createCodeFormationDiplome(),
-        diplome: { code: "4", libelle: "BAC" },
-        filiere: "apprentissage",
-        nb_annee_term: generateStats(),
-        nb_poursuite_etudes: generateStats(),
-        nb_en_emploi_24_mois: generateStats(),
-        nb_en_emploi_18_mois: generateStats(),
-        nb_en_emploi_12_mois: generateStats(),
-        nb_en_emploi_6_mois: generateStats(),
-        taux_poursuite_etudes: generateStats(),
-        taux_emploi_24_mois: generateStats(),
-        taux_emploi_18_mois: generateStats(),
-        taux_emploi_12_mois: generateStats(),
-        taux_emploi_6_mois: generateStats(),
-        taux_rupture_contrats: generateStats(),
       },
       custom
     )

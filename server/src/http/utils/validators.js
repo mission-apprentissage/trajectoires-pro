@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { getRegions } from "../../common/regions.js";
 
 const customJoi = Joi.extend((joi) => ({
   type: "arrayOf",
@@ -11,6 +12,18 @@ const customJoi = Joi.extend((joi) => ({
 
 export function arrayOf(itemSchema = Joi.string()) {
   return customJoi.arrayOf().items(itemSchema).single();
+}
+
+export function regions() {
+  return {
+    regions: arrayOf(Joi.string().valid(...getRegions().map((r) => r.code))).default([]),
+  };
+}
+
+export function region() {
+  return {
+    region: Joi.string().valid(...getRegions().map((r) => r.code)),
+  };
 }
 
 export function exports() {
@@ -31,6 +44,20 @@ export function svg() {
     direction: Joi.string().valid("horizontal", "vertical"),
     theme: Joi.string().valid("dsfr", "onisep"),
     ext: Joi.string().valid("svg"),
+  };
+}
+export function vues() {
+  return {
+    vue: Joi.string().valid("cfd"),
+  };
+}
+
+export function statsList() {
+  return {
+    millesimes: arrayOf(Joi.string().required()).default([]),
+    code_certifications: arrayOf(Joi.string().required()).default([]),
+    ...exports(),
+    ...pagination(),
   };
 }
 

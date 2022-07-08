@@ -12,7 +12,7 @@ paths:
     get:
       description: Rechercher des statistiques de certifications
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/millesimes"
         - $ref: "#/components/parameters/code_certifications"
@@ -32,13 +32,13 @@ paths:
     get:
       description: Exporter des statistiques de certifications
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       parameters:
-        - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/millesimes"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
+        - $ref: "#/components/parameters/ext"
       responses:
         200:
           $ref: "#/components/responses/CertificationsResponse"
@@ -55,7 +55,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
-        - $ref: "#/components/parameters/cfd"
+        - $ref: "#/components/parameters/vue"
       responses:
         200:
           $ref: "#/components/responses/CertificationResponse"
@@ -72,7 +72,131 @@ paths:
       parameters:
         - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
-        - $ref: "#/components/parameters/cfd"
+        - $ref: "#/components/parameters/vue"
+        - $ref: "#/components/parameters/direction"
+        - $ref: "#/components/parameters/theme"
+      responses:
+        200:
+          $ref: "#/components/responses/SVGResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales:
+    get:
+      description: Rechercher des statistiques régionales
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/regions"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+      responses:
+        200:
+          $ref: "#/components/responses/RegionalesResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales.{ext}:
+    get:
+      description: Exporter des statistiques régionales
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/regions"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+        - $ref: "#/components/parameters/ext"
+      responses:
+        200:
+          $ref: "#/components/responses/RegionalesResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales/{code_region}:
+    get:
+      description: Rechercher des statistiques d'une région
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+      responses:
+        200:
+          $ref: "#/components/responses/RegionalesResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales/{code_region}.{ext}:
+    get:
+      description: Exporter des statistiques d'une région
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+        - $ref: "#/components/parameters/ext"
+      responses:
+        200:
+          $ref: "#/components/responses/RegionalesResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales/{code_region}/certifications/{code_certification}:
+    get:
+      description: Obtenir les statistiques d'une certification
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/vue"
+      responses:
+        200:
+          $ref: "#/components/responses/RegionaleResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/regionales/{code_region}/certifications/{code_certification}.svg:
+    get:
+      description: Génère une image SVG (widget) avec les statistiques d'une certification
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/vue"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
       responses:
@@ -89,9 +213,10 @@ paths:
     get:
       description: Rechercher des statistiques de formations
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/uais"
+        - $ref: "#/components/parameters/regions"
         - $ref: "#/components/parameters/millesimes"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
@@ -110,7 +235,7 @@ paths:
     get:
       description: Exporter des statistiques de formations
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/uais"
@@ -196,6 +321,35 @@ components:
         type: string
         pattern: "^[0-9]{7}[A-Z]{1}$"
 
+    regions:
+      name: regions
+      in: query
+      schema:
+        type: string
+      description: |
+        Permet de filtrer la recherche avec un ou plusieurs codes de région séparés par des virgules.
+        
+         ```
+         84 Auvergne-Rhône-Alpes
+         27 Bourgogne-Franche-Comté
+         53 Bretagne
+         24 Centre-Val de Loire
+         00 Collectivités d'outre-mer
+         94 Corse
+         44 Grand Est
+         01 Guadeloupe
+         03 Guyane
+         32 Hauts-de-France
+         04 La Réunion
+         02 Martinique
+         06 Mayotte
+         28 Normandie
+         75 Nouvelle-Aquitaine
+         76 Occitanie
+         52 Pays de la Loire
+         93 Provence-Alpes-Côte d'Azur
+         11 Île-de-France
+         ```
     page:
       name: page
       in: query
@@ -218,10 +372,10 @@ components:
       schema:
         type: string
 
-    cfd:
-      name: cfd
+    vue:
+      name: vue
       in: query
-      description: Affiche les statistiques par filière du code formation lié au code de certification
+      description: Retourne les statistiques transformées pour une vue (cfd)
       required: false
       schema:
         type: boolean
@@ -232,7 +386,7 @@ components:
       required: false
       schema:
         type: string
-        enum: ["vertical", "horizontal"]
+        enum: [ "vertical", "horizontal" ]
         default: "vertical"
 
     theme:
@@ -241,7 +395,7 @@ components:
       required: false
       schema:
         type: string
-        enum: ["dsfr", "onisep"]
+        enum: [ "dsfr", "onisep" ]
         default: "dsfr"
 
     # Path parameters
@@ -253,6 +407,37 @@ components:
         type: string
         pattern: "^[0-9]{7}[A-Z]{1}$"
         example: "0060033D"
+
+    code_region:
+      name: code_region
+      in: path
+      required: true
+      schema:
+        type: string
+      description: |
+        Le code INSEE d'une région
+        
+         ```
+         84 Auvergne-Rhône-Alpes
+         27 Bourgogne-Franche-Comté
+         53 Bretagne
+         24 Centre-Val de Loire
+         00 Collectivités d'outre-mer
+         94 Corse
+         44 Grand Est
+         01 Guadeloupe
+         03 Guyane
+         32 Hauts-de-France
+         04 La Réunion
+         02 Martinique
+         06 Mayotte
+         28 Normandie
+         75 Nouvelle-Aquitaine
+         76 Occitanie
+         52 Pays de la Loire
+         93 Provence-Alpes-Côte d'Azur
+         11 Île-de-France
+         ```
 
     code_certification:
       name: code_certification
@@ -281,7 +466,7 @@ components:
       required: true
       schema:
         type: string
-        enum: ["json", "csv"]
+        enum: [ "json", "csv" ]
         default: json
 
   schemas:
@@ -306,6 +491,27 @@ components:
         total:
           type: number
       description: Statut de la pagination
+    Region:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Le code INSEE de la région
+        nom:
+          type: string
+          description: Le nom de la région
+    Meta:
+      type: object
+      required:
+        - date_import
+      properties:
+        date_import:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+
     Certification:
       type: object
       properties:
@@ -315,36 +521,72 @@ components:
           type: string
         filiere:
           type: string
-          enum: ["apprentissage", "pro"]
+          enum: [ "apprentissage", "pro" ]
+        nb_sortant:
+          type: number
         nb_annee_term:
           type: number
         nb_poursuite_etudes:
+          type: number
+        nb_en_emploi_24_mois:
+          type: number
+        nb_en_emploi_18_mois:
           type: number
         nb_en_emploi_12_mois:
           type: number
         nb_en_emploi_6_mois:
           type: number
-        nb_sortant:
+        taux_emploi_24_mois:
           type: number
-        taux_poursuite_etudes:
+        taux_emploi_18_mois:
           type: number
         taux_emploi_12_mois:
           type: number
         taux_emploi_6_mois:
           type: number
-        taux_rupture_contrats:
+        taux_poursuite_etudes:
           type: number
         _meta:
-          type: object
-          required:
-            - date_import
-          properties:
-            date_import:
-              type: string
-            title:
-              type: string
-            description:
-              type: string
+          $ref: "#/components/schemas/Meta"
+
+    Regionale:
+      type: object
+      properties:
+        millesime:
+          type: string
+        code_certification:
+          type: string
+        filiere:
+          type: string
+          enum: [ "apprentissage", "pro" ]
+        nb_sortant:
+          type: number
+        nb_annee_term:
+          type: number
+        nb_poursuite_etudes:
+          type: number
+        nb_en_emploi_24_mois:
+          type: number
+        nb_en_emploi_18_mois:
+          type: number
+        nb_en_emploi_12_mois:
+          type: number
+        nb_en_emploi_6_mois:
+          type: number
+        taux_emploi_24_mois:
+          type: number
+        taux_emploi_18_mois:
+          type: number
+        taux_emploi_12_mois:
+          type: number
+        taux_emploi_6_mois:
+          type: number
+        taux_poursuite_etudes:
+          type: number
+        region:
+          $ref: "#/components/schemas/Region"
+        _meta:
+          $ref: "#/components/schemas/Meta"
 
     Formation:
       type: object
@@ -357,34 +599,35 @@ components:
           type: string
         filiere:
           type: string
-          enum: ["apprentissage", "pro"]
+          enum: [ "apprentissage", "pro" ]
+        nb_sortant:
+          type: number
         nb_annee_term:
           type: number
         nb_poursuite_etudes:
+          type: number
+        nb_en_emploi_24_mois:
+          type: number
+        nb_en_emploi_18_mois:
           type: number
         nb_en_emploi_12_mois:
           type: number
         nb_en_emploi_6_mois:
           type: number
-        nb_sortant:
+        taux_emploi_24_mois:
           type: number
-        taux_poursuite_etudes:
+        taux_emploi_18_mois:
           type: number
         taux_emploi_12_mois:
           type: number
         taux_emploi_6_mois:
           type: number
+        taux_poursuite_etudes:
+          type: number
+        region:
+          $ref: "#/components/schemas/Region"
         _meta:
-          type: object
-          required:
-            - date_import
-          properties:
-            date_import:
-              type: string
-            title:
-              type: string
-            description:
-              type: string
+          $ref: "#/components/schemas/Meta"
 
   responses:
     400:
@@ -424,8 +667,40 @@ components:
                     $ref: "#/components/schemas/Pagination"
                 description: Informations complémentaires
 
+    CertificationResponse:
+      description: Une certification avec ses statistiques
+      content:
+        "*/*":
+          schema:
+            $ref: "#/components/schemas/Certification"
+
+    RegionalesResponse:
+      description: La liste des statistiques de certifications pour toutes les régions
+      content:
+        "*/*":
+          schema:
+            type: object
+            properties:
+              organismes:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Regionale"
+              meta:
+                type: object
+                properties:
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                description: Informations complémentaires
+
+    RegionaleResponse:
+      description: La liste des statistiques de certifications pour une région
+      content:
+        "*/*":
+          schema:
+            $ref: "#/components/schemas/Regionale"
+
     FormationsResponse:
-      description: La liste des formations avec leurs statistiques
+      description: La liste des statistiques des formations
       content:
         "*/*":
           schema:
@@ -443,18 +718,11 @@ components:
                 description: Informations complémentaires
 
     FormationResponse:
-      description: Une formation avec ses statistiques
+      description: Les statistiques d'une formation
       content:
         "*/*":
           schema:
             $ref: "#/components/schemas/Formation"
-
-    CertificationResponse:
-      description: Une certification avec ses statistiques
-      content:
-        "*/*":
-          schema:
-            $ref: "#/components/schemas/Certification"
 
     FilieresResponse:
       description: Statistiques aggrégées par filière pour une ou plusieurs certifications
@@ -463,9 +731,9 @@ components:
           schema:
             type: object
             properties:
-              pro: 
+              pro:
                 $ref: "#/components/schemas/Certification"
-              apprentissage: 
+              apprentissage:
                 $ref: "#/components/schemas/Certification"
 
     SVGResponse:

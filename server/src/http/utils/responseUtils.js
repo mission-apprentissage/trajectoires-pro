@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
-import { buildDescription } from "../../common/stats/description.js";
 import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../widget/widget.js";
 import Boom from "boom";
+import { buildDescription } from "../../common/stats/stats.js";
 
 export function addJsonHeaders(res) {
   res.setHeader("Content-Type", `application/json`);
@@ -13,7 +13,7 @@ export function addCsvHeaders(res, options = {}) {
   res.setHeader("Content-Type", `text/csv; charset=UTF-8`);
 }
 
-export async function sendStats(stats, res, options = {}) {
+export async function sendStats(type, stats, res, options = {}) {
   const { ext, theme, direction } = options;
   const description = buildDescription(stats);
   const metadata = { ...stats._meta, ...description };
@@ -25,11 +25,7 @@ export async function sendStats(stats, res, options = {}) {
       throw Boom.notFound("Données non disponibles");
     }
 
-    const widget = await buildWidget(
-      "formation",
-      { stats: prepareStatsForWidget(stats), description },
-      { theme, direction }
-    );
+    const widget = await buildWidget(type, { stats: prepareStatsForWidget(stats), description }, { theme, direction });
 
     res.setHeader("content-type", "image/svg+xml");
     return res.status(200).send(widget);

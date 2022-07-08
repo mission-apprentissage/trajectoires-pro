@@ -9,6 +9,7 @@ import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findRegionByNom } from "../common/regions.js";
 import { pick } from "lodash-es";
+import { getMillesimes } from "../common/stats/stats.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -39,8 +40,9 @@ async function convertEtablissementsIntoParameters(millesime) {
 
 async function streamDefaultParameters() {
   return mergeStreams(
-    await convertEtablissementsIntoParameters("2018_2019"),
-    await convertEtablissementsIntoParameters("2019_2020")
+    getMillesimes().map((millesime) => {
+      return convertEtablissementsIntoParameters(millesime);
+    })
   );
 }
 

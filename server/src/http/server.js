@@ -8,8 +8,9 @@ import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import { tryCatch } from "./middlewares/tryCatchMiddleware.js";
 import { corsMiddleware } from "./middlewares/corsMiddleware.js";
 import { dbCollection } from "../common/db/mongodb.js";
-import formationsRoutes from "./routes/formationsRoutes.js";
 import certificationsRoutes from "./routes/certificationsRoutes.js";
+import regionalesRoutes from "./routes/regionalesRoutes.js";
+import formationsRoutes from "./routes/formationsRoutes.js";
 import swaggerRoutes from "./routes/swaggerRoutes.js";
 import { packageJson } from "../common/utils/esmUtils.js";
 
@@ -21,6 +22,7 @@ export default async () => {
   app.use(corsMiddleware());
   app.use(logMiddleware());
   app.use(certificationsRoutes());
+  app.use(regionalesRoutes());
   app.use(formationsRoutes());
   app.use(swaggerRoutes());
 
