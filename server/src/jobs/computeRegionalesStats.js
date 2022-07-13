@@ -1,5 +1,5 @@
 import { oleoduc, writeData } from "oleoduc";
-import { formationsStats, regionStats } from "../common/db/collections/collections.js";
+import { formationsStats, regionalesStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { $computeTauxStats, $sumValeursStats } from "../common/utils/mongodbUtils.js";
@@ -25,7 +25,7 @@ async function getMissingStats() {
   });
 }
 
-export async function computeRegionStats() {
+export async function computeRegionalesStats() {
   const jobStats = { created: 0, updated: 0, failed: 0 };
   const missingStats = await getMissingStats();
 
@@ -73,7 +73,7 @@ export async function computeRegionStats() {
         const missing = missingStats.find((as) => as.millesime === stats.millesime);
 
         try {
-          const res = await regionStats().updateOne(
+          const res = await regionalesStats().updateOne(
             query,
             {
               $setOnInsert: {

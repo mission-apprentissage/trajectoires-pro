@@ -1,8 +1,8 @@
 import assert from "assert";
 import { omit } from "lodash-es";
 import { insertFormationsStats } from "../utils/fakeData.js";
-import { formationsStats, regionStats } from "../../src/common/db/collections/collections.js";
-import { computeRegionStats } from "../../src/jobs/computeRegionStats.js";
+import { formationsStats, regionalesStats } from "../../src/common/db/collections/collections.js";
+import { computeRegionalesStats } from "../../src/jobs/computeRegionalesStats.js";
 
 function insertNoStats() {
   return formationsStats().insertOne({
@@ -16,7 +16,7 @@ function insertNoStats() {
   });
 }
 
-describe("computeRegionStats", () => {
+describe("computeRegionalesStats", () => {
   it("Vérifie qu'on peut calculer les stats d'une région", async () => {
     await Promise.all([
       insertFormationsStats({
@@ -49,9 +49,9 @@ describe("computeRegionStats", () => {
       }),
     ]);
 
-    const stats = await computeRegionStats();
+    const stats = await computeRegionalesStats();
 
-    const found = await regionStats().findOne({}, { projection: { _id: 0 } });
+    const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       region: {
         code: "11",
@@ -101,9 +101,9 @@ describe("computeRegionStats", () => {
       }),
     ]);
 
-    await computeRegionStats();
+    await computeRegionalesStats();
 
-    const found = await regionStats().findOne({}, { projection: { _id: 0 } });
+    const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       region: {
         code: "11",
@@ -138,7 +138,7 @@ describe("computeRegionStats", () => {
       nb_poursuite_etudes: 20,
       taux_poursuite_etudes: 10,
     });
-    await computeRegionStats();
+    await computeRegionalesStats();
     await formationsStats().updateOne(
       { filiere: "apprentissage" },
       {
@@ -148,9 +148,9 @@ describe("computeRegionStats", () => {
       }
     );
 
-    await computeRegionStats();
+    await computeRegionalesStats();
 
-    const found = await regionStats().findOne({}, { projection: { _id: 0 } });
+    const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found.nb_annee_term, 300);
     assert.deepStrictEqual(found.taux_poursuite_etudes, 7);
   });
@@ -163,9 +163,9 @@ describe("computeRegionStats", () => {
       }),
     ]);
 
-    await computeRegionStats();
+    await computeRegionalesStats();
 
-    let found = await regionStats().findOne({}, { projection: { _id: 0 } });
+    let found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.strictEqual(found.nb_sortant, 0);
     assert.strictEqual(found.taux_emploi_24_mois, undefined);
     assert.strictEqual(found.taux_emploi_18_mois, undefined);
@@ -182,9 +182,9 @@ describe("computeRegionStats", () => {
       }),
     ]);
 
-    await computeRegionStats();
+    await computeRegionalesStats();
 
-    let found = await regionStats().findOne({}, { projection: { _id: 0 } });
+    let found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.strictEqual(found.nb_sortant, 0);
     assert.strictEqual(found.taux_emploi_24_mois, undefined);
     assert.strictEqual(found.taux_emploi_18_mois, undefined);
@@ -195,9 +195,9 @@ describe("computeRegionStats", () => {
   it("Vérifie qu'on ignore les valeurs indisponibles", async () => {
     await insertNoStats();
 
-    await computeRegionStats();
+    await computeRegionalesStats();
 
-    let found = await regionStats().findOne({}, { projection: { _id: 0 } });
+    let found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.strictEqual(found.nb_en_emploi_24_mois, undefined);
     assert.strictEqual(found.taux_emploi_24_mois, undefined);
   });

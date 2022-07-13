@@ -544,7 +544,7 @@ describe("regionalesRoutes", () => {
 
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
       const { httpClient } = await startServer();
-      await dbCollection("regionsStats").insertOne({
+      await dbCollection("regionalesStats").insertOne({
         region: { code: "11", nom: "Île-de-France" },
         code_certification: "23830024203",
         code_formation_diplome: "12345678",
