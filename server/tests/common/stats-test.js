@@ -1,5 +1,5 @@
 import assert from "assert";
-import { buildDescription, getStatsNames } from "../../src/common/stats.js";
+import { buildDescription, reduceStats, getStatsNames } from "../../src/common/stats.js";
 
 describe("statsNames", () => {
   it("Permet de lister le nom de stats", () => {
@@ -10,8 +10,20 @@ describe("statsNames", () => {
   });
 
   it("Permet de lister le nom de stats avec un prefix", () => {
-    const statsNames = getStatsNames({ prefix: "taux" });
+    const statsNames = getStatsNames(/^taux/);
     assert.ok(!statsNames.includes("nb_en_emploi_24_mois"));
+  });
+
+  it("Permet de filtrer et convertir les stats en un objet", () => {
+    const stats = reduceStats(/^taux/, () => 1);
+    assert.deepStrictEqual(stats, {
+      taux_emploi_12_mois: 1,
+      taux_emploi_18_mois: 1,
+      taux_emploi_24_mois: 1,
+      taux_emploi_6_mois: 1,
+      taux_poursuite_etudes: 1,
+      taux_rupture_contrats: 1,
+    });
   });
 
   it("Permet de construire une description pour une stats formation", () => {

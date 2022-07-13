@@ -2,12 +2,32 @@ import { oleoduc, writeData } from "oleoduc";
 import { formationsStats, regionStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { $computeTauxStats, $valeursStats } from "../common/utils/mongodbUtils.js";
+import { $computeTauxStats, $sumValeursStats } from "../common/utils/mongodbUtils.js";
+import { ALL, reduceStats } from "../common/stats.js";
+import { omit } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
+async function getMissingStats() {
+  const res = await formationsStats()
+    .aggregate([
+      {
+        $group: {
+          _id: "$millesime",
+          ...reduceStats(ALL, (statName) => ({ $push: "$" + statName })),
+        },
+      },
+    ])
+    .toArray();
+
+  return res.map(({ _id, ...stats }) => {
+    return { millesime: _id, stats: Object.keys(stats).filter((key) => stats[key].length === 0) };
+  });
+}
+
 export async function computeRegionStats() {
   const jobStats = { created: 0, updated: 0, failed: 0 };
+  const missingStats = await getMissingStats();
 
   logger.info(`Import des stats régionales...`);
   await oleoduc(
@@ -27,7 +47,7 @@ export async function computeRegionStats() {
             code_certification: { $first: "$code_certification" },
             code_formation_diplome: { $first: "$code_formation_diplome" },
             diplome: { $first: "$diplome" },
-            ...$valeursStats(),
+            ...$sumValeursStats(),
           },
         },
         {
@@ -50,6 +70,7 @@ export async function computeRegionStats() {
           millesime: stats.millesime,
           code_certification: stats.code_certification,
         };
+        const missing = missingStats.find((as) => as.millesime === stats.millesime);
 
         try {
           const res = await regionStats().updateOne(
@@ -59,7 +80,7 @@ export async function computeRegionStats() {
                 "_meta.date_import": new Date(),
               },
               $set: omitNil({
-                ...stats,
+                ...omit(stats, missing?.stats),
               }),
             },
             { upsert: true }

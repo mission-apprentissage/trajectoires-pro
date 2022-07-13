@@ -191,4 +191,14 @@ describe("computeRegionStats", () => {
     assert.strictEqual(found.taux_emploi_12_mois, undefined);
     assert.strictEqual(found.taux_emploi_6_mois, undefined);
   });
+
+  it("Vérifie qu'on ignore les valeurs indisponibles", async () => {
+    await insertNoStats();
+
+    await computeRegionStats();
+
+    let found = await regionStats().findOne({}, { projection: { _id: 0 } });
+    assert.strictEqual(found.nb_en_emploi_24_mois, undefined);
+    assert.strictEqual(found.taux_emploi_24_mois, undefined);
+  });
 });
