@@ -6,7 +6,7 @@ import { validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
-import { regionStats } from "../../common/db/collections/collections.js";
+import { regionalesStats } from "../../common/db/collections/collections.js";
 import { addCsvHeaders, addJsonHeaders, sendFilieresStats, sendStats } from "../utils/responseUtils.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
@@ -16,7 +16,7 @@ import { ALL, reduceStats, getFilieresStats } from "../../common/stats.js";
 export default () => {
   const router = express.Router();
 
-  async function sendRegionStats({ find, pagination }, res, options = {}) {
+  async function sendRegionalesStats({ find, pagination }, res, options = {}) {
     let extensionTransformer;
     if (options.ext === "csv") {
       addCsvHeaders(res);
@@ -55,7 +55,7 @@ export default () => {
       );
 
       const paginable = await findAndPaginate(
-        regionStats(),
+        regionalesStats(),
         {
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
           ...(code_certifications.length > 0 ? { code_certification: { $in: code_certifications } } : {}),
@@ -67,7 +67,7 @@ export default () => {
         }
       );
 
-      return sendRegionStats(paginable, res, rest);
+      return sendRegionalesStats(paginable, res, rest);
     })
   );
 
@@ -84,7 +84,7 @@ export default () => {
       );
 
       const paginable = await findAndPaginate(
-        regionStats(),
+        regionalesStats(),
         {
           "region.code": region,
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
@@ -97,7 +97,7 @@ export default () => {
         }
       );
 
-      return sendRegionStats(paginable, res, rest);
+      return sendRegionalesStats(paginable, res, rest);
     })
   );
 
@@ -117,11 +117,11 @@ export default () => {
 
       if (vue === "filieres") {
         const cfd = await findCodeFormationDiplome(code_certification);
-        const filieresStats = await getFilieresStats(regionStats(), cfd, millesime);
+        const filieresStats = await getFilieresStats(regionalesStats(), cfd, millesime);
         return sendFilieresStats(filieresStats, res, options);
       }
 
-      const results = await regionStats()
+      const results = await regionalesStats()
         .find(
           { "region.code": region, code_certification, ...(millesime ? { millesime } : {}) },
           { projection: { _id: 0, _meta: 0 } }

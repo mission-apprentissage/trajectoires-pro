@@ -4,7 +4,7 @@ import { regionSchema } from "./jsonSchema/regionSchema.js";
 import { statsSchema } from "./jsonSchema/statsSchema.js";
 import { metaSchema } from "./jsonSchema/metaSchema.js";
 
-export const name = "regionsStats";
+export const name = "regionalesStats";
 
 export function indexes() {
   return [

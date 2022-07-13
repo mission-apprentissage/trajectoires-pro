@@ -2,7 +2,12 @@ import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublis
 import { merge } from "lodash-es";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
 import { generateCodeCertification, generateStats } from "./testUtils.js";
-import { bcn, certificationsStats, formationsStats, regionStats } from "../../src/common/db/collections/collections.js";
+import {
+  bcn,
+  certificationsStats,
+  formationsStats,
+  regionalesStats,
+} from "../../src/common/db/collections/collections.js";
 
 function createCodeFormationDiplome() {
   return faker.helpers.replaceSymbols("4#######");
@@ -37,7 +42,7 @@ export function insertCertificationsStats(custom = {}) {
 }
 
 export function insertRegionalesStats(custom = {}) {
-  return regionStats().insertOne(
+  return regionalesStats().insertOne(
     merge(
       {},
       {
