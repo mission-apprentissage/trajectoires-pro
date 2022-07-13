@@ -1,10 +1,10 @@
 import { statsSchema } from "./db/collections/jsonSchema/statsSchema.js";
-import { $computeTauxStats, $valeursStats } from "./utils/mongodbUtils.js";
+import { $computeTauxStats, $sumValeursStats } from "./utils/mongodbUtils.js";
 import { omitNil } from "./utils/objectUtils.js";
 
-export const ALL = {};
-export const TAUX = { prefix: "taux_" };
-export const VALEURS = { prefix: "nb_" };
+export const ALL = /.*/;
+export const TAUX = /^taux_.*$/;
+export const VALEURS = /^nb_.*$/;
 
 export function getMillesimes() {
   return ["2018_2019", "2019_2020"];
@@ -21,16 +21,14 @@ export function getTauxReglesDeCalcul(custom = {}) {
   };
 }
 
-export function getStatsNames(options = {}) {
+export function getStatsNames(regex = ALL) {
   return Object.keys(statsSchema())
     .sort()
-    .filter((k) => {
-      return options.prefix ? k.startsWith(options.prefix) : k;
-    });
+    .filter((k) => regex.test(k));
 }
 
-export function convertStats(options, converter = (s) => s) {
-  return getStatsNames(options).reduce((acc, statName) => {
+export function reduceStats(regex, converter) {
+  return getStatsNames(regex).reduce((acc, statName) => {
     const value = converter(statName);
     return {
       ...acc,
@@ -63,7 +61,7 @@ export async function getFilieresStats(collection, cfd, millesime) {
           filiere: { $first: "$filiere" },
           millesime: { $first: "$millesime" },
           diplome: { $first: "$diplome" },
-          ...$valeursStats(),
+          ...$sumValeursStats(),
         },
       },
       {
