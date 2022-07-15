@@ -39,11 +39,9 @@ async function convertEtablissementsIntoParameters(millesime) {
 }
 
 async function streamDefaultParameters() {
-  return mergeStreams(
-    getMillesimes().map((millesime) => {
-      return convertEtablissementsIntoParameters(millesime);
-    })
-  );
+  const streams = await Promise.all(getMillesimes().map((millesime) => convertEtablissementsIntoParameters(millesime)));
+
+  return mergeStreams(streams);
 }
 
 async function loadParameters(parameters) {
@@ -82,7 +80,7 @@ export async function importFormationsStats(options = {}) {
 
   const parameters = await loadParameters(options.parameters);
 
-  logger.info(`Import des stats avec ${parameters.length} critères...`);
+  logger.info(`Import des stats pour ${parameters.length} UAI/millesime...`);
 
   await oleoduc(
     Readable.from(parameters),
