@@ -372,7 +372,7 @@ describe("regionalesRoutes", () => {
           filiere: "apprentissage",
           millesime: "2020",
           nb_sortant: 100,
-          nb_annee_term: 50,
+          nb_annee_term: 100,
           nb_poursuite_etudes: 5,
           nb_en_emploi_24_mois: 25,
           nb_en_emploi_18_mois: 25,
@@ -387,7 +387,7 @@ describe("regionalesRoutes", () => {
           filiere: "pro",
           millesime: "2020",
           nb_sortant: 100,
-          nb_annee_term: 50,
+          nb_annee_term: 100,
           nb_poursuite_etudes: 5,
           nb_en_emploi_24_mois: 25,
           nb_en_emploi_18_mois: 25,
@@ -410,14 +410,14 @@ describe("regionalesRoutes", () => {
           filiere: "apprentissage",
           millesime: "2020",
           nb_sortant: 100,
-          nb_annee_term: 50,
+          nb_annee_term: 100,
           nb_poursuite_etudes: 5,
           nb_en_emploi_24_mois: 25,
           nb_en_emploi_18_mois: 25,
           nb_en_emploi_12_mois: 25,
           nb_en_emploi_6_mois: 50,
           //computed
-          taux_poursuite_etudes: 10,
+          taux_poursuite_etudes: 5,
           taux_emploi_24_mois: 25,
           taux_emploi_18_mois: 25,
           taux_emploi_12_mois: 25,
@@ -433,14 +433,14 @@ describe("regionalesRoutes", () => {
           filiere: "pro",
           millesime: "2020",
           nb_sortant: 100,
-          nb_annee_term: 50,
+          nb_annee_term: 100,
           nb_poursuite_etudes: 5,
           nb_en_emploi_24_mois: 25,
           nb_en_emploi_18_mois: 25,
           nb_en_emploi_12_mois: 25,
           nb_en_emploi_6_mois: 50,
           //computed
-          taux_poursuite_etudes: 10,
+          taux_poursuite_etudes: 5,
           taux_emploi_24_mois: 25,
           taux_emploi_18_mois: 25,
           taux_emploi_12_mois: 25,
@@ -527,7 +527,7 @@ describe("regionalesRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes("50%"));
+      assert.ok(response.data.includes("100%"));
       assert.ok(response.data.includes("10%"));
       assert.ok(response.data.includes("Apprentissage"));
       assert.ok(response.data.includes("Voie scolaire"));

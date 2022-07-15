@@ -24,7 +24,7 @@ describe("importFormationsStats", () => {
     mockApi("0751234J", "2018_2019", {
       data: [
         {
-          id_mesure: "taux_emploi_6_mois",
+          id_mesure: "nb_en_emploi_6_mois",
           valeur_mesure: 6,
           dimensions: [
             {
@@ -43,18 +43,18 @@ describe("importFormationsStats", () => {
       },
     });
 
-    let stats = await importFormationsStats({
+    const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 
-    let found = await formationsStats().findOne({}, { projection: { _id: 0 } });
+    const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       uai: "0751234J",
       code_certification: "12345678",
       code_formation_diplome: "12345678",
       millesime: "2018_2019",
       filiere: "apprentissage",
-      taux_emploi_6_mois: 6,
+      nb_en_emploi_6_mois: 6,
       diplome: {
         code: "4",
         libelle: "BAC",
@@ -72,7 +72,7 @@ describe("importFormationsStats", () => {
     mockApi("0751234J", "2018_2019", {
       data: [
         {
-          id_mesure: "taux_emploi_6_mois",
+          id_mesure: "nb_en_emploi_6_mois",
           valeur_mesure: 6,
           dimensions: [
             {
@@ -88,18 +88,18 @@ describe("importFormationsStats", () => {
       diplome: { code: "4", libelle: "BAC" },
     });
 
-    let stats = await importFormationsStats({
+    const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 
-    let found = await formationsStats().findOne({}, { projection: { _id: 0 } });
+    const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
       uai: "0751234J",
       code_certification: "12345678900",
       code_formation_diplome: "12345678",
       millesime: "2018_2019",
       filiere: "pro",
-      taux_emploi_6_mois: 6,
+      nb_en_emploi_6_mois: 6,
       diplome: {
         code: "4",
         libelle: "BAC",
@@ -113,11 +113,59 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
+  it("Vérifie qu'on recalcule les taux", async () => {
+    mockApi("0751234J", "2018_2019", {
+      data: [
+        {
+          id_mesure: "nb_en_emploi_24_mois",
+          valeur_mesure: 10,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_poursuite_etudes",
+          valeur_mesure: 50,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_annee_term",
+          valeur_mesure: 100,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+      ],
+    });
+    await insertMEF({
+      code_certification: "12345678900",
+      code_formation_diplome: "12345678",
+      diplome: { code: "4", libelle: "BAC" },
+    });
+
+    await importFormationsStats({
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
+
+    const found = await formationsStats().findOne({});
+    assert.deepStrictEqual(found.taux_emploi_24_mois, 10);
+    assert.deepStrictEqual(found.taux_emploi_12_mois, undefined);
+    assert.deepStrictEqual(found.nb_poursuite_etudes, 50);
+  });
+
   it("Vérifie qu'on fusionne les mesures d'une formation", async () => {
     mockApi("0751234J", "2018_2019", {
       data: [
         {
-          id_mesure: "taux_emploi_6_mois",
+          id_mesure: "nb_en_emploi_6_mois",
           valeur_mesure: 6,
           dimensions: [
             {
@@ -126,7 +174,7 @@ describe("importFormationsStats", () => {
           ],
         },
         {
-          id_mesure: "taux_emploi_12_mois",
+          id_mesure: "nb_en_emploi_12_mois",
           valeur_mesure: 12,
           dimensions: [
             {
@@ -138,13 +186,13 @@ describe("importFormationsStats", () => {
     });
     await insertCFD({ code_certification: "12345678" });
 
-    let stats = await importFormationsStats({
+    const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 
-    let found = await formationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.strictEqual(found.taux_emploi_6_mois, 6);
-    assert.strictEqual(found.taux_emploi_12_mois, 12);
+    const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
+    assert.strictEqual(found.nb_en_emploi_6_mois, 6);
+    assert.strictEqual(found.nb_en_emploi_12_mois, 12);
     assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
@@ -153,7 +201,7 @@ describe("importFormationsStats", () => {
     mockApi("0751234J", "2018_2019", {
       data: [
         {
-          id_mesure: "taux_emploi_6_mois",
+          id_mesure: "nb_en_emploi_6_mois",
           valeur_mesure: 6,
           dimensions: [
             {
@@ -162,7 +210,7 @@ describe("importFormationsStats", () => {
           ],
         },
         {
-          id_mesure: "taux_emploi_6_mois",
+          id_mesure: "nb_en_emploi_6_mois",
           valeur_mesure: 8,
           dimensions: [
             {
@@ -175,14 +223,14 @@ describe("importFormationsStats", () => {
     await insertCFD({ code_certification: "12345678" });
     await insertCFD({ code_certification: "87456123" });
 
-    let stats = await importFormationsStats({
+    const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 
     let found = await formationsStats().findOne({ code_certification: "12345678" });
-    assert.strictEqual(found.taux_emploi_6_mois, 6);
+    assert.strictEqual(found.nb_en_emploi_6_mois, 6);
     found = await formationsStats().findOne({ code_certification: "87456123" });
-    assert.strictEqual(found.taux_emploi_6_mois, 8);
+    assert.strictEqual(found.nb_en_emploi_6_mois, 8);
     assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
   });
 
@@ -190,7 +238,7 @@ describe("importFormationsStats", () => {
     mockApi("0751234J", "2018_2019", {
       data: [
         {
-          id_mesure: "taux_emploi_6_mois",
+          id_mesure: "nb_en_emploi_6_mois",
           valeur_mesure: 6,
           dimensions: [
             {
@@ -203,7 +251,7 @@ describe("importFormationsStats", () => {
     mockApi("0751234J", "2019_2020", {
       data: [
         {
-          id_mesure: "taux_emploi_6_mois",
+          id_mesure: "nb_en_emploi_6_mois",
           valeur_mesure: 8,
           dimensions: [
             {
@@ -215,7 +263,7 @@ describe("importFormationsStats", () => {
     });
     await insertCFD({ code_certification: "12345678" });
 
-    let stats = await importFormationsStats({
+    const stats = await importFormationsStats({
       parameters: [
         { uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" },
         { uai: "0751234J", region: "OCCITANIE", millesime: "2019_2020" },
@@ -223,9 +271,9 @@ describe("importFormationsStats", () => {
     });
 
     let found = await formationsStats().findOne({ millesime: "2018_2019" });
-    assert.strictEqual(found.taux_emploi_6_mois, 6);
+    assert.strictEqual(found.nb_en_emploi_6_mois, 6);
     found = await formationsStats().findOne({ millesime: "2019_2020" });
-    assert.strictEqual(found.taux_emploi_6_mois, 8);
+    assert.strictEqual(found.nb_en_emploi_6_mois, 8);
     assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
   });
 
@@ -233,7 +281,7 @@ describe("importFormationsStats", () => {
     mockApi("0751234J", "2018_2019", {
       data: [
         {
-          id_mesure: "taux_emploi_6_mois",
+          id_mesure: "nb_en_emploi_6_mois",
           valeur_mesure: 6,
           dimensions: [
             {
@@ -247,15 +295,15 @@ describe("importFormationsStats", () => {
       uai: "0751234J",
       code_certification: "12345678",
       millesime: "2018_2019",
-      taux_emploi_6_mois: -1,
+      nb_en_emploi_6_mois: -1,
     });
 
-    let stats = await importFormationsStats({
+    const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 
-    let found = await formationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(found.taux_emploi_6_mois, 6);
+    const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
+    assert.deepStrictEqual(found.nb_en_emploi_6_mois, 6);
     assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 1 });
   });
 
@@ -272,11 +320,11 @@ describe("importFormationsStats", () => {
         .reply(400, { msg: "UAI incorrect ou agricole" });
     });
 
-    let stats = await importFormationsStats({
+    const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 
-    let count = await formationsStats().countDocuments({});
+    const count = await formationsStats().countDocuments({});
     assert.strictEqual(count, 0);
     assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
   });
@@ -294,11 +342,11 @@ describe("importFormationsStats", () => {
         .reply(200, "{json:");
     });
 
-    let stats = await importFormationsStats({
+    const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 
-    let count = await formationsStats().countDocuments({});
+    const count = await formationsStats().countDocuments({});
     assert.strictEqual(count, 0);
     assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
   });
