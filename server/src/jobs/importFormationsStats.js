@@ -9,7 +9,8 @@ import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findRegionByNom } from "../common/regions.js";
 import { pick } from "lodash-es";
-import { getMillesimes } from "../common/stats.js";
+import { computeTauxStats, getMillesimes } from "../common/stats.js";
+import { percentage } from "../common/utils/numberUtils.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -119,6 +120,7 @@ export async function importFormationsStats(options = {}) {
                 region: pick(params.region, ["code", "nom"]),
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
+                ...computeTauxStats((regle) => percentage(stats[regle.dividend], stats[regle.divisor])),
               }),
             },
             { upsert: true }

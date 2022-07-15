@@ -1,4 +1,4 @@
-import { reduceStats, getTauxReglesDeCalcul, TAUX, VALEURS } from "../stats.js";
+import { computeTauxStats, reduceStats, VALEURS } from "../stats.js";
 
 function $(v) {
   return "$" + v;
@@ -32,9 +32,5 @@ export function $sumValeursStats() {
 }
 
 export function $computeTauxStats() {
-  const regles = getTauxReglesDeCalcul();
-  return reduceStats(TAUX, (statName) => {
-    const regle = regles[statName];
-    return regle ? $percentage($(regle.dividend), $(regle.divisor)) : null;
-  });
+  return computeTauxStats((regle) => $percentage($(regle.dividend), $(regle.divisor)));
 }

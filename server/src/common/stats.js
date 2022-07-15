@@ -12,10 +12,10 @@ export function getMillesimes() {
 
 export function getTauxReglesDeCalcul(custom = {}) {
   return {
-    taux_emploi_24_mois: { dividend: "nb_en_emploi_24_mois", divisor: "nb_sortant" },
-    taux_emploi_18_mois: { dividend: "nb_en_emploi_18_mois", divisor: "nb_sortant" },
-    taux_emploi_12_mois: { dividend: "nb_en_emploi_12_mois", divisor: "nb_sortant" },
-    taux_emploi_6_mois: { dividend: "nb_en_emploi_6_mois", divisor: "nb_sortant" },
+    taux_emploi_24_mois: { dividend: "nb_en_emploi_24_mois", divisor: "nb_annee_term" },
+    taux_emploi_18_mois: { dividend: "nb_en_emploi_18_mois", divisor: "nb_annee_term" },
+    taux_emploi_12_mois: { dividend: "nb_en_emploi_12_mois", divisor: "nb_annee_term" },
+    taux_emploi_6_mois: { dividend: "nb_en_emploi_6_mois", divisor: "nb_annee_term" },
     taux_poursuite_etudes: { dividend: "nb_poursuite_etudes", divisor: "nb_annee_term" },
     ...custom,
   };
@@ -35,6 +35,14 @@ export function reduceStats(regex, converter) {
       ...(value ? { [statName]: value } : {}),
     };
   }, {});
+}
+
+export function computeTauxStats(callback) {
+  const regles = getTauxReglesDeCalcul();
+  return reduceStats(TAUX, (statName) => {
+    const regle = regles[statName];
+    return regle ? callback(regle) : null;
+  });
 }
 
 export function buildDescription(stats) {
