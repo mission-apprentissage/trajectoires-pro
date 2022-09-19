@@ -3,5 +3,5 @@ location / {
     if ($always_redirect = on) {
         return 301 https://$host$request_uri;
     }
-    return 301 $scheme://$host/api;
+    return 301 https://beta.gouv.fr/startups/Trajpro.html;
 }
