@@ -379,9 +379,9 @@ components:
       description: |
         Retourne les statistiques représentées sous la forme d'une vue
         
-        Valeurs possibles :
+        Vues :
          ```
-         filiere
+         filieres
          ```
       required: false
       schema:
