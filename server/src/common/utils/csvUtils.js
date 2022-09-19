@@ -1,5 +1,6 @@
 import { parse } from "csv-parse";
 import { pickBy, isEmpty } from "lodash-es";
+import { ALL, reduceStats } from "../stats.js";
 
 export function parseCsv(options = {}) {
   return parse({
@@ -13,4 +14,8 @@ export function parseCsv(options = {}) {
     },
     ...options,
   });
+}
+
+export function getStatsAsColumns() {
+  return reduceStats(ALL, (statName) => (f) => f[statName]);
 }
