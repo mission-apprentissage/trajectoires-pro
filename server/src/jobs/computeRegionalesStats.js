@@ -14,7 +14,9 @@ async function getMissingStats() {
       {
         $group: {
           _id: "$millesime",
-          ...reduceStats(ALL, (statName) => ({ $push: "$" + statName })),
+          ...reduceStats(ALL, (statName) => {
+            return { [statName]: { $push: "$" + statName } };
+          }),
         },
       },
     ])

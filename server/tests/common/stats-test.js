@@ -15,7 +15,9 @@ describe("statsNames", () => {
   });
 
   it("Permet de filtrer et convertir les stats en un objet", () => {
-    const stats = reduceStats(/^taux/, () => 1);
+    const stats = reduceStats(/^taux/, (statName) => {
+      return { [statName]: 1 };
+    });
     assert.deepStrictEqual(stats, {
       taux_emploi_12_mois: 1,
       taux_emploi_18_mois: 1,

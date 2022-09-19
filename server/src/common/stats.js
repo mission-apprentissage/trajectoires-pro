@@ -27,12 +27,12 @@ export function getStatsNames(regex = ALL) {
     .filter((k) => regex.test(k));
 }
 
-export function reduceStats(regex, converter) {
+export function reduceStats(regex, callback) {
   return getStatsNames(regex).reduce((acc, statName) => {
-    const value = converter(statName);
+    const res = callback(statName);
     return {
       ...acc,
-      ...(value ? { [statName]: value } : {}),
+      ...(res || {}),
     };
   }, {});
 }
@@ -41,7 +41,9 @@ export function computeTauxStats(callback) {
   const regles = getTauxReglesDeCalcul();
   return reduceStats(TAUX, (statName) => {
     const regle = regles[statName];
-    return regle ? callback(regle) : null;
+    const value = regle ? callback(regle) : null;
+
+    return value ? { [statName]: value } : null;
   });
 }
 

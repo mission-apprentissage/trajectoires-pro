@@ -28,7 +28,11 @@ export function $percentage(dividend, divisor) {
 }
 
 export function $sumValeursStats() {
-  return reduceStats(VALEURS, (statName) => $sumOf($(statName)));
+  return reduceStats(VALEURS, (statName) => {
+    return {
+      [statName]: $sumOf($(statName)),
+    };
+  });
 }
 
 export function $computeTauxStats() {

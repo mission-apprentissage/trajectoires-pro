@@ -17,5 +17,7 @@ export function parseCsv(options = {}) {
 }
 
 export function getStatsAsColumns() {
-  return reduceStats(ALL, (statName) => (f) => f[statName]);
+  return reduceStats(ALL, (statName) => {
+    return { [statName]: (f) => f[statName] };
+  });
 }
