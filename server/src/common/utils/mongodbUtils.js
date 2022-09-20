@@ -35,6 +35,6 @@ export function $sumValeursStats() {
   });
 }
 
-export function $computeTauxStats() {
+export function $computeCustomStats() {
   return computeCustomStats((regle) => $percentage($(regle.dividend), $(regle.divisor)));
 }

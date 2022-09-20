@@ -4,7 +4,7 @@ import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { computeCustomStats, ignoredStats } from "../common/stats.js";
+import { computeCustomStats, getIgnoredStatNames } from "../common/stats.js";
 import { percentage } from "../common/utils/numberUtils.js";
 import { omit } from "lodash-es";
 
@@ -55,7 +55,7 @@ export async function importCertificationsStats(options = {}) {
                 "_meta.date_import": new Date(),
               },
               $set: omitNil({
-                ...omit(certificationStats, ignoredStats()),
+                ...omit(certificationStats, getIgnoredStatNames()),
                 ...customStats,
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,

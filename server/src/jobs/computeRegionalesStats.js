@@ -2,7 +2,7 @@ import { oleoduc, writeData } from "oleoduc";
 import { formationsStats, regionalesStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { $computeTauxStats, $sumValeursStats } from "../common/utils/mongodbUtils.js";
+import { $computeCustomStats, $sumValeursStats } from "../common/utils/mongodbUtils.js";
 import { ALL, reduceStats } from "../common/stats.js";
 import { omit } from "lodash-es";
 
@@ -54,7 +54,7 @@ export async function computeRegionalesStats() {
         },
         {
           $addFields: {
-            ...$computeTauxStats(),
+            ...$computeCustomStats(),
           },
         },
         {

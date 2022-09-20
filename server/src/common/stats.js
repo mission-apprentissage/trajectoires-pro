@@ -1,5 +1,5 @@
 import { statsSchema } from "./db/collections/jsonSchema/statsSchema.js";
-import { $computeTauxStats, $sumValeursStats } from "./utils/mongodbUtils.js";
+import { $computeCustomStats, $sumValeursStats } from "./utils/mongodbUtils.js";
 import { omitNil } from "./utils/objectUtils.js";
 
 export const ALL = /.*/;
@@ -15,7 +15,7 @@ export function getStatsNames(regex = ALL) {
     .filter((k) => regex.test(k));
 }
 
-export function ignoredStats() {
+export function getIgnoredStatNames() {
   return [
     "taux_poursuite_etudes",
     "taux_emploi_24_mois",
@@ -100,7 +100,7 @@ export async function getFilieresStats(collection, cfd, millesime) {
       },
       {
         $addFields: {
-          ...$computeTauxStats(),
+          ...$computeCustomStats(),
         },
       },
       {

@@ -9,7 +9,7 @@ import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findRegionByNom } from "../common/regions.js";
 import { omit, pick } from "lodash-es";
-import { computeCustomStats, getMillesimes, ignoredStats } from "../common/stats.js";
+import { computeCustomStats, getMillesimes, getIgnoredStatNames } from "../common/stats.js";
 import { percentage } from "../common/utils/numberUtils.js";
 
 const logger = getLoggerWithContext("import");
@@ -123,7 +123,7 @@ export async function importFormationsStats(options = {}) {
                 "_meta.date_import": new Date(),
               },
               $set: omitNil({
-                ...omit(formationStats, ignoredStats()),
+                ...omit(formationStats, getIgnoredStatNames()),
                 ...customStats,
                 region: pick(params.region, ["code", "nom"]),
                 code_formation_diplome: certification?.code_formation_diplome,
