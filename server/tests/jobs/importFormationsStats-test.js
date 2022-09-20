@@ -32,6 +32,16 @@ describe("importFormationsStats", () => {
             },
           ],
         },
+        {
+          //ignored
+          id_mesure: "taux_poursuite_etudes",
+          valeur_mesure: 6,
+          dimensions: [
+            {
+              id_formation_apprentissage: "12345678",
+            },
+          ],
+        },
       ],
     });
     await insertCFD({
@@ -156,8 +166,8 @@ describe("importFormationsStats", () => {
     });
 
     const found = await formationsStats().findOne({});
-    assert.deepStrictEqual(found.taux_emploi_24_mois, 10);
-    assert.deepStrictEqual(found.taux_emploi_12_mois, undefined);
+    assert.deepStrictEqual(found.taux_en_emploi_24_mois, 10);
+    assert.deepStrictEqual(found.taux_en_emploi_12_mois, undefined);
     assert.deepStrictEqual(found.nb_poursuite_etudes, 50);
   });
 

@@ -7,8 +7,8 @@ describe("widget", () => {
       code_certification: "50034303",
       diplome: { code: "3", libelle: "CAP" },
       filiere: "apprentissage",
-      taux_emploi_6_mois: 80,
-      taux_poursuite_etudes: 80,
+      taux_en_emploi_6_mois: 80,
+      taux_en_formation: 80,
     };
 
     assert.deepStrictEqual(prepareStatsForWidget(stats), [
@@ -30,8 +30,8 @@ describe("widget", () => {
       code_certification: "50034303",
       diplome: { code: "3", libelle: "CAP" },
       filiere: "apprentissage",
-      taux_emploi_6_mois: 25,
-      taux_poursuite_etudes: 25,
+      taux_en_emploi_6_mois: 25,
+      taux_en_formation: 25,
     };
 
     const rates = prepareStatsForWidget(stats);
@@ -45,8 +45,8 @@ describe("widget", () => {
       code_certification: "50034303",
       diplome: { code: "3", libelle: "CAP" },
       filiere: "apprentissage",
-      taux_emploi_6_mois: 5,
-      taux_poursuite_etudes: 5,
+      taux_en_emploi_6_mois: 5,
+      taux_en_formation: 5,
     };
 
     const rates = prepareStatsForWidget(stats);

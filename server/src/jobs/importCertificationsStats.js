@@ -4,8 +4,9 @@ import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { computeTauxStats } from "../common/stats.js";
+import { computeCustomStats, ignoredStats } from "../common/stats.js";
 import { percentage } from "../common/utils/numberUtils.js";
+import { omit } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
@@ -35,11 +36,17 @@ export async function importCertificationsStats(options = {}) {
     ),
     flattenArray(),
     writeData(
-      async (stats) => {
-        const query = { millesime: stats.millesime, code_certification: stats.code_certification };
+      async (certificationStats) => {
+        const query = {
+          millesime: certificationStats.millesime,
+          code_certification: certificationStats.code_certification,
+        };
 
         try {
-          const certification = await bcn().findOne({ code_certification: stats.code_certification });
+          const certification = await bcn().findOne({ code_certification: certificationStats.code_certification });
+          const customStats = computeCustomStats((regle) => {
+            return percentage(certificationStats[regle.dividend], certificationStats[regle.divisor]);
+          });
 
           const res = await certificationsStats().updateOne(
             query,
@@ -48,10 +55,10 @@ export async function importCertificationsStats(options = {}) {
                 "_meta.date_import": new Date(),
               },
               $set: omitNil({
-                ...stats,
+                ...omit(certificationStats, ignoredStats()),
+                ...customStats,
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
-                ...computeTauxStats((regle) => percentage(stats[regle.dividend], stats[regle.divisor])),
               }),
             },
             { upsert: true }

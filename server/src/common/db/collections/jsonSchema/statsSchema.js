@@ -9,11 +9,12 @@ export function statsSchema() {
     nb_en_emploi_6_mois: integer(),
     nb_poursuite_etudes: integer(),
     nb_sortant: integer(),
-    taux_emploi_24_mois: integer(),
-    taux_emploi_18_mois: integer(),
-    taux_emploi_12_mois: integer(),
-    taux_emploi_6_mois: integer(),
-    taux_poursuite_etudes: integer(),
     taux_rupture_contrats: integer(),
+    //Custom stats
+    taux_en_emploi_24_mois: integer(),
+    taux_en_emploi_18_mois: integer(),
+    taux_en_emploi_12_mois: integer(),
+    taux_en_emploi_6_mois: integer(),
+    taux_en_formation: integer(),
   };
 }

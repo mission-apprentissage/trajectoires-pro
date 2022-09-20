@@ -1,4 +1,4 @@
-import { computeTauxStats, reduceStats, VALEURS } from "../stats.js";
+import { computeCustomStats, reduceStats, VALEURS } from "../stats.js";
 
 function $(v) {
   return "$" + v;
@@ -36,5 +36,5 @@ export function $sumValeursStats() {
 }
 
 export function $computeTauxStats() {
-  return computeTauxStats((regle) => $percentage($(regle.dividend), $(regle.divisor)));
+  return computeCustomStats((regle) => $percentage($(regle.dividend), $(regle.divisor)));
 }

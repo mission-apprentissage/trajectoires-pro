@@ -32,6 +32,16 @@ describe("importCertificationsStats", () => {
             },
           ],
         },
+        {
+          //ignored
+          id_mesure: "taux_poursuite_etudes",
+          valeur_mesure: 6,
+          dimensions: [
+            {
+              id_formation_apprentissage: "12345678",
+            },
+          ],
+        },
       ],
     });
     await insertCFD({
@@ -140,8 +150,8 @@ describe("importCertificationsStats", () => {
     await importCertificationsStats({ millesimes: ["2020"], filieres: ["voie_pro_sco_educ_nat"] });
 
     const found = await certificationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(found.taux_emploi_24_mois, 10);
-    assert.deepStrictEqual(found.taux_emploi_12_mois, undefined);
+    assert.deepStrictEqual(found.taux_en_emploi_24_mois, 10);
+    assert.deepStrictEqual(found.taux_en_emploi_12_mois, undefined);
     assert.deepStrictEqual(found.nb_poursuite_etudes, 50);
   });
 

@@ -27,11 +27,11 @@ describe("regionalesRoutes", () => {
         nb_en_emploi_12_mois: 3,
         nb_en_emploi_6_mois: 4,
         nb_sortant: 10,
-        taux_poursuite_etudes: 5,
-        taux_emploi_24_mois: 24,
-        taux_emploi_18_mois: 18,
-        taux_emploi_12_mois: 6,
-        taux_emploi_6_mois: 7,
+        taux_en_formation: 5,
+        taux_en_emploi_24_mois: 24,
+        taux_en_emploi_18_mois: 18,
+        taux_en_emploi_12_mois: 6,
+        taux_en_emploi_6_mois: 7,
         taux_rupture_contrats: 8,
       });
 
@@ -58,11 +58,11 @@ describe("regionalesRoutes", () => {
             nb_en_emploi_12_mois: 3,
             nb_en_emploi_6_mois: 4,
             nb_sortant: 10,
-            taux_poursuite_etudes: 5,
-            taux_emploi_24_mois: 24,
-            taux_emploi_18_mois: 18,
-            taux_emploi_12_mois: 6,
-            taux_emploi_6_mois: 7,
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 24,
+            taux_en_emploi_18_mois: 18,
+            taux_en_emploi_12_mois: 6,
+            taux_en_emploi_6_mois: 7,
             taux_rupture_contrats: 8,
           },
         ],
@@ -152,11 +152,11 @@ describe("regionalesRoutes", () => {
         nb_en_emploi_6_mois: 5,
         nb_poursuite_etudes: 6,
         nb_sortant: 7,
-        taux_emploi_12_mois: 8,
-        taux_emploi_18_mois: 9,
-        taux_emploi_24_mois: 10,
-        taux_emploi_6_mois: 11,
-        taux_poursuite_etudes: 12,
+        taux_en_emploi_12_mois: 8,
+        taux_en_emploi_18_mois: 9,
+        taux_en_emploi_24_mois: 10,
+        taux_en_emploi_6_mois: 11,
+        taux_en_formation: 12,
         taux_rupture_contrats: 13,
       });
 
@@ -170,7 +170,7 @@ describe("regionalesRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `region;code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_18_mois;taux_emploi_24_mois;taux_emploi_6_mois;taux_poursuite_etudes;taux_rupture_contrats
+        `region;code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
 Île-de-France;12345678;apprentissage;2020;1;2;3;4;5;6;7;8;9;10;11;12;13
 `
       );
@@ -245,11 +245,11 @@ describe("regionalesRoutes", () => {
         nb_en_emploi_12_mois: 3,
         nb_en_emploi_6_mois: 4,
         nb_sortant: 10,
-        taux_poursuite_etudes: 5,
-        taux_emploi_24_mois: 24,
-        taux_emploi_18_mois: 18,
-        taux_emploi_12_mois: 6,
-        taux_emploi_6_mois: 7,
+        taux_en_formation: 5,
+        taux_en_emploi_24_mois: 24,
+        taux_en_emploi_18_mois: 18,
+        taux_en_emploi_12_mois: 6,
+        taux_en_emploi_6_mois: 7,
         taux_rupture_contrats: 8,
       });
 
@@ -276,11 +276,11 @@ describe("regionalesRoutes", () => {
             nb_en_emploi_12_mois: 3,
             nb_en_emploi_6_mois: 4,
             nb_sortant: 10,
-            taux_poursuite_etudes: 5,
-            taux_emploi_24_mois: 24,
-            taux_emploi_18_mois: 18,
-            taux_emploi_12_mois: 6,
-            taux_emploi_6_mois: 7,
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 24,
+            taux_en_emploi_18_mois: 18,
+            taux_en_emploi_12_mois: 6,
+            taux_en_emploi_6_mois: 7,
             taux_rupture_contrats: 8,
           },
         ],
@@ -310,11 +310,11 @@ describe("regionalesRoutes", () => {
         nb_en_emploi_18_mois: 18,
         nb_en_emploi_12_mois: 3,
         nb_en_emploi_6_mois: 4,
-        taux_poursuite_etudes: 5,
-        taux_emploi_24_mois: 24,
-        taux_emploi_18_mois: 18,
-        taux_emploi_12_mois: 6,
-        taux_emploi_6_mois: 7,
+        taux_en_formation: 5,
+        taux_en_emploi_24_mois: 24,
+        taux_en_emploi_18_mois: 18,
+        taux_en_emploi_12_mois: 6,
+        taux_en_emploi_6_mois: 7,
         taux_rupture_contrats: 8,
       });
       await insertRegionalesStats({ code_certification: "12345678", millesime: "2019" });
@@ -334,11 +334,11 @@ describe("regionalesRoutes", () => {
         nb_en_emploi_18_mois: 18,
         nb_en_emploi_12_mois: 3,
         nb_en_emploi_6_mois: 4,
-        taux_poursuite_etudes: 5,
-        taux_emploi_24_mois: 24,
-        taux_emploi_18_mois: 18,
-        taux_emploi_12_mois: 6,
-        taux_emploi_6_mois: 7,
+        taux_en_formation: 5,
+        taux_en_emploi_24_mois: 24,
+        taux_en_emploi_18_mois: 18,
+        taux_en_emploi_12_mois: 6,
+        taux_en_emploi_6_mois: 7,
         taux_rupture_contrats: 8,
         nb_sortant: 10,
         region: { code: "11", nom: "Île-de-France" },
@@ -417,11 +417,11 @@ describe("regionalesRoutes", () => {
           nb_en_emploi_12_mois: 25,
           nb_en_emploi_6_mois: 50,
           //computed
-          taux_poursuite_etudes: 5,
-          taux_emploi_24_mois: 25,
-          taux_emploi_18_mois: 25,
-          taux_emploi_12_mois: 25,
-          taux_emploi_6_mois: 50,
+          taux_en_formation: 5,
+          taux_en_emploi_24_mois: 25,
+          taux_en_emploi_18_mois: 25,
+          taux_en_emploi_12_mois: 25,
+          taux_en_emploi_6_mois: 50,
         },
         pro: {
           codes_certifications: ["23830024202"],
@@ -440,11 +440,11 @@ describe("regionalesRoutes", () => {
           nb_en_emploi_12_mois: 25,
           nb_en_emploi_6_mois: 50,
           //computed
-          taux_poursuite_etudes: 5,
-          taux_emploi_24_mois: 25,
-          taux_emploi_18_mois: 25,
-          taux_emploi_12_mois: 25,
-          taux_emploi_6_mois: 50,
+          taux_en_formation: 5,
+          taux_en_emploi_24_mois: 25,
+          taux_en_emploi_18_mois: 25,
+          taux_en_emploi_12_mois: 25,
+          taux_en_emploi_6_mois: 50,
         },
       });
     });
@@ -470,7 +470,7 @@ describe("regionalesRoutes", () => {
         region: { code: "11", nom: "Île-de-France" },
         code_certification: "23830024203",
         filiere: "apprentissage",
-        taux_poursuite_etudes: 5,
+        taux_en_formation: 5,
       });
 
       const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/23830024203.svg");

@@ -1,6 +1,6 @@
 const seuils = [
   {
-    statsName: "taux_emploi_6_mois",
+    statsName: "taux_en_emploi_6_mois",
     filiere: "pro",
     diplome: "3", //CAP
     niveaux: [
@@ -10,7 +10,7 @@ const seuils = [
     ],
   },
   {
-    statsName: "taux_emploi_6_mois",
+    statsName: "taux_en_emploi_6_mois",
     filiere: "pro",
     diplome: "4", //BAC
     niveaux: [
@@ -20,7 +20,7 @@ const seuils = [
     ],
   },
   {
-    statsName: "taux_emploi_6_mois",
+    statsName: "taux_en_emploi_6_mois",
     filiere: "pro",
     diplome: "5", //BTS
     niveaux: [
@@ -31,7 +31,7 @@ const seuils = [
   },
 
   {
-    statsName: "taux_emploi_6_mois",
+    statsName: "taux_en_emploi_6_mois",
     filiere: "apprentissage",
     diplome: "3", //CAP
     niveaux: [
@@ -41,7 +41,7 @@ const seuils = [
     ],
   },
   {
-    statsName: "taux_emploi_6_mois",
+    statsName: "taux_en_emploi_6_mois",
     filiere: "apprentissage",
     diplome: "4", //BAC
     niveaux: [
@@ -51,7 +51,7 @@ const seuils = [
     ],
   },
   {
-    statsName: "taux_emploi_6_mois",
+    statsName: "taux_en_emploi_6_mois",
     filiere: "apprentissage",
     diplome: "5", //BTS
     niveaux: [

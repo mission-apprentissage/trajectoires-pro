@@ -9,22 +9,45 @@ export const VALEURS = /^nb_.*$/;
 export function getMillesimes() {
   return ["2018_2019", "2019_2020"];
 }
-
-export function getTauxReglesDeCalcul(custom = {}) {
-  return {
-    taux_emploi_24_mois: { dividend: "nb_en_emploi_24_mois", divisor: "nb_annee_term" },
-    taux_emploi_18_mois: { dividend: "nb_en_emploi_18_mois", divisor: "nb_annee_term" },
-    taux_emploi_12_mois: { dividend: "nb_en_emploi_12_mois", divisor: "nb_annee_term" },
-    taux_emploi_6_mois: { dividend: "nb_en_emploi_6_mois", divisor: "nb_annee_term" },
-    taux_poursuite_etudes: { dividend: "nb_poursuite_etudes", divisor: "nb_annee_term" },
-    ...custom,
-  };
-}
-
 export function getStatsNames(regex = ALL) {
   return Object.keys(statsSchema())
     .sort()
     .filter((k) => regex.test(k));
+}
+
+export function ignoredStats() {
+  return [
+    "taux_poursuite_etudes",
+    "taux_emploi_24_mois",
+    "taux_emploi_18_mois",
+    "taux_emploi_12_mois",
+    "taux_emploi_6_mois",
+  ];
+}
+
+export function getReglesDeCalcul() {
+  return {
+    taux_en_emploi_24_mois: {
+      dividend: "nb_en_emploi_24_mois",
+      divisor: "nb_annee_term",
+    },
+    taux_en_emploi_18_mois: {
+      dividend: "nb_en_emploi_18_mois",
+      divisor: "nb_annee_term",
+    },
+    taux_en_emploi_12_mois: {
+      dividend: "nb_en_emploi_12_mois",
+      divisor: "nb_annee_term",
+    },
+    taux_en_emploi_6_mois: {
+      dividend: "nb_en_emploi_6_mois",
+      divisor: "nb_annee_term",
+    },
+    taux_en_formation: {
+      dividend: "nb_poursuite_etudes",
+      divisor: "nb_annee_term",
+    },
+  };
 }
 
 export function reduceStats(regex, callback) {
@@ -37,8 +60,9 @@ export function reduceStats(regex, callback) {
   }, {});
 }
 
-export function computeTauxStats(callback) {
-  const regles = getTauxReglesDeCalcul();
+export function computeCustomStats(callback) {
+  const regles = getReglesDeCalcul();
+
   return reduceStats(TAUX, (statName) => {
     const regle = regles[statName];
     const value = regle ? callback(regle) : null;
