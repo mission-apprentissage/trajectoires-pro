@@ -62,13 +62,6 @@ export async function createCollectionIfNeeded(name) {
   }
 }
 
-export function clearCollection(name) {
-  logger.warn(`Suppression des données de la collection ${name}...`);
-  return dbCollection(name)
-    .deleteMany({})
-    .then((res) => res.deletedCount);
-}
-
 export async function configureIndexes(options = {}) {
   await ensureInitialization();
   await Promise.all(
@@ -116,4 +109,20 @@ export async function configureValidation() {
       });
     })
   );
+}
+
+export async function migrateMongodb(version, callback, options = {}) {
+  let count = await dbCollection("migrations").count({ version });
+  if (count > 0) {
+    throw new Error(`La migration ${version} a déjà été réalisée`);
+  }
+
+  await configureIndexes({ dropIndexes: options.dropIndexes || false });
+  await configureValidation();
+
+  const res = await callback();
+
+  await dbCollection("migrations").insertOne({ version });
+
+  return res;
 }
