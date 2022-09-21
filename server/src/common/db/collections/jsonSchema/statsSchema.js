@@ -16,5 +16,9 @@ export function statsSchema() {
     taux_en_emploi_18_mois: integer(),
     taux_en_emploi_12_mois: integer(),
     taux_en_emploi_6_mois: integer(),
+    taux_autres_6_mois: integer(),
+    taux_autres_12_mois: integer(),
+    taux_autres_18_mois: integer(),
+    taux_autres_24_mois: integer(),
   };
 }

@@ -1,6 +1,4 @@
-import { computeCustomStats, reduceStats, VALEURS } from "../stats.js";
-
-function $(v) {
+export function $field(v) {
   return "$" + v;
 }
 
@@ -25,16 +23,4 @@ export function $percentage(dividend, divisor) {
       },
     ],
   };
-}
-
-export function $sumValeursStats() {
-  return reduceStats(VALEURS, (statName) => {
-    return {
-      [statName]: $sumOf($(statName)),
-    };
-  });
-}
-
-export function $computeCustomStats() {
-  return computeCustomStats((regle) => $percentage($(regle.dividend), $(regle.divisor)));
 }

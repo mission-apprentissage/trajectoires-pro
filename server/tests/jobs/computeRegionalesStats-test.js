@@ -77,12 +77,16 @@ describe("computeRegionalesStats", () => {
       taux_en_emploi_24_mois: 15,
       taux_en_emploi_6_mois: 15,
       taux_en_formation: 15,
+      taux_autres_6_mois: 70,
+      taux_autres_12_mois: 70,
+      taux_autres_18_mois: 70,
+      taux_autres_24_mois: 70,
     });
     assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
-  it("Vérifie qu'on peut calculer les stats d'une région et qu'on ignore les données absentes", async () => {
+  it("Vérifie qu'on peut calculer les stats régionales en ignorant les données absentes", async () => {
     await Promise.all([
       insertNoStats(),
       insertFormationsStats({
@@ -129,6 +133,10 @@ describe("computeRegionalesStats", () => {
       taux_en_emploi_24_mois: 20,
       taux_en_emploi_6_mois: 20,
       taux_en_formation: 20,
+      taux_autres_6_mois: 60,
+      taux_autres_12_mois: 60,
+      taux_autres_18_mois: 60,
+      taux_autres_24_mois: 60,
     });
   });
 

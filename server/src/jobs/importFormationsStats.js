@@ -9,8 +9,7 @@ import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findRegionByNom } from "../common/regions.js";
 import { omit, pick } from "lodash-es";
-import { computeCustomStats, getMillesimes, getIgnoredStatNames } from "../common/stats.js";
-import { percentage } from "../common/utils/numberUtils.js";
+import { computeCustomStats, getIgnoredStatNames, getMillesimes } from "../common/stats.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -112,9 +111,8 @@ export async function importFormationsStats(options = {}) {
 
         try {
           const certification = await bcn().findOne({ code_certification: formationStats.code_certification });
-          const customStats = computeCustomStats((regle) => {
-            return percentage(formationStats[regle.dividend], formationStats[regle.divisor]);
-          });
+          const stats = omit(formationStats, getIgnoredStatNames());
+          const customStats = computeCustomStats(formationStats);
 
           const res = await formationsStats().updateOne(
             query,
@@ -123,7 +121,7 @@ export async function importFormationsStats(options = {}) {
                 "_meta.date_import": new Date(),
               },
               $set: omitNil({
-                ...omit(formationStats, getIgnoredStatNames()),
+                ...stats,
                 ...customStats,
                 region: pick(params.region, ["code", "nom"]),
                 code_formation_diplome: certification?.code_formation_diplome,

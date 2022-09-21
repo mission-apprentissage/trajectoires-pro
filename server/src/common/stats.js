@@ -1,6 +1,7 @@
 import { statsSchema } from "./db/collections/jsonSchema/statsSchema.js";
-import { $computeCustomStats, $sumValeursStats } from "./utils/mongodbUtils.js";
+import { $field, $percentage, $sumOf } from "./utils/mongodbUtils.js";
 import { omitNil } from "./utils/objectUtils.js";
+import { percentage } from "./utils/numberUtils.js";
 
 export const ALL = /.*/;
 export const TAUX = /^taux_.*$/;
@@ -26,48 +27,62 @@ export function getIgnoredStatNames() {
 }
 
 export function getReglesDeCalcul() {
+  const taux = (dividend, divisor) => {
+    return {
+      compute: (data) => percentage(data[dividend], data[divisor]),
+      aggregate: () => $percentage($field(dividend), $field(divisor)),
+    };
+  };
+
+  const autres = (champ) => {
+    return {
+      compute: (data) => {
+        const nbAutres = data.nb_annee_term - data[champ] - data.nb_poursuite_etudes;
+        return percentage(nbAutres, data.nb_annee_term);
+      },
+      aggregate: () => {
+        return $percentage(
+          {
+            $subtract: [{ $subtract: [$field("nb_annee_term"), $field(champ)] }, $field("nb_poursuite_etudes")],
+          },
+          $field("nb_annee_term")
+        );
+      },
+    };
+  };
+
   return {
-    taux_en_emploi_24_mois: {
-      dividend: "nb_en_emploi_24_mois",
-      divisor: "nb_annee_term",
-    },
-    taux_en_emploi_18_mois: {
-      dividend: "nb_en_emploi_18_mois",
-      divisor: "nb_annee_term",
-    },
-    taux_en_emploi_12_mois: {
-      dividend: "nb_en_emploi_12_mois",
-      divisor: "nb_annee_term",
-    },
-    taux_en_emploi_6_mois: {
-      dividend: "nb_en_emploi_6_mois",
-      divisor: "nb_annee_term",
-    },
-    taux_en_formation: {
-      dividend: "nb_poursuite_etudes",
-      divisor: "nb_annee_term",
-    },
+    taux_en_emploi_24_mois: taux("nb_en_emploi_24_mois", "nb_annee_term"),
+    taux_en_emploi_18_mois: taux("nb_en_emploi_18_mois", "nb_annee_term"),
+    taux_en_emploi_12_mois: taux("nb_en_emploi_12_mois", "nb_annee_term"),
+    taux_en_emploi_6_mois: taux("nb_en_emploi_6_mois", "nb_annee_term"),
+    taux_en_formation: taux("nb_poursuite_etudes", "nb_annee_term"),
+    taux_autres_6_mois: autres("nb_en_emploi_6_mois"),
+    taux_autres_12_mois: autres("nb_en_emploi_12_mois"),
+    taux_autres_18_mois: autres("nb_en_emploi_18_mois"),
+    taux_autres_24_mois: autres("nb_en_emploi_24_mois"),
   };
 }
 
-export function reduceStats(regex, callback) {
+export function getStats(regex, mapValue) {
   return getStatsNames(regex).reduce((acc, statName) => {
-    const res = callback(statName);
+    const value = mapValue(statName);
+
     return {
       ...acc,
-      ...(res || {}),
+      ...(value ? { [statName]: value } : {}),
     };
   }, {});
 }
 
-export function computeCustomStats(callback) {
+export function computeCustomStats(data) {
   const regles = getReglesDeCalcul();
 
-  return reduceStats(TAUX, (statName) => {
+  return getStats(TAUX, (statName) => {
     const regle = regles[statName];
-    const value = regle ? callback(regle) : null;
+    const type = data === "aggregate" ? "aggregate" : "compute";
 
-    return value ? { [statName]: value } : null;
+    return regle?.[type]?.(data) || null;
   });
 }
 
@@ -95,12 +110,12 @@ export async function getFilieresStats(collection, cfd, millesime) {
           filiere: { $first: "$filiere" },
           millesime: { $first: "$millesime" },
           diplome: { $first: "$diplome" },
-          ...$sumValeursStats(),
+          ...getStats(VALEURS, (statName) => $sumOf($field(statName))),
         },
       },
       {
         $addFields: {
-          ...$computeCustomStats(),
+          ...computeCustomStats("aggregate"),
         },
       },
       {

@@ -2,21 +2,19 @@ import { oleoduc, writeData } from "oleoduc";
 import { formationsStats, regionalesStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { $computeCustomStats, $sumValeursStats } from "../common/utils/mongodbUtils.js";
-import { ALL, reduceStats } from "../common/stats.js";
+import { ALL, computeCustomStats, getStats, VALEURS } from "../common/stats.js";
 import { omit } from "lodash-es";
+import { $field, $sumOf } from "../common/utils/mongodbUtils.js";
 
 const logger = getLoggerWithContext("import");
 
-async function getMissingStats() {
+async function getStatsWithoutResults() {
   const res = await formationsStats()
     .aggregate([
       {
         $group: {
           _id: "$millesime",
-          ...reduceStats(ALL, (statName) => {
-            return { [statName]: { $push: "$" + statName } };
-          }),
+          ...getStats(ALL, (statName) => ({ $push: $field(statName) })),
         },
       },
     ])
@@ -29,7 +27,7 @@ async function getMissingStats() {
 
 export async function computeRegionalesStats() {
   const jobStats = { created: 0, updated: 0, failed: 0 };
-  const missingStats = await getMissingStats();
+  const statsWithoutResults = await getStatsWithoutResults();
 
   logger.info(`Import des stats régionales...`);
   await oleoduc(
@@ -49,12 +47,12 @@ export async function computeRegionalesStats() {
             code_certification: { $first: "$code_certification" },
             code_formation_diplome: { $first: "$code_formation_diplome" },
             diplome: { $first: "$diplome" },
-            ...$sumValeursStats(),
+            ...getStats(VALEURS, (statName) => $sumOf($field(statName))),
           },
         },
         {
           $addFields: {
-            ...$computeCustomStats(),
+            ...computeCustomStats("aggregate"),
           },
         },
         {
@@ -72,7 +70,7 @@ export async function computeRegionalesStats() {
           millesime: stats.millesime,
           code_certification: stats.code_certification,
         };
-        const missing = missingStats.find((as) => as.millesime === stats.millesime);
+        const ignored = statsWithoutResults.find((item) => item.millesime === stats.millesime);
 
         try {
           const res = await regionalesStats().updateOne(
@@ -82,7 +80,7 @@ export async function computeRegionalesStats() {
                 "_meta.date_import": new Date(),
               },
               $set: omitNil({
-                ...omit(stats, missing?.stats),
+                ...omit(stats, ignored?.stats),
               }),
             },
             { upsert: true }

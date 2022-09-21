@@ -1,13 +1,14 @@
 import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublished-import
 import { merge } from "lodash-es";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
-import { generateCodeCertification, generateStats } from "./testUtils.js";
+import { generateCodeCertification, generateStatValue } from "./testUtils.js";
 import {
   bcn,
   certificationsStats,
   formationsStats,
   regionalesStats,
 } from "../../src/common/db/collections/collections.js";
+import { ALL, getStats } from "../../src/common/stats.js";
 
 function createCodeFormationDiplome() {
   return faker.helpers.replaceSymbols("4#######");
@@ -23,18 +24,7 @@ export function insertCertificationsStats(custom = {}) {
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
         filiere: "apprentissage",
-        nb_annee_term: generateStats(),
-        nb_poursuite_etudes: generateStats(),
-        nb_en_emploi_24_mois: generateStats(),
-        nb_en_emploi_18_mois: generateStats(),
-        nb_en_emploi_12_mois: generateStats(),
-        nb_en_emploi_6_mois: generateStats(),
-        taux_en_formation: generateStats(),
-        taux_en_emploi_24_mois: generateStats(),
-        taux_en_emploi_18_mois: generateStats(),
-        taux_en_emploi_12_mois: generateStats(),
-        taux_en_emploi_6_mois: generateStats(),
-        taux_rupture_contrats: generateStats(),
+        ...getStats(ALL, () => generateStatValue()),
         _meta: {
           date_import: new Date(),
         },
@@ -55,18 +45,7 @@ export function insertRegionalesStats(custom = {}) {
         code_certification: generateCodeCertification("4"),
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
-        nb_annee_term: generateStats(),
-        nb_en_emploi_24_mois: generateStats(),
-        nb_en_emploi_18_mois: generateStats(),
-        nb_en_emploi_12_mois: generateStats(),
-        nb_en_emploi_6_mois: generateStats(),
-        nb_poursuite_etudes: generateStats(),
-        nb_sortant: generateStats(),
-        taux_en_emploi_24_mois: generateStats(),
-        taux_en_emploi_18_mois: generateStats(),
-        taux_en_emploi_12_mois: generateStats(),
-        taux_en_emploi_6_mois: generateStats(),
-        taux_en_formation: generateStats(),
+        ...getStats(ALL, () => generateStatValue()),
         _meta: {
           date_import: new Date(),
         },
@@ -87,18 +66,7 @@ export function insertFormationsStats(custom = {}) {
         code_certification: generateCodeCertification("4"),
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
-        nb_annee_term: generateStats(),
-        nb_en_emploi_24_mois: generateStats(),
-        nb_en_emploi_18_mois: generateStats(),
-        nb_en_emploi_12_mois: generateStats(),
-        nb_en_emploi_6_mois: generateStats(),
-        nb_poursuite_etudes: generateStats(),
-        nb_sortant: generateStats(),
-        taux_en_emploi_24_mois: generateStats(),
-        taux_en_emploi_18_mois: generateStats(),
-        taux_en_emploi_12_mois: generateStats(),
-        taux_en_emploi_6_mois: generateStats(),
-        taux_en_formation: generateStats(),
+        ...getStats(ALL, () => generateStatValue()),
         region: { code: "11", nom: "Île-de-France" },
         _meta: {
           date_import: new Date(),

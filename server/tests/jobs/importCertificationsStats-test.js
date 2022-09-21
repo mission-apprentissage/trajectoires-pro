@@ -2,7 +2,7 @@ import assert from "assert";
 import { importCertificationsStats } from "../../src/jobs/importCertificationsStats.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
 import { insertCFD, insertCertificationsStats, insertMEF } from "../utils/fakeData.js";
-import { omit } from "lodash-es";
+import { omit, pickBy } from "lodash-es";
 import { certificationsStats } from "../../src/common/db/collections/collections.js";
 
 describe("importCertificationsStats", () => {
@@ -116,7 +116,7 @@ describe("importCertificationsStats", () => {
     mockApi("2020", "voie_pro_sco_educ_nat", {
       data: [
         {
-          id_mesure: "nb_en_emploi_24_mois",
+          id_mesure: "nb_en_emploi_6_mois",
           valeur_mesure: 10,
           dimensions: [
             {
@@ -153,9 +153,12 @@ describe("importCertificationsStats", () => {
     await importCertificationsStats({ millesimes: ["2020"], filieres: ["voie_pro_sco_educ_nat"] });
 
     const found = await certificationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(found.taux_en_emploi_24_mois, 10);
-    assert.deepStrictEqual(found.taux_en_emploi_12_mois, undefined);
-    assert.deepStrictEqual(found.nb_poursuite_etudes, 50);
+    const taux = pickBy(found, (value, key) => key.startsWith("taux"));
+    assert.deepStrictEqual(taux, {
+      taux_autres_6_mois: 40,
+      taux_en_emploi_6_mois: 10,
+      taux_en_formation: 50,
+    });
   });
 
   it("Vérifie qu'on fusionne les mesures pour une même certification", async () => {

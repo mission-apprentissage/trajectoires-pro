@@ -5,7 +5,6 @@ import { bcn, certificationsStats } from "../common/db/collections/collections.j
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { computeCustomStats, getIgnoredStatNames } from "../common/stats.js";
-import { percentage } from "../common/utils/numberUtils.js";
 import { omit, pick } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
@@ -44,9 +43,8 @@ export async function importCertificationsStats(options = {}) {
 
         try {
           const certification = await bcn().findOne({ code_certification: certificationStats.code_certification });
-          const customStats = computeCustomStats((regle) => {
-            return percentage(certificationStats[regle.dividend], certificationStats[regle.divisor]);
-          });
+          const stats = omit(certificationStats, getIgnoredStatNames());
+          const customStats = computeCustomStats(certificationStats);
 
           const res = await certificationsStats().updateOne(
             query,
@@ -55,7 +53,7 @@ export async function importCertificationsStats(options = {}) {
                 "_meta.date_import": new Date(),
               },
               $set: omitNil({
-                ...omit(certificationStats, getIgnoredStatNames()),
+                ...stats,
                 ...customStats,
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
