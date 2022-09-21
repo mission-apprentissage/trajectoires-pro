@@ -128,6 +128,7 @@ export async function importFormationsStats(options = {}) {
                 region: pick(params.region, ["code", "nom"]),
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
+                "_meta.inserjeunes": pick(formationStats, getIgnoredStatNames()),
               }),
             },
             { upsert: true }

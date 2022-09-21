@@ -75,6 +75,9 @@ describe("importFormationsStats", () => {
       },
     });
     assert.ok(found._meta.date_import);
+    assert.deepStrictEqual(found._meta.inserjeunes, {
+      taux_poursuite_etudes: 6,
+    });
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 

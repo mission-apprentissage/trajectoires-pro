@@ -6,7 +6,7 @@ import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { computeCustomStats, getIgnoredStatNames } from "../common/stats.js";
 import { percentage } from "../common/utils/numberUtils.js";
-import { omit } from "lodash-es";
+import { omit, pick } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
@@ -59,6 +59,7 @@ export async function importCertificationsStats(options = {}) {
                 ...customStats,
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
+                "_meta.inserjeunes": pick(certificationStats, getIgnoredStatNames()),
               }),
             },
             { upsert: true }
