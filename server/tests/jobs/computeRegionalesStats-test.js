@@ -72,17 +72,21 @@ describe("computeRegionalesStats", () => {
       nb_poursuite_etudes: 30,
       nb_sortant: 200,
       nb_annee_term: 200,
-      taux_emploi_12_mois: 15,
-      taux_emploi_18_mois: 15,
-      taux_emploi_24_mois: 15,
-      taux_emploi_6_mois: 15,
-      taux_poursuite_etudes: 15,
+      taux_en_emploi_12_mois: 15,
+      taux_en_emploi_18_mois: 15,
+      taux_en_emploi_24_mois: 15,
+      taux_en_emploi_6_mois: 15,
+      taux_en_formation: 15,
+      taux_autres_6_mois: 70,
+      taux_autres_12_mois: 70,
+      taux_autres_18_mois: 70,
+      taux_autres_24_mois: 70,
     });
     assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
-  it("Vérifie qu'on peut calculer les stats d'une région et qu'on ignore les données absentes", async () => {
+  it("Vérifie qu'on peut calculer les stats régionales en ignorant les données absentes", async () => {
     await Promise.all([
       insertNoStats(),
       insertFormationsStats({
@@ -124,11 +128,15 @@ describe("computeRegionalesStats", () => {
       nb_en_emploi_6_mois: 20,
       nb_poursuite_etudes: 20,
       nb_sortant: 100,
-      taux_emploi_12_mois: 20,
-      taux_emploi_18_mois: 20,
-      taux_emploi_24_mois: 20,
-      taux_emploi_6_mois: 20,
-      taux_poursuite_etudes: 20,
+      taux_en_emploi_12_mois: 20,
+      taux_en_emploi_18_mois: 20,
+      taux_en_emploi_24_mois: 20,
+      taux_en_emploi_6_mois: 20,
+      taux_en_formation: 20,
+      taux_autres_6_mois: 60,
+      taux_autres_12_mois: 60,
+      taux_autres_18_mois: 60,
+      taux_autres_24_mois: 60,
     });
   });
 
@@ -136,7 +144,7 @@ describe("computeRegionalesStats", () => {
     await insertFormationsStats({
       nb_annee_term: 200,
       nb_poursuite_etudes: 20,
-      taux_poursuite_etudes: 10,
+      taux_en_formation: 10,
     });
     await computeRegionalesStats();
     await formationsStats().updateOne(
@@ -152,7 +160,7 @@ describe("computeRegionalesStats", () => {
 
     const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found.nb_annee_term, 300);
-    assert.deepStrictEqual(found.taux_poursuite_etudes, 7);
+    assert.deepStrictEqual(found.taux_en_formation, 7);
   });
 
   it("Vérifie qu'on ignore les taux avec des diviseurs à 0", async () => {
@@ -167,10 +175,10 @@ describe("computeRegionalesStats", () => {
 
     let found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.strictEqual(found.nb_sortant, 0);
-    assert.strictEqual(found.taux_emploi_24_mois, undefined);
-    assert.strictEqual(found.taux_emploi_18_mois, undefined);
-    assert.strictEqual(found.taux_emploi_12_mois, undefined);
-    assert.strictEqual(found.taux_emploi_6_mois, undefined);
+    assert.strictEqual(found.taux_en_emploi_24_mois, undefined);
+    assert.strictEqual(found.taux_en_emploi_18_mois, undefined);
+    assert.strictEqual(found.taux_en_emploi_12_mois, undefined);
+    assert.strictEqual(found.taux_en_emploi_6_mois, undefined);
   });
 
   it("Vérifie qu'on ignore les taux indisponibles", async () => {
@@ -186,10 +194,10 @@ describe("computeRegionalesStats", () => {
 
     let found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.strictEqual(found.nb_sortant, 0);
-    assert.strictEqual(found.taux_emploi_24_mois, undefined);
-    assert.strictEqual(found.taux_emploi_18_mois, undefined);
-    assert.strictEqual(found.taux_emploi_12_mois, undefined);
-    assert.strictEqual(found.taux_emploi_6_mois, undefined);
+    assert.strictEqual(found.taux_en_emploi_24_mois, undefined);
+    assert.strictEqual(found.taux_en_emploi_18_mois, undefined);
+    assert.strictEqual(found.taux_en_emploi_12_mois, undefined);
+    assert.strictEqual(found.taux_en_emploi_6_mois, undefined);
   });
 
   it("Vérifie qu'on ignore les valeurs indisponibles", async () => {
@@ -199,6 +207,6 @@ describe("computeRegionalesStats", () => {
 
     let found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.strictEqual(found.nb_en_emploi_24_mois, undefined);
-    assert.strictEqual(found.taux_emploi_24_mois, undefined);
+    assert.strictEqual(found.taux_en_emploi_24_mois, undefined);
   });
 });

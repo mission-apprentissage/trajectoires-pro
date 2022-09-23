@@ -25,7 +25,7 @@ export function createStream(content) {
   return stream;
 }
 
-export function generateStats() {
+export function generateStatValue() {
   return parseInt(faker.random.numeric(2));
 }
 

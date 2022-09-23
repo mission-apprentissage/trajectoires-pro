@@ -8,9 +8,8 @@ import { bcn, formationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findRegionByNom } from "../common/regions.js";
-import { pick } from "lodash-es";
-import { computeTauxStats, getMillesimes } from "../common/stats.js";
-import { percentage } from "../common/utils/numberUtils.js";
+import { omit, pick } from "lodash-es";
+import { computeCustomStats, getIgnoredStatNames, getMillesimes } from "../common/stats.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -103,11 +102,17 @@ export async function importFormationsStats(options = {}) {
     ),
     flattenArray(),
     writeData(
-      async ({ params, stats }) => {
-        const query = { uai: stats.uai, code_certification: stats.code_certification, millesime: stats.millesime };
+      async ({ params, stats: formationStats }) => {
+        const query = {
+          uai: formationStats.uai,
+          code_certification: formationStats.code_certification,
+          millesime: formationStats.millesime,
+        };
 
         try {
-          const certification = await bcn().findOne({ code_certification: stats.code_certification });
+          const certification = await bcn().findOne({ code_certification: formationStats.code_certification });
+          const stats = omit(formationStats, getIgnoredStatNames());
+          const customStats = computeCustomStats(formationStats);
 
           const res = await formationsStats().updateOne(
             query,
@@ -117,10 +122,11 @@ export async function importFormationsStats(options = {}) {
               },
               $set: omitNil({
                 ...stats,
+                ...customStats,
                 region: pick(params.region, ["code", "nom"]),
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
-                ...computeTauxStats((regle) => percentage(stats[regle.dividend], stats[regle.divisor])),
+                "_meta.inserjeunes": pick(formationStats, getIgnoredStatNames()),
               }),
             },
             { upsert: true }

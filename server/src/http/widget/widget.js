@@ -16,12 +16,12 @@ function getNiveau(stats, name) {
 export const prepareStatsForWidget = (stats) => {
   return [
     {
-      valeur: stats.taux_emploi_6_mois,
+      valeur: stats.taux_en_emploi_6_mois,
       libelles: ["sont en emploi 6 mois", "après la fin de la formation."],
-      niveau: getNiveau(stats, "taux_emploi_6_mois"),
+      niveau: getNiveau(stats, "taux_en_emploi_6_mois"),
     },
     {
-      valeur: stats.taux_poursuite_etudes,
+      valeur: stats.taux_en_formation,
       libelles: ["poursuivent leurs études."],
       niveau: "info",
     },
@@ -29,7 +29,7 @@ export const prepareStatsForWidget = (stats) => {
 };
 
 export function isWidgetAvailable(stats) {
-  return !!stats.taux_emploi_6_mois || !!stats.taux_poursuite_etudes;
+  return !!stats.taux_en_emploi_6_mois || !!stats.taux_en_formation;
 }
 
 export function buildWidget(templateName, data, options = {}) {

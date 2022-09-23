@@ -11,7 +11,8 @@ import { addCsvHeaders, addJsonHeaders, sendFilieresStats, sendStats } from "../
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
 import { findCodeFormationDiplome } from "../../common/bcn.js";
-import { reduceStats, ALL, getFilieresStats } from "../../common/stats.js";
+import { getFilieresStats } from "../../common/stats.js";
+import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
 
 export default () => {
   const router = express.Router();
@@ -48,7 +49,7 @@ export default () => {
             code_certification: (f) => f.code_certification,
             filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,
-            ...reduceStats(ALL, (statName) => (f) => f[statName]),
+            ...getStatsAsColumns(),
           },
         });
       } else {

@@ -4,8 +4,8 @@ import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { computeTauxStats } from "../common/stats.js";
-import { percentage } from "../common/utils/numberUtils.js";
+import { computeCustomStats, getIgnoredStatNames } from "../common/stats.js";
+import { omit, pick } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
@@ -35,11 +35,16 @@ export async function importCertificationsStats(options = {}) {
     ),
     flattenArray(),
     writeData(
-      async (stats) => {
-        const query = { millesime: stats.millesime, code_certification: stats.code_certification };
+      async (certificationStats) => {
+        const query = {
+          millesime: certificationStats.millesime,
+          code_certification: certificationStats.code_certification,
+        };
 
         try {
-          const certification = await bcn().findOne({ code_certification: stats.code_certification });
+          const certification = await bcn().findOne({ code_certification: certificationStats.code_certification });
+          const stats = omit(certificationStats, getIgnoredStatNames());
+          const customStats = computeCustomStats(certificationStats);
 
           const res = await certificationsStats().updateOne(
             query,
@@ -49,9 +54,10 @@ export async function importCertificationsStats(options = {}) {
               },
               $set: omitNil({
                 ...stats,
+                ...customStats,
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
-                ...computeTauxStats((regle) => percentage(stats[regle.dividend], stats[regle.divisor])),
+                "_meta.inserjeunes": pick(certificationStats, getIgnoredStatNames()),
               }),
             },
             { upsert: true }

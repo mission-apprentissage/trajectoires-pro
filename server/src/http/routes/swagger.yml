@@ -544,15 +544,15 @@ components:
           type: number
         nb_en_emploi_6_mois:
           type: number
-        taux_emploi_24_mois:
+        taux_en_emploi_24_mois:
           type: number
-        taux_emploi_18_mois:
+        taux_en_emploi_18_mois:
           type: number
-        taux_emploi_12_mois:
+        taux_en_emploi_12_mois:
           type: number
-        taux_emploi_6_mois:
+        taux_en_emploi_6_mois:
           type: number
-        taux_poursuite_etudes:
+        taux_en_formation:
           type: number
         _meta:
           $ref: "#/components/schemas/Meta"
@@ -581,15 +581,15 @@ components:
           type: number
         nb_en_emploi_6_mois:
           type: number
-        taux_emploi_24_mois:
+        taux_en_emploi_24_mois:
           type: number
-        taux_emploi_18_mois:
+        taux_en_emploi_18_mois:
           type: number
-        taux_emploi_12_mois:
+        taux_en_emploi_12_mois:
           type: number
-        taux_emploi_6_mois:
+        taux_en_emploi_6_mois:
           type: number
-        taux_poursuite_etudes:
+        taux_en_formation:
           type: number
         region:
           $ref: "#/components/schemas/Region"
@@ -622,15 +622,15 @@ components:
           type: number
         nb_en_emploi_6_mois:
           type: number
-        taux_emploi_24_mois:
+        taux_en_emploi_24_mois:
           type: number
-        taux_emploi_18_mois:
+        taux_en_emploi_18_mois:
           type: number
-        taux_emploi_12_mois:
+        taux_en_emploi_12_mois:
           type: number
-        taux_emploi_6_mois:
+        taux_en_emploi_6_mois:
           type: number
-        taux_poursuite_etudes:
+        taux_en_formation:
           type: number
         region:
           $ref: "#/components/schemas/Region"

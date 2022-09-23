@@ -10,7 +10,7 @@ import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { formationsStats } from "../../common/db/collections/collections.js";
-import { ALL, reduceStats } from "../../common/stats.js";
+import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
 
 export default () => {
   const router = express.Router();
@@ -56,7 +56,7 @@ export default () => {
             code_certification: (f) => f.code_certification,
             filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,
-            ...reduceStats(ALL, (statName) => (f) => f[statName]),
+            ...getStatsAsColumns(),
           },
         });
       } else {

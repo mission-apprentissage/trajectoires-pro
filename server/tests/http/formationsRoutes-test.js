@@ -37,18 +37,23 @@ describe("formationsRoutes", () => {
         code_formation_diplome: "12345678",
         millesime: "2018_2019",
         filiere: "apprentissage",
-        nb_annee_term: 1,
-        nb_en_emploi_24_mois: 24,
-        nb_en_emploi_18_mois: 18,
-        nb_en_emploi_12_mois: 2,
-        nb_en_emploi_6_mois: 3,
-        nb_poursuite_etudes: 4,
-        nb_sortant: 5,
-        taux_emploi_24_mois: 24,
-        taux_emploi_18_mois: 18,
-        taux_emploi_12_mois: 6,
-        taux_emploi_6_mois: 7,
-        taux_poursuite_etudes: 8,
+        nb_annee_term: 100,
+        nb_poursuite_etudes: 1,
+        nb_en_emploi_24_mois: 2,
+        nb_en_emploi_18_mois: 3,
+        nb_en_emploi_12_mois: 4,
+        nb_en_emploi_6_mois: 5,
+        nb_sortant: 6,
+        taux_rupture_contrats: 7,
+        taux_en_formation: 8,
+        taux_en_emploi_24_mois: 9,
+        taux_en_emploi_18_mois: 10,
+        taux_en_emploi_12_mois: 11,
+        taux_en_emploi_6_mois: 12,
+        taux_autres_6_mois: 13,
+        taux_autres_12_mois: 14,
+        taux_autres_18_mois: 15,
+        taux_autres_24_mois: 16,
       });
 
       const response = await httpClient.get(`/api/inserjeunes/formations`, {
@@ -67,18 +72,23 @@ describe("formationsRoutes", () => {
             millesime: "2018_2019",
             filiere: "apprentissage",
             diplome: { code: "4", libelle: "BAC" },
-            nb_annee_term: 1,
-            nb_en_emploi_24_mois: 24,
-            nb_en_emploi_18_mois: 18,
-            nb_en_emploi_12_mois: 2,
-            nb_en_emploi_6_mois: 3,
-            nb_poursuite_etudes: 4,
-            nb_sortant: 5,
-            taux_emploi_24_mois: 24,
-            taux_emploi_18_mois: 18,
-            taux_emploi_12_mois: 6,
-            taux_emploi_6_mois: 7,
-            taux_poursuite_etudes: 8,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 1,
+            nb_en_emploi_24_mois: 2,
+            nb_en_emploi_18_mois: 3,
+            nb_en_emploi_12_mois: 4,
+            nb_en_emploi_6_mois: 5,
+            nb_sortant: 6,
+            taux_rupture_contrats: 7,
+            taux_en_formation: 8,
+            taux_en_emploi_24_mois: 9,
+            taux_en_emploi_18_mois: 10,
+            taux_en_emploi_12_mois: 11,
+            taux_en_emploi_6_mois: 12,
+            taux_autres_6_mois: 13,
+            taux_autres_12_mois: 14,
+            taux_autres_18_mois: 15,
+            taux_autres_24_mois: 16,
             region: { code: "11", nom: "Île-de-France" },
           },
         ],
@@ -193,19 +203,23 @@ describe("formationsRoutes", () => {
         code_certification: "12345678",
         millesime: "2018_2019",
         filiere: "apprentissage",
-        nb_annee_term: 1,
-        nb_en_emploi_12_mois: 2,
+        nb_annee_term: 100,
+        nb_poursuite_etudes: 1,
+        nb_en_emploi_24_mois: 2,
         nb_en_emploi_18_mois: 3,
-        nb_en_emploi_24_mois: 4,
+        nb_en_emploi_12_mois: 4,
         nb_en_emploi_6_mois: 5,
-        nb_poursuite_etudes: 6,
-        nb_sortant: 7,
-        taux_emploi_12_mois: 8,
-        taux_emploi_18_mois: 9,
-        taux_emploi_24_mois: 10,
-        taux_emploi_6_mois: 11,
-        taux_poursuite_etudes: 12,
-        taux_rupture_contrats: 13,
+        nb_sortant: 6,
+        taux_rupture_contrats: 7,
+        taux_en_formation: 8,
+        taux_en_emploi_24_mois: 9,
+        taux_en_emploi_18_mois: 10,
+        taux_en_emploi_12_mois: 11,
+        taux_en_emploi_6_mois: 12,
+        taux_autres_6_mois: 13,
+        taux_autres_12_mois: 14,
+        taux_autres_18_mois: 15,
+        taux_autres_24_mois: 16,
       });
 
       const response = await httpClient.get(`/api/inserjeunes/formations.csv`, {
@@ -218,8 +232,8 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `uai;code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_emploi_12_mois;taux_emploi_18_mois;taux_emploi_24_mois;taux_emploi_6_mois;taux_poursuite_etudes;taux_rupture_contrats
-0751234J;12345678;apprentissage;2018_2019;1;2;3;4;5;6;7;8;9;10;11;12;13
+        `uai;code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+0751234J;12345678;apprentissage;2018_2019;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
 `
       );
     });
@@ -285,18 +299,23 @@ describe("formationsRoutes", () => {
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         millesime: "2020_2021",
-        nb_annee_term: 1,
-        nb_en_emploi_24_mois: 24,
-        nb_en_emploi_18_mois: 18,
-        nb_en_emploi_12_mois: 2,
-        nb_en_emploi_6_mois: 3,
-        nb_poursuite_etudes: 4,
-        nb_sortant: 5,
-        taux_emploi_24_mois: 24,
-        taux_emploi_18_mois: 18,
-        taux_emploi_12_mois: 6,
-        taux_emploi_6_mois: 7,
-        taux_poursuite_etudes: 8,
+        nb_annee_term: 100,
+        nb_poursuite_etudes: 1,
+        nb_en_emploi_24_mois: 2,
+        nb_en_emploi_18_mois: 3,
+        nb_en_emploi_12_mois: 4,
+        nb_en_emploi_6_mois: 5,
+        nb_sortant: 6,
+        taux_rupture_contrats: 7,
+        taux_en_formation: 8,
+        taux_en_emploi_24_mois: 9,
+        taux_en_emploi_18_mois: 10,
+        taux_en_emploi_12_mois: 11,
+        taux_en_emploi_6_mois: 12,
+        taux_autres_6_mois: 13,
+        taux_autres_12_mois: 14,
+        taux_autres_18_mois: 15,
+        taux_autres_24_mois: 16,
       });
 
       const response = await httpClient.get(`/api/inserjeunes/formations/0751234J-12345678`);
@@ -309,18 +328,23 @@ describe("formationsRoutes", () => {
         millesime: "2020_2021",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
-        nb_annee_term: 1,
-        nb_en_emploi_24_mois: 24,
-        nb_en_emploi_18_mois: 18,
-        nb_en_emploi_12_mois: 2,
-        nb_en_emploi_6_mois: 3,
-        nb_poursuite_etudes: 4,
-        nb_sortant: 5,
-        taux_emploi_24_mois: 24,
-        taux_emploi_18_mois: 18,
-        taux_emploi_12_mois: 6,
-        taux_emploi_6_mois: 7,
-        taux_poursuite_etudes: 8,
+        nb_annee_term: 100,
+        nb_poursuite_etudes: 1,
+        nb_en_emploi_24_mois: 2,
+        nb_en_emploi_18_mois: 3,
+        nb_en_emploi_12_mois: 4,
+        nb_en_emploi_6_mois: 5,
+        nb_sortant: 6,
+        taux_rupture_contrats: 7,
+        taux_en_formation: 8,
+        taux_en_emploi_24_mois: 9,
+        taux_en_emploi_18_mois: 10,
+        taux_en_emploi_12_mois: 11,
+        taux_en_emploi_6_mois: 12,
+        taux_autres_6_mois: 13,
+        taux_autres_12_mois: 14,
+        taux_autres_18_mois: 15,
+        taux_autres_24_mois: 16,
         region: { code: "11", nom: "Île-de-France" },
         _meta: {
           titre: "Certification 12345678, établissement 0751234J",
@@ -368,7 +392,7 @@ describe("formationsRoutes", () => {
       return insertFormationsStats({
         uai: "0751234J",
         code_certification: "1022105",
-        taux_emploi_6_mois: 50,
+        taux_en_emploi_6_mois: 50,
       });
     }
 
@@ -405,7 +429,7 @@ describe("formationsRoutes", () => {
     it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (vertical)", async () => {
       const { httpClient } = await startServer();
       await formationsStats().insertOne(
-        newFormationStats({ uai: "0751234J", code_certification: "1022105", taux_emploi_6_mois: 50 })
+        newFormationStats({ uai: "0751234J", code_certification: "1022105", taux_en_emploi_6_mois: 50 })
       );
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
@@ -419,7 +443,7 @@ describe("formationsRoutes", () => {
     it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (horizontale)", async () => {
       const { httpClient } = await startServer();
       await formationsStats().insertOne(
-        newFormationStats({ uai: "0751234J", code_certification: "1022105", taux_emploi_6_mois: 50 })
+        newFormationStats({ uai: "0751234J", code_certification: "1022105", taux_en_emploi_6_mois: 50 })
       );
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?direction=horizontal");
@@ -438,8 +462,8 @@ describe("formationsRoutes", () => {
         newFormationStats({
           uai: "0751234J",
           code_certification: "1022105",
-          taux_poursuite_etudes: 0,
-          taux_emploi_6_mois: 50,
+          taux_en_formation: 0,
+          taux_en_emploi_6_mois: 50,
         })
       );
 

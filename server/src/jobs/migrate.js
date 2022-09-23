@@ -1,7 +1,8 @@
 import { dbCollection, migrateMongodb } from "../common/db/mongodb.js";
 import { promiseAllProps } from "../common/utils/asyncUtils.js";
+import { certificationsStats, formationsStats } from "../common/db/collections/collections.js";
 
-const VERSION = 1;
+const VERSION = 2;
 
 export async function migrate(options = {}) {
   return migrateMongodb(
@@ -9,8 +10,8 @@ export async function migrate(options = {}) {
     () => {
       return promiseAllProps({
         codeFormationDiplomes: dbCollection("codeFormationDiplomes").drop(),
-        certificationsStats: dbCollection("certificationsStats").drop(),
-        formationsStats: dbCollection("formationsStats").drop(),
+        certificationsStats: certificationsStats().remove({}),
+        formationsStats: formationsStats().remove(),
       });
     },
     options

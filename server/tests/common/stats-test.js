@@ -1,12 +1,12 @@
 import assert from "assert";
-import { buildDescription, reduceStats, getStatsNames } from "../../src/common/stats.js";
+import { buildDescription, getStats, getStatsNames } from "../../src/common/stats.js";
 
 describe("statsNames", () => {
   it("Permet de lister le nom de stats", () => {
     const statsNames = getStatsNames();
     assert.ok(statsNames.includes("nb_en_emploi_24_mois"));
     assert.ok(statsNames.includes("nb_sortant"));
-    assert.ok(statsNames.includes("taux_emploi_24_mois"));
+    assert.ok(statsNames.includes("taux_en_emploi_24_mois"));
   });
 
   it("Permet de lister le nom de stats avec un prefix", () => {
@@ -15,13 +15,17 @@ describe("statsNames", () => {
   });
 
   it("Permet de filtrer et convertir les stats en un objet", () => {
-    const stats = reduceStats(/^taux/, () => 1);
+    const stats = getStats(/^taux/, () => 1);
     assert.deepStrictEqual(stats, {
-      taux_emploi_12_mois: 1,
-      taux_emploi_18_mois: 1,
-      taux_emploi_24_mois: 1,
-      taux_emploi_6_mois: 1,
-      taux_poursuite_etudes: 1,
+      taux_en_emploi_12_mois: 1,
+      taux_en_emploi_18_mois: 1,
+      taux_en_emploi_24_mois: 1,
+      taux_en_emploi_6_mois: 1,
+      taux_en_formation: 1,
+      taux_autres_6_mois: 1,
+      taux_autres_12_mois: 1,
+      taux_autres_18_mois: 1,
+      taux_autres_24_mois: 1,
       taux_rupture_contrats: 1,
     });
   });
