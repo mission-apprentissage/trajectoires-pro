@@ -4,6 +4,8 @@ import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
+import { computeTauxStats } from "../common/stats.js";
+import { percentage } from "../common/utils/numberUtils.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -49,6 +51,7 @@ export async function importCertificationsStats(options = {}) {
                 ...stats,
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
+                ...computeTauxStats((regle) => percentage(stats[regle.dividend], stats[regle.divisor])),
               }),
             },
             { upsert: true }

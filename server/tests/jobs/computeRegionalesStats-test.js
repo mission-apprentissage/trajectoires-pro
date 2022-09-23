@@ -31,7 +31,7 @@ describe("computeRegionalesStats", () => {
         nb_en_emploi_6_mois: 20,
         nb_poursuite_etudes: 20,
         nb_sortant: 100,
-        nb_annee_term: 200,
+        nb_annee_term: 100,
       }),
       insertFormationsStats({
         region: { code: "11", nom: "Île-de-France" },
@@ -45,7 +45,7 @@ describe("computeRegionalesStats", () => {
         nb_en_emploi_6_mois: 10,
         nb_poursuite_etudes: 10,
         nb_sortant: 100,
-        nb_annee_term: 200,
+        nb_annee_term: 100,
       }),
     ]);
 
@@ -71,12 +71,12 @@ describe("computeRegionalesStats", () => {
       nb_en_emploi_6_mois: 30,
       nb_poursuite_etudes: 30,
       nb_sortant: 200,
-      nb_annee_term: 400,
+      nb_annee_term: 200,
       taux_emploi_12_mois: 15,
       taux_emploi_18_mois: 15,
       taux_emploi_24_mois: 15,
       taux_emploi_6_mois: 15,
-      taux_poursuite_etudes: 8,
+      taux_poursuite_etudes: 15,
     });
     assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
@@ -97,7 +97,7 @@ describe("computeRegionalesStats", () => {
         nb_en_emploi_6_mois: 20,
         nb_poursuite_etudes: 20,
         nb_sortant: 100,
-        nb_annee_term: 200,
+        nb_annee_term: 100,
       }),
     ]);
 
@@ -117,7 +117,7 @@ describe("computeRegionalesStats", () => {
         code: "4",
         libelle: "BAC",
       },
-      nb_annee_term: 200,
+      nb_annee_term: 100,
       nb_en_emploi_12_mois: 20,
       nb_en_emploi_18_mois: 20,
       nb_en_emploi_24_mois: 20,
@@ -128,7 +128,7 @@ describe("computeRegionalesStats", () => {
       taux_emploi_18_mois: 20,
       taux_emploi_24_mois: 20,
       taux_emploi_6_mois: 20,
-      taux_poursuite_etudes: 10,
+      taux_poursuite_etudes: 20,
     });
   });
 
