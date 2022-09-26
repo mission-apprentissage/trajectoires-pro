@@ -11,7 +11,15 @@ export const STATS_NAMES = [
   "nb_poursuite_etudes",
   "nb_sortant",
   "taux_rupture_contrats",
-  //Custom stats
+];
+export const IGNORED_STATS_NAMES = [
+  "taux_poursuite_etudes",
+  "taux_emploi_24_mois",
+  "taux_emploi_18_mois",
+  "taux_emploi_12_mois",
+  "taux_emploi_6_mois",
+];
+export const CUSTOM_STATS_NAMES = [
   "taux_en_formation",
   "taux_en_emploi_24_mois",
   "taux_en_emploi_18_mois",
@@ -22,13 +30,7 @@ export const STATS_NAMES = [
   "taux_autres_18_mois",
   "taux_autres_24_mois",
 ];
-export const IGNORED_STATS_NAMES = [
-  "taux_poursuite_etudes",
-  "taux_emploi_24_mois",
-  "taux_emploi_18_mois",
-  "taux_emploi_12_mois",
-  "taux_emploi_6_mois",
-];
+
 export const ALL = /.*/;
 export const TAUX = /^taux_.*$/;
 export const VALEURS = /^nb_.*$/;
@@ -36,6 +38,7 @@ export const VALEURS = /^nb_.*$/;
 export function getMillesimes() {
   return ["2018_2019", "2019_2020"];
 }
+
 function taux({ dividend, divisor }) {
   return {
     compute: (data) => percentage(data[dividend], data[divisor]),
@@ -88,7 +91,7 @@ export function getReglesDeCalcul() {
 }
 
 export function filterStatsNames(regex = ALL) {
-  return STATS_NAMES.sort().filter((k) => regex.test(k));
+  return [...STATS_NAMES, ...CUSTOM_STATS_NAMES].sort().filter((k) => regex.test(k));
 }
 
 export function getStats(regex, mapValue) {
