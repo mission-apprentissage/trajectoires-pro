@@ -2,7 +2,7 @@ import { $field, $percentage, $sumOf } from "./utils/mongodbUtils.js";
 import { omitNil } from "./utils/objectUtils.js";
 import { percentage } from "./utils/numberUtils.js";
 
-export const STATS_NAMES = [
+export const INSERJEUNES_STATS_NAMES = [
   "nb_annee_term",
   "nb_en_emploi_24_mois",
   "nb_en_emploi_18_mois",
@@ -12,7 +12,7 @@ export const STATS_NAMES = [
   "nb_sortant",
   "taux_rupture_contrats",
 ];
-export const IGNORED_STATS_NAMES = [
+export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "taux_poursuite_etudes",
   "taux_emploi_24_mois",
   "taux_emploi_18_mois",
@@ -39,14 +39,14 @@ export function getMillesimes() {
   return ["2018_2019", "2019_2020"];
 }
 
-function taux({ dividend, divisor }) {
+function divide({ dividend, divisor }) {
   return {
     compute: (data) => percentage(data[dividend], data[divisor]),
     aggregate: () => $percentage($field(dividend), $field(divisor)),
   };
 }
 
-function tauxAutres({ dividend, divisor }) {
+function subtractAndDivide({ dividend, divisor }) {
   return {
     compute: (data) => {
       const nbAutres = dividend.map((d) => data[d]).reduce((acc, value) => acc - value);
@@ -66,24 +66,24 @@ function tauxAutres({ dividend, divisor }) {
 
 export function getReglesDeCalcul() {
   return {
-    taux_en_emploi_24_mois: taux({ dividend: "nb_en_emploi_24_mois", divisor: "nb_annee_term" }),
-    taux_en_emploi_18_mois: taux({ dividend: "nb_en_emploi_18_mois", divisor: "nb_annee_term" }),
-    taux_en_emploi_12_mois: taux({ dividend: "nb_en_emploi_12_mois", divisor: "nb_annee_term" }),
-    taux_en_emploi_6_mois: taux({ dividend: "nb_en_emploi_6_mois", divisor: "nb_annee_term" }),
-    taux_en_formation: taux({ dividend: "nb_poursuite_etudes", divisor: "nb_annee_term" }),
-    taux_autres_6_mois: tauxAutres({
+    taux_en_emploi_24_mois: divide({ dividend: "nb_en_emploi_24_mois", divisor: "nb_annee_term" }),
+    taux_en_emploi_18_mois: divide({ dividend: "nb_en_emploi_18_mois", divisor: "nb_annee_term" }),
+    taux_en_emploi_12_mois: divide({ dividend: "nb_en_emploi_12_mois", divisor: "nb_annee_term" }),
+    taux_en_emploi_6_mois: divide({ dividend: "nb_en_emploi_6_mois", divisor: "nb_annee_term" }),
+    taux_en_formation: divide({ dividend: "nb_poursuite_etudes", divisor: "nb_annee_term" }),
+    taux_autres_6_mois: subtractAndDivide({
       dividend: ["nb_annee_term", "nb_en_emploi_6_mois", "nb_poursuite_etudes"],
       divisor: "nb_annee_term",
     }),
-    taux_autres_12_mois: tauxAutres({
+    taux_autres_12_mois: subtractAndDivide({
       dividend: ["nb_annee_term", "nb_en_emploi_12_mois", "nb_poursuite_etudes"],
       divisor: "nb_annee_term",
     }),
-    taux_autres_18_mois: tauxAutres({
+    taux_autres_18_mois: subtractAndDivide({
       dividend: ["nb_annee_term", "nb_en_emploi_18_mois", "nb_poursuite_etudes"],
       divisor: "nb_annee_term",
     }),
-    taux_autres_24_mois: tauxAutres({
+    taux_autres_24_mois: subtractAndDivide({
       dividend: ["nb_annee_term", "nb_en_emploi_24_mois", "nb_poursuite_etudes"],
       divisor: "nb_annee_term",
     }),
@@ -91,7 +91,7 @@ export function getReglesDeCalcul() {
 }
 
 export function filterStatsNames(regex = ALL) {
-  return [...STATS_NAMES, ...CUSTOM_STATS_NAMES].sort().filter((k) => regex.test(k));
+  return [...INSERJEUNES_STATS_NAMES, ...CUSTOM_STATS_NAMES].sort().filter((k) => regex.test(k));
 }
 
 export function getStats(regex, mapValue) {

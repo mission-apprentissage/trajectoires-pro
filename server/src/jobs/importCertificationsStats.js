@@ -4,7 +4,7 @@ import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { computeCustomStats, IGNORED_STATS_NAMES } from "../common/stats.js";
+import { computeCustomStats, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
 import { omit, pick } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
@@ -43,7 +43,7 @@ export async function importCertificationsStats(options = {}) {
 
         try {
           const certification = await bcn().findOne({ code_certification: certificationStats.code_certification });
-          const stats = omit(certificationStats, IGNORED_STATS_NAMES);
+          const stats = omit(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(certificationStats);
 
           const res = await certificationsStats().updateOne(
@@ -57,7 +57,7 @@ export async function importCertificationsStats(options = {}) {
                 ...customStats,
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
-                "_meta.inserjeunes": pick(certificationStats, IGNORED_STATS_NAMES),
+                "_meta.inserjeunes": pick(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES),
               }),
             },
             { upsert: true }

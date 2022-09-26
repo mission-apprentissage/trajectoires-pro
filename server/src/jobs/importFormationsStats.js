@@ -9,7 +9,7 @@ import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findRegionByNom } from "../common/regions.js";
 import { omit, pick } from "lodash-es";
-import { computeCustomStats, getMillesimes, IGNORED_STATS_NAMES } from "../common/stats.js";
+import { computeCustomStats, getMillesimes, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -111,7 +111,7 @@ export async function importFormationsStats(options = {}) {
 
         try {
           const certification = await bcn().findOne({ code_certification: formationStats.code_certification });
-          const stats = omit(formationStats, IGNORED_STATS_NAMES);
+          const stats = omit(formationStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(formationStats);
 
           const res = await formationsStats().updateOne(
@@ -126,7 +126,7 @@ export async function importFormationsStats(options = {}) {
                 region: pick(params.region, ["code", "nom"]),
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
-                "_meta.inserjeunes": pick(formationStats, IGNORED_STATS_NAMES),
+                "_meta.inserjeunes": pick(formationStats, INSERJEUNES_IGNORED_STATS_NAMES),
               }),
             },
             { upsert: true }
