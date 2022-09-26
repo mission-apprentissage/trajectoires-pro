@@ -1,24 +1,13 @@
 import { integer } from "./jsonSchemaTypes.js";
+import { STATS_NAMES } from "../../../stats.js";
 
 export function statsSchema() {
   return {
-    nb_annee_term: integer(),
-    nb_en_emploi_24_mois: integer(),
-    nb_en_emploi_18_mois: integer(),
-    nb_en_emploi_12_mois: integer(),
-    nb_en_emploi_6_mois: integer(),
-    nb_poursuite_etudes: integer(),
-    nb_sortant: integer(),
-    taux_rupture_contrats: integer(),
-    //Custom stats
-    taux_en_formation: integer(),
-    taux_en_emploi_24_mois: integer(),
-    taux_en_emploi_18_mois: integer(),
-    taux_en_emploi_12_mois: integer(),
-    taux_en_emploi_6_mois: integer(),
-    taux_autres_6_mois: integer(),
-    taux_autres_12_mois: integer(),
-    taux_autres_18_mois: integer(),
-    taux_autres_24_mois: integer(),
+    ...STATS_NAMES.reduce((acc, statName) => {
+      return {
+        ...acc,
+        [statName]: integer(),
+      };
+    }, {}),
   };
 }

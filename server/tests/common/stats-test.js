@@ -1,16 +1,16 @@
 import assert from "assert";
-import { buildDescription, getStats, getStatsNames } from "../../src/common/stats.js";
+import { buildDescription, getStats, filterStatsNames } from "../../src/common/stats.js";
 
 describe("statsNames", () => {
   it("Permet de lister le nom de stats", () => {
-    const statsNames = getStatsNames();
+    const statsNames = filterStatsNames();
     assert.ok(statsNames.includes("nb_en_emploi_24_mois"));
     assert.ok(statsNames.includes("nb_sortant"));
     assert.ok(statsNames.includes("taux_en_emploi_24_mois"));
   });
 
   it("Permet de lister le nom de stats avec un prefix", () => {
-    const statsNames = getStatsNames(/^taux/);
+    const statsNames = filterStatsNames(/^taux/);
     assert.ok(!statsNames.includes("nb_en_emploi_24_mois"));
   });
 
