@@ -21,11 +21,7 @@ cli
 cli
   .command("importStats")
   .description("Importe les données statistiques de l'API InserJeunes")
-  .argument("[stats]", "Le nom des stats à importer (formations,certifications)", asArray, [
-    "certifications",
-    "formations",
-    "regionales",
-  ])
+  .argument("[stats]", "Le nom des stats à importer (formations,certifications)", asArray)
   .action((options) => {
     runScript(() => {
       return importStats(options);

@@ -4,7 +4,8 @@ import { importFormationsStats } from "./importFormationsStats.js";
 import { importCertificationsStats } from "./importCertificationsStats.js";
 import { computeRegionalesStats } from "./computeRegionalesStats.js";
 
-export async function importStats(stats = []) {
+export async function importStats(options = {}) {
+  let stats = options.stats || ["certifications", "formations", "regionales"];
   const inserjeunes = new InserJeunes(); //Permet de partager le rate limiter entre les deux imports
   await inserjeunes.login();
 
