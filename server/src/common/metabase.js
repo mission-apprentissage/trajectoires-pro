@@ -1,5 +1,6 @@
 import { writeFile } from "fs/promises";
 import path from "path";
+import { metrics } from "./db/collections/collections.js";
 
 const consumer = `
 [[
@@ -10,12 +11,17 @@ const consumer = `
 `;
 
 //Suivi de la consommation globale de l'API
-const getQueries = (filters) => {
+const getQueries = (type) => {
+  const filters = {
+    api: { extension: { $ne: "svg" } },
+    widget: { extension: "svg" },
+  };
+
   return {
     suiviConsommation: [
       {
         $match: {
-          ...filters,
+          ...filters[type],
         },
       },
       {
@@ -66,7 +72,7 @@ const getQueries = (filters) => {
     nbAppelsParCodeCertification: [
       {
         $match: {
-          ...filters,
+          ...filters[type],
           code_certification: { $exists: true },
         },
       },
@@ -93,7 +99,7 @@ const getQueries = (filters) => {
     nbAppelsParUaiEtCodeCertification: [
       {
         $match: {
-          ...filters,
+          ...filters[type],
           uai: { $exists: true },
           code_certification: { $exists: true },
         },
@@ -123,8 +129,9 @@ const getQueries = (filters) => {
   };
 };
 
-export async function exportForMetabase(outputDir) {
-  function writeQueries(type, queries) {
+export async function exportMetabaseQueries(outputDir) {
+  function exportToFile(type) {
+    const queries = getQueries(type);
     return Object.keys(queries).map((queryName) => {
       const stages = queries[queryName].map((stage) => JSON.stringify(stage, null, 2));
       const content = `[${consumer}${stages.join(",\n")}]`;
@@ -134,8 +141,11 @@ export async function exportForMetabase(outputDir) {
     }, {});
   }
 
-  return Promise.all([
-    ...writeQueries("api", getQueries({ extension: { $ne: "svg" } })),
-    ...writeQueries("widget", getQueries({ extension: "svg" })),
-  ]);
+  return Promise.all([...exportToFile("api"), ...exportToFile("widget")]);
+}
+
+export async function runMetabaseQuery(type, queryName) {
+  const queries = getQueries(type);
+
+  return metrics().aggregate(queries[queryName]).toArray();
 }
