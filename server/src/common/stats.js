@@ -46,17 +46,17 @@ function divide({ dividend, divisor }) {
   };
 }
 
-function subtractAndDivide({ dividend, divisor }) {
+function subtractAndDivide({ subtraction, divisor }) {
   return {
     compute: (data) => {
-      const nbAutres = dividend.map((d) => data[d]).reduce((acc, value) => acc - value);
+      const nbAutres = subtraction.map((d) => data[d]).reduce((acc, value) => acc - value);
 
       return percentage(nbAutres, data[divisor]);
     },
     aggregate: () => {
       return $percentage(
         {
-          $subtract: [{ $subtract: [$field(dividend[0]), $field(dividend[1])] }, $field(dividend[2])],
+          $subtract: [{ $subtract: [$field(subtraction[0]), $field(subtraction[1])] }, $field(subtraction[2])],
         },
         $field(divisor)
       );
@@ -72,19 +72,19 @@ export function getReglesDeCalcul() {
     taux_en_emploi_6_mois: divide({ dividend: "nb_en_emploi_6_mois", divisor: "nb_annee_term" }),
     taux_en_formation: divide({ dividend: "nb_poursuite_etudes", divisor: "nb_annee_term" }),
     taux_autres_6_mois: subtractAndDivide({
-      dividend: ["nb_annee_term", "nb_en_emploi_6_mois", "nb_poursuite_etudes"],
+      subtraction: ["nb_annee_term", "nb_en_emploi_6_mois", "nb_poursuite_etudes"],
       divisor: "nb_annee_term",
     }),
     taux_autres_12_mois: subtractAndDivide({
-      dividend: ["nb_annee_term", "nb_en_emploi_12_mois", "nb_poursuite_etudes"],
+      subtraction: ["nb_annee_term", "nb_en_emploi_12_mois", "nb_poursuite_etudes"],
       divisor: "nb_annee_term",
     }),
     taux_autres_18_mois: subtractAndDivide({
-      dividend: ["nb_annee_term", "nb_en_emploi_18_mois", "nb_poursuite_etudes"],
+      subtraction: ["nb_annee_term", "nb_en_emploi_18_mois", "nb_poursuite_etudes"],
       divisor: "nb_annee_term",
     }),
     taux_autres_24_mois: subtractAndDivide({
-      dividend: ["nb_annee_term", "nb_en_emploi_24_mois", "nb_poursuite_etudes"],
+      subtraction: ["nb_annee_term", "nb_en_emploi_24_mois", "nb_poursuite_etudes"],
       divisor: "nb_annee_term",
     }),
   };
