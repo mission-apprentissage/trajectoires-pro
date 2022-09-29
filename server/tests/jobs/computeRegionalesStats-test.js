@@ -185,6 +185,12 @@ describe("computeRegionalesStats", () => {
     await Promise.all([
       insertNoStats(),
       insertFormationsStats({
+        millesime: "2018_2019",
+        filiere: "apprentissage",
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        diplome: { code: "4", libelle: "BAC" },
+        region: { code: "11", nom: "Île-de-France" },
         nb_sortant: 0,
         nb_annee_term: 0,
       }),
@@ -194,6 +200,7 @@ describe("computeRegionalesStats", () => {
 
     let found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.strictEqual(found.nb_sortant, 0);
+    assert.strictEqual(found.nb_annee_term, 0);
     assert.strictEqual(found.taux_en_emploi_24_mois, undefined);
     assert.strictEqual(found.taux_en_emploi_18_mois, undefined);
     assert.strictEqual(found.taux_en_emploi_12_mois, undefined);
@@ -206,7 +213,7 @@ describe("computeRegionalesStats", () => {
     await computeRegionalesStats();
 
     let found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
-    assert.strictEqual(found.nb_en_emploi_24_mois, undefined);
-    assert.strictEqual(found.taux_en_emploi_24_mois, undefined);
+    assert.strictEqual(found.nb_en_emploi_6_mois, undefined);
+    assert.strictEqual(found.taux_en_emploi_6_mois, undefined);
   });
 });

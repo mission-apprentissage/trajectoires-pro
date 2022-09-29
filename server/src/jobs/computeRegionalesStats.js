@@ -8,60 +8,68 @@ import { $field, $sumOf } from "../common/utils/mongodbUtils.js";
 
 const logger = getLoggerWithContext("import");
 
-async function getStatsWithoutResults() {
+async function getMissingStats(filters) {
   const res = await formationsStats()
     .aggregate([
+      { $match: filters },
       {
         $group: {
-          _id: "$millesime",
+          _id: null,
           ...getStats(ALL, (statName) => ({ $push: $field(statName) })),
+        },
+      },
+      {
+        $project: {
+          _id: 0,
         },
       },
     ])
     .toArray();
 
-  return res.map(({ _id, ...stats }) => {
-    return { millesime: _id, stats: Object.keys(stats).filter((key) => stats[key].length === 0) };
-  });
+  const stats = res[0];
+  return Object.keys(stats).filter((key) => stats[key].length === 0);
+}
+
+function aggregateFormationStats() {
+  return formationsStats()
+    .aggregate([
+      {
+        $group: {
+          _id: {
+            region: "$region.code",
+            filiere: "$filiere",
+            millesime: "$millesime",
+            code_certification: "$code_certification",
+          },
+          region: { $first: "$region" },
+          filiere: { $first: "$filiere" },
+          millesime: { $first: "$millesime" },
+          code_certification: { $first: "$code_certification" },
+          code_formation_diplome: { $first: "$code_formation_diplome" },
+          diplome: { $first: "$diplome" },
+          ...getStats(VALEURS, (statName) => $sumOf($field(statName))),
+        },
+      },
+      {
+        $addFields: {
+          ...computeCustomStats("aggregate"),
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ])
+    .stream();
 }
 
 export async function computeRegionalesStats() {
   const jobStats = { created: 0, updated: 0, failed: 0 };
-  const statsWithoutResults = await getStatsWithoutResults();
 
-  logger.info(`Import des stats régionales...`);
+  logger.info(`Calcul des stats régionales...`);
   await oleoduc(
-    formationsStats()
-      .aggregate([
-        {
-          $group: {
-            _id: {
-              region: "$region.code",
-              filiere: "$filiere",
-              millesime: "$millesime",
-              code_certification: "$code_certification",
-            },
-            region: { $first: "$region" },
-            filiere: { $first: "$filiere" },
-            millesime: { $first: "$millesime" },
-            code_certification: { $first: "$code_certification" },
-            code_formation_diplome: { $first: "$code_formation_diplome" },
-            diplome: { $first: "$diplome" },
-            ...getStats(VALEURS, (statName) => $sumOf($field(statName))),
-          },
-        },
-        {
-          $addFields: {
-            ...computeCustomStats("aggregate"),
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-          },
-        },
-      ])
-      .stream(),
+    aggregateFormationStats(),
     writeData(
       async (stats) => {
         const query = {
@@ -70,7 +78,7 @@ export async function computeRegionalesStats() {
           millesime: stats.millesime,
           code_certification: stats.code_certification,
         };
-        const ignored = statsWithoutResults.find((item) => item.millesime === stats.millesime);
+        const missingStats = await getMissingStats(query);
 
         try {
           const res = await regionalesStats().updateOne(
@@ -80,7 +88,7 @@ export async function computeRegionalesStats() {
                 "_meta.date_import": new Date(),
               },
               $set: omitNil({
-                ...omit(stats, ignored?.stats),
+                ...omit(stats, missingStats),
               }),
             },
             { upsert: true }
