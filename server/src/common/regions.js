@@ -287,7 +287,11 @@ export function sanitize(value) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-export function findRegionByName(nom) {
+export function findRegionByNom(nom) {
+  if (!nom) {
+    return null;
+  }
+
   return (
     REGIONS.find((region) => {
       return sanitize(region.nom).toUpperCase() === sanitize(nom).toUpperCase();

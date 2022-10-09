@@ -1,9 +1,11 @@
 import { Readable } from "stream";
-import { InserJeunes } from "../common/InserJeunes.js";
+import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
-import { getCFD } from "../common/actions/getCFD.js";
-import { certificationsStats } from "../common/collections/collections.js";
+import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
+import { omitNil } from "../common/utils/objectUtils.js";
+import { computeCustomStats, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
+import { omit, pick } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
@@ -33,16 +35,16 @@ export async function importCertificationsStats(options = {}) {
     ),
     flattenArray(),
     writeData(
-      async (stats) => {
-        const query = { millesime: stats.millesime, code_certification: stats.code_certification };
+      async (certificationStats) => {
+        const query = {
+          millesime: certificationStats.millesime,
+          code_certification: certificationStats.code_certification,
+        };
 
         try {
-          const cfd = await getCFD(stats.code_certification);
-
-          const diplome = cfd?.diplome;
-          if (!diplome) {
-            logger.warn(`Impossible de trouver le diplome pour la stats`, query);
-          }
+          const certification = await bcn().findOne({ code_certification: certificationStats.code_certification });
+          const stats = omit(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES);
+          const customStats = computeCustomStats(certificationStats);
 
           const res = await certificationsStats().updateOne(
             query,
@@ -50,10 +52,13 @@ export async function importCertificationsStats(options = {}) {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
               },
-              $set: {
+              $set: omitNil({
                 ...stats,
-                ...(diplome ? { diplome } : {}),
-              },
+                ...customStats,
+                code_formation_diplome: certification?.code_formation_diplome,
+                diplome: certification?.diplome,
+                "_meta.inserjeunes": pick(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES),
+              }),
             },
             { upsert: true }
           );

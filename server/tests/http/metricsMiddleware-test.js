@@ -1,7 +1,7 @@
 import assert from "assert";
 import { startServer } from "../utils/testUtils.js";
 import { insertFormationsStats } from "../utils/fakeData.js";
-import { metrics } from "../../src/common/collections/collections.js";
+import { metrics } from "../../src/common/db/collections/collections.js";
 
 describe("metricsMiddleware", () => {
   it("checks that we track usage of the api", async () => {
@@ -29,7 +29,7 @@ describe("metricsMiddleware", () => {
     await insertFormationsStats({
       uai: "0751234J",
       code_certification: "1022105",
-      taux_emploi_6_mois: 50,
+      taux_en_emploi_6_mois: 50,
     });
 
     await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");

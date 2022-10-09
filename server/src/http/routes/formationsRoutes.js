@@ -1,17 +1,16 @@
 import express from "express";
 import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
 import Joi from "joi";
-import { arrayOf, validate } from "../utils/validators.js";
 import * as validators from "../utils/validators.js";
+import { arrayOf, validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
-import { addCsvHeaders, addJsonHeaders } from "../utils/responseUtils.js";
+import { addCsvHeaders, addJsonHeaders, sendStats } from "../utils/responseUtils.js";
 import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import Boom from "boom";
-import { compose, transformIntoJSON, transformIntoCSV } from "oleoduc";
-import { formationsStats } from "../../common/collections/collections.js";
-import { sendWidget } from "../utils/widget.js";
-import { getMetadata } from "../../common/metadata.js";
+import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
+import { formationsStats } from "../../common/db/collections/collections.js";
+import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
 
 export default () => {
   const router = express.Router();
@@ -20,7 +19,7 @@ export default () => {
     "/api/inserjeunes/formations.:ext?",
     checkApiKey(),
     tryCatch(async (req, res) => {
-      const { uais, millesimes, code_certifications, page, items_par_page, ext } = await validate(
+      const { uais, regions, millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
         {
           uais: arrayOf(
@@ -28,17 +27,16 @@ export default () => {
               .pattern(/^[0-9]{7}[A-Z]{1}$/)
               .required()
           ).default([]),
-          millesimes: arrayOf(Joi.string().required()).default([]),
-          code_certifications: arrayOf(Joi.string().required()).default([]),
-          ...validators.exports(),
-          ...validators.pagination(),
+          ...validators.regions(),
+          ...validators.statsList(),
         }
       );
 
       let { find, pagination } = await findAndPaginate(
-        "formationsStats",
+        formationsStats(),
         {
           ...(uais.length > 0 ? { uai: { $in: uais } } : {}),
+          ...(regions.length > 0 ? { "region.code": { $in: regions } } : {}),
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
           ...(code_certifications.length > 0 ? { code_certification: { $in: code_certifications } } : {}),
         },
@@ -58,14 +56,7 @@ export default () => {
             code_certification: (f) => f.code_certification,
             filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,
-            nb_annee_term: (f) => f.nb_annee_term,
-            nb_en_emploi_12_mois: (f) => f.nb_en_emploi_12_mois,
-            nb_en_emploi_6_mois: (f) => f.nb_en_emploi_6_mois,
-            nb_poursuite_etudes: (f) => f.nb_poursuite_etudes,
-            nb_sortant: (f) => f.nb_sortant,
-            taux_emploi_12_mois: (f) => f.taux_emploi_12_mois,
-            taux_emploi_6_mois: (f) => f.taux_emploi_6_mois,
-            taux_poursuite_etudes: (f) => f.taux_poursuite_etudes,
+            ...getStatsAsColumns(),
           },
         });
       } else {
@@ -111,12 +102,7 @@ export default () => {
       }
 
       const stats = results[0];
-      stats._meta = { ...stats._meta, ...getMetadata("certification", stats) };
-      if (ext === "svg") {
-        return sendWidget("formation", stats, res, { theme, direction });
-      } else {
-        return res.json(stats);
-      }
+      return sendStats("formation", stats, res, { direction, theme, ext });
     })
   );
 

@@ -7,11 +7,12 @@ import { logMiddleware } from "./middlewares/logMiddleware.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import { tryCatch } from "./middlewares/tryCatchMiddleware.js";
 import { corsMiddleware } from "./middlewares/corsMiddleware.js";
-import { dbCollection } from "../common/mongodb.js";
-import formationsRoutes from "./routes/formationsRoutes.js";
+import { dbCollection } from "../common/db/mongodb.js";
 import certificationsRoutes from "./routes/certificationsRoutes.js";
+import regionalesRoutes from "./routes/regionalesRoutes.js";
+import formationsRoutes from "./routes/formationsRoutes.js";
 import swaggerRoutes from "./routes/swaggerRoutes.js";
-import { packageJson } from "../common/esmUtils.js";
+import { packageJson } from "../common/utils/esmUtils.js";
 
 export default async () => {
   const app = express();
@@ -20,8 +21,9 @@ export default async () => {
   app.use(mongoSanitize({ replaceWith: "_" }));
   app.use(corsMiddleware());
   app.use(logMiddleware());
-  app.use(formationsRoutes());
   app.use(certificationsRoutes());
+  app.use(regionalesRoutes());
+  app.use(formationsRoutes());
   app.use(swaggerRoutes());
 
   app.get(

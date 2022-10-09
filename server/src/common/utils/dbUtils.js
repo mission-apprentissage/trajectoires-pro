@@ -1,7 +1,4 @@
-import { dbCollection } from "../mongodb.js";
-
-export async function findAndPaginate(collectionName, query, options = {}) {
-  let collection = dbCollection(collectionName);
+export async function findAndPaginate(collection, query, options = {}) {
   let page = options.page || 1;
   let limit = options.limit || 10;
   let skip = (page - 1) * limit;

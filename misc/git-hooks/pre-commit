@@ -13,7 +13,6 @@ function validate_commit() {
   if [ -z "$files" ]; then
     make lint
     make test
-    make types
   else
     echo
     echo "ERROR: Preventing commit of potentially sensible files:"

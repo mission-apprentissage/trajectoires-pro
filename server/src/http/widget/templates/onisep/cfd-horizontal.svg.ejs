@@ -1,0 +1,179 @@
+<% const height = 270 %> <% const width = 700 %> <% const rightOffset = 350 %>
+
+<svg
+  width="<%= width %>"
+  height="<%= height %>"
+  viewBox="0 0 <%= width %> <%= height %>"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <%- await include('../common/description'); %>
+  <rect
+    x="2"
+    y="2"
+    width="<%= width - 4 %>"
+    height="<%= height - 4 %>"
+    fill="white"
+    stroke="#FFD400"
+    stroke-width="4"
+  />
+
+  <text
+    fill="black"
+    xml:space="preserve"
+    style="white-space: pre"
+    font-family="Expressway Free"
+    font-size="22"
+    font-weight="bold"
+    letter-spacing="0em"
+  >
+    <tspan x="23" y="52.625">Que deviennent les apprenants apr&#xe8;s cette formation ?</tspan>
+  </text>
+
+  <text
+    fill="black"
+    xml:space="preserve"
+    style="white-space: pre"
+    font-family="Expressway Free"
+    font-size="20"
+    letter-spacing="0em"
+  >
+    <tspan x="23" y="107.875">Sont en emploi 6 mois après la</tspan>
+    <tspan x="23" y="127.875">fin de la formation</tspan>
+  </text>
+
+  <g>
+    <rect x="23" y="145" width="90" height="35" rx="4" fill="#0D7B92" />
+
+    <text
+      fill="white"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Expressway Free"
+      font-size="27"
+      font-weight="bold"
+      letter-spacing="0em"
+    >
+      <tspan x="50.5" y="173.438"><%= stats.apprentissage[0].valeur %>%</tspan>
+    </text>
+
+    <text
+      fill="black"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Expressway Free"
+      font-size="16"
+      letter-spacing="0em"
+    >
+      <tspan x="23" y="198.125">Apprentissage</tspan>
+    </text>
+  </g>
+
+  <g>
+    <rect x="182" y="145" width="90" height="35" rx="4" fill="#0D7B92" />
+    <text
+      fill="white"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Expressway Free"
+      font-size="27"
+      font-weight="bold"
+      letter-spacing="0em"
+    >
+      <tspan x="209.5" y="173.438"><%= stats.pro[0].valeur %>%</tspan>
+    </text>
+    <text
+      fill="black"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Expressway Free"
+      font-size="16"
+      letter-spacing="0em"
+    >
+      <tspan x="182" y="198.125">Voie scolaire</tspan>
+    </text>
+  </g>
+
+  <line x1="350" y1="87.875" x2="350" y2="208.125" stroke="#E5E5E5" />
+
+  <text
+    fill="black"
+    xml:space="preserve"
+    style="white-space: pre"
+    font-family="Expressway Free"
+    font-size="20"
+    letter-spacing="0em"
+  >
+    <tspan x="<%= 23 + rightOffset %>" y="107.875">Poursuivent leurs &#xe9;tudes</tspan>
+  </text>
+
+  <g>
+    <rect x="<%= 23 + rightOffset %>" y="145" width="90" height="35" rx="4" fill="#0D7B92" />
+
+    <text
+      fill="white"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Expressway Free"
+      font-size="27"
+      font-weight="bold"
+      letter-spacing="0em"
+    >
+      <tspan x="<%= 50.5 + rightOffset %>" y="173.438"><%= stats.apprentissage[1].valeur %>%</tspan>
+    </text>
+    <text
+      fill="black"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Expressway Free"
+      font-size="16"
+      letter-spacing="0em"
+    >
+      <tspan x="<%= 23 + rightOffset %>" y="198.125">Apprentissage</tspan>
+    </text>
+  </g>
+
+  <g>
+    <rect x="<%= 182 + rightOffset %>" y="145" width="90" height="35" rx="4" fill="#0D7B92" />
+
+    <text
+      fill="white"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Expressway Free"
+      font-size="27"
+      font-weight="bold"
+      letter-spacing="0em"
+    >
+      <tspan x="<%= 209.5 + rightOffset %>" y="173.438"><%= stats.pro[1].valeur %>%</tspan>
+    </text>
+    <text
+      fill="black"
+      xml:space="preserve"
+      style="white-space: pre"
+      font-family="Expressway Free"
+      font-size="16"
+      letter-spacing="0em"
+    >
+      <tspan x="<%= 182 + rightOffset %>" y="198.125">Voie scolaire</tspan>
+    </text>
+  </g>
+
+  <text
+    fill="#3A3A3A"
+    xml:space="preserve"
+    style="white-space: pre"
+    font-family="Expressway Free"
+    font-size="13"
+    font-style="italic"
+    letter-spacing="0em"
+  >
+    <tspan x="23" y="<%= height - 34 %>">Chiffres issus du site InserJeunes</tspan>
+  </text>
+
+  <defs>
+    <style>
+      @import url("https://fonts.cdnfonts.com/css/expressway-free");
+    </style>
+  </defs>
+</svg>

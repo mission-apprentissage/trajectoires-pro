@@ -1,12 +1,59 @@
 import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublished-import
 import { merge } from "lodash-es";
 import { createUAI } from "../../src/common/utils/validationUtils.js";
-import { generateCodeCertification, generateStats } from "./testUtils.js";
+import { generateCodeCertification, generateStatValue } from "./testUtils.js";
 import {
+  bcn,
   certificationsStats,
-  codeFormationDiplomes,
   formationsStats,
-} from "../../src/common/collections/collections.js";
+  regionalesStats,
+} from "../../src/common/db/collections/collections.js";
+import { ALL, getStats } from "../../src/common/stats.js";
+
+function createCodeFormationDiplome() {
+  return faker.helpers.replaceSymbols("4#######");
+}
+
+export function insertCertificationsStats(custom = {}) {
+  return certificationsStats().insertOne(
+    merge(
+      {},
+      {
+        millesime: "2020",
+        code_certification: generateCodeCertification("4"),
+        code_formation_diplome: createCodeFormationDiplome(),
+        diplome: { code: "4", libelle: "BAC" },
+        filiere: "apprentissage",
+        ...getStats(ALL, () => generateStatValue()),
+        _meta: {
+          date_import: new Date(),
+        },
+      },
+      custom
+    )
+  );
+}
+
+export function insertRegionalesStats(custom = {}) {
+  return regionalesStats().insertOne(
+    merge(
+      {},
+      {
+        region: { code: "11", nom: "Île-de-France" },
+        millesime: "2018_2019",
+        filiere: "apprentissage",
+        code_certification: generateCodeCertification("4"),
+        code_formation_diplome: createCodeFormationDiplome(),
+        diplome: { code: "4", libelle: "BAC" },
+        ...getStats(ALL, () => generateStatValue()),
+        _meta: {
+          date_import: new Date(),
+        },
+      },
+      custom
+    )
+  );
+}
 
 export function insertFormationsStats(custom = {}) {
   return formationsStats().insertOne(
@@ -17,15 +64,10 @@ export function insertFormationsStats(custom = {}) {
         millesime: "2018_2019",
         filiere: "apprentissage",
         code_certification: generateCodeCertification("4"),
+        code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
-        nb_annee_term: generateStats(),
-        nb_en_emploi_12_mois: generateStats(),
-        nb_en_emploi_6_mois: generateStats(),
-        nb_poursuite_etudes: generateStats(),
-        nb_sortant: generateStats(),
-        taux_emploi_12_mois: generateStats(),
-        taux_emploi_6_mois: generateStats(),
-        taux_poursuite_etudes: generateStats(),
+        ...getStats(ALL, () => generateStatValue()),
+        region: { code: "11", nom: "Île-de-France" },
         _meta: {
           date_import: new Date(),
         },
@@ -35,41 +77,34 @@ export function insertFormationsStats(custom = {}) {
   );
 }
 
-export function insertCertificationsStats(custom = {}) {
-  return certificationsStats().insertOne(
+export function insertCFD(custom = {}) {
+  return bcn().insertOne(
     merge(
       {},
       {
-        millesime: "2020",
-        code_certification: generateCodeCertification("4"),
+        type: "cfd",
+        code_certification: createCodeFormationDiplome(),
+        code_formation_diplome: createCodeFormationDiplome(),
+        libelle: "BAC PRO BATIMENT",
         diplome: { code: "4", libelle: "BAC" },
-        filiere: "apprentissage",
-        nb_annee_term: generateStats(),
-        nb_poursuite_etudes: generateStats(),
-        nb_en_emploi_12_mois: generateStats(),
-        nb_en_emploi_6_mois: generateStats(),
-        taux_poursuite_etudes: generateStats(),
-        taux_emploi_12_mois: generateStats(),
-        taux_emploi_6_mois: generateStats(),
-        taux_rupture_contrats: generateStats(),
+        _meta: { date_import: new Date() },
       },
       custom
     )
   );
 }
 
-export function insertCFD(custom = {}) {
-  return codeFormationDiplomes().insertOne(
+export function insertMEF(custom = {}) {
+  return bcn().insertOne(
     merge(
       {},
       {
-        code_formation: faker.helpers.replaceSymbols(`4#######`),
-        code_formation_alternatifs: [],
-        mef: [],
-        mef_stats_9: [],
-        mef_stats_11: [],
-        libelle: "BAC PRO BATIMENT",
+        type: "mef",
+        code_certification: faker.helpers.replaceSymbols("###########"),
+        code_formation_diplome: createCodeFormationDiplome(),
+        date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
         diplome: { code: "4", libelle: "BAC" },
+        libelle: "BAC PRO",
         _meta: { date_import: new Date() },
       },
       custom
