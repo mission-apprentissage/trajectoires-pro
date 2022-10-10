@@ -515,7 +515,7 @@ describe("certificationsRoutes", () => {
   });
 
   describe("Onisep", () => {
-    it("Vérifie qu'on peut obtenir les données pour deux filières", async () => {
+    it("Vérifie qu'on peut obtenir les données pour deux filières (cfd)", async () => {
       const { httpClient } = await startServer();
       await Promise.all([
         insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
@@ -532,7 +532,6 @@ describe("certificationsRoutes", () => {
           nb_en_emploi_12_mois: 25,
           nb_en_emploi_6_mois: 50,
         }),
-        insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
         insertCertificationsStats({
           code_certification: "23830024202",
           code_formation_diplome: "12345678",
@@ -548,7 +547,100 @@ describe("certificationsRoutes", () => {
         }),
       ]);
 
-      const response = await httpClient.get("/api/inserjeunes/certifications/12345678|23830024202");
+      const response = await httpClient.get("/api/inserjeunes/certifications/12345678,23830024202");
+
+      assert.strictEqual(response.status, 200);
+      assert.deepStrictEqual(response.data, {
+        apprentissage: {
+          codes_certifications: ["12345678"],
+          code_formation_diplome: "12345678",
+          diplome: {
+            code: "4",
+            libelle: "BAC",
+          },
+          filiere: "apprentissage",
+          millesime: "2020",
+          nb_sortant: 100,
+          nb_annee_term: 100,
+          nb_poursuite_etudes: 5,
+          nb_en_emploi_24_mois: 25,
+          nb_en_emploi_18_mois: 25,
+          nb_en_emploi_12_mois: 25,
+          nb_en_emploi_6_mois: 50,
+          //computed
+          taux_en_formation: 5,
+          taux_en_emploi_24_mois: 25,
+          taux_en_emploi_18_mois: 25,
+          taux_en_emploi_12_mois: 25,
+          taux_en_emploi_6_mois: 50,
+          taux_autres_6_mois: 45,
+          taux_autres_12_mois: 70,
+          taux_autres_18_mois: 70,
+          taux_autres_24_mois: 70,
+        },
+        pro: {
+          codes_certifications: ["23830024202"],
+          code_formation_diplome: "12345678",
+          diplome: {
+            code: "4",
+            libelle: "BAC",
+          },
+          filiere: "pro",
+          millesime: "2020",
+          nb_sortant: 100,
+          nb_annee_term: 100,
+          nb_poursuite_etudes: 5,
+          nb_en_emploi_24_mois: 25,
+          nb_en_emploi_18_mois: 25,
+          nb_en_emploi_12_mois: 25,
+          nb_en_emploi_6_mois: 50,
+          //computed
+          taux_en_formation: 5,
+          taux_en_emploi_24_mois: 25,
+          taux_en_emploi_18_mois: 25,
+          taux_en_emploi_12_mois: 25,
+          taux_en_emploi_6_mois: 50,
+          taux_autres_6_mois: 45,
+          taux_autres_12_mois: 70,
+          taux_autres_18_mois: 70,
+          taux_autres_24_mois: 70,
+        },
+      });
+    });
+
+    it("Vérifie qu'on peut obtenir les données pour deux filières (mef)", async () => {
+      const { httpClient } = await startServer();
+      await Promise.all([
+        insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
+        insertCertificationsStats({
+          code_certification: "12345678",
+          code_formation_diplome: "12345678",
+          filiere: "apprentissage",
+          millesime: "2020",
+          nb_sortant: 100,
+          nb_annee_term: 100,
+          nb_poursuite_etudes: 5,
+          nb_en_emploi_24_mois: 25,
+          nb_en_emploi_18_mois: 25,
+          nb_en_emploi_12_mois: 25,
+          nb_en_emploi_6_mois: 50,
+        }),
+        insertCertificationsStats({
+          code_certification: "23830024202",
+          code_formation_diplome: "12345678",
+          filiere: "pro",
+          millesime: "2020",
+          nb_sortant: 100,
+          nb_annee_term: 100,
+          nb_poursuite_etudes: 5,
+          nb_en_emploi_24_mois: 25,
+          nb_en_emploi_18_mois: 25,
+          nb_en_emploi_12_mois: 25,
+          nb_en_emploi_6_mois: 50,
+        }),
+      ]);
+
+      const response = await httpClient.get("/api/inserjeunes/certifications/12345678,23830024202");
 
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data, {

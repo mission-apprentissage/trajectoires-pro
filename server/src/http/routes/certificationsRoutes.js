@@ -80,7 +80,7 @@ export default () => {
       );
 
       if (vue === "filieres" || codes_certifications.length > 1) {
-        const cfd = await findCodeFormationDiplome(codes_certifications[0]);
+        const cfd = await findCodeFormationDiplome(codes_certifications);
         const filieresStats = await getFilieresStats(certificationsStats(), cfd, millesime);
         return sendFilieresStats(filieresStats, res, options);
       }

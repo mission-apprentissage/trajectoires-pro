@@ -25,7 +25,7 @@ const config = {
     api: {
       username: env.get("TRAJECTOIRES_PRO_INSERJEUNES_USERNAME").required().asString(),
       password: env.get("TRAJECTOIRES_PRO_INSERJEUNES_PASSWORD").required().asString(),
-      key: env.get("TRAJECTOIRES_PRO_INSERJEUNES_API_KEY").required().asString(),
+      key: env.get("TRAJECTOIRES_PRO_API_KEY").required().asString(),
     },
   },
 };
