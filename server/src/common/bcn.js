@@ -3,6 +3,7 @@ import { fetchStream } from "./utils/httpUtils.js";
 import iconv from "iconv-lite";
 import { parseCsv } from "./utils/csvUtils.js";
 import { bcn } from "./db/collections/collections.js";
+import { castArray } from "lodash-es";
 
 const ANCIENS_NIVEAUX_MAPPER = {
   5: "3",
@@ -41,7 +42,7 @@ export function getDiplome(codeFormation) {
 }
 
 export async function findCodeFormationDiplome(codeCertification) {
-  const found = await bcn().findOne({ code_certification: codeCertification });
+  const found = await bcn().findOne({ code_certification: { $in: castArray(codeCertification) } });
   return found?.code_formation_diplome;
 }
 
