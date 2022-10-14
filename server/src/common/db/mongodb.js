@@ -2,9 +2,7 @@ import { MongoClient } from "mongodb";
 import config from "../../config.js";
 import { getCollectionDescriptors } from "./collections/collections.js";
 import { writeData } from "oleoduc";
-import { getLoggerWithContext } from "../logger.js";
-
-const logger = getLoggerWithContext("db");
+import { logger } from "../logger.js";
 
 let clientHolder;
 function ensureInitialization() {
