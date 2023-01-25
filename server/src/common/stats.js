@@ -36,7 +36,7 @@ export const TAUX = /^taux_.*$/;
 export const VALEURS = /^nb_.*$/;
 
 export function getMillesimes() {
-  return ["2018_2019", "2019_2020"];
+  return ["2018_2019", "2019_2020", "2020_2021"];
 }
 
 function divide({ dividend, divisor }) {
