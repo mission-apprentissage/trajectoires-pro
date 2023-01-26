@@ -12,7 +12,7 @@ const logger = getLoggerWithContext("import");
 export async function importCertificationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
   const ij = options.inserjeunes || new InserJeunes();
-  const millesimes = options.millesimes || ["2019", "2020"];
+  const millesimes = options.millesimes || ["2019", "2020", "2021"];
   const filieres = options.filieres || ["apprentissage", "voie_pro_sco_educ_nat"];
 
   function handleError(e, context = {}) {
