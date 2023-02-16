@@ -5,6 +5,7 @@ import { runScript } from "./common/runScript.js";
 import { migrate } from "./jobs/migrate.js";
 import { writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
+import { exportStatsInserJeunes } from "./jobs/exportStatsInserJeunes.js";
 import { importBCN } from "./jobs/importBCN.js";
 import { importStats } from "./jobs/importStats.js";
 import { asArray } from "./common/utils/stringUtils.js";
@@ -25,6 +26,17 @@ cli
   .action((stats) => {
     runScript(() => {
       return importStats({ stats });
+    });
+  });
+
+cli
+  .command("exportStatsInserJeunes")
+  .description("Exporte les données statistiques de l'API InserJeunes")
+  .argument("<stats>", "Le nom des stats à exporter (etablissements,certifications)", asArray)
+  .argument("<dossier>", "Dossier cible dans lequel sera stocké l'export")
+  .action((stats, folder) => {
+    runScript(async () => {
+      await exportStatsInserJeunes({ stats, folder });
     });
   });
 
