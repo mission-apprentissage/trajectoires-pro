@@ -336,7 +336,9 @@ describe("importFormationsStats", () => {
         .reply(400, { msg: "UAI incorrect ou agricole" });
     });
 
+    // Disable retry on InserJeunes API
     const stats = await importFormationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { retries: 0 } } },
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 
@@ -365,5 +367,59 @@ describe("importFormationsStats", () => {
     const count = await formationsStats().countDocuments({});
     assert.strictEqual(count, 0);
     assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
+  });
+
+  it("Réessai d'appeler l'api en cas d'erreur", async () => {
+    mockInserJeunesApi(
+      (client, responses) => {
+        client
+          .post("/login")
+          .query(() => true)
+          .reply(200, responses.login());
+
+        client
+          .get(`/UAI/0751234J/millesime/2018_2019`)
+          .query(() => true)
+          .replyWithError("error");
+
+        client
+          .get(`/UAI/0751234J/millesime/2018_2019`)
+          .query(() => true)
+          .reply(
+            200,
+            responses.uai({
+              data: [
+                {
+                  id_mesure: "nb_en_emploi_6_mois",
+                  valeur_mesure: 6,
+                  dimensions: [
+                    {
+                      id_mefstat11: "12345678",
+                    },
+                  ],
+                },
+              ],
+            })
+          );
+      },
+      { stack: true }
+    );
+
+    await insertFormationsStats({
+      uai: "0751234J",
+      code_certification: "12345678",
+      millesime: "2018_2019",
+      nb_en_emploi_6_mois: -1,
+    });
+
+    // Change retry default timeout
+    const stats = await importFormationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { minTimeout: 0 } } },
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
+
+    const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
+    assert.deepStrictEqual(found.nb_en_emploi_6_mois, 6);
+    assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 1 });
   });
 });

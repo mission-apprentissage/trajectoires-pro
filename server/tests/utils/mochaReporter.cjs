@@ -1,9 +1,11 @@
+// Due to mocha esm limitation on custom reporter, must be a commonJS module
+// https://mochajs.org/#nodejs-native-esm-support
 const util = require("util");
-const Mocha = require("mocha"); // eslint-disable-line node/no-unpublished-require
-const chalk = require("chalk"); // eslint-disable-line node/no-unpublished-require
+const Mocha = require("mocha");
+const chalk = require("chalk");
 const { Base, Spec } = Mocha.reporters;
 const { inherits } = require("util");
-const prettyMilliseconds = require("pretty-ms"); // eslint-disable-line node/no-unpublished-require
+const prettyMilliseconds = require("pretty-ms");
 const color = Base.color;
 const {
   EVENT_RUN_BEGIN,

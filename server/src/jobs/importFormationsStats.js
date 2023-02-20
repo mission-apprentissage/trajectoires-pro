@@ -1,5 +1,6 @@
 import { compose, flattenArray, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
 import { Readable } from "stream";
+import { omit, pick, merge } from "lodash-es";
 import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
@@ -8,7 +9,6 @@ import { bcn, formationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findRegionByNom } from "../common/regions.js";
-import { omit, pick } from "lodash-es";
 import { computeCustomStats, getMillesimes, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
 
 const logger = getLoggerWithContext("import");
@@ -70,7 +70,10 @@ async function loadParameters(parameters) {
 
 export async function importFormationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
-  const ij = options.inserjeunes || new InserJeunes();
+
+  // Set a default retry for the InserJeunes API
+  const inserjeunesOptions = merge({ apiOptions: { retry: { retries: 5 } } }, options.inserjeunesOptions || {});
+  const ij = options.inserjeunes || new InserJeunes(inserjeunesOptions);
 
   function handleError(e, context) {
     logger.error({ err: e, ...context }, `Impossible d'importer les stats`);
