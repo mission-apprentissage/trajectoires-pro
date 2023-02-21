@@ -1,4 +1,6 @@
+import { Readable } from "stream";
 import { filterData, accumulateData, flattenArray, oleoduc, writeData } from "oleoduc";
+
 import { InserJeunesApi } from "./InserJeunesApi.js";
 import { streamNestedJsonArray } from "../utils/streamUtils.js";
 
@@ -68,19 +70,18 @@ function groupByCertification(millesime) {
 
 class InserJeunes {
   constructor(options = {}) {
-    this.api = options.api || new InserJeunesApi();
+    this.api = options.api || new InserJeunesApi(options.apiOptions || {});
   }
-
   async login() {
     return this.api.login();
   }
 
   async getFormationsStats(uai, millesime) {
-    const httpStream = await this.api.fetchEtablissementStats(uai, millesime);
+    const etablissementsStats = await this.api.fetchEtablissementStats(uai, millesime);
 
     let stats = [];
     await oleoduc(
-      httpStream,
+      Readable.from([etablissementsStats]),
       streamNestedJsonArray("data"),
       filterFormationStats(),
       groupByFormation(uai, millesime),
@@ -94,11 +95,11 @@ class InserJeunes {
   }
 
   async getCertificationsStats(millesime, filiere) {
-    const httpStream = await this.api.fetchCertificationStats(millesime, filiere);
+    const certificationsStats = await this.api.fetchCertificationStats(millesime, filiere);
 
     let stats = [];
     await oleoduc(
-      httpStream,
+      Readable.from([certificationsStats]),
       streamNestedJsonArray("data"),
       filterFormationStats(),
       groupByCertification(millesime, filiere),

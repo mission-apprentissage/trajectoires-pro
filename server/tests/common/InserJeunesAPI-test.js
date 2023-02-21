@@ -61,4 +61,31 @@ describe("InserJeunesApi", () => {
 
     assert.strictEqual(api.access_token, "token-2");
   });
+
+  it("Réessai une requête lorsque l'API renvoi une erreur", async () => {
+    mockInserJeunesApi(
+      (client, responses) => {
+        client
+          .post("/login")
+          .query(() => true)
+          .replyWithError("Error");
+
+        client
+          .post("/login")
+          .query(() => true)
+          .reply(
+            200,
+            responses.login({
+              access_token: "token",
+            })
+          );
+      },
+      { stack: true }
+    );
+
+    let api = new InserJeunesApi({ retry: { retries: 1, factor: 1, minTimeout: 0 } });
+    await api.login();
+
+    assert.strictEqual(api.access_token, "token");
+  });
 });

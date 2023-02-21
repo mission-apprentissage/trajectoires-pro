@@ -1,46 +1,9 @@
 import { RateLimitedApi } from "../api/RateLimitedApi.js";
 import config from "../../config.js";
-import { fetchStream, fetchJson } from "../utils/httpUtils.js";
-import { compose, transformData, accumulateData } from "oleoduc";
+import { fetchJsonWithRetry } from "../utils/httpUtils.js";
 import { getLoggerWithContext } from "../logger.js";
 
 const logger = getLoggerWithContext("api/inserjeunes");
-
-function fixJsonResponse() {
-  return compose(
-    accumulateData(
-      (trailingSlashes, chunk, flush) => {
-        let current = trailingSlashes + chunk.toString();
-        let newTrailingSlashes = "";
-
-        for (let i = current.length - 1; i >= 0; i--) {
-          if (current[i] === "\\") {
-            newTrailingSlashes += "\\";
-          } else {
-            break;
-          }
-        }
-
-        let nbCharactersToRemove = newTrailingSlashes.length * -1;
-        flush(nbCharactersToRemove >= 0 ? current : current.slice(0, nbCharactersToRemove));
-        return newTrailingSlashes;
-      },
-      { accumulator: "", objectMode: false }
-    ),
-    transformData(
-      (chunk) => {
-        let current = chunk.toString();
-        return current
-          .replaceAll(/"{/g, "{")
-          .replaceAll(/}"/g, "}")
-          .replaceAll(/\\\\\\"/g, "'")
-          .replaceAll(/\\/g, "")
-          .replaceAll(/u00/g, "\\\\u00");
-      },
-      { objectMode: false }
-    )
-  );
-}
 
 class InserJeunesApi extends RateLimitedApi {
   constructor(options = {}) {
@@ -48,6 +11,9 @@ class InserJeunesApi extends RateLimitedApi {
     this.access_token = null;
     this.access_token_timestamp = null;
     this.access_token_timeout = options.access_token_timeout || 60000 * 2; //minutes
+
+    // Disable retry by default
+    this.retry = options.retry || { retries: 0 };
   }
 
   static get baseApiUrl() {
@@ -69,17 +35,23 @@ class InserJeunesApi extends RateLimitedApi {
   }
 
   async login() {
-    const data = await fetchJson(`${InserJeunesApi.baseApiUrl}/login`, {
-      method: "POST",
-      headers: {
-        username: config.inserJeunes.api.username,
-        password: config.inserJeunes.api.password,
+    const data = await fetchJsonWithRetry(
+      `${InserJeunesApi.baseApiUrl}/login`,
+      {
+        method: "POST",
+        headers: {
+          username: config.inserJeunes.api.username,
+          password: config.inserJeunes.api.password,
+        },
       },
-    });
+      { ...this.retry }
+    );
 
     logger.info(`Le token d'authentification a été renouvelé`);
     this.access_token = data.access_token;
     this.access_token_timestamp = Date.now();
+
+    return data;
   }
 
   async fetchEtablissementStats(uai, millesime) {
@@ -88,13 +60,18 @@ class InserJeunesApi extends RateLimitedApi {
         await this.login();
       }
 
-      const response = await fetchStream(`${InserJeunesApi.baseApiUrl}/UAI/${uai}/millesime/${millesime}`, {
-        headers: {
-          ...this.getAuthHeaders(),
+      // /!\ L'API Inserjeunes retourne un json dans un json, on retourne le json en string ici
+      const response = await fetchJsonWithRetry(
+        `${InserJeunesApi.baseApiUrl}/UAI/${uai}/millesime/${millesime}`,
+        {
+          headers: {
+            ...this.getAuthHeaders(),
+          },
         },
-      });
+        { ...this.retry }
+      );
 
-      return compose(response, fixJsonResponse());
+      return response;
     });
   }
 
@@ -104,16 +81,18 @@ class InserJeunesApi extends RateLimitedApi {
         await this.login();
       }
 
-      const response = await fetchStream(
+      // /!\ L'API Inserjeunes retourne un json dans un json, on retourne le json en string ici
+      const response = await fetchJsonWithRetry(
         `${InserJeunesApi.baseApiUrl}/france/millesime/${millesime}/filiere/${filiere}`,
         {
           headers: {
             ...this.getAuthHeaders(),
           },
-        }
+        },
+        { ...this.retry }
       );
 
-      return compose(response, fixJsonResponse());
+      return response;
     });
   }
 }
