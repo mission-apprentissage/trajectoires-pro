@@ -311,7 +311,7 @@ components:
 
         Un code certification peut-être :
           * un code formation diplome (CFD) pour la voie apprentissage
-          * un code MEFSTATS 11 pour la voie professionnelle
+          * un code MEFSTATS11 pour la voie professionnelle
       schema:
         type: string
 
@@ -454,7 +454,7 @@ components:
       description: | 
        Un code certification peut-être :
           * un code formation diplome (CFD) pour la voie apprentissage
-          * un code MEFSTATS 11 pour la voie professionnelle
+          * un code MEFSTATS11 pour la voie professionnelle
       in: path
       required: true
       schema:
@@ -470,7 +470,7 @@ components:
 
         Un code certification peut-être :
           * un code formation diplome (CFD) pour la voie apprentissage
-          * un code MEFSTATS 11 pour la voie professionnelle
+          * un code MEFSTATS11 pour la voie professionnelle
       schema:
         type: string
         example: "32221031409|32221033001|23110022133|01033410|44633521"
