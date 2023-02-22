@@ -309,7 +309,9 @@ components:
       description: |
         Permet de filtrer la recherche avec un ou plusieurs codes de certification séparés par des virgules ou des |.
 
-        Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
+        Un code certification peut-être :
+          * un code formation diplome (CFD) pour la voie apprentissage
+          * un code MEFSTATS11 pour la voie professionnelle
       schema:
         type: string
 
@@ -449,7 +451,10 @@ components:
 
     code_certification:
       name: code_certification
-      description: Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
+      description: | 
+       Un code certification peut-être :
+          * un code formation diplome (CFD) pour la voie apprentissage
+          * un code MEFSTATS11 pour la voie professionnelle
       in: path
       required: true
       schema:
@@ -463,7 +468,9 @@ components:
       description: |
         Plusieurs codes de certification séparés par des virgules ou des |.
 
-        Un code certification peut-être un code formation diplome (CFD) ou un code MEF STATS 11
+        Un code certification peut-être :
+          * un code formation diplome (CFD) pour la voie apprentissage
+          * un code MEFSTATS11 pour la voie professionnelle
       schema:
         type: string
         example: "32221031409|32221033001|23110022133|01033410|44633521"
@@ -662,19 +669,19 @@ components:
           $ref: "#/components/schemas/Meta"
 
   responses:
-    400:
+    '400':
       description: Bad Request
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-    401:
+    '401':
       description: L'api key est manquante ou invalide
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-    404:
+    '404':
       description: Not Found
       content:
         application/json:
