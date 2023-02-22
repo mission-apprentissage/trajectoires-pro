@@ -6,7 +6,9 @@ import { computeRegionalesStats } from "./computeRegionalesStats.js";
 
 export async function importStats(options = {}) {
   let stats = options.stats || ["certifications", "formations", "regionales"];
-  const inserjeunes = new InserJeunes(); //Permet de partager le rate limiter entre les deux imports
+
+  const inserjeunesOptions = { apiOptions: { retry: { retries: 5 } } };
+  const inserjeunes = new InserJeunes(inserjeunesOptions); //Permet de partager le rate limiter entre les deux imports
   await inserjeunes.login();
 
   const results = await promiseAllProps({
