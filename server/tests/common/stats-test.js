@@ -1,5 +1,5 @@
 import assert from "assert";
-import { buildDescription, getStats, filterStatsNames } from "../../src/common/stats.js";
+import { buildDescription, getStats, getStatsCompute, filterStatsNames } from "../../src/common/stats.js";
 
 describe("statsNames", () => {
   it("Permet de lister le nom de stats", () => {
@@ -14,19 +14,55 @@ describe("statsNames", () => {
     assert.ok(!statsNames.includes("nb_en_emploi_24_mois"));
   });
 
-  it("Permet de filtrer et convertir les stats en un objet", () => {
-    const stats = getStats(/^taux/, () => 1);
-    assert.deepStrictEqual(stats, {
-      taux_en_emploi_12_mois: 1,
-      taux_en_emploi_18_mois: 1,
-      taux_en_emploi_24_mois: 1,
-      taux_en_emploi_6_mois: 1,
-      taux_en_formation: 1,
-      taux_autres_6_mois: 1,
-      taux_autres_12_mois: 1,
-      taux_autres_18_mois: 1,
-      taux_autres_24_mois: 1,
-      taux_rupture_contrats: 1,
+  describe("getStatsCompute", () => {
+    it("Enlève les valeurs qui ne sont pas des nombres", () => {
+      const statsNull = getStatsCompute(/^taux/, () => null);
+      assert.deepStrictEqual(statsNull, {});
+
+      const statsString = getStatsCompute(/^taux/, () => NaN);
+      assert.deepStrictEqual(statsString, {});
+    });
+
+    it("Permet de filtrer et convertir les stats de type nombre en un objet", () => {
+      const stats = getStatsCompute(/^taux/, () => 0);
+      assert.deepStrictEqual(stats, {
+        taux_en_emploi_12_mois: 0,
+        taux_en_emploi_18_mois: 0,
+        taux_en_emploi_24_mois: 0,
+        taux_en_emploi_6_mois: 0,
+        taux_en_formation: 0,
+        taux_autres_6_mois: 0,
+        taux_autres_12_mois: 0,
+        taux_autres_18_mois: 0,
+        taux_autres_24_mois: 0,
+        taux_rupture_contrats: 0,
+      });
+    });
+  });
+
+  describe("getStats", () => {
+    it("Enlève les valeurs manquantes", () => {
+      const statsNull = getStats(/^taux/, () => null);
+      assert.deepStrictEqual(statsNull, {});
+
+      const statsZero = getStats(/^taux/, () => 0);
+      assert.deepStrictEqual(statsZero, {});
+    });
+
+    it("Permet de filtrer et convertir les stats en un objet", () => {
+      const stats = getStats(/^taux/, () => ({}));
+      assert.deepStrictEqual(stats, {
+        taux_en_emploi_12_mois: {},
+        taux_en_emploi_18_mois: {},
+        taux_en_emploi_24_mois: {},
+        taux_en_emploi_6_mois: {},
+        taux_en_formation: {},
+        taux_autres_6_mois: {},
+        taux_autres_12_mois: {},
+        taux_autres_18_mois: {},
+        taux_autres_24_mois: {},
+        taux_rupture_contrats: {},
+      });
     });
   });
 

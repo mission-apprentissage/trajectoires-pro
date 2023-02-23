@@ -737,7 +737,6 @@ describe("certificationsRoutes", () => {
       const response = await httpClient.get("/api/inserjeunes/certifications/12345678|23830024202.svg");
 
       assert.strictEqual(response.status, 200);
-      console.log(response.data);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes("100%"));
       assert.ok(response.data.includes("10%"));

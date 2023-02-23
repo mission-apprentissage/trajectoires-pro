@@ -8,7 +8,7 @@ import {
   formationsStats,
   regionalesStats,
 } from "../../src/common/db/collections/collections.js";
-import { ALL, getStats } from "../../src/common/stats.js";
+import { ALL, getStatsCompute } from "../../src/common/stats.js";
 
 function createCodeFormationDiplome() {
   return faker.helpers.replaceSymbols("4#######");
@@ -24,7 +24,7 @@ export function insertCertificationsStats(custom = {}) {
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
         filiere: "apprentissage",
-        ...getStats(ALL, () => generateStatValue()),
+        ...getStatsCompute(ALL, () => generateStatValue()),
         _meta: {
           date_import: new Date(),
         },
@@ -45,7 +45,7 @@ export function insertRegionalesStats(custom = {}) {
         code_certification: generateCodeCertification("4"),
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
-        ...getStats(ALL, () => generateStatValue()),
+        ...getStatsCompute(ALL, () => generateStatValue()),
         _meta: {
           date_import: new Date(),
         },
@@ -66,7 +66,7 @@ export function insertFormationsStats(custom = {}) {
         code_certification: generateCodeCertification("4"),
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
-        ...getStats(ALL, () => generateStatValue()),
+        ...getStatsCompute(ALL, () => generateStatValue()),
         region: { code: "11", nom: "Île-de-France" },
         _meta: {
           date_import: new Date(),

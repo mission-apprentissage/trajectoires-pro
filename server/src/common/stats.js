@@ -1,3 +1,4 @@
+import { isNil } from "lodash-es";
 import { $field, $percentage, $sumOf } from "./utils/mongodbUtils.js";
 import { omitNil } from "./utils/objectUtils.js";
 import { percentage } from "./utils/numberUtils.js";
@@ -97,7 +98,6 @@ export function filterStatsNames(regex = ALL) {
 export function getStats(regex, mapValue) {
   return filterStatsNames(regex).reduce((acc, statName) => {
     const value = mapValue(statName);
-
     return {
       ...acc,
       ...(value ? { [statName]: value } : {}),
@@ -105,13 +105,30 @@ export function getStats(regex, mapValue) {
   }, {});
 }
 
+export function getStatsCompute(regex, mapValue) {
+  return filterStatsNames(regex).reduce((acc, statName) => {
+    const value = mapValue(statName);
+    return {
+      ...acc,
+      ...(isNaN(value) || isNil(value) ? {} : { [statName]: value }),
+    };
+  }, {});
+}
+
 export function computeCustomStats(data) {
+  const type = data === "aggregate" ? "aggregate" : "compute";
   const regles = getReglesDeCalcul();
+
+  if (type === "compute") {
+    return getStatsCompute(TAUX, (statName) => {
+      const regle = regles[statName];
+      const result = regle?.[type]?.(data);
+      return isNaN(result) || isNil(result) ? null : result;
+    });
+  }
 
   return getStats(TAUX, (statName) => {
     const regle = regles[statName];
-    const type = data === "aggregate" ? "aggregate" : "compute";
-
     return regle?.[type]?.(data) || null;
   });
 }
