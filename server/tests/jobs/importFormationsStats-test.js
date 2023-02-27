@@ -165,7 +165,7 @@ describe("importFormationsStats", () => {
       assert.notProperty(found, "nb_annee_term");
     });
 
-    it("Calcule le nb_poursuite_etudes si on a le nb_annee_term et le nb_sortant", async () => {
+    it("Ne calcule pas le nb_poursuite_etudes si on a le nb_annee_term et le nb_sortant", async () => {
       mockApi("0751234J", "2018_2019", {
         data: [
           {
@@ -199,7 +199,9 @@ describe("importFormationsStats", () => {
       });
 
       const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
-      assert.include(found, { nb_annee_term: 27, nb_sortant: 9, nb_poursuite_etudes: 18, taux_en_formation: 67 });
+      assert.include(found, { nb_annee_term: 27, nb_sortant: 9 });
+      assert.notProperty(found, "nb_poursuite_etudes");
+      assert.notProperty(found, "taux_en_formation");
     });
 
     it("Calcule le nb_sortant si on a le nb_annee_term et nb_poursuite_etudes", async () => {

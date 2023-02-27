@@ -53,7 +53,8 @@ function computeMissingStats() {
 
     return {
       ...data,
-      nb_poursuite_etudes: nb_poursuite_etudes === undefined ? nb_annee_term - nb_sortant : nb_poursuite_etudes,
+      // On ne calcul pas le nb_poursuite_etudes, il peut y avoir des sortant pas pris en compte dans nb_sortant
+      //nb_poursuite_etudes: nb_poursuite_etudes === undefined ? nb_annee_term - nb_sortant : nb_poursuite_etudes,
       nb_sortant: nb_sortant === undefined ? nb_annee_term - nb_poursuite_etudes : nb_sortant,
     };
   });
