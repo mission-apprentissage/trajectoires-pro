@@ -18,7 +18,8 @@
     {
       "files": "tests/**/*.js",
       "rules": {
-        "node/no-unpublished-require": 0
+        "node/no-unpublished-require": 0,
+        "node/no-unpublished-import": 0
       }
     }
   ]
