@@ -1,4 +1,6 @@
-import { isNil } from "lodash-es";
+import { isNil, mapValues, flow } from "lodash-es";
+import { transformData } from "oleoduc";
+
 import { $field, $percentage, $sumOf } from "./utils/mongodbUtils.js";
 import { omitNil } from "./utils/objectUtils.js";
 import { percentage } from "./utils/numberUtils.js";
@@ -37,6 +39,10 @@ export const TAUX = /^taux_.*$/;
 export const VALEURS = /^nb_.*$/;
 
 export function getMillesimes() {
+  return ["2019", "2020", "2021"];
+}
+
+export function getFormationMillesimes() {
   return ["2018_2019", "2019_2020", "2020_2021"];
 }
 
@@ -183,8 +189,26 @@ export async function getFilieresStats(collection, cfd, millesime) {
     .limit(1)
     .toArray();
 
-  return omitNil({
-    pro: results[0]?.stats?.find((s) => s.filiere === "pro"),
-    apprentissage: results[0]?.stats?.find((s) => s.filiere === "apprentissage"),
-  });
+  return mapValues(
+    omitNil({
+      pro: results[0]?.stats?.find((s) => s.filiere === "pro"),
+      apprentissage: results[0]?.stats?.find((s) => s.filiere === "apprentissage"),
+    }),
+    transformDisplayStat()
+  );
+}
+
+function transformDisplayStatRules() {
+  return [
+    // Remplace les taux par null si le nbr en année terminales < 20
+    (data) => (data.nb_annee_term >= 20 ? data : mapValues(data, (o, k) => (TAUX.test(k) ? null : o))),
+  ];
+}
+
+export function transformDisplayStat(isStream = false) {
+  const rules = transformDisplayStatRules();
+  if (!isStream) {
+    return flow(rules);
+  }
+  return transformData((data) => flow(rules)(data));
 }

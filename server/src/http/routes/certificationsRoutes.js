@@ -11,7 +11,7 @@ import { addCsvHeaders, addJsonHeaders, sendFilieresStats, sendStats } from "../
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
 import { findCodeFormationDiplome } from "../../common/bcn.js";
-import { getFilieresStats } from "../../common/stats.js";
+import { getFilieresStats, transformDisplayStat } from "../../common/stats.js";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
 
 export default () => {
@@ -51,6 +51,7 @@ export default () => {
             millesime: (f) => f.millesime,
             ...getStatsAsColumns(),
           },
+          mapper: (v) => (v === null ? "null" : v),
         });
       } else {
         addJsonHeaders(res);
@@ -62,7 +63,7 @@ export default () => {
         });
       }
 
-      return compose(find.stream(), extensionTransformer, res);
+      return compose(find.stream(), transformDisplayStat(true), extensionTransformer, res);
     })
   );
 
@@ -96,7 +97,7 @@ export default () => {
         throw Boom.notFound("Certification inconnue");
       }
 
-      const stats = results[0];
+      const stats = transformDisplayStat()(results[0]);
       return sendStats("certification", stats, res, options);
     })
   );
