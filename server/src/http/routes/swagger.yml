@@ -771,7 +771,7 @@ components:
                   pagination:
                     $ref: "#/components/schemas/Pagination"
                 description: Informations complémentaires
-        "text/csv":
+        "text/csv; charset=UTF-8":
           schema:
             type: string
             example: |
@@ -802,7 +802,7 @@ components:
                   pagination:
                     $ref: "#/components/schemas/Pagination"
                 description: Informations complémentaires
-        "text/csv":
+        "text/csv; charset=UTF-8":
           schema:
             type: string
             example: |
@@ -834,7 +834,7 @@ components:
                   pagination:
                     $ref: "#/components/schemas/Pagination"
                 description: Informations complémentaires
-        "text/csv":
+        "text/csv; charset=UTF-8":
           schema:
             type: string
             example: |
