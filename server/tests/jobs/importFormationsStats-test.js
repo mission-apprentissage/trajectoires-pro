@@ -293,6 +293,58 @@ describe("importFormationsStats", () => {
     });
   });
 
+  it("Vérifie que l'on arrondit correctement les taux", async () => {
+    mockApi("0751234J", "2018_2019", {
+      data: [
+        {
+          id_mesure: "nb_annee_term",
+          valeur_mesure: 40,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_6_mois",
+          valeur_mesure: 13,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_poursuite_etudes",
+          valeur_mesure: 11,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+      ],
+    });
+    await insertMEF({
+      code_certification: "12345678900",
+      code_formation_diplome: "12345678",
+      diplome: { code: "4", libelle: "BAC" },
+    });
+
+    await importFormationsStats({
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
+
+    const found = await formationsStats().findOne({});
+    const taux = pickBy(found, (value, key) => key.startsWith("taux"));
+    assert.deepStrictEqual(taux, {
+      taux_autres_6_mois: 40,
+      taux_en_emploi_6_mois: 32,
+      taux_en_formation: 28,
+    });
+    assert.equal(taux.taux_autres_6_mois + taux.taux_en_emploi_6_mois + taux.taux_en_formation, 100);
+  });
+
   it("Vérifie qu'on fusionne les mesures d'une formation", async () => {
     mockApi("0751234J", "2018_2019", {
       data: [
