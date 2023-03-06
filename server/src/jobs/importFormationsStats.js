@@ -9,7 +9,7 @@ import { bcn, formationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findRegionByNom } from "../common/regions.js";
-import { computeCustomStats, getMillesimes, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
+import { computeCustomStats, getFormationMillesimes, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -39,7 +39,9 @@ async function convertEtablissementsIntoParameters(millesime) {
 }
 
 async function streamDefaultParameters() {
-  const streams = await Promise.all(getMillesimes().map((millesime) => convertEtablissementsIntoParameters(millesime)));
+  const streams = await Promise.all(
+    getFormationMillesimes().map((millesime) => convertEtablissementsIntoParameters(millesime))
+  );
 
   return mergeStreams(streams);
 }

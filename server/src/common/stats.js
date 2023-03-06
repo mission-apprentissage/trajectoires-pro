@@ -1,4 +1,5 @@
-import { isNil } from "lodash-es";
+import { isNil, mapValues, flow, merge } from "lodash-es";
+import { transformData } from "oleoduc";
 import { $field, $percentage, $sumOf, $removeNullOrZero } from "./utils/mongodbUtils.js";
 import { omitNil } from "./utils/objectUtils.js";
 import { percentage } from "./utils/numberUtils.js";
@@ -37,6 +38,10 @@ export const TAUX = /^taux_.*$/;
 export const VALEURS = /^nb_.*$/;
 
 export function getMillesimes() {
+  return ["2019", "2020", "2021"];
+}
+
+export function getFormationMillesimes() {
   return ["2018_2019", "2019_2020", "2020_2021"];
 }
 
@@ -189,8 +194,43 @@ export async function getFilieresStats(collection, cfd, millesime) {
     .limit(1)
     .toArray();
 
-  return omitNil({
-    pro: results[0]?.stats?.find((s) => s.filiere === "pro"),
-    apprentissage: results[0]?.stats?.find((s) => s.filiere === "apprentissage"),
-  });
+  return mapValues(
+    omitNil({
+      pro: results[0]?.stats?.find((s) => s.filiere === "pro"),
+      apprentissage: results[0]?.stats?.find((s) => s.filiere === "apprentissage"),
+    }),
+    transformDisplayStat()
+  );
+}
+
+function transformDisplayStatRules() {
+  const rules = [
+    {
+      // Remplace les taux par null si le nbr en année terminales < 20
+      cond: (data) => data.nb_annee_term < 20,
+      transformation: (data) => mapValues(data, (o, k) => (TAUX.test(k) ? null : o)),
+      message: (data) =>
+        merge(data, {
+          _meta: {
+            messages: [
+              `Les taux ne peuvent pas être affichés car il n'y a pas assez d'élèves pour fournir une information fiable.`,
+            ],
+          },
+        }),
+    },
+  ];
+
+  return rules;
+}
+
+export function transformDisplayStat(isStream = false) {
+  const ruleToFunc = ({ cond, transformation, message }) => {
+    return (data) => (cond(data) ? flow(transformation, message)(data) : data);
+  };
+  const rules = transformDisplayStatRules().map(ruleToFunc);
+
+  if (!isStream) {
+    return flow(rules);
+  }
+  return transformData((data) => flow(rules)(data));
 }

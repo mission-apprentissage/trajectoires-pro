@@ -4,7 +4,7 @@ import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { computeCustomStats, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
+import { computeCustomStats, getMillesimes, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
 import { omit, pick } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
@@ -12,7 +12,7 @@ const logger = getLoggerWithContext("import");
 export async function importCertificationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
   const ij = options.inserjeunes || new InserJeunes();
-  const millesimes = options.millesimes || ["2019", "2020", "2021"];
+  const millesimes = options.millesimes || getMillesimes();
   const filieres = options.filieres || ["apprentissage", "voie_pro_sco_educ_nat"];
 
   function handleError(e, context = {}) {
