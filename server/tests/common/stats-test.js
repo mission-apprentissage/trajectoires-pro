@@ -247,6 +247,11 @@ describe("statsNames", () => {
           taux_en_emploi_24_mois: null,
           taux_en_emploi_6_mois: null,
           taux_en_formation: null,
+          _meta: {
+            messages: [
+              `Les taux ne peuvent pas être affichés car il n'y a pas assez d'élèves pour fournir une information fiable.`,
+            ],
+          },
         },
         apprentissage: {
           codes_certifications: ["12345678"],
@@ -270,6 +275,11 @@ describe("statsNames", () => {
           taux_en_emploi_24_mois: null,
           taux_en_emploi_6_mois: null,
           taux_en_formation: null,
+          _meta: {
+            messages: [
+              `Les taux ne peuvent pas être affichés car il n'y a pas assez d'élèves pour fournir une information fiable.`,
+            ],
+          },
         },
       });
     });
@@ -301,6 +311,11 @@ describe("statsNames", () => {
         taux_en_emploi_24_mois: null,
         taux_en_emploi_6_mois: null,
         taux_en_formation: null,
+        _meta: {
+          messages: [
+            `Les taux ne peuvent pas être affichés car il n'y a pas assez d'élèves pour fournir une information fiable.`,
+          ],
+        },
       });
     });
 

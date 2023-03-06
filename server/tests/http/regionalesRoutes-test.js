@@ -189,6 +189,11 @@ describe("regionalesRoutes", () => {
         taux_autres_18_mois: null,
         taux_autres_24_mois: null,
       });
+      assert.deepNestedInclude(response.data, {
+        "_meta.messages": [
+          `Les taux ne peuvent pas être affichés car il n'y a pas assez d'élèves pour fournir une information fiable.`,
+        ],
+      });
     });
 
     it("Vérifie que l'on met les taux à null pour les effectifs < 20 au format CSV", async () => {

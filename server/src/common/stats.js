@@ -1,4 +1,4 @@
-import { isNil, mapValues, flow } from "lodash-es";
+import { isNil, mapValues, flow, merge } from "lodash-es";
 import { transformData } from "oleoduc";
 
 import { $field, $percentage, $sumOf } from "./utils/mongodbUtils.js";
@@ -199,14 +199,31 @@ export async function getFilieresStats(collection, cfd, millesime) {
 }
 
 function transformDisplayStatRules() {
-  return [
-    // Remplace les taux par null si le nbr en année terminales < 20
-    (data) => (data.nb_annee_term >= 20 ? data : mapValues(data, (o, k) => (TAUX.test(k) ? null : o))),
+  const rules = [
+    {
+      // Remplace les taux par null si le nbr en année terminales < 20
+      cond: (data) => data.nb_annee_term < 20,
+      transformation: (data) => mapValues(data, (o, k) => (TAUX.test(k) ? null : o)),
+      message: (data) =>
+        merge(data, {
+          _meta: {
+            messages: [
+              `Les taux ne peuvent pas être affichés car il n'y a pas assez d'élèves pour fournir une information fiable.`,
+            ],
+          },
+        }),
+    },
   ];
+
+  return rules;
 }
 
 export function transformDisplayStat(isStream = false) {
-  const rules = transformDisplayStatRules();
+  const ruleToFunc = ({ cond, transformation, message }) => {
+    return (data) => (cond(data) ? flow(transformation, message)(data) : data);
+  };
+  const rules = transformDisplayStatRules().map(ruleToFunc);
+
   if (!isStream) {
     return flow(rules);
   }
