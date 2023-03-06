@@ -1,4 +1,4 @@
-import assert from "assert";
+import { assert } from "chai";
 import { omit } from "lodash-es";
 import { insertFormationsStats } from "../utils/fakeData.js";
 import { formationsStats, regionalesStats } from "../../src/common/db/collections/collections.js";
@@ -161,6 +161,25 @@ describe("computeRegionalesStats", () => {
     const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found.nb_annee_term, 300);
     assert.deepStrictEqual(found.taux_en_formation, 7);
+  });
+
+  it("Vérifie que l'on arrondit correctement les taux", async () => {
+    await insertFormationsStats({
+      nb_annee_term: 3932,
+      nb_poursuite_etudes: 1992,
+      nb_sortant: 1940,
+      nb_en_emploi_6_mois: 932,
+    });
+    await computeRegionalesStats();
+
+    const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
+
+    assert.include(found, {
+      taux_autres_6_mois: 25,
+      taux_en_emploi_6_mois: 24,
+      taux_en_formation: 51,
+    });
+    assert.equal(found.taux_autres_6_mois + found.taux_en_emploi_6_mois + found.taux_en_formation, 100);
   });
 
   it("Vérifie qu'on ignore les taux avec des diviseurs à 0", async () => {

@@ -1,7 +1,6 @@
 import { isNil, mapValues, flow, merge } from "lodash-es";
 import { transformData } from "oleoduc";
-
-import { $field, $percentage, $sumOf } from "./utils/mongodbUtils.js";
+import { $field, $percentage, $sumOf, $removeNullOrZero } from "./utils/mongodbUtils.js";
 import { omitNil } from "./utils/objectUtils.js";
 import { percentage } from "./utils/numberUtils.js";
 
@@ -49,24 +48,26 @@ export function getFormationMillesimes() {
 function divide({ dividend, divisor }) {
   return {
     compute: (data) => percentage(data[dividend], data[divisor]),
-    aggregate: () => $percentage($field(dividend), $field(divisor)),
+    aggregate: () => $removeNullOrZero($field(divisor), $percentage($field(dividend), $field(divisor))),
   };
 }
 
-function subtractAndDivide({ subtraction, divisor }) {
+function percentageAndSubtract({ dividends, divisor, minuend }) {
   return {
     compute: (data) => {
-      const nbAutres = subtraction.map((d) => data[d]).reduce((acc, value) => acc - value);
-
-      return percentage(nbAutres, data[divisor]);
+      const sum = dividends.reduce((s, d) => {
+        return s + percentage(data[d], data[divisor]);
+      }, 0);
+      return Math.max(minuend - sum, 0);
     },
+
     aggregate: () => {
-      return $percentage(
-        {
-          $subtract: [{ $subtract: [$field(subtraction[0]), $field(subtraction[1])] }, $field(subtraction[2])],
-        },
-        $field(divisor)
-      );
+      return $removeNullOrZero($field(divisor), {
+        $max: [
+          0,
+          { $subtract: [minuend, { $sum: [...dividends.map((d) => $percentage($field(d), $field(divisor)))] }] },
+        ],
+      });
     },
   };
 }
@@ -78,21 +79,25 @@ export function getReglesDeCalcul() {
     taux_en_emploi_12_mois: divide({ dividend: "nb_en_emploi_12_mois", divisor: "nb_annee_term" }),
     taux_en_emploi_6_mois: divide({ dividend: "nb_en_emploi_6_mois", divisor: "nb_annee_term" }),
     taux_en_formation: divide({ dividend: "nb_poursuite_etudes", divisor: "nb_annee_term" }),
-    taux_autres_6_mois: subtractAndDivide({
-      subtraction: ["nb_annee_term", "nb_en_emploi_6_mois", "nb_poursuite_etudes"],
-      divisor: "nb_annee_term",
+    taux_autres_6_mois: percentageAndSubtract({
+      dividends: ["nb_en_emploi_6_mois", "nb_poursuite_etudes"],
+      divisor: ["nb_annee_term"],
+      minuend: 100,
     }),
-    taux_autres_12_mois: subtractAndDivide({
-      subtraction: ["nb_annee_term", "nb_en_emploi_12_mois", "nb_poursuite_etudes"],
-      divisor: "nb_annee_term",
+    taux_autres_12_mois: percentageAndSubtract({
+      dividends: ["nb_en_emploi_12_mois", "nb_poursuite_etudes"],
+      divisor: ["nb_annee_term"],
+      minuend: 100,
     }),
-    taux_autres_18_mois: subtractAndDivide({
-      subtraction: ["nb_annee_term", "nb_en_emploi_18_mois", "nb_poursuite_etudes"],
-      divisor: "nb_annee_term",
+    taux_autres_18_mois: percentageAndSubtract({
+      dividends: ["nb_en_emploi_18_mois", "nb_poursuite_etudes"],
+      divisor: ["nb_annee_term"],
+      minuend: 100,
     }),
-    taux_autres_24_mois: subtractAndDivide({
-      subtraction: ["nb_annee_term", "nb_en_emploi_24_mois", "nb_poursuite_etudes"],
-      divisor: "nb_annee_term",
+    taux_autres_24_mois: percentageAndSubtract({
+      dividends: ["nb_en_emploi_24_mois", "nb_poursuite_etudes"],
+      divisor: ["nb_annee_term"],
+      minuend: 100,
     }),
   };
 }
