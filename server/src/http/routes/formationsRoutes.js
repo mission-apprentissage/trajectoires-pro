@@ -11,6 +11,7 @@ import Boom from "boom";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { formationsStats } from "../../common/db/collections/collections.js";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
+import { transformDisplayStat } from "../../common/stats.js";
 
 export default () => {
   const router = express.Router();
@@ -58,6 +59,7 @@ export default () => {
             millesime: (f) => f.millesime,
             ...getStatsAsColumns(),
           },
+          mapper: (v) => (v === null ? "null" : v),
         });
       } else {
         addJsonHeaders(res);
@@ -69,7 +71,7 @@ export default () => {
         });
       }
 
-      compose(find.stream(), extensionTransformer, res);
+      compose(find.stream(), transformDisplayStat(true), extensionTransformer, res);
     })
   );
 
@@ -101,7 +103,7 @@ export default () => {
         throw Boom.notFound("Formation inconnue");
       }
 
-      const stats = results[0];
+      const stats = transformDisplayStat()(results[0]);
       return sendStats("formation", stats, res, { direction, theme, ext });
     })
   );

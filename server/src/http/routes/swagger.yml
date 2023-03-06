@@ -508,6 +508,9 @@ components:
       description: Statut de la pagination
     Region:
       type: object
+      required:
+        - code
+        - nom
       properties:
         code:
           type: string
@@ -526,9 +529,26 @@ components:
           type: string
         description:
           type: string
+        messages:
+          description: Informations supplémentaires sur les données
+          type: array
+          items:
+            type: string
+          example: ["Les taux ne peuvent pas être affichés car il n'y a pas assez d'élèves pour fournir une information fiable."]
 
     Certification:
       type: object
+      description: |
+        Statistiques pour une certification.
+
+        Les taux retournés sont :
+          * null quand les effectifs (nb_annee_term) sont < 20
+          * absent si l'on ne peut pas les calculer (données manquantes)
+      required:
+        - millesime
+        - code_certification
+        - filiere
+        - _meta
       properties:
         millesime:
           type: string
@@ -553,27 +573,48 @@ components:
           type: number
         taux_en_emploi_24_mois:
           type: number
+          nullable: true
         taux_en_emploi_18_mois:
           type: number
+          nullable: true
         taux_en_emploi_12_mois:
           type: number
+          nullable: true
         taux_en_emploi_6_mois:
           type: number
+          nullable: true
         taux_en_formation:
           type: number
+          nullable: true
         taux_autres_6_mois:
           type: number
+          nullable: true
         taux_autres_12_mois:
           type: number
+          nullable: true
         taux_autres_18_mois:
           type: number
+          nullable: true
         taux_autres_24_mois:
           type: number
+          nullable: true
         _meta:
           $ref: "#/components/schemas/Meta"
 
     Regionale:
       type: object
+      description: |
+        Statistiques d'une certification pour une région.
+
+        Les taux retournés sont :
+          * null quand les effectifs (nb_annee_term) sont < 20
+          * absent si l'on ne peut pas les calculer (données manquantes)
+      required:
+        - millesime
+        - code_certification
+        - filiere
+        - region
+        - _meta
       properties:
         millesime:
           type: string
@@ -598,22 +639,31 @@ components:
           type: number
         taux_en_emploi_24_mois:
           type: number
+          nullable: true
         taux_en_emploi_18_mois:
           type: number
+          nullable: true
         taux_en_emploi_12_mois:
           type: number
+          nullable: true
         taux_en_emploi_6_mois:
           type: number
+          nullable: true
         taux_en_formation:
           type: number
+          nullable: true
         taux_autres_6_mois:
           type: number
+          nullable: true
         taux_autres_12_mois:
           type: number
+          nullable: true
         taux_autres_18_mois:
           type: number
+          nullable: true
         taux_autres_24_mois:
           type: number
+          nullable: true
         region:
           $ref: "#/components/schemas/Region"
         _meta:
@@ -621,6 +671,19 @@ components:
 
     Formation:
       type: object
+      description: |
+        Statistiques d'une certification pour une formation.
+
+        Les taux retournés sont :
+          * null quand les effectifs (nb_annee_term) sont < 20
+          * absent si l'on ne peut pas les calculer (données manquantes)
+      required:
+        - uai
+        - millesime
+        - code_certification
+        - filiere
+        - region
+        - _meta
       properties:
         uai:
           type: string
@@ -647,22 +710,31 @@ components:
           type: number
         taux_en_emploi_24_mois:
           type: number
+          nullable: true
         taux_en_emploi_18_mois:
           type: number
+          nullable: true
         taux_en_emploi_12_mois:
           type: number
+          nullable: true
         taux_en_emploi_6_mois:
           type: number
+          nullable: true
         taux_en_formation:
           type: number
+          nullable: true
         taux_autres_6_mois:
           type: number
+          nullable: true
         taux_autres_12_mois:
           type: number
+          nullable: true
         taux_autres_18_mois:
           type: number
+          nullable: true
         taux_autres_24_mois:
           type: number
+          nullable: true
         region:
           $ref: "#/components/schemas/Region"
         _meta:
@@ -691,7 +763,7 @@ components:
     CertificationsResponse:
       description: La liste des certifications avec leurs statistiques
       content:
-        "*/*":
+        "application/json":
           schema:
             type: object
             properties:
@@ -705,6 +777,12 @@ components:
                   pagination:
                     $ref: "#/components/schemas/Pagination"
                 description: Informations complémentaires
+        "text/csv; charset=UTF-8":
+          schema:
+            type: string
+            example: |
+              code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+              50034303;apprentissage;2019;9;3;3;3;4;0;9;67;67;67;56;33;33;33;44;0;20
 
     CertificationResponse:
       description: Une certification avec ses statistiques
@@ -716,7 +794,7 @@ components:
     RegionalesResponse:
       description: La liste des statistiques de certifications pour toutes les régions
       content:
-        "*/*":
+        "application/json":
           schema:
             type: object
             properties:
@@ -730,6 +808,13 @@ components:
                   pagination:
                     $ref: "#/components/schemas/Pagination"
                 description: Informations complémentaires
+        "text/csv; charset=UTF-8":
+          schema:
+            type: string
+            example: |
+              region;code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+              Auvergne-Rhône-Alpes;01022103;apprentissage;2018_2019;106;55;48;55;46;38;67;12;19;12;21;52;45;52;43;36;
+
 
     RegionaleResponse:
       description: La liste des statistiques de certifications pour une région
@@ -741,7 +826,7 @@ components:
     FormationsResponse:
       description: La liste des statistiques des formations
       content:
-        "*/*":
+        "application/json":
           schema:
             type: object
             properties:
@@ -755,6 +840,12 @@ components:
                   pagination:
                     $ref: "#/components/schemas/Pagination"
                 description: Informations complémentaires
+        "text/csv; charset=UTF-8":
+          schema:
+            type: string
+            example: |
+              uai;code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+              0010826T;01022103;apprentissage;2019_2020;9;5;;;4;4;5;0;;;11;56;;;44;44;
 
     FormationResponse:
       description: Les statistiques d'une formation
