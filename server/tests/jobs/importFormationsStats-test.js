@@ -1,4 +1,4 @@
-import assert from "assert";
+import { assert } from "chai";
 import { omit, pickBy } from "lodash-es";
 import { importFormationsStats } from "../../src/jobs/importFormationsStats.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
@@ -126,6 +126,122 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
+  describe("Vérifie que l'on calcule les nombres manquants quand cela est possible", () => {
+    it("Ne calcule pas le nb_annee_term si on a le nb_poursuite_etudes et le nb_sortant", async () => {
+      mockApi("0751234J", "2018_2019", {
+        data: [
+          {
+            id_mesure: "nb_poursuite_etudes",
+            valeur_mesure: 27,
+            dimensions: [
+              {
+                id_mefstat11: "12345678900",
+              },
+            ],
+          },
+          {
+            id_mesure: "nb_sortant",
+            valeur_mesure: 9,
+            dimensions: [
+              {
+                id_mefstat11: "12345678900",
+              },
+            ],
+          },
+        ],
+      });
+      await insertMEF({
+        code_certification: "12345678900",
+        code_formation_diplome: "12345678",
+        diplome: { code: "4", libelle: "BAC" },
+      });
+
+      await importFormationsStats({
+        parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      });
+
+      const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
+      assert.include(found, { nb_sortant: 9, nb_poursuite_etudes: 27 });
+      assert.notProperty(found, "nb_annee_term");
+    });
+
+    it("Ne calcule pas le nb_poursuite_etudes si on a le nb_annee_term et le nb_sortant", async () => {
+      mockApi("0751234J", "2018_2019", {
+        data: [
+          {
+            id_mesure: "nb_annee_term",
+            valeur_mesure: 27,
+            dimensions: [
+              {
+                id_mefstat11: "12345678900",
+              },
+            ],
+          },
+          {
+            id_mesure: "nb_sortant",
+            valeur_mesure: 9,
+            dimensions: [
+              {
+                id_mefstat11: "12345678900",
+              },
+            ],
+          },
+        ],
+      });
+      await insertMEF({
+        code_certification: "12345678900",
+        code_formation_diplome: "12345678",
+        diplome: { code: "4", libelle: "BAC" },
+      });
+
+      await importFormationsStats({
+        parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      });
+
+      const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
+      assert.include(found, { nb_annee_term: 27, nb_sortant: 9 });
+      assert.notProperty(found, "nb_poursuite_etudes");
+      assert.notProperty(found, "taux_en_formation");
+    });
+
+    it("Calcule le nb_sortant si on a le nb_annee_term et nb_poursuite_etudes", async () => {
+      mockApi("0751234J", "2018_2019", {
+        data: [
+          {
+            id_mesure: "nb_annee_term",
+            valeur_mesure: 27,
+            dimensions: [
+              {
+                id_mefstat11: "12345678900",
+              },
+            ],
+          },
+          {
+            id_mesure: "nb_poursuite_etudes",
+            valeur_mesure: 9,
+            dimensions: [
+              {
+                id_mefstat11: "12345678900",
+              },
+            ],
+          },
+        ],
+      });
+      await insertMEF({
+        code_certification: "12345678900",
+        code_formation_diplome: "12345678",
+        diplome: { code: "4", libelle: "BAC" },
+      });
+
+      await importFormationsStats({
+        parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      });
+
+      const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
+      assert.include(found, { nb_annee_term: 27, nb_sortant: 18, nb_poursuite_etudes: 9 });
+    });
+  });
+
   it("Vérifie qu'on recalcule les taux", async () => {
     mockApi("0751234J", "2018_2019", {
       data: [
@@ -175,6 +291,58 @@ describe("importFormationsStats", () => {
       taux_en_emploi_6_mois: 10,
       taux_en_formation: 50,
     });
+  });
+
+  it("Vérifie que l'on arrondit correctement les taux", async () => {
+    mockApi("0751234J", "2018_2019", {
+      data: [
+        {
+          id_mesure: "nb_annee_term",
+          valeur_mesure: 40,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_6_mois",
+          valeur_mesure: 13,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_poursuite_etudes",
+          valeur_mesure: 11,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+      ],
+    });
+    await insertMEF({
+      code_certification: "12345678900",
+      code_formation_diplome: "12345678",
+      diplome: { code: "4", libelle: "BAC" },
+    });
+
+    await importFormationsStats({
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
+
+    const found = await formationsStats().findOne({});
+    const taux = pickBy(found, (value, key) => key.startsWith("taux"));
+    assert.deepStrictEqual(taux, {
+      taux_autres_6_mois: 40,
+      taux_en_emploi_6_mois: 32,
+      taux_en_formation: 28,
+    });
+    assert.equal(taux.taux_autres_6_mois + taux.taux_en_emploi_6_mois + taux.taux_en_formation, 100);
   });
 
   it("Vérifie qu'on fusionne les mesures d'une formation", async () => {
@@ -336,7 +504,9 @@ describe("importFormationsStats", () => {
         .reply(400, { msg: "UAI incorrect ou agricole" });
     });
 
+    // Disable retry on InserJeunes API
     const stats = await importFormationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { retries: 0 } } },
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 
@@ -365,5 +535,59 @@ describe("importFormationsStats", () => {
     const count = await formationsStats().countDocuments({});
     assert.strictEqual(count, 0);
     assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
+  });
+
+  it("Réessai d'appeler l'api en cas d'erreur", async () => {
+    mockInserJeunesApi(
+      (client, responses) => {
+        client
+          .post("/login")
+          .query(() => true)
+          .reply(200, responses.login());
+
+        client
+          .get(`/UAI/0751234J/millesime/2018_2019`)
+          .query(() => true)
+          .replyWithError("error");
+
+        client
+          .get(`/UAI/0751234J/millesime/2018_2019`)
+          .query(() => true)
+          .reply(
+            200,
+            responses.uai({
+              data: [
+                {
+                  id_mesure: "nb_en_emploi_6_mois",
+                  valeur_mesure: 6,
+                  dimensions: [
+                    {
+                      id_mefstat11: "12345678",
+                    },
+                  ],
+                },
+              ],
+            })
+          );
+      },
+      { stack: true }
+    );
+
+    await insertFormationsStats({
+      uai: "0751234J",
+      code_certification: "12345678",
+      millesime: "2018_2019",
+      nb_en_emploi_6_mois: -1,
+    });
+
+    // Change retry default timeout
+    const stats = await importFormationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { minTimeout: 0 } } },
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
+
+    const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
+    assert.deepStrictEqual(found.nb_en_emploi_6_mois, 6);
+    assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 1 });
   });
 });

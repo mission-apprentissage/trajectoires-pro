@@ -8,19 +8,19 @@ export function $sumOf(field) {
 
 export function $percentage(dividend, divisor) {
   return {
-    $cond: [
-      { $or: [{ $eq: [divisor, 0] }, { $not: [divisor] }] },
-      "$$REMOVE",
-      {
-        $round: {
-          $multiply: [
-            {
-              $divide: [dividend, divisor],
-            },
-            100,
-          ],
+    $round: {
+      $multiply: [
+        {
+          $divide: [dividend, divisor],
         },
-      },
-    ],
+        100,
+      ],
+    },
+  };
+}
+
+export function $removeNullOrZero(field, expr) {
+  return {
+    $cond: [{ $or: [{ $eq: [field, 0] }, { $not: [field] }] }, "$$REMOVE", expr],
   };
 }

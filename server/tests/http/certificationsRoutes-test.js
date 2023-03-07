@@ -1,4 +1,4 @@
-import assert from "assert";
+import { assert } from "chai";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertCertificationsStats, insertCFD, insertMEF } from "../utils/fakeData.js";
@@ -142,6 +142,98 @@ describe("certificationsRoutes", () => {
       assert.strictEqual(response.status, 200);
       assert.strictEqual(response.data.certifications[0].code_certification, "12345");
       assert.strictEqual(response.data.pagination.total, 1);
+    });
+
+    it("Vérifie que l'on met les taux à null pour les effectifs < 20", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({
+        code_certification: "12345",
+        nb_annee_term: 19,
+        nb_poursuite_etudes: 1,
+        nb_en_emploi_24_mois: 2,
+        nb_en_emploi_18_mois: 3,
+        nb_en_emploi_12_mois: 4,
+        nb_en_emploi_6_mois: 5,
+        nb_sortant: 6,
+        taux_rupture_contrats: 7,
+        taux_en_formation: 8,
+        taux_en_emploi_24_mois: 9,
+        taux_en_emploi_18_mois: 10,
+        taux_en_emploi_12_mois: 11,
+        taux_en_emploi_6_mois: 12,
+        taux_autres_6_mois: 13,
+        taux_autres_12_mois: 14,
+        taux_autres_18_mois: 15,
+        taux_autres_24_mois: 16,
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/certifications/12345`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.code_certification, "12345");
+      assert.include(response.data, {
+        taux_rupture_contrats: null,
+        taux_en_formation: null,
+        taux_en_emploi_24_mois: null,
+        taux_en_emploi_18_mois: null,
+        taux_en_emploi_12_mois: null,
+        taux_en_emploi_6_mois: null,
+        taux_autres_6_mois: null,
+        taux_autres_12_mois: null,
+        taux_autres_18_mois: null,
+        taux_autres_24_mois: null,
+      });
+
+      assert.deepNestedInclude(response.data, {
+        "_meta.messages": [
+          `Les taux ne peuvent pas être affichés car il n'y a pas assez d'élèves pour fournir une information fiable.`,
+        ],
+      });
+    });
+
+    it("Vérifie que l'on met les taux à null pour les effectifs < 20 au format CSV", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({
+        millesime: "2020",
+        code_certification: "12345678",
+        filiere: "apprentissage",
+        nb_annee_term: 19,
+        nb_poursuite_etudes: 1,
+        nb_en_emploi_24_mois: 2,
+        nb_en_emploi_18_mois: 3,
+        nb_en_emploi_12_mois: 4,
+        nb_en_emploi_6_mois: 5,
+        nb_sortant: 6,
+        taux_rupture_contrats: 7,
+        taux_en_formation: 8,
+        taux_en_emploi_24_mois: 9,
+        taux_en_emploi_18_mois: 10,
+        taux_en_emploi_12_mois: 11,
+        taux_en_emploi_6_mois: 12,
+        taux_autres_6_mois: 13,
+        taux_autres_12_mois: 14,
+        taux_autres_18_mois: 15,
+        taux_autres_24_mois: 16,
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/certifications.csv`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
+      assert.deepStrictEqual(
+        response.data,
+        `code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+12345678;apprentissage;2020;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
+`
+      );
     });
 
     it("Vérifie qu'on peut exporter les données au format CSV", async () => {
@@ -420,6 +512,7 @@ describe("certificationsRoutes", () => {
         code_certification: "23830024203",
         filiere: "apprentissage",
         taux_en_formation: 5,
+        nb_annee_term: 20,
       });
 
       const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg");
@@ -737,7 +830,6 @@ describe("certificationsRoutes", () => {
       const response = await httpClient.get("/api/inserjeunes/certifications/12345678|23830024202.svg");
 
       assert.strictEqual(response.status, 200);
-      console.log(response.data);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes("100%"));
       assert.ok(response.data.includes("10%"));

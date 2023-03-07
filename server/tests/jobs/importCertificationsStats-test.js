@@ -161,6 +161,56 @@ describe("importCertificationsStats", () => {
     });
   });
 
+  it("Vérifie que l'on arrondit correctement les taux", async () => {
+    mockApi("2020", "voie_pro_sco_educ_nat", {
+      data: [
+        {
+          id_mesure: "nb_en_emploi_6_mois",
+          valeur_mesure: 13,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_poursuite_etudes",
+          valeur_mesure: 11,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_annee_term",
+          valeur_mesure: 40,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+      ],
+    });
+    await insertMEF({
+      code_certification: "12345678900",
+      code_formation_diplome: "12345678",
+      diplome: { code: "4", libelle: "BAC" },
+    });
+
+    await importCertificationsStats({ millesimes: ["2020"], filieres: ["voie_pro_sco_educ_nat"] });
+
+    const found = await certificationsStats().findOne({}, { projection: { _id: 0 } });
+    const taux = pickBy(found, (value, key) => key.startsWith("taux"));
+    assert.deepStrictEqual(taux, {
+      taux_autres_6_mois: 40,
+      taux_en_emploi_6_mois: 32,
+      taux_en_formation: 28,
+    });
+    assert.equal(taux.taux_autres_6_mois + taux.taux_en_emploi_6_mois + taux.taux_en_formation, 100);
+  });
+
   it("Vérifie qu'on fusionne les mesures pour une même certification", async () => {
     mockApi("2020", "apprentissage", {
       data: [

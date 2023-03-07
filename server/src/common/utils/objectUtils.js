@@ -1,4 +1,4 @@
-import { pickBy, isNil, sortBy, isArray, isEmpty, isNumber } from "lodash-es";
+import { pickBy, isNil, sortBy, isArray } from "lodash-es";
 
 export function omitNil(obj) {
   if (isArray(obj)) {
@@ -6,12 +6,6 @@ export function omitNil(obj) {
   }
 
   return pickBy(obj, (v) => !isNil(v));
-}
-
-export function omitEmpty(obj) {
-  return pickBy(obj, (v) => {
-    return isNumber(v) || !isEmpty(v);
-  });
 }
 
 export function mergeArray(existingArray, newArray, discriminator, options = {}) {

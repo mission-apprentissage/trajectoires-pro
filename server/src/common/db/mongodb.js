@@ -11,11 +11,11 @@ function ensureInitialization() {
   }
 }
 
-function sendLogsToMongodb() {
+export function sendLogsToMongodb(logger, level = "info") {
   logger.addStream({
     name: "mongodb",
     type: "raw",
-    level: "info",
+    level: level,
     stream: writeData((data) => dbCollection("logs").insertOne(data)),
   });
 }
@@ -30,7 +30,7 @@ export async function connectToMongodb(uri = config.mongodb.uri) {
   clientHolder = client;
 
   if (config.log.destinations.includes("mongodb")) {
-    sendLogsToMongodb();
+    sendLogsToMongodb(logger);
   }
 
   return client;
