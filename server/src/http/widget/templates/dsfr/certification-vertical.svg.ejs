@@ -1,8 +1,8 @@
 <%- await include('variables'); %>
 <%_
 deltaHeight=75
-height=region ? 190 + nbIndicateur * deltaHeight : 155 + nbIndicateur * deltaHeight 
-currentHeight = 10
+height=region ? 210 + nbIndicateur * deltaHeight : 155 + nbIndicateur * deltaHeight 
+currentHeight = region ? 30 : 10
 -%>
 <svg version="1.1" width="320" height="<%= height %>" viewBox="0 0 320 <%= height %>" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
   <%- await include('../common/description'); %>
@@ -85,13 +85,14 @@ currentHeight = 10
 
     <g class=" mainTitle">
       <svg>
-        <rect width="700" height="<%= region ? 120 : 92 %>" />
+        <rect width="700" height="<%= region ? 140 : 92 %>" />
         <text>
           <tspan x="30" y="30"><%= title[0] %></tspan>
           <tspan x="30" y="54"><%= title[1] %></tspan>
           <tspan x="30" y="78"><%= title[2] %></tspan>
           <% if (region) { %>
-          <tspan x="30" y="104" class="region"><%= regionDesc[0] %> <%= regionDesc[1] %></tspan>
+          <tspan x="30" y="104" class="region"><%= regionDesc[0] %></tspan>
+          <tspan x="30" y="124" class="region"><%= regionDesc[1] %></tspan>
           <% } %>
         </text>
       </svg>

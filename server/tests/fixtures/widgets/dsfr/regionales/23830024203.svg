@@ -1,5 +1,5 @@
 
-<svg version="1.1" width="320" height="415" viewBox="0 0 320 415" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
+<svg version="1.1" width="320" height="435" viewBox="0 0 320 435" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
   
     <title>Certification 23830024203</title>
 
@@ -114,13 +114,13 @@
   <g class="blockTitle">
 
     <g class="content">
-      <rect x="0" y="62" class="border" width="319" height="351" />
+      <rect x="0" y="62" class="border" width="319" height="371" />
       <svg y="110" x="20">
         <g class="blocks">
           <svg y="30" >
             <g class="block">
               
-              <svg x="0" y="10" class="block">
+              <svg x="0" y="30" class="block">
                 <rect width="60" height="35" />
 
                 <text class="number">
@@ -138,7 +138,7 @@
               
 
               
-              <svg x="0" y="85" class="block">
+              <svg x="0" y="105" class="block">
                 <rect width="60" height="35" />
 
                 <text class="number">
@@ -156,7 +156,7 @@
               
 
               
-              <svg x="0" y="160" class="block">
+              <svg x="0" y="180" class="block">
                 <rect width="60" height="35" />
                 <text class="number">
                   <tspan x="30" y="26">5%</tspan>
@@ -174,10 +174,10 @@
             </g>
 
             <text class="about">
-              <tspan x="0" y="249">
+              <tspan x="0" y="269">
                 *Données issues du dispositif InserJeunes
               </tspan>
-              <tspan x="0" y="265">
+              <tspan x="0" y="285">
                  promotion 2018 à 2019
               </tspan>
             </text>
@@ -188,13 +188,14 @@
 
     <g class=" mainTitle">
       <svg>
-        <rect width="700" height="120" />
+        <rect width="700" height="140" />
         <text>
           <tspan x="30" y="30">Que deviennent les</tspan>
           <tspan x="30" y="54">apprenants après cette</tspan>
           <tspan x="30" y="78">formation ?</tspan>
           
-          <tspan x="30" y="104" class="region">Les chiffres pour la région Île-de-France</tspan>
+          <tspan x="30" y="104" class="region">Les chiffres pour la région</tspan>
+          <tspan x="30" y="124" class="region">Île-de-France</tspan>
           
         </text>
       </svg>
