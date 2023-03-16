@@ -60,6 +60,7 @@
     "@faker-js/faker": "6.3.1",
     "axiosist": "0.10.0",
     "chai": "4.3.7",
+    "chai-diff": "1.0.2",
     "chalk": "4.1.2",
     "eslint": "7.1.0",
     "eslint-config-prettier": "6.11.0",

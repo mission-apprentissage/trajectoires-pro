@@ -2,7 +2,7 @@
 <%_
 deltaHeight=55
 height=region ? 165 + nbIndicateur * deltaHeight : 130 + nbIndicateur * deltaHeight 
-currentHeight = 0
+currentHeight = 10
 -%>
 <svg version="1.1" width="720" height="<%= height %>" viewBox="0 0 720 <%= height %>" fill="none" xmlns="http://www.w3.org/2000/svg">
   <%- await include('../common/description'); %>
@@ -35,7 +35,7 @@ currentHeight = 0
               <% } %>
 
               <% if (stats?.taux_en_formation) { %>
-              <svg x="0" y="<%= 10 + currentHeight %>>" class="block">
+              <svg x="0" y="<%= currentHeight %>" class="block">
                 <rect width="60" height="35" />
 
                 <text class="number">
