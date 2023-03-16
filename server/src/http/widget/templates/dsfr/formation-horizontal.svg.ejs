@@ -1,7 +1,7 @@
 <%- await include('variables'); %>
 <%_
 deltaHeight=55
-height=region ? 165 + nbIndicateur * deltaHeight : 130 + nbIndicateur * deltaHeight 
+height=165 + nbIndicateur * deltaHeight
 currentHeight = 10
 -%>
 <svg version="1.1" width="720" height="<%= height %>" viewBox="0 0 720 <%= height %>" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
@@ -15,7 +15,7 @@ currentHeight = 10
       <rect x="0" y="62" class="border" width="699" height="<%= height - 64 %>" />
       <svg y="80" x="20">
         <g class="blocks">
-          <svg <% if (region) { %>y="30" <% } %>>
+          <svg y="30">
             <g class="block">
               <% if (stats?.taux_en_emploi_6_mois) { %>
               <svg x="0" y="<%= currentHeight %>" class="block">
@@ -84,12 +84,10 @@ currentHeight = 10
 
     <g class=" mainTitle">
       <svg>
-        <rect width="700" height="<%= region ? 93 : 64 %>" />
+        <rect width="700" height="93" />
         <text>
           <tspan x="30" y="40"><%= title.join(' ') %></tspan>
-          <% if (region) { %>
-          <tspan x="30" y="70" class="region"><%= regionDesc[0] %> <%= regionDesc[1] %></tspan>
-          <% } %>
+          <tspan x="30" y="70" class="region"><%= detailVueEtablissement %></tspan>
         </text>
       </svg>
     </g>

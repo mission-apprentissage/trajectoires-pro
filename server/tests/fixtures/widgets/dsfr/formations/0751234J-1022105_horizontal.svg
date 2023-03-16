@@ -118,7 +118,7 @@
       <rect x="0" y="62" class="border" width="699" height="266" />
       <svg y="80" x="20">
         <g class="blocks">
-          <svg y="30" >
+          <svg y="30">
             <g class="block">
               
               <svg x="0" y="10" class="block">
@@ -191,7 +191,7 @@
         <text>
           <tspan x="30" y="40">Que deviennent les apprenants après cette formation ?</tspan>
           
-          <tspan x="30" y="70" class="region">Les chiffres pour la région Île-de-France</tspan>
+          <tspan x="30" y="70" class="region">Les chiffres pour cet établissement</tspan>
           
         </text>
       </svg>
