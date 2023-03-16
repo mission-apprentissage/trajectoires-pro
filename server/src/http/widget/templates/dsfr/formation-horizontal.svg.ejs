@@ -1,139 +1,97 @@
-<svg width="700" height="239" viewBox="0 0 700 239" fill="none" xmlns="http://www.w3.org/2000/svg">
+<%- await include('variables'); %>
+<%_
+deltaHeight=55
+height=region ? 165 + nbIndicateur * deltaHeight : 130 + nbIndicateur * deltaHeight 
+currentHeight = 0
+-%>
+<svg version="1.1" width="720" height="<%= height %>" viewBox="0 0 720 <%= height %>" fill="none" xmlns="http://www.w3.org/2000/svg">
   <%- await include('../common/description'); %>
-  <rect x="0.5" y="0.5" width="699" height="238" fill="white" />
-  <rect x="0.5" y="0.5" width="699" height="238" stroke="#E5E5E5" />
-  <rect width="700" height="86" fill="#F5F5FE" />
+  <%- await include('common'); %>
 
-  <text
-    fill="#3A3A3A"
-    xml:space="preserve"
-    style="white-space: pre"
-    font-family="Marianne"
-    font-size="22"
-    font-weight="bold"
-    letter-spacing="0em"
-  >
-    <tspan x="30" y="52.625">Que deviennent les apprenants apr&#xe8;s cette formation ?</tspan>
-  </text>
+  <g class="blockTitle">
 
-  <!-- first block starts here -->
-  <g class="<%= stats[0].niveau %>">
-    <rect x="30" y="127" width="90" height="35" rx="4" class="bg" />
 
-    <g transform="translate(40,137)"><%- await include(`../assets/${stats[0].niveau}-icon.svg.ejs`); %></g>
+    <g class="content">
+      <rect x="0" y="62" class="border" width="699" height="<%= height - 64 %>" />
+      <svg y="80" x="20">
+        <g class="blocks">
+          <svg <% if (region) { %>y="30" <% } %>>
+            <g class="block">
+              <% if (stats?.taux_en_emploi_6_mois) { %>
+              <svg x="0" y="<%= currentHeight %>" class="block">
+                <rect width="60" height="35" />
 
-    <text
-      class="label"
-      xml:space="preserve"
-      style="white-space: pre"
-      font-family="Marianne"
-      font-size="25"
-      font-weight="bold"
-      letter-spacing="0em"
-    >
-      <tspan x="59" y="155.438"><%= stats[0].valeur %>%</tspan>
-    </text>
+                <text class="number">
+                  <tspan x="30" y="26"><%= stats?.taux_en_emploi_6_mois?.valeur %>%</tspan>
+                </text>
+                <text class="description">
+                  <tspan x="75" y="14"><%= description_en_emploi_6_mois %></tspan>
+                </text>
+                <text class="details">
+                  <tspan x="75" y="30"><%= details_en_emploi_6_mois[0] %> <%= details_en_emploi_6_mois[1] %></tspan>
+                </text>
+              </svg>
+              <% currentHeight = currentHeight + deltaHeight %>
+              <% } %>
 
-    <text
-      fill="#3A3A3A"
-      xml:space="preserve"
-      style="white-space: pre"
-      font-family="Marianne"
-      font-size="14"
-      letter-spacing="0em"
-    >
-      <% if(stats[0].libelles.length===1) { %>
-      <tspan x="130" y="150.125"><%= stats[0].libelles[0] %></tspan>
-      <% } else { %>
-      <tspan x="130" y="140.125"><%= stats[0].libelles[0] %></tspan>
-      <tspan x="130" y="160.125"><%= stats[0].libelles[1] %></tspan>
-      <% } %>
-    </text>
+              <% if (stats?.taux_en_formation) { %>
+              <svg x="0" y="<%= 10 + currentHeight %>>" class="block">
+                <rect width="60" height="35" />
+
+                <text class="number">
+                  <tspan x="30" y="26"><%= stats?.taux_en_formation?.valeur %>%</tspan>
+                </text>
+                <text class="description">
+                  <tspan x="75" y="14"><%= description_en_formation %></tspan>
+                </text>
+                <text class="details">
+                  <tspan x="75" y="30"><%= details_en_formation[0] %> <%= details_en_formation[1] %></tspan>
+                </text>
+              </svg>
+              <% currentHeight = currentHeight + deltaHeight %>
+              <% } %>
+
+
+              <% if (stats?.taux_autres_6_mois) { %>
+              <svg x="0" y="<%= currentHeight %>" class="block">
+                <rect width="60" height="35" />
+                <text class="number">
+                  <tspan x="30" y="26"><%= stats?.taux_autres_6_mois?.valeur %>%</tspan>
+                </text>
+                <text class="description">
+                  <tspan x="75" y="14"><%= description_autres_6_mois %></tspan>
+                </text>
+                <text class="details">
+                  <tspan x="75" y="30"><%= details_autres_6_mois[0] %> <%= details_autres_6_mois[1] %> <%= details_autres_6_mois[2] %></tspan>
+                </text>
+              </svg>
+              <% currentHeight = currentHeight + deltaHeight %>
+              <% } %>
+            </g>
+
+            <text class="about">
+              <tspan x="0" y="<%= currentHeight + 14 %>">
+                <%= about_short[0] %>
+              </tspan>
+              <tspan x="0" y="<%= currentHeight + 30 %>">
+                <%= about_short[1] %>
+              </tspan>
+            </text>
+          </svg>
+        </g>
+      </svg>
+    </g>
+
+    <g class=" mainTitle">
+      <svg>
+        <rect width="700" height="<%= region ? 93 : 64 %>" />
+        <text>
+          <tspan x="30" y="40"><%= title.join(' ') %></tspan>
+          <% if (region) { %>
+          <tspan x="30" y="70" class="region"><%= regionDesc[0] %> <%= regionDesc[1] %></tspan>
+          <% } %>
+        </text>
+      </svg>
+    </g>
   </g>
-  <!-- end first block -->
-
-  <!-- second block starts here -->
-  <% if(stats.length > 1) { %>
-  <g class="<%= stats[1].niveau %>">
-    <rect x="365" y="127" width="90" height="35" rx="4" class="bg" />
-
-    <g transform="translate(375,137)"><%- await include(`../assets/${stats[1].niveau}-icon.svg.ejs`); %></g>
-
-    <text
-      class="label"
-      xml:space="preserve"
-      style="white-space: pre"
-      font-family="Marianne"
-      font-size="25"
-      font-weight="bold"
-      letter-spacing="0em"
-    >
-      <tspan x="394" y="155.438"><%= stats[1].valeur %>%</tspan>
-    </text>
-    <text
-      fill="#3A3A3A"
-      xml:space="preserve"
-      style="white-space: pre"
-      font-family="Marianne"
-      font-size="14"
-      letter-spacing="0em"
-    >
-      <% if(stats[1].libelles.length === 1) { %>
-      <tspan x="465" y="150.125"><%= stats[1].libelles[0] %></tspan>
-      <% } else { %>
-      <tspan x="465" y="140.125"><%= stats[1].libelles[0] %></tspan>
-      <tspan x="465" y="160.125"><%= stats[1].libelles[1] %></tspan>
-      <% } %>
-    </text>
-  </g>
-  <% } %>
-  <!-- end second block -->
-
-  <text
-    fill="#3A3A3A"
-    xml:space="preserve"
-    style="white-space: pre"
-    font-family="Marianne"
-    font-size="11"
-    font-style="italic"
-    letter-spacing="0em"
-  >
-    <tspan x="30" y="206.312">Chiffres issus du site InserJeunes</tspan>
-  </text>
-
-  <defs>
-    <style type="text/css">
-      @font-face {
-        font-family: "Marianne";
-        src: url("data:font/truetype;charset=utf-8;base64,<%= base64Font %>") format("woff");
-        font-weight: 500;
-        font-style: normal;
-        font-display: swap;
-      }
-      .success .bg {
-        fill: #b8fec9;
-      }
-      .success .label {
-        fill: #18753c;
-      }
-      .info .bg {
-        fill: #e8edff;
-      }
-      .info .label {
-        fill: #0063cb;
-      }
-      .danger .bg {
-        fill: #ffe9e9;
-      }
-      .danger .label {
-        fill: #ce0500;
-      }
-      .warning .bg {
-        fill: #feecc2;
-      }
-      .warning .label {
-        fill: #716043;
-      }
-    </style>
-  </defs>
 </svg>

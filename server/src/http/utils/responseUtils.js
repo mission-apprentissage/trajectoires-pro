@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../widget/widget.js";
 import Boom from "boom";
-import { buildDescription } from "../../common/stats.js";
+import { buildDescription, buildDescriptionFiliere } from "../../common/stats.js";
 import { isEmpty } from "lodash-es";
 
 export function addJsonHeaders(res) {
@@ -26,7 +26,16 @@ export async function sendStats(type, stats, res, options = {}) {
       throw Boom.notFound("Données non disponibles");
     }
 
-    const widget = await buildWidget(type, { stats: prepareStatsForWidget(stats), description }, { theme, direction });
+    const widget = await buildWidget(
+      type,
+      {
+        stats: prepareStatsForWidget(stats),
+        description,
+        millesime: stats.millesime,
+        region: stats.region,
+      },
+      { theme, direction }
+    );
 
     res.setHeader("content-type", "image/svg+xml");
     return res.status(200).send(widget);
@@ -35,6 +44,7 @@ export async function sendStats(type, stats, res, options = {}) {
 
 export async function sendFilieresStats(filieresStats, res, options = {}) {
   const { direction, theme, ext } = options;
+  const description = buildDescriptionFiliere(filieresStats, true);
 
   if (isEmpty(filieresStats)) {
     throw Boom.notFound("Certifications inconnues");
@@ -54,6 +64,9 @@ export async function sendFilieresStats(filieresStats, res, options = {}) {
           pro: prepareStatsForWidget(filieresStats.pro),
           apprentissage: prepareStatsForWidget(filieresStats.apprentissage),
         },
+        description,
+        millesime: filieresStats.pro.millesime,
+        region: filieresStats.pro.region,
       },
       { theme, direction }
     );
