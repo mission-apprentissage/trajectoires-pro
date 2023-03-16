@@ -498,7 +498,7 @@ describe("formationsRoutes", () => {
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes("50%"));
       assert.ok(response.data.includes("sont en emploi 6 mois"));
-      assert.ok(response.data.includes("poursuivent leurs études"));
+      assert.ok(response.data.includes("sont inscrits en formation"));
       assert.ok(response.data.includes("<title>Certification 1022105, établissement 0751234J</title>"));
       assert.ok(
         response.data.includes(
@@ -534,7 +534,7 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes(`width="320"`));
-      assert.ok(response.data.includes(`height="258"`));
+      assert.ok(response.data.includes(`height="275"`));
     });
 
     it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (horizontale)", async () => {
@@ -555,7 +555,8 @@ describe("formationsRoutes", () => {
       assert.ok(response.data.includes(`width="700"`));
       assert.ok(response.data.includes("50%"));
       assert.ok(response.data.includes("sont en emploi 6 mois"));
-      assert.ok(!response.data.includes("poursuivent leurs études"));
+      assert.ok(!response.data.includes("sont inscrits en formation"));
+      assert.ok(!response.data.includes("sont dans d’autres situations"));
     });
 
     it("Vérifie qu'on peut obtenir une image SVG avec une donnée égale à 0", async () => {
@@ -567,18 +568,19 @@ describe("formationsRoutes", () => {
           nb_annee_term: 20,
           taux_en_formation: 0,
           taux_en_emploi_6_mois: 50,
+          taux_autres_6_mois: 10,
         })
       );
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
-
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes(`width="320"`));
-      assert.ok(response.data.includes(`height="323"`));
+      assert.ok(response.data.includes(`height="425"`));
       assert.ok(response.data.includes("50%"));
       assert.ok(response.data.includes("sont en emploi 6 mois"));
-      assert.ok(response.data.includes("poursuivent leurs études"));
+      assert.ok(response.data.includes("sont inscrits en formation"));
+      assert.ok(response.data.includes("sont dans d’autres situations"));
     });
 
     it("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {

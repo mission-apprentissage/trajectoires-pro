@@ -600,6 +600,7 @@ describe("regionalesRoutes", () => {
         filiere: "apprentissage",
         nb_annee_term: 20,
         taux_en_formation: 5,
+        taux_autres_6_mois: 5,
       });
 
       const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/23830024203.svg");
@@ -608,7 +609,8 @@ describe("regionalesRoutes", () => {
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes("5%"));
       assert.ok(response.data.includes("sont en emploi 6 mois"));
-      assert.ok(response.data.includes("poursuivent leurs études"));
+      assert.ok(response.data.includes("sont inscrits en formation"));
+      assert.ok(response.data.includes("sont dans d’autres situations"));
       assert.ok(response.data.includes("<title>Certification 23830024203</title>"));
       assert.ok(
         response.data.includes(
@@ -658,8 +660,8 @@ describe("regionalesRoutes", () => {
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes("100%"));
       assert.ok(response.data.includes("10%"));
-      assert.ok(response.data.includes("Apprentissage"));
-      assert.ok(response.data.includes("Voie scolaire"));
+      assert.ok(response.data.includes("Pour la voie apprentissage"));
+      assert.ok(response.data.includes("Pour la voie scolaire"));
     });
 
     it("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {

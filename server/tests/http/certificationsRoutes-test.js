@@ -512,6 +512,8 @@ describe("certificationsRoutes", () => {
         code_certification: "23830024203",
         filiere: "apprentissage",
         taux_en_formation: 5,
+        taux_en_emploi_6_mois: 6,
+        taux_autres_6_mois: 7,
         nb_annee_term: 20,
       });
 
@@ -520,8 +522,11 @@ describe("certificationsRoutes", () => {
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes("5%"));
+      assert.ok(response.data.includes("sont inscrits en formation"));
+      assert.ok(response.data.includes("6%"));
       assert.ok(response.data.includes("sont en emploi 6 mois"));
-      assert.ok(response.data.includes("poursuivent leurs études"));
+      assert.ok(response.data.includes("7%"));
+      assert.ok(response.data.includes("sont dans d’autres situations"));
       assert.ok(response.data.includes("<title>Certification 23830024203</title>"));
       assert.ok(
         response.data.includes(
@@ -569,8 +574,8 @@ describe("certificationsRoutes", () => {
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes("50%"));
       assert.ok(response.data.includes("5%"));
-      assert.ok(response.data.includes("Apprentissage"));
-      assert.ok(response.data.includes("Voie scolaire"));
+      assert.ok(response.data.includes("apprentissage"));
+      assert.ok(response.data.includes("voie scolaire"));
     });
 
     it("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {
@@ -607,7 +612,7 @@ describe("certificationsRoutes", () => {
     });
   });
 
-  describe("Onisep", () => {
+  describe("Vue filières", () => {
     it("Vérifie qu'on peut obtenir les données pour deux filières (cfd)", async () => {
       const { httpClient } = await startServer();
       await Promise.all([
@@ -833,8 +838,8 @@ describe("certificationsRoutes", () => {
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
       assert.ok(response.data.includes("100%"));
       assert.ok(response.data.includes("10%"));
-      assert.ok(response.data.includes("Apprentissage"));
-      assert.ok(response.data.includes("Voie scolaire"));
+      assert.ok(response.data.includes("apprentissage"));
+      assert.ok(response.data.includes("voie scolaire"));
     });
   });
 });
