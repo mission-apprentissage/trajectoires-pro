@@ -1,10 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
 set -euo pipefail
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 function validate_commit() {
-  cd "${SCRIPT_DIR}/../.."
+  cd .
   local sensible_files_pattern="\.(csv|xls|xls(x?)|json|env)$"
   local exception="package.json$"
   local files

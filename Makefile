@@ -1,5 +1,6 @@
 
-install: hooks
+install:
+	yarn install --frozen-lockfile
 	yarn --cwd server install --frozen-lockfile
 	yarn --cwd ui install --frozen-lockfile
 
@@ -23,9 +24,5 @@ lint:
 
 clean:
 	docker-compose kill && docker system prune --force --volumes
-
-hooks:
-	git config core.hooksPath misc/git-hooks
-	chmod +x misc/git-hooks/*
 
 ci: install lint coverage
