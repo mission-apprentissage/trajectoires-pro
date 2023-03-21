@@ -1,3 +1,35 @@
+# 1.0.0-beta.1 (2023-03-21)
+
+
+### Bug Fixes
+
+* change shebang in pre-commit script ([62f49e7](https://github.com/mission-apprentissage/trajectoires-pro/commit/62f49e7eb73e459793a329f195a560ee14afc345))
+* get fonts with https to prevent mixed content ([3561e5c](https://github.com/mission-apprentissage/trajectoires-pro/commit/3561e5c42f3d28e2de3e9a9f0483e07878580465))
+* node version in github workflow ([74bed08](https://github.com/mission-apprentissage/trajectoires-pro/commit/74bed082b0daaa74c812509fe0aa0c450256d6f5))
+* pre-commit script to work with dash shell ([0a97909](https://github.com/mission-apprentissage/trajectoires-pro/commit/0a9790973eef8a818d9d8080b4f8b24d495c0a5c))
+* skip husky hooks when creating release ([9cf539d](https://github.com/mission-apprentissage/trajectoires-pro/commit/9cf539d212473783e4b65cd6dd84e23ed1e22649))
+* typescript types output for arrays ([#66](https://github.com/mission-apprentissage/trajectoires-pro/issues/66)) ([a515e12](https://github.com/mission-apprentissage/trajectoires-pro/commit/a515e129d46c46aefcb93a978e190be87c4d9cce))
+* update swagger documentation ([#83](https://github.com/mission-apprentissage/trajectoires-pro/issues/83)) ([c5beeaa](https://github.com/mission-apprentissage/trajectoires-pro/commit/c5beeaae1a95390ab9b8c1f528e548216eddd74a))
+* WAF config to allow metabase questions edit ([#68](https://github.com/mission-apprentissage/trajectoires-pro/issues/68)) ([2d65b5f](https://github.com/mission-apprentissage/trajectoires-pro/commit/2d65b5fb914419c2e32761003637006ac4a777cb))
+
+
+### Features
+
+* add dynamic colors and icons ([#38](https://github.com/mission-apprentissage/trajectoires-pro/issues/38)) ([b10ad21](https://github.com/mission-apprentissage/trajectoires-pro/commit/b10ad21bdfd3cb4db9399f673adc13f27920cd69))
+* add metabase ([#67](https://github.com/mission-apprentissage/trajectoires-pro/issues/67)) ([6c689b0](https://github.com/mission-apprentissage/trajectoires-pro/commit/6c689b0d93d3e216e696eaea4b81c5010f92e6c2))
+* alternative theme for onisep ([#44](https://github.com/mission-apprentissage/trajectoires-pro/issues/44)) ([b6972af](https://github.com/mission-apprentissage/trajectoires-pro/commit/b6972af3120a288cfd47db40aa401e98bf2aa1fa))
+* dynamic render of template depending of data ([#14](https://github.com/mission-apprentissage/trajectoires-pro/issues/14)) ([f82184b](https://github.com/mission-apprentissage/trajectoires-pro/commit/f82184bd4ccadb15f3b41e05c7b1611e23810b84))
+* explicit 404 messages on svg route ([#22](https://github.com/mission-apprentissage/trajectoires-pro/issues/22)) ([f9b7bb3](https://github.com/mission-apprentissage/trajectoires-pro/commit/f9b7bb3834481e119924e517c8fd1f132a6825e5))
+* generate svg ([#1](https://github.com/mission-apprentissage/trajectoires-pro/issues/1)) ([208af79](https://github.com/mission-apprentissage/trajectoires-pro/commit/208af79409a405bd1d729f9200b4c590ad6ffbec))
+* handle multiple certifications request at once ([#78](https://github.com/mission-apprentissage/trajectoires-pro/issues/78)) ([0ae29f9](https://github.com/mission-apprentissage/trajectoires-pro/commit/0ae29f997dc8867cc4a6ac4c1e72adf7ebd8bcef))
+* insert national data into db ([#20](https://github.com/mission-apprentissage/trajectoires-pro/issues/20)) ([2415b51](https://github.com/mission-apprentissage/trajectoires-pro/commit/2415b51e70df3a468456328cda9e387149fe9040))
+* metadata ([#82](https://github.com/mission-apprentissage/trajectoires-pro/issues/82)) ([922f617](https://github.com/mission-apprentissage/trajectoires-pro/commit/922f617b261dde0bad0fa554645b4b4d4e6c88f0))
+* monitor api consumption ([#64](https://github.com/mission-apprentissage/trajectoires-pro/issues/64)) ([95f4e95](https://github.com/mission-apprentissage/trajectoires-pro/commit/95f4e95c8e6d2dd2ba2e5556fb7f14a9cdb15e49))
+* plug SVG to data ([#8](https://github.com/mission-apprentissage/trajectoires-pro/issues/8)) ([de6bd8d](https://github.com/mission-apprentissage/trajectoires-pro/commit/de6bd8dff098191ca6b92e2cae5914dc1345b058))
+* upload coverage reports to codecov ([#9](https://github.com/mission-apprentissage/trajectoires-pro/issues/9)) ([5de56d2](https://github.com/mission-apprentissage/trajectoires-pro/commit/5de56d20c4f390c7e1ad7939f4cbaacff9449a66))
+* use v1 of svg from Figma and insert font ([#4](https://github.com/mission-apprentissage/trajectoires-pro/issues/4)) ([e10ec0d](https://github.com/mission-apprentissage/trajectoires-pro/commit/e10ec0dcdc4b31720effcbd6c5d12164f38493cc))
+* widget for national data ([#34](https://github.com/mission-apprentissage/trajectoires-pro/issues/34)) ([3f50235](https://github.com/mission-apprentissage/trajectoires-pro/commit/3f502352c85008ad9bd2c1ac621c8aadea7aab3d))
+
 # Journal des modifications
 
 ## 23/09/20200
