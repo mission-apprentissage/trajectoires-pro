@@ -21,18 +21,18 @@ export const templates = {
       horizontal: path.join(__dirname, `./dsfr/cfd-horizontal.svg.ejs`),
     },
   },
-  onisep: {
+  lba: {
     formation: {
-      vertical: path.join(__dirname, `./onisep/formation-vertical.svg.ejs`),
-      horizontal: path.join(__dirname, `./onisep/formation-horizontal.svg.ejs`),
+      vertical: path.join(__dirname, `./lba/formation-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `./lba/formation-horizontal.svg.ejs`),
     },
     certification: {
-      vertical: path.join(__dirname, `./onisep/certification-vertical.svg.ejs`),
-      horizontal: path.join(__dirname, `./onisep/certification-horizontal.svg.ejs`),
+      vertical: path.join(__dirname, `./lba/certification-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `./lba/certification-horizontal.svg.ejs`),
     },
     cfd: {
-      vertical: path.join(__dirname, `./onisep/cfd-vertical.svg.ejs`),
-      horizontal: path.join(__dirname, `./onisep/cfd-horizontal.svg.ejs`),
+      vertical: path.join(__dirname, `./lba/cfd-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `./lba/cfd-horizontal.svg.ejs`),
     },
   },
 };

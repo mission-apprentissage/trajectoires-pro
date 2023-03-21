@@ -144,8 +144,20 @@ export function computeCustomStats(data) {
   });
 }
 
+export function buildDescriptionFiliere(stats) {
+  const { pro, apprentissage } = stats;
+  return {
+    titre: `Certification ${pro.code_formation_diplome}${pro.uai ? `, établissement ${pro.uai}` : ""}`,
+    details:
+      `Données InserJeunes pour la certification ${pro.code_formation_diplome} (${pro.diplome.libelle} filière ${pro.filiere}` +
+      ` et ${apprentissage.diplome.libelle} filière ${apprentissage.filiere})` +
+      `${pro.uai ? ` dispensée par l'établissement ${pro.uai},` : ""} pour le millesime ${pro.millesime}`,
+  };
+}
+
 export function buildDescription(stats) {
   const { code_certification, filiere, uai, millesime, diplome } = stats;
+
   return {
     titre: `Certification ${code_certification}${uai ? `, établissement ${uai}` : ""}`,
     details:

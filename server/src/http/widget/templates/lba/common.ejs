@@ -1,0 +1,96 @@
+<%_
+ description_en_formation="sont inscrits en formation" 
+ details_en_formation=["(Formation supérieure,redoublants,","changement de filière)"] 
+ unavailable_en_formation=["Nous sommes désolés mais le","taux des inscrits en formation","n’est pas disponible pour le","moment."] 
+
+ description_en_emploi_6_mois="sont en emploi au bout de 6 mois" 
+ details_en_emploi_6_mois=["(Quelque soit le type d’emploi","et son secteur)"] 
+ unavailable_en_emploi_6_mois=["Nous sommes désolés mais le taux", "d’emploi au bout de 6 mois n’est pas", "disponible pour le moment."] 
+
+ description_autres_6_mois="sont dans d’autres cas" 
+ details_autres_6_mois=["(Recherche d’emploi, service","civique, à l’étranger, statut","indépendant, etc.)"] 
+ unavailable_autres_6_mois=["Nous sommes désolés mais le taux", "concernant les autres cas n’est pas", "disponible pour le moment."] 
+
+ millesimeText = millesime && millesime.length == 9 ? millesime.split('_').join(' à ') : millesime
+ about=`*Données issues du dispositif InserJeunes${millesime ? ' promotion ' + millesimeText : ''}` 
+ about_short=[`*Données issues du dispositif InserJeunes`, `${millesime ? ' promotion ' + millesimeText : ''}`] 
+
+ regionDesc=[`Les chiffres pour la région`,`${region ? region.nom : ''}`] 
+
+ filiereProDesc="Pour la voie scolaire" 
+ filiereApprentissageDesc="Pour la voie apprentissage" 
+
+-%>
+
+<defs>
+  <style type="text/css">
+    @font-face {
+      font-family: "Marianne";
+      src: url("data:font/truetype;charset=utf-8;base64,<%= base64Font %>") format("woff");
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    text {
+      font-family: Marianne;
+      font-style: normal;
+    }
+
+    .region text {
+      fill: #383838;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .filiere text {
+      fill: #383838;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .title text {
+      fill: #000091;
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    .block rect {
+      fill: #f6f6f6;
+    }
+
+    .block .number {
+      fill: #161616;
+      font-weight: 700;
+      font-size: 40px;
+      line-height: 48px;
+      text-anchor: middle;
+    }
+
+    .block .description {
+      fill: #161616;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+      text-anchor: middle;
+    }
+
+    .block .details {
+      fill: #666666;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 20px;
+      text-anchor: middle;
+    }
+
+    .about {
+      fill: #666666;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 20px;
+    }
+  </style>
+</defs>
