@@ -29,6 +29,7 @@ jobs:
       - name: bump
         run: yarn npm:release
         env:
+          HUSKY: 0
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_CHANNEL: ${{ vars.SLACK_CHANNEL }}
