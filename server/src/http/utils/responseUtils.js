@@ -43,8 +43,7 @@ export async function sendStats(type, stats, res, options = {}) {
 }
 
 export async function sendFilieresStats(filieresStats, res, options = {}) {
-  const { direction, theme, ext } = options;
-  const description = buildDescriptionFiliere(filieresStats, true);
+  const { ext } = options;
 
   if (isEmpty(filieresStats)) {
     throw Boom.notFound("Certifications inconnues");
@@ -53,20 +52,25 @@ export async function sendFilieresStats(filieresStats, res, options = {}) {
   if (ext !== "svg") {
     return res.json(filieresStats);
   } else {
-    if (!isWidgetAvailable(filieresStats.pro) && !isWidgetAvailable(filieresStats.apprentissage)) {
+    const { pro, apprentissage } = filieresStats;
+    if (!isWidgetAvailable(pro) && !isWidgetAvailable(apprentissage)) {
       throw Boom.notFound("Données non disponibles");
     }
+
+    const { direction, theme } = options;
+    const validFiliere = pro || apprentissage;
+    const description = pro && apprentissage ? buildDescriptionFiliere(filieresStats) : buildDescription(validFiliere);
 
     const widget = await buildWidget(
       "cfd",
       {
         stats: {
-          pro: prepareStatsForWidget(filieresStats.pro),
-          apprentissage: prepareStatsForWidget(filieresStats.apprentissage),
+          pro: pro && prepareStatsForWidget(pro),
+          apprentissage: apprentissage && prepareStatsForWidget(apprentissage),
         },
         description,
-        millesime: filieresStats.pro.millesime,
-        region: filieresStats.pro.region,
+        millesime: validFiliere.millesime,
+        region: validFiliere.region,
       },
       { theme, direction }
     );

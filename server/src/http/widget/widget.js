@@ -37,7 +37,7 @@ export const prepareStatsForWidget = (stats) => {
 };
 
 export function isWidgetAvailable(stats) {
-  return !!stats.taux_en_emploi_6_mois || !!stats.taux_en_formation || !!stats.taux_autres_6_mois;
+  return !!stats && (!!stats.taux_en_emploi_6_mois || !!stats.taux_en_formation || !!stats.taux_autres_6_mois);
 }
 
 export function buildWidget(templateName, data, options = {}) {

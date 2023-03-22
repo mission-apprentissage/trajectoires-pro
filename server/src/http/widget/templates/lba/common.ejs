@@ -1,27 +1,3 @@
-<%_
- description_en_formation="sont inscrits en formation" 
- details_en_formation=["(Formation supérieure,redoublants,","changement de filière)"] 
- unavailable_en_formation=["Nous sommes désolés mais le","taux des inscrits en formation","n’est pas disponible pour le","moment."] 
-
- description_en_emploi_6_mois="sont en emploi au bout de 6 mois" 
- details_en_emploi_6_mois=["(Quelque soit le type d’emploi","et son secteur)"] 
- unavailable_en_emploi_6_mois=["Nous sommes désolés mais le taux", "d’emploi au bout de 6 mois n’est pas", "disponible pour le moment."] 
-
- description_autres_6_mois="sont dans d’autres cas" 
- details_autres_6_mois=["(Recherche d’emploi, service","civique, à l’étranger, statut","indépendant, etc.)"] 
- unavailable_autres_6_mois=["Nous sommes désolés mais le taux", "concernant les autres cas n’est pas", "disponible pour le moment."] 
-
- millesimeText = millesime && millesime.length == 9 ? millesime.split('_').join(' à ') : millesime
- about=`*Données issues du dispositif InserJeunes${millesime ? ' promotion ' + millesimeText : ''}` 
- about_short=[`*Données issues du dispositif InserJeunes`, `${millesime ? ' promotion ' + millesimeText : ''}`] 
-
- regionDesc=[`Les chiffres pour la région`,`${region ? region.nom : ''}`] 
-
- filiereProDesc="Pour la voie scolaire" 
- filiereApprentissageDesc="Pour la voie apprentissage" 
-
--%>
-
 <defs>
   <style type="text/css">
     @font-face {

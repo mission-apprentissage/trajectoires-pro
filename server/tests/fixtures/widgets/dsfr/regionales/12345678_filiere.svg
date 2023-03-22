@@ -1,5 +1,5 @@
 
-<svg version="1.1" width="320" height="760" viewBox="0 0 320 760" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
+<svg version="1.1" width="320" height="795" viewBox="0 0 320 795" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
   
     <title>Certification 12345678</title>
 
@@ -115,10 +115,10 @@
 
 
     <g class="content">
-      <rect x="0" y="62" class="border" width="319" height="696" />
+      <rect x="0" y="62" class="border" width="319" height="731" />
       <svg y="120" x="10">
         <g class="blocks">
-          <svg >
+          <svg y="30" >
             
             <g class="blockFiliere">
               <svg x="0">
@@ -273,11 +273,13 @@
 
     <g class=" mainTitle">
       <svg>
-        <rect width="320" height="92" />
+        <rect width="320" height="120" />
         <text>
           <tspan x="30" y="30">Que deviennent les</tspan>
           <tspan x="30" y="54">apprenants après cette</tspan>
           <tspan x="30" y="78">formation ?</tspan>
+          
+          <tspan x="30" y="104" class="region">Les chiffres pour la région Île-de-France</tspan>
           
         </text>
       </svg>

@@ -166,11 +166,15 @@ export function buildDescription(stats) {
   };
 }
 
-export async function getFilieresStats(collection, cfd, millesime) {
+export async function getFilieresStats(collection, cfd, millesime = null, region = null) {
   const results = await collection
     .aggregate([
       {
-        $match: { code_formation_diplome: cfd, ...(millesime ? { millesime } : {}) },
+        $match: {
+          code_formation_diplome: cfd,
+          ...(millesime ? { millesime } : {}),
+          ...(region ? { "region.code": region } : {}),
+        },
       },
       {
         $group: {
@@ -180,6 +184,7 @@ export async function getFilieresStats(collection, cfd, millesime) {
           filiere: { $first: "$filiere" },
           millesime: { $first: "$millesime" },
           diplome: { $first: "$diplome" },
+          ...(region ? { region: { $first: "$region" } } : {}),
           ...getStats(VALEURS, (statName) => $sumOf($field(statName))),
         },
       },

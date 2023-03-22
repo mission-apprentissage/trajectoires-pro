@@ -119,7 +119,7 @@ export default () => {
 
       if (vue === "filieres") {
         const cfd = await findCodeFormationDiplome(code_certification);
-        const filieresStats = await getFilieresStats(regionalesStats(), cfd, millesime);
+        const filieresStats = await getFilieresStats(regionalesStats(), cfd, millesime, region);
         return sendFilieresStats(filieresStats, res, options);
       }
 
