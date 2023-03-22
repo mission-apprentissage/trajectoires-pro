@@ -11,10 +11,6 @@
     "npm:release:local": "CI=true LOCAL_RELEASE=true semantic-release",
     "prepare": "husky install"
   },
-  "workspaces": [
-    "ui",
-    "server"
-  ],
   "devDependencies": {
     "@commitlint/cli": "16.2.4",
     "@commitlint/config-conventional": "16.2.4",
