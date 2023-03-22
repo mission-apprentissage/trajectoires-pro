@@ -1,4 +1,12 @@
-<% height=region ? 499 : 449 %>
+<%- await include('variables'); %>
+<%_
+height=region ? 499 : 449 
+
+deltaHeight=215
+blocksHeight = (nbIndicateurPro && nbIndicateurApprentissage ? 2 : 1) * deltaHeight
+height=region ? 70 + blocksHeight : 40 + blocksHeight
+aboutPosY = region ? height - 50 : height - 20;
+-%>
 <svg version="1.1" width="882" height="<%= height %>" viewBox="0 0 882 <%= height %>" fill="none" xmlns="http://www.w3.org/2000/svg">
   <%- await include('../common/description'); %>
   <%- await include('common'); %>
@@ -14,6 +22,7 @@
   <% } %>
   <g class="blocks">
     <svg <% if (region) { %>y="40" <% } %>>
+      <% if (nbIndicateurPro > 0 ) { %>
       <g class="filiere">
         <text>
           <tspan x="0" y="15"><%= filiereProDesc %></tspan>
@@ -88,7 +97,9 @@
           <% } %>
         </svg>
       </g>
+      <% } %>
 
+      <% if (nbIndicateurApprentissage > 0 ) { %>
       <g class="filiere">
         <text>
           <tspan x="0" y="231"><%= filiereApprentissageDesc %></tspan>
@@ -163,9 +174,10 @@
           <% } %>
         </svg>
       </g>
+      <% } %>
 
       <text class="about">
-        <tspan x="0" y="436">
+        <tspan x="0" y="<%= aboutPosY %>">
           <%= about %>
         </tspan>
       </text>

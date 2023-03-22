@@ -531,6 +531,10 @@ describe("regionalesRoutes", () => {
             code: "4",
             libelle: "BAC",
           },
+          region: {
+            code: "11",
+            nom: "Île-de-France",
+          },
           filiere: "apprentissage",
           millesime: "2020",
           nb_sortant: 100,
@@ -557,6 +561,10 @@ describe("regionalesRoutes", () => {
           diplome: {
             code: "4",
             libelle: "BAC",
+          },
+          region: {
+            code: "11",
+            nom: "Île-de-France",
           },
           filiere: "pro",
           millesime: "2020",
