@@ -1,3 +1,10 @@
+# [1.0.0-beta.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2023-03-22)
+
+
+### Bug Fixes
+
+* vue filière régionale ([#179](https://github.com/mission-apprentissage/trajectoires-pro/issues/179)) ([51f4b4c](https://github.com/mission-apprentissage/trajectoires-pro/commit/51f4b4cbf61d8c89ab9baa76f83ff35d26935086))
+
 # 1.0.0-beta.1 (2023-03-21)
 
 
