@@ -11,7 +11,7 @@ import { addCsvHeaders, addJsonHeaders, sendFilieresStats, sendStats } from "../
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import Boom from "boom";
 import { findCodeFormationDiplome } from "../../common/bcn.js";
-import { getFilieresStats, transformDisplayStat } from "../../common/stats.js";
+import { getLastFormationMillesimes, getFilieresStats, transformDisplayStat } from "../../common/stats.js";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
 
 export default () => {
@@ -111,7 +111,7 @@ export default () => {
         {
           ...validators.region(),
           code_certification: Joi.string().required(),
-          millesime: Joi.string(),
+          millesime: Joi.string().default(getLastFormationMillesimes()),
           ...validators.vues(),
           ...validators.svg(),
         }

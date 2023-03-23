@@ -5,10 +5,22 @@ import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertCFD, insertMEF, insertRegionalesStats } from "../utils/fakeData.js";
 import { dbCollection } from "../../src/common/db/mongodb.js";
+import { millesimes, formationMillesimes } from "../../src/common/stats.js";
 
 chai.use(chaiDiff);
 
 describe("regionalesRoutes", () => {
+  before(() => {
+    // Set the last millesime to 2020
+    millesimes.push("2020");
+    formationMillesimes.push("2018_2019");
+  });
+
+  after(() => {
+    millesimes.pop();
+    formationMillesimes.pop();
+  });
+
   describe("Recherche", () => {
     function getAuthHeaders() {
       return {
@@ -415,7 +427,7 @@ describe("regionalesRoutes", () => {
       const { httpClient } = await startServer();
       await insertRegionalesStats({
         region: { code: "11", nom: "Île-de-France" },
-        millesime: "2020",
+        millesime: "2018_2019",
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         filiere: "apprentissage",
@@ -437,13 +449,13 @@ describe("regionalesRoutes", () => {
         taux_autres_18_mois: 15,
         taux_autres_24_mois: 16,
       });
-      await insertRegionalesStats({ code_certification: "12345678", millesime: "2019" });
+      await insertRegionalesStats({ code_certification: "12345678", millesime: "2017_2018" });
 
       const response = await httpClient.get(`/api/inserjeunes/regionales/11/certifications/12345678`);
 
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data, {
-        millesime: "2020",
+        millesime: "2018_2019",
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         filiere: "apprentissage",
@@ -469,8 +481,22 @@ describe("regionalesRoutes", () => {
         _meta: {
           titre: "Certification 12345678",
           details:
-            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millesime 2020",
+            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millesime 2018_2019",
         },
+      });
+    });
+
+    it("Ne retourne pas de stats par défaut si il n'y a pas de données pour le millésime le plus récent", async () => {
+      const { httpClient } = await startServer();
+      await insertRegionalesStats({ code_certification: "12345678", millesime: "2017_2018" });
+
+      const response = await httpClient.get(`/api/inserjeunes/regionales/11/certifications/12345678`);
+
+      assert.strictEqual(response.status, 404);
+      assert.deepStrictEqual(response.data, {
+        error: "Not Found",
+        message: "Pas de données disponibles",
+        statusCode: 404,
       });
     });
 
@@ -494,7 +520,7 @@ describe("regionalesRoutes", () => {
           code_certification: "12345678",
           code_formation_diplome: "12345678",
           filiere: "apprentissage",
-          millesime: "2020",
+          millesime: "2018_2019",
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
@@ -509,7 +535,7 @@ describe("regionalesRoutes", () => {
           code_certification: "23830024202",
           code_formation_diplome: "12345678",
           filiere: "pro",
-          millesime: "2020",
+          millesime: "2018_2019",
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
@@ -536,7 +562,7 @@ describe("regionalesRoutes", () => {
             nom: "Île-de-France",
           },
           filiere: "apprentissage",
-          millesime: "2020",
+          millesime: "2018_2019",
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
@@ -567,7 +593,7 @@ describe("regionalesRoutes", () => {
             nom: "Île-de-France",
           },
           filiere: "pro",
-          millesime: "2020",
+          millesime: "2018_2019",
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
@@ -642,7 +668,7 @@ describe("regionalesRoutes", () => {
               code_certification: "12345678",
               code_formation_diplome: "12345678",
               filiere: "apprentissage",
-              millesime: "2020",
+              millesime: "2018_2019",
               nb_sortant: 100,
               nb_annee_term: 50,
               nb_poursuite_etudes: 5,
@@ -657,7 +683,7 @@ describe("regionalesRoutes", () => {
               code_certification: "23830024202",
               code_formation_diplome: "12345678",
               filiere: "pro",
-              millesime: "2020",
+              millesime: "2018_2019",
               nb_sortant: 100,
               nb_annee_term: 50,
               nb_poursuite_etudes: 5,
@@ -720,7 +746,7 @@ describe("regionalesRoutes", () => {
         region: { code: "11", nom: "Île-de-France" },
         code_certification: "23830024203",
         code_formation_diplome: "12345678",
-        millesime: "2018",
+        millesime: "2018_2019",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
       });

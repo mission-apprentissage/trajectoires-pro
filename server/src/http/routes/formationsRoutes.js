@@ -11,7 +11,7 @@ import Boom from "boom";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { formationsStats } from "../../common/db/collections/collections.js";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
-import { transformDisplayStat } from "../../common/stats.js";
+import { getLastFormationMillesimes, transformDisplayStat } from "../../common/stats.js";
 
 export default () => {
   const router = express.Router();
@@ -85,7 +85,7 @@ export default () => {
             .pattern(/^[0-9]{7}[A-Z]{1}$/)
             .required(),
           code_certification: Joi.string().required(),
-          millesime: Joi.string(),
+          millesime: Joi.string().default(getLastFormationMillesimes()),
           ...validators.svg(),
         }
       );

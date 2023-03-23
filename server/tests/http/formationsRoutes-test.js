@@ -6,6 +6,7 @@ import { startServer } from "../utils/testUtils.js";
 import { insertFormationsStats } from "../utils/fakeData.js";
 import { formationsStats } from "../../src/common/db/collections/collections.js";
 import { merge } from "lodash-es";
+import { formationMillesimes } from "../../src/common/stats.js";
 
 chai.use(chaiDiff);
 
@@ -17,7 +18,7 @@ function newFormationStats(custom = {}) {
       code_certification: "1022105",
       code_formation_diplome: "12345678",
       diplome: { code: "4", libelle: "BAC" },
-      millesime: "2021_2022",
+      millesime: "2018_2019",
       filiere: "apprentissage",
       region: { code: "11", nom: "Île-de-France" },
     },
@@ -26,6 +27,15 @@ function newFormationStats(custom = {}) {
 }
 
 describe("formationsRoutes", () => {
+  before(() => {
+    // Set the last millesime to 2018_2019
+    formationMillesimes.push("2018_2019");
+  });
+
+  after(() => {
+    formationMillesimes.pop();
+  });
+
   describe("Recherche", () => {
     function getAuthHeaders() {
       return {
@@ -386,14 +396,14 @@ describe("formationsRoutes", () => {
       await insertFormationsStats({
         uai: "0751234J",
         code_certification: "12345678",
-        millesime: "2018_2019",
+        millesime: "2017_2018",
       });
       await insertFormationsStats({
         uai: "0751234J",
         filiere: "apprentissage",
         code_certification: "12345678",
         code_formation_diplome: "12345678",
-        millesime: "2020_2021",
+        millesime: "2018_2019",
         nb_annee_term: 100,
         nb_poursuite_etudes: 1,
         nb_en_emploi_24_mois: 2,
@@ -420,7 +430,7 @@ describe("formationsRoutes", () => {
         uai: "0751234J",
         code_certification: "12345678",
         code_formation_diplome: "12345678",
-        millesime: "2020_2021",
+        millesime: "2018_2019",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
         nb_annee_term: 100,
@@ -444,8 +454,26 @@ describe("formationsRoutes", () => {
         _meta: {
           titre: "Certification 12345678, établissement 0751234J",
           details:
-            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) dispensée par l'établissement 0751234J, pour le millesime 2020_2021",
+            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) dispensée par l'établissement 0751234J, pour le millesime 2018_2019",
         },
+      });
+    });
+
+    it("Ne retourne pas de stats par défaut si il n'y a pas de données pour le millésime le plus récent", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({
+        uai: "0751234J",
+        code_certification: "12345678",
+        millesime: "2017_2018",
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/formations/0751234J-12345678`);
+
+      assert.strictEqual(response.status, 404);
+      assert.deepStrictEqual(response.data, {
+        error: "Not Found",
+        message: "Formation inconnue",
+        statusCode: 404,
       });
     });
 
@@ -454,18 +482,18 @@ describe("formationsRoutes", () => {
       await insertFormationsStats({
         uai: "0751234J",
         code_certification: "12345678",
-        millesime: "2018_2019",
+        millesime: "2017_2018",
       });
       await insertFormationsStats({
         uai: "0751234J",
         code_certification: "12345678",
-        millesime: "2020_2021",
+        millesime: "2018_2019",
       });
 
-      const response = await httpClient.get(`/api/inserjeunes/formations/0751234J-12345678?millesime=2018_2019`);
+      const response = await httpClient.get(`/api/inserjeunes/formations/0751234J-12345678?millesime=2017_2018`);
 
       assert.strictEqual(response.status, 200);
-      assert.deepStrictEqual(response.data.millesime, "2018_2019");
+      assert.deepStrictEqual(response.data.millesime, "2017_2018");
     });
 
     it("Vérifie qu'on retourne une 404 si la formation est inconnue", async () => {

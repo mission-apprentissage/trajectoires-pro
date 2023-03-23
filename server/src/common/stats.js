@@ -37,12 +37,23 @@ export const ALL = /.*/;
 export const TAUX = /^taux_.*$/;
 export const VALEURS = /^nb_.*$/;
 
+export const millesimes = ["2019", "2020", "2021"];
+export const formationMillesimes = ["2018_2019", "2019_2020", "2020_2021"];
+
 export function getMillesimes() {
-  return ["2019", "2020", "2021"];
+  return millesimes;
+}
+
+export function getLastMillesimes() {
+  return millesimes[millesimes.length - 1];
 }
 
 export function getFormationMillesimes() {
-  return ["2018_2019", "2019_2020", "2020_2021"];
+  return formationMillesimes;
+}
+
+export function getLastFormationMillesimes() {
+  return formationMillesimes[formationMillesimes.length - 1];
 }
 
 function divide({ dividend, divisor }) {
