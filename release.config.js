@@ -1,5 +1,8 @@
 const mainConfig = {
-  branches: ["main", { name: "develop", channel: "beta", prerelease: "beta" }],
+  branches: [
+    "main",
+    //, { name: "develop", channel: "beta", prerelease: "beta" }
+  ],
   repositoryUrl: "https://github.com/mission-apprentissage/trajectoires-pro.git",
   plugins: [
     "@semantic-release/commit-analyzer",
@@ -53,7 +56,7 @@ const channel = createHash("md5").update(branch).digest("hex");
 const localConfig = {
   branches: [
     "main",
-    { name: "develop", channel: "beta", prerelease: "beta" },
+    //{ name: "develop", channel: "beta", prerelease: "beta" },
     {
       name: branch,
       channel,
