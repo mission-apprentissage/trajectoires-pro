@@ -1,0 +1,99 @@
+<%- await include('variables'); %>
+<% height=region ? 620 : 600 %>
+<svg width="328" height="<%= height %>" viewBox="0 0 328 <%= height %>" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <%- await include('../common/description'); %>
+  <%- await include('common'); %>
+  <% if (region) { %>
+  <g class="region">
+    <svg x="0" y="10">
+      <text>
+        <tspan x="0" y="15"> <%= regionDesc[0] %></tspan>
+        <tspan x="0" y="35"> <%= regionDesc[1] %></tspan>
+      </text>
+    </svg>
+  </g>
+  <% } %>
+  <g class="blocks">
+    <svg <% if (region) { %>y="40" <% } %>>
+      <g class="block">
+        <svg x="0" y="10" class="block">
+          <rect width="308" height="170" />
+          <% if (stats?.taux_en_formation) { %>
+          <text class="number">
+            <tspan x="154" y="55"><%= stats?.taux_en_formation?.valeur %>%</tspan>
+          </text>
+          <text class="description">
+            <tspan x="154" y="90"><%= description_en_formation %></tspan>
+          </text>
+          <text class="details">
+            <tspan x="154" y="115"><%= details_en_formation[0] %></tspan>
+            <tspan x="154" y="135"><%= details_en_formation[1] %></tspan>
+          </text>
+          <% } else { %>
+          <text class="description">
+            <tspan x="154" y="55"><%= unavailable_en_formation[0] %></tspan>
+            <tspan x="154" y="75"><%= unavailable_en_formation[1] %></tspan>
+            <tspan x="154" y="95"><%= unavailable_en_formation[2] %></tspan>
+            <tspan x="154" y="115"><%= unavailable_en_formation[3] %></tspan>
+          </text>
+          <% }%>
+        </svg>
+
+        <svg x="0" y="190" class="block">
+          <rect width="308" height="170" />
+          <% if (stats?.taux_en_emploi_6_mois) { %>
+          <text class="number">
+            <tspan x="154" y="55"><%= stats?.taux_en_emploi_6_mois?.valeur %>%</tspan>
+          </text>
+          <text class="description">
+            <tspan x="154" y="90"><%= description_en_emploi_6_mois %></tspan>
+          </text>
+          <text class="details">
+            <tspan x="154" y="115"><%= details_en_emploi_6_mois[0] %></tspan>
+            <tspan x="154" y="135"><%= details_en_emploi_6_mois[1] %></tspan>
+          </text>
+          <% } else { %>
+          <text class="description">
+            <tspan x="154" y="65"><%= unavailable_en_emploi_6_mois[0] %></tspan>
+            <tspan x="154" y="85"><%= unavailable_en_emploi_6_mois[1] %></tspan>
+            <tspan x="154" y="105"><%= unavailable_en_emploi_6_mois[2] %></tspan>
+          </text>
+          <% }%>
+        </svg>
+
+        <svg x="0" y="370" class="block">
+          <rect width="308" height="170" />
+          <% if (stats?.taux_autres_6_mois) { %>
+          <text class="number">
+            <tspan x="154" y="55"><%= stats?.taux_autres_6_mois?.valeur %>%</tspan>
+          </text>
+          <text class="description">
+            <tspan x="154" y="90"><%= description_autres_6_mois %></tspan>
+          </text>
+          <text class="details">
+            <tspan x="154" y="115"><%= details_autres_6_mois[0] %></tspan>
+            <tspan x="154" y="135"><%= details_autres_6_mois[1] %></tspan>
+            <tspan x="154" y="155"><%= details_autres_6_mois[2] %></tspan>
+          </text>
+          <% } else { %>
+          <text class="description">
+            <tspan x="154" y="65"><%= unavailable_autres_6_mois[0] %></tspan>
+            <tspan x="154" y="85"><%= unavailable_autres_6_mois[1] %></tspan>
+            <tspan x="154" y="105"><%= unavailable_autres_6_mois[2] %></tspan>
+          </text>
+          <% }%>
+        </svg>
+      </g>
+
+      <text class="about">
+        <tspan x="0" y="560">
+          <%= about_short[0] %>
+        </tspan>
+
+        <tspan x="0" y="575">
+          <%= about_short[1] %>
+        </tspan>
+      </text>
+    </svg>
+  </g>
+</svg>

@@ -144,8 +144,20 @@ export function computeCustomStats(data) {
   });
 }
 
+export function buildDescriptionFiliere(stats) {
+  const { pro, apprentissage } = stats;
+  return {
+    titre: `Certification ${pro.code_formation_diplome}${pro.uai ? `, établissement ${pro.uai}` : ""}`,
+    details:
+      `Données InserJeunes pour la certification ${pro.code_formation_diplome} (${pro.diplome.libelle} filière ${pro.filiere}` +
+      ` et ${apprentissage.diplome.libelle} filière ${apprentissage.filiere})` +
+      `${pro.uai ? ` dispensée par l'établissement ${pro.uai},` : ""} pour le millesime ${pro.millesime}`,
+  };
+}
+
 export function buildDescription(stats) {
   const { code_certification, filiere, uai, millesime, diplome } = stats;
+
   return {
     titre: `Certification ${code_certification}${uai ? `, établissement ${uai}` : ""}`,
     details:
@@ -154,11 +166,15 @@ export function buildDescription(stats) {
   };
 }
 
-export async function getFilieresStats(collection, cfd, millesime) {
+export async function getFilieresStats(collection, cfd, millesime = null, region = null) {
   const results = await collection
     .aggregate([
       {
-        $match: { code_formation_diplome: cfd, ...(millesime ? { millesime } : {}) },
+        $match: {
+          code_formation_diplome: cfd,
+          ...(millesime ? { millesime } : {}),
+          ...(region ? { "region.code": region } : {}),
+        },
       },
       {
         $group: {
@@ -168,6 +184,7 @@ export async function getFilieresStats(collection, cfd, millesime) {
           filiere: { $first: "$filiere" },
           millesime: { $first: "$millesime" },
           diplome: { $first: "$diplome" },
+          ...(region ? { region: { $first: "$region" } } : {}),
           ...getStats(VALEURS, (statName) => $sumOf($field(statName))),
         },
       },

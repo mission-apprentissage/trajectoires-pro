@@ -1,9 +1,13 @@
-import { assert } from "chai";
+import chai, { assert, expect } from "chai";
+import chaiDiff from "chai-diff";
+import fs from "fs";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertFormationsStats } from "../utils/fakeData.js";
 import { formationsStats } from "../../src/common/db/collections/collections.js";
 import { merge } from "lodash-es";
+
+chai.use(chaiDiff);
 
 function newFormationStats(custom = {}) {
   return merge(
@@ -484,11 +488,124 @@ describe("formationsRoutes", () => {
         uai: "0751234J",
         code_certification: "1022105",
         taux_en_emploi_6_mois: 50,
+        taux_en_formation: 25,
+        taux_autres_6_mois: 12,
         nb_annee_term: 20,
       });
     }
 
-    it("Vérifie qu'on peut obtenir une image SVG", async () => {
+    const themes = ["dsfr", "lba"];
+    themes.forEach((theme) => {
+      describe("Theme " + theme, () => {
+        it("Vérifie qu'on peut obtenir une image SVG", async () => {
+          const { httpClient } = await startServer();
+          await createDefaultStats();
+
+          const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?theme=" + theme);
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/formations/0751234J-1022105.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+
+        it("Vérifie qu'on peut obtenir une image SVG horizontale", async () => {
+          const { httpClient } = await startServer();
+          await createDefaultStats();
+
+          const response = await httpClient.get(
+            "/api/inserjeunes/formations/0751234J-1022105.svg?direction=horizontal&theme=" + theme
+          );
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/formations/0751234J-1022105_horizontal.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+
+        it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (vertical)", async () => {
+          const { httpClient } = await startServer();
+          await formationsStats().insertOne(
+            newFormationStats({
+              uai: "0751234J",
+              code_certification: "1022105",
+              nb_annee_term: 20,
+              taux_en_emploi_6_mois: 50,
+            })
+          );
+
+          const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?theme=" + theme);
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/formations/0751234J-1022105_vertical.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+
+        it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (horizontale)", async () => {
+          const { httpClient } = await startServer();
+          await formationsStats().insertOne(
+            newFormationStats({
+              uai: "0751234J",
+              code_certification: "1022105",
+              nb_annee_term: 20,
+              taux_en_emploi_6_mois: 50,
+            })
+          );
+
+          const response = await httpClient.get(
+            "/api/inserjeunes/formations/0751234J-1022105.svg?direction=horizontal&theme=" + theme
+          );
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/formations/0751234J-1022105_one_data_horizontal.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+
+        it("Vérifie qu'on peut obtenir une image SVG avec une donnée égale à 0", async () => {
+          const { httpClient } = await startServer();
+          await formationsStats().insertOne(
+            newFormationStats({
+              uai: "0751234J",
+              code_certification: "1022105",
+              nb_annee_term: 20,
+              taux_en_formation: 0,
+              taux_en_emploi_6_mois: 50,
+              taux_autres_6_mois: 10,
+            })
+          );
+
+          const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?theme=" + theme);
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/formations/0751234J-1022105_data_0.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+      });
+    });
+
+    it("Retourne le theme DSFR par défaut", async () => {
       const { httpClient } = await startServer();
       await createDefaultStats();
 
@@ -496,89 +613,12 @@ describe("formationsRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes("50%"));
-      assert.ok(response.data.includes("sont en emploi 6 mois"));
-      assert.ok(response.data.includes("poursuivent leurs études"));
-      assert.ok(response.data.includes("<title>Certification 1022105, établissement 0751234J</title>"));
-      assert.ok(
-        response.data.includes(
-          "<desc>Données InserJeunes pour la certification 1022105 (BAC filière apprentissage) dispensée par l&#39;établissement 0751234J, pour le millesime 2018_2019</desc>"
-        )
+
+      const svgFixture = await fs.promises.readFile(
+        `tests/fixtures/widgets/dsfr/formations/0751234J-1022105.svg`,
+        "utf8"
       );
-    });
-
-    it("Vérifie qu'on peut obtenir une image SVG horizontale", async () => {
-      const { httpClient } = await startServer();
-      await createDefaultStats();
-
-      const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?direction=horizontal");
-
-      assert.strictEqual(response.status, 200);
-      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes(`width="700"`));
-    });
-
-    it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (vertical)", async () => {
-      const { httpClient } = await startServer();
-      await formationsStats().insertOne(
-        newFormationStats({
-          uai: "0751234J",
-          code_certification: "1022105",
-          nb_annee_term: 20,
-          taux_en_emploi_6_mois: 50,
-        })
-      );
-
-      const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
-
-      assert.strictEqual(response.status, 200);
-      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes(`width="320"`));
-      assert.ok(response.data.includes(`height="258"`));
-    });
-
-    it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (horizontale)", async () => {
-      const { httpClient } = await startServer();
-      await formationsStats().insertOne(
-        newFormationStats({
-          uai: "0751234J",
-          code_certification: "1022105",
-          nb_annee_term: 20,
-          taux_en_emploi_6_mois: 50,
-        })
-      );
-
-      const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?direction=horizontal");
-
-      assert.strictEqual(response.status, 200);
-      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes(`width="700"`));
-      assert.ok(response.data.includes("50%"));
-      assert.ok(response.data.includes("sont en emploi 6 mois"));
-      assert.ok(!response.data.includes("poursuivent leurs études"));
-    });
-
-    it("Vérifie qu'on peut obtenir une image SVG avec une donnée égale à 0", async () => {
-      const { httpClient } = await startServer();
-      await formationsStats().insertOne(
-        newFormationStats({
-          uai: "0751234J",
-          code_certification: "1022105",
-          nb_annee_term: 20,
-          taux_en_formation: 0,
-          taux_en_emploi_6_mois: 50,
-        })
-      );
-
-      const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
-
-      assert.strictEqual(response.status, 200);
-      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes(`width="320"`));
-      assert.ok(response.data.includes(`height="323"`));
-      assert.ok(response.data.includes("50%"));
-      assert.ok(response.data.includes("sont en emploi 6 mois"));
-      assert.ok(response.data.includes("poursuivent leurs études"));
+      expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
     });
 
     it("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {

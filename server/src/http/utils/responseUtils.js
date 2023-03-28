@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../widget/widget.js";
 import Boom from "boom";
-import { buildDescription } from "../../common/stats.js";
+import { buildDescription, buildDescriptionFiliere } from "../../common/stats.js";
 import { isEmpty } from "lodash-es";
 
 export function addJsonHeaders(res) {
@@ -26,7 +26,16 @@ export async function sendStats(type, stats, res, options = {}) {
       throw Boom.notFound("Données non disponibles");
     }
 
-    const widget = await buildWidget(type, { stats: prepareStatsForWidget(stats), description }, { theme, direction });
+    const widget = await buildWidget(
+      type,
+      {
+        stats: prepareStatsForWidget(stats),
+        description,
+        millesime: stats.millesime,
+        region: stats.region,
+      },
+      { theme, direction }
+    );
 
     res.setHeader("content-type", "image/svg+xml");
     return res.status(200).send(widget);
@@ -34,7 +43,7 @@ export async function sendStats(type, stats, res, options = {}) {
 }
 
 export async function sendFilieresStats(filieresStats, res, options = {}) {
-  const { direction, theme, ext } = options;
+  const { ext } = options;
 
   if (isEmpty(filieresStats)) {
     throw Boom.notFound("Certifications inconnues");
@@ -43,17 +52,25 @@ export async function sendFilieresStats(filieresStats, res, options = {}) {
   if (ext !== "svg") {
     return res.json(filieresStats);
   } else {
-    if (!isWidgetAvailable(filieresStats.pro) && !isWidgetAvailable(filieresStats.apprentissage)) {
+    const { pro, apprentissage } = filieresStats;
+    if (!isWidgetAvailable(pro) && !isWidgetAvailable(apprentissage)) {
       throw Boom.notFound("Données non disponibles");
     }
+
+    const { direction, theme } = options;
+    const validFiliere = pro || apprentissage;
+    const description = pro && apprentissage ? buildDescriptionFiliere(filieresStats) : buildDescription(validFiliere);
 
     const widget = await buildWidget(
       "cfd",
       {
         stats: {
-          pro: prepareStatsForWidget(filieresStats.pro),
-          apprentissage: prepareStatsForWidget(filieresStats.apprentissage),
+          pro: pro && prepareStatsForWidget(pro),
+          apprentissage: apprentissage && prepareStatsForWidget(apprentissage),
         },
+        description,
+        millesime: validFiliere.millesime,
+        region: validFiliere.region,
       },
       { theme, direction }
     );

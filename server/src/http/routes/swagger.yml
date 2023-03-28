@@ -404,7 +404,7 @@ components:
       required: false
       schema:
         type: string
-        enum: [ "dsfr", "onisep" ]
+        enum: [ "dsfr", "lba" ]
         default: "dsfr"
 
     # Path parameters

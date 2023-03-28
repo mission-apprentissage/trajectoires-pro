@@ -11,18 +11,18 @@ describe("widget", () => {
       taux_en_formation: 80,
     };
 
-    assert.deepStrictEqual(prepareStatsForWidget(stats), [
-      {
+    assert.deepStrictEqual(prepareStatsForWidget(stats), {
+      taux_en_emploi_6_mois: {
         valeur: 80,
         niveau: "success",
         libelles: ["sont en emploi 6 mois", "après la fin de la formation."],
       },
-      {
+      taux_en_formation: {
         valeur: 80,
         niveau: "info",
         libelles: ["poursuivent leurs études."],
       },
-    ]);
+    });
   });
 
   it("Doit calculer les taux pour le widget (warning)", () => {
@@ -36,8 +36,8 @@ describe("widget", () => {
 
     const rates = prepareStatsForWidget(stats);
 
-    assert.deepStrictEqual(rates[0].niveau, "warning");
-    assert.deepStrictEqual(rates[1].niveau, "info");
+    assert.deepStrictEqual(rates.taux_en_emploi_6_mois.niveau, "warning");
+    assert.deepStrictEqual(rates.taux_en_formation.niveau, "info");
   });
 
   it("Doit calculer les taux pour le widget (danger)", () => {
@@ -51,7 +51,7 @@ describe("widget", () => {
 
     const rates = prepareStatsForWidget(stats);
 
-    assert.deepStrictEqual(rates[0].niveau, "danger");
-    assert.deepStrictEqual(rates[1].niveau, "info");
+    assert.deepStrictEqual(rates.taux_en_emploi_6_mois.niveau, "danger");
+    assert.deepStrictEqual(rates.taux_en_formation.niveau, "info");
   });
 });

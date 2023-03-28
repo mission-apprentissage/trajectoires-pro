@@ -1,8 +1,12 @@
-import { assert } from "chai";
+import chai, { assert, expect } from "chai";
+import chaiDiff from "chai-diff";
+import fs from "fs";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertCFD, insertMEF, insertRegionalesStats } from "../utils/fakeData.js";
 import { dbCollection } from "../../src/common/db/mongodb.js";
+
+chai.use(chaiDiff);
 
 describe("regionalesRoutes", () => {
   describe("Recherche", () => {
@@ -527,6 +531,10 @@ describe("regionalesRoutes", () => {
             code: "4",
             libelle: "BAC",
           },
+          region: {
+            code: "11",
+            nom: "Île-de-France",
+          },
           filiere: "apprentissage",
           millesime: "2020",
           nb_sortant: 100,
@@ -553,6 +561,10 @@ describe("regionalesRoutes", () => {
           diplome: {
             code: "4",
             libelle: "BAC",
+          },
+          region: {
+            code: "11",
+            nom: "Île-de-France",
           },
           filiere: "pro",
           millesime: "2020",
@@ -592,7 +604,87 @@ describe("regionalesRoutes", () => {
   });
 
   describe("Widget", () => {
-    it("Vérifie qu'on peut obtenir une image SVG", async () => {
+    const themes = ["dsfr", "lba"];
+    themes.forEach((theme) => {
+      describe("Theme " + theme, () => {
+        it("Vérifie qu'on peut obtenir une image SVG", async () => {
+          const { httpClient } = await startServer();
+          await insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "23830024203",
+            filiere: "apprentissage",
+            nb_annee_term: 20,
+            taux_en_formation: 5,
+            taux_autres_6_mois: 5,
+            taux_en_emploi_6_mois: 8,
+          });
+
+          const response = await httpClient.get(
+            "/api/inserjeunes/regionales/11/certifications/23830024203.svg?theme=" + theme
+          );
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/regionales/23830024203.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+
+        it("Vérifie qu'on peut obtenir le widget avec une vue CFD", async () => {
+          const { httpClient } = await startServer();
+          await Promise.all([
+            insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
+            insertRegionalesStats({
+              region: { code: "11", nom: "Île-de-France" },
+              code_certification: "12345678",
+              code_formation_diplome: "12345678",
+              filiere: "apprentissage",
+              millesime: "2020",
+              nb_sortant: 100,
+              nb_annee_term: 50,
+              nb_poursuite_etudes: 5,
+              nb_en_emploi_24_mois: 25,
+              nb_en_emploi_18_mois: 25,
+              nb_en_emploi_12_mois: 25,
+              nb_en_emploi_6_mois: 50,
+            }),
+            insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
+            insertRegionalesStats({
+              region: { code: "11", nom: "Île-de-France" },
+              code_certification: "23830024202",
+              code_formation_diplome: "12345678",
+              filiere: "pro",
+              millesime: "2020",
+              nb_sortant: 100,
+              nb_annee_term: 50,
+              nb_poursuite_etudes: 5,
+              nb_en_emploi_24_mois: 25,
+              nb_en_emploi_18_mois: 25,
+              nb_en_emploi_12_mois: 25,
+              nb_en_emploi_6_mois: 50,
+            }),
+          ]);
+
+          const response = await httpClient.get(
+            "/api/inserjeunes/regionales/11/certifications/12345678.svg?vue=filieres&theme=" + theme
+          );
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/regionales/12345678_filiere.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+      });
+    });
+
+    it("Retourne le theme DSFR par défaut", async () => {
       const { httpClient } = await startServer();
       await insertRegionalesStats({
         region: { code: "11", nom: "Île-de-France" },
@@ -600,66 +692,17 @@ describe("regionalesRoutes", () => {
         filiere: "apprentissage",
         nb_annee_term: 20,
         taux_en_formation: 5,
+        taux_autres_6_mois: 5,
+        taux_en_emploi_6_mois: 8,
       });
 
       const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/23830024203.svg");
 
       assert.strictEqual(response.status, 200);
       assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes("5%"));
-      assert.ok(response.data.includes("sont en emploi 6 mois"));
-      assert.ok(response.data.includes("poursuivent leurs études"));
-      assert.ok(response.data.includes("<title>Certification 23830024203</title>"));
-      assert.ok(
-        response.data.includes(
-          "<desc>Données InserJeunes pour la certification 23830024203 (BAC filière apprentissage) pour le millesime 2018_2019</desc>"
-        )
-      );
-    });
 
-    it("Vérifie qu'on peut obtenir le widget avec une vue CFD", async () => {
-      const { httpClient } = await startServer();
-      await Promise.all([
-        insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
-        insertRegionalesStats({
-          region: { code: "11", nom: "Île-de-France" },
-          code_certification: "12345678",
-          code_formation_diplome: "12345678",
-          filiere: "apprentissage",
-          millesime: "2020",
-          nb_sortant: 100,
-          nb_annee_term: 50,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_24_mois: 25,
-          nb_en_emploi_18_mois: 25,
-          nb_en_emploi_12_mois: 25,
-          nb_en_emploi_6_mois: 50,
-        }),
-        insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
-        insertRegionalesStats({
-          region: { code: "11", nom: "Île-de-France" },
-          code_certification: "23830024202",
-          code_formation_diplome: "12345678",
-          filiere: "pro",
-          millesime: "2020",
-          nb_sortant: 100,
-          nb_annee_term: 50,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_24_mois: 25,
-          nb_en_emploi_18_mois: 25,
-          nb_en_emploi_12_mois: 25,
-          nb_en_emploi_6_mois: 50,
-        }),
-      ]);
-
-      const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/12345678.svg?vue=filieres");
-
-      assert.strictEqual(response.status, 200);
-      assert.ok(response.headers["content-type"].includes("image/svg+xml"));
-      assert.ok(response.data.includes("100%"));
-      assert.ok(response.data.includes("10%"));
-      assert.ok(response.data.includes("Apprentissage"));
-      assert.ok(response.data.includes("Voie scolaire"));
+      const svgFixture = await fs.promises.readFile(`tests/fixtures/widgets/dsfr/regionales/23830024203.svg`, "utf8");
+      expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
     });
 
     it("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {
