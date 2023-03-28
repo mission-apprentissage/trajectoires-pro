@@ -1,3 +1,10 @@
+# [1.0.0-beta.3](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2023-03-28)
+
+
+### Features
+
+* ajoute un message pour les taux vides sur le widget DSFR ([#182](https://github.com/mission-apprentissage/trajectoires-pro/issues/182)) ([e376365](https://github.com/mission-apprentissage/trajectoires-pro/commit/e3763653a53a7cdbf89140a0b96dcc049de968a5))
+
 # [1.0.0-beta.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2023-03-22)
 
 
