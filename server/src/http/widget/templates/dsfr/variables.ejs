@@ -1,20 +1,24 @@
 <%_
-nbIndicateur=Object.values(stats).length;
-nbIndicateurPro=Object.values(stats?.pro || {}).length;
-nbIndicateurApprentissage=Object.values(stats?.apprentissage || {}).length;
+nbIndicateur=3;
+nbIndicateurPro=3;
+nbIndicateurApprentissage=3;
+
+hasPro=Object.values(stats?.pro || {}).length > 0;
+hasApprentissage=Object.values(stats?.apprentissage || {}).length > 0;
+
 
 description_en_formation="sont inscrits en formation";
 details_en_formation=["(Formation supérieure,redoublants,","changement de filière)"] 
-unavailable_en_formation=["Nous sommes désolés mais le","taux des inscrits en formation","n’est pas disponible pour le","moment."] 
+unavailable_en_formation="Nous sommes désolés mais le taux des inscrits en formation n’est pas disponible pour le moment."
 
 description_en_emploi_6_mois_part=["sont en emploi 6 mois après la", "fin de la formation"]
 description_en_emploi_6_mois=description_en_emploi_6_mois_part.join(' ')
 details_en_emploi_6_mois=["(tout type d'emploi salarié du privé)"] 
-unavailable_en_emploi_6_mois=["Nous sommes désolés mais le taux", "d’emploi au bout de 6 mois n’est pas", "disponible pour le moment."] 
+unavailable_en_emploi_6_mois="Nous sommes désolés mais le taux d’emploi au bout de 6 mois n’est pas disponible pour le moment."
 
 description_autres_6_mois="sont dans d’autres situations" 
 details_autres_6_mois=["(recherche d’emploi, service civique,","à l’étranger, indépendant, etc.)"] 
-unavailable_autres_6_mois=["Nous sommes désolés mais le taux", "concernant les autres cas n’est pas", "disponible pour le moment."] 
+unavailable_autres_6_mois="Nous sommes désolés mais le taux concernant les autres cas n’est pas disponible pour le moment."
 
 title=[`Que deviennent les`, `apprenants après cette`, `formation ?`]
 

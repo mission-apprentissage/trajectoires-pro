@@ -62,6 +62,13 @@
       line-height: 18px;
     }
 
+    .block .descriptionSmall {
+      fill: #3A3A3A;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
     .block .details {
       fill: #3A3A3A;
       font-weight: 400;
@@ -130,10 +137,10 @@
                   </text>
                 </g>
                 <g class=" block">
-                  
                   <svg x="10" y="58" class="block">
                     <rect width="60" height="35" />
 
+                    
                     <text class="number">
                       <tspan x="30" y="26">100%</tspan>
                     </text>
@@ -144,14 +151,14 @@
                     <text class="details">
                       <tspan x="75" y="46">(tout type d&#39;emploi salarié du privé) </tspan>
                     </text>
+                    
                   </svg>
                   
-                  
 
-                  
                   <svg x="10" y="133" class="block">
                     <rect width="60" height="35" />
 
+                    
                     <text class="number">
                       <tspan x="30" y="26">10%</tspan>
                     </text>
@@ -162,14 +169,15 @@
                       <tspan x="75" y="30">(Formation supérieure,redoublants,</tspan>
                       <tspan x="75" y="46">changement de filière)</tspan>
                     </text>
+                    
                   </svg>
                   
-                  
 
 
-                  
                   <svg x="10" y="208" class="block">
                     <rect width="60" height="35" />
+
+                    
                     <text class="number">
                       <tspan x="30" y="26">0%</tspan>
                     </text>
@@ -180,8 +188,8 @@
                       <tspan x="75" y="30">(recherche d’emploi, service civique,</tspan>
                       <tspan x="75" y="46">à l’étranger, indépendant, etc.)</tspan>
                     </text>
+                    
                   </svg>
-                  
                   
                 </g>
               </svg>

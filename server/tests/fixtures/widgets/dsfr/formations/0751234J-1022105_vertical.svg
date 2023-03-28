@@ -1,5 +1,5 @@
 
-<svg version="1.1" width="320" height="275" viewBox="0 0 320 275" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
+<svg version="1.1" width="320" height="425" viewBox="0 0 320 425" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
   
     <title>Certification 1022105, établissement 0751234J</title>
 
@@ -62,6 +62,13 @@
       line-height: 18px;
     }
 
+    .block .descriptionSmall {
+      fill: #3A3A3A;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
     .block .details {
       fill: #3A3A3A;
       font-weight: 400;
@@ -114,14 +121,15 @@
   <g class="blockTitle">
 
     <g class="content">
-      <rect x="0" y="62" class="border" width="319" height="211" />
+      <rect x="0" y="62" class="border" width="319" height="361" />
       <svg y="110" x="20">
         <g class="blocks">
           <svg y="30">
             <g class="block">
-              
+
               <svg x="0" y="10" class="block">
                 <rect width="60" height="35" />
+                
 
                 <text class="number">
                   <tspan x="30" y="26">50%</tspan>
@@ -133,20 +141,56 @@
                 <text class="details">
                   <tspan x="75" y="46">(tout type d&#39;emploi salarié du privé) </tspan>
                 </text>
+
+                
               </svg>
               
+
+
+              <svg x="0" y="85" class="block">
+                <rect width="60" height="35" />
+                
+                <text class="number">
+                  <tspan x="30" y="26">--</tspan>
+                </text>
+                <text class="descriptionSmall">
+                  <tspan x="75" y="12">Nous sommes désolés mais le taux</tspan>
+                </text>
+                <text class="descriptionSmall">
+                  <tspan x="75" y="26"> des inscrits en formation n’est pas </tspan>
+                </text>
+                <text class="descriptionSmall">
+                  <tspan x="75" y="40">disponible pour le moment.</tspan>
+                </text>
+                
+              </svg>
               
 
-              
-
+              <svg x="0" y="160" class="block">
+                <rect width="60" height="35" />
+                
+                <text class="number">
+                  <tspan x="30" y="26">--</tspan>
+                </text>
+                <text class="descriptionSmall">
+                  <tspan x="75" y="12">Nous sommes désolés mais le taux</tspan>
+                </text>
+                <text class="descriptionSmall">
+                  <tspan x="75" y="26"> concernant les autres cas n’est pas </tspan>
+                </text>
+                <text class="descriptionSmall">
+                  <tspan x="75" y="40">disponible pour le moment.</tspan>
+                </text>
+                
+              </svg>
               
             </g>
 
             <text class="about">
-              <tspan x="0" y="99">
+              <tspan x="0" y="249">
                 *Données issues du dispositif InserJeunes
               </tspan>
-              <tspan x="0" y="115">
+              <tspan x="0" y="265">
                  promotion 2021 à 2022
               </tspan>
             </text>

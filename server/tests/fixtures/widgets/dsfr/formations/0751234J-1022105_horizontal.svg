@@ -62,6 +62,13 @@
       line-height: 18px;
     }
 
+    .block .descriptionSmall {
+      fill: #3A3A3A;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
     .block .details {
       fill: #3A3A3A;
       font-weight: 400;
