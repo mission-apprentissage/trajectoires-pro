@@ -8,6 +8,7 @@ import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
 import { importBCN } from "./jobs/importBCN.js";
 import { importStats } from "./jobs/importStats.js";
 import { asArray } from "./common/utils/stringUtils.js";
+import { importEtablissements } from "./jobs/importEtablissements.js";
 
 cli
   .command("importBCN")
@@ -19,9 +20,18 @@ cli
   });
 
 cli
+  .command("importEtablissements")
+  .description("Import les établissements depuis le catalogue apprentissage et le fichier acce de la DEPP")
+  .action(() => {
+    runScript(() => {
+      return importEtablissements();
+    });
+  });
+
+cli
   .command("importStats")
   .description("Importe les données statistiques de l'API InserJeunes")
-  .argument("[stats]", "Le nom des stats à importer (formations,certifications)", asArray)
+  .argument("[stats]", "Le nom des stats à importer (formations,certifications,regionales,departementales)", asArray)
   .action((stats) => {
     runScript(() => {
       return importStats({ stats });

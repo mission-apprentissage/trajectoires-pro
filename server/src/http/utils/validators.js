@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { getRegions } from "../../common/regions.js";
+import { getRegions, getDepartements } from "../../common/regions.js";
 
 const customJoi = Joi.extend((joi) => ({
   type: "arrayOf",
@@ -23,6 +23,18 @@ export function regions() {
 export function region() {
   return {
     region: Joi.string().valid(...getRegions().map((r) => r.code)),
+  };
+}
+
+export function departements() {
+  return {
+    departements: arrayOf(Joi.string().valid(...getDepartements().map((r) => r.code))).default([]),
+  };
+}
+
+export function departement() {
+  return {
+    departement: Joi.string().valid(...getDepartements().map((r) => r.code)),
   };
 }
 

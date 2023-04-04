@@ -124,3 +124,13 @@ export async function migrateMongodb(version, callback, options = {}) {
 
   return res;
 }
+
+export async function upsert(collection, query, fields, onModifiedFields) {
+  const res = await collection.updateOne(query, fields, { upsert: true });
+
+  if (res.modifiedCount) {
+    await collection.updateOne(query, onModifiedFields);
+  }
+
+  return res;
+}

@@ -48,7 +48,7 @@ export default () => {
     "/api/inserjeunes/regionales.:ext?",
     checkApiKey(),
     tryCatch(async (req, res) => {
-      const { millesimes, code_certifications, page, items_par_page, ...rest } = await validate(
+      const { millesimes, code_certifications, regions, page, items_par_page, ...rest } = await validate(
         { ...req.query, ...req.params },
         {
           ...validators.regions(),
@@ -59,6 +59,7 @@ export default () => {
       const paginable = await findAndPaginate(
         regionalesStats(),
         {
+          ...(regions.length > 0 ? { "region.code": { $in: regions } } : {}),
           ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
           ...(code_certifications.length > 0 ? { code_certification: { $in: code_certifications } } : {}),
         },

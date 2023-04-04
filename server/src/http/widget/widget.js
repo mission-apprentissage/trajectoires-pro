@@ -48,6 +48,7 @@ export function buildWidget(templateName, data, options = {}) {
       description: data.description || {},
       millesime: data.millesime || "",
       region: data.region || null,
+      departement: data.departement || null,
     },
     options
   );

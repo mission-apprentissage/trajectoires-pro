@@ -173,7 +173,7 @@ paths:
 
   /api/inserjeunes/regionales/{code_region}/certifications/{code_certification}:
     get:
-      description: Obtenir les statistiques d'une certification
+      description: Obtenir les statistiques d'une certification pour une région
       parameters:
         - $ref: "#/components/parameters/code_region"
         - $ref: "#/components/parameters/code_certification"
@@ -191,7 +191,7 @@ paths:
 
   /api/inserjeunes/regionales/{code_region}/certifications/{code_certification}.svg:
     get:
-      description: Génère une image SVG (widget) avec les statistiques d'une certification
+      description: Génère une image SVG (widget) avec les statistiques d'une certification pour une région
       parameters:
         - $ref: "#/components/parameters/code_region"
         - $ref: "#/components/parameters/code_certification"
@@ -208,6 +208,131 @@ paths:
           $ref: "#/components/responses/401"
         404:
           $ref: "#/components/responses/404"
+
+  /api/inserjeunes/departementales:
+    get:
+      description: Rechercher des statistiques départementales
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/departements"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+      responses:
+        200:
+          $ref: "#/components/responses/DepartementalesResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/departementales.{ext}:
+      get:
+        description: Exporter des statistiques départementales
+        security:
+          - ApiKeyAuth: [ ]
+        parameters:
+          - $ref: "#/components/parameters/departements"
+          - $ref: "#/components/parameters/millesimes"
+          - $ref: "#/components/parameters/code_certifications"
+          - $ref: "#/components/parameters/page"
+          - $ref: "#/components/parameters/items_par_page"
+          - $ref: "#/components/parameters/ext"
+        responses:
+          200:
+            $ref: "#/components/responses/DepartementalesResponse"
+          400:
+            $ref: "#/components/responses/400"
+          401:
+            $ref: "#/components/responses/401"
+          404:
+            $ref: "#/components/responses/404"
+
+  /api/inserjeunes/departementales/{code_departement}:
+    get:
+      description: Rechercher des statistiques d'un département
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/code_departement"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+      responses:
+        200:
+          $ref: "#/components/responses/DepartementalesResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/departementales/{code_departement}.{ext}:
+    get:
+      description: Exporter des statistiques d'un département
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/code_departement"
+        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/items_par_page"
+        - $ref: "#/components/parameters/ext"
+      responses:
+        200:
+          $ref: "#/components/responses/DepartementalesResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/departementales/{code_departement}/certifications/{code_certification}:
+    get:
+      description: Obtenir les statistiques d'une certification pour un département
+      parameters:
+        - $ref: "#/components/parameters/code_departement"
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/vue"
+      responses:
+        200:
+          $ref: "#/components/responses/DepartementaleResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
+  /api/inserjeunes/departementales/{code_departement}/certifications/{code_certification}.svg:
+    get:
+      description: Génère une image SVG (widget) avec les statistiques d'une certification pour un département
+      parameters:
+        - $ref: "#/components/parameters/code_departement"
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/vue"
+        - $ref: "#/components/parameters/direction"
+        - $ref: "#/components/parameters/theme"
+      responses:
+        200:
+          $ref: "#/components/responses/SVGResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+
 
   /api/inserjeunes/formations:
     get:
@@ -353,6 +478,26 @@ components:
          93 Provence-Alpes-Côte d'Azur
          11 Île-de-France
          ```
+    
+    departements:
+      name: departements
+      in: query
+      schema:
+        type: string
+      description: |
+        Permet de filtrer la recherche avec un ou plusieurs codes de département séparés par des virgules.
+        
+        Exemples :
+          ```
+          01 Ain
+          ...
+          2A Corse-du-Sud
+          ...
+          75 Paris
+          ...
+          971 Guadeloupe
+        ```
+    
     page:
       name: page
       in: query
@@ -449,6 +594,26 @@ components:
          11 Île-de-France
          ```
 
+    code_departement:
+      name: code_departement
+      in: path
+      required: true
+      schema:
+        type: string
+      description: |
+        Le code d'un département
+        
+        Exemples :
+          ```
+          01 Ain
+          ...
+          2A Corse-du-Sud
+          ...
+          75 Paris
+          ...
+          971 Guadeloupe
+        ```
+
     code_certification:
       name: code_certification
       description: | 
@@ -518,6 +683,37 @@ components:
         nom:
           type: string
           description: Le nom de la région
+    Departement:
+      type: object
+      required:
+        - code
+        - nom
+      properties:
+        code:
+          type: string
+          description: Le code du département
+        nom:
+          type: string
+          description: Le nom du département
+    Localisation:
+      type: object
+      required:
+        - departement
+        - code_postal
+        - code_commune
+        - nom_commune
+      properties:
+        departement:
+         $ref: "#/components/schemas/Departement"
+        code_postal:
+          type: string
+          description: Le code postal
+        code_commune:
+          type: string
+          description: Le code commune INSEE
+        nom_commune:
+          type: string
+          description: Le nom de la commune
     Meta:
       type: object
       required:
@@ -669,6 +865,75 @@ components:
         _meta:
           $ref: "#/components/schemas/Meta"
 
+    Departementale:
+      type: object
+      description: |
+        Statistiques d'une certification pour un département.
+
+        Les taux retournés sont :
+          * null quand les effectifs (nb_annee_term) sont < 20
+          * absent si l'on ne peut pas les calculer (données manquantes)
+      required:
+        - millesime
+        - code_certification
+        - filiere
+        - departement
+        - _meta
+      properties:
+        millesime:
+          type: string
+        code_certification:
+          type: string
+        filiere:
+          type: string
+          enum: [ "apprentissage", "pro" ]
+        nb_sortant:
+          type: number
+        nb_annee_term:
+          type: number
+        nb_poursuite_etudes:
+          type: number
+        nb_en_emploi_24_mois:
+          type: number
+        nb_en_emploi_18_mois:
+          type: number
+        nb_en_emploi_12_mois:
+          type: number
+        nb_en_emploi_6_mois:
+          type: number
+        taux_en_emploi_24_mois:
+          type: number
+          nullable: true
+        taux_en_emploi_18_mois:
+          type: number
+          nullable: true
+        taux_en_emploi_12_mois:
+          type: number
+          nullable: true
+        taux_en_emploi_6_mois:
+          type: number
+          nullable: true
+        taux_en_formation:
+          type: number
+          nullable: true
+        taux_autres_6_mois:
+          type: number
+          nullable: true
+        taux_autres_12_mois:
+          type: number
+          nullable: true
+        taux_autres_18_mois:
+          type: number
+          nullable: true
+        taux_autres_24_mois:
+          type: number
+          nullable: true
+        departement:
+          $ref: "#/components/schemas/Departement"
+        _meta:
+          $ref: "#/components/schemas/Meta"
+
+
     Formation:
       type: object
       description: |
@@ -737,6 +1002,8 @@ components:
           nullable: true
         region:
           $ref: "#/components/schemas/Region"
+        localisation:
+          $ref: "#/components/schemas/Localisation"
         _meta:
           $ref: "#/components/schemas/Meta"
 
@@ -822,6 +1089,39 @@ components:
         "*/*":
           schema:
             $ref: "#/components/schemas/Regionale"
+
+    DepartementalesResponse:
+      description: La liste des statistiques de certifications pour tout les départements
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              organismes:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Departementale"
+              meta:
+                type: object
+                properties:
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                description: Informations complémentaires
+        "text/csv; charset=UTF-8":
+          schema:
+            type: string
+            example: |
+              departement;nom_departement;code_certification;filiere;millesime;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+              91;Essonne;01022103;apprentissage;2018_2019;106;55;48;55;46;38;67;12;19;12;21;52;45;52;43;36;
+
+
+    DepartementaleResponse:
+      description: La liste des statistiques de certifications pour un département
+      content:
+        "*/*":
+          schema:
+            $ref: "#/components/schemas/Departementale"
+
 
     FormationsResponse:
       description: La liste des statistiques des formations

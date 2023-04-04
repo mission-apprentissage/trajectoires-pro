@@ -1,20 +1,27 @@
 <%- await include('variables'); %>
-<% height=region ? 620 : 600 %>
+<% height=hasLocalisation ? 620 : 600 %>
 <svg width="328" height="<%= height %>" viewBox="0 0 328 <%= height %>" fill="none" xmlns="http://www.w3.org/2000/svg">
   <%- await include('../common/description'); %>
   <%- await include('common'); %>
-  <% if (region) { %>
+  <% if (hasLocalisation) { %>
   <g class="region">
     <svg x="0" y="10">
       <text>
+        <% if (region) { %>
         <tspan x="0" y="15"> <%= regionDesc[0] %></tspan>
         <tspan x="0" y="35"> <%= regionDesc[1] %></tspan>
+        <% } %>
+
+        <% if (departement) { %>
+        <tspan x="0" y="15"> <%= departementDesc[0] %></tspan>
+        <tspan x="0" y="35"> <%= departementDesc[1] %></tspan>
+        <% } %>
       </text>
     </svg>
   </g>
   <% } %>
   <g class="blocks">
-    <svg <% if (region) { %>y="40" <% } %>>
+    <svg <% if (hasLocalisation) { %>y="40" <% } %>>
       <g class="block">
         <svg x="0" y="10" class="block">
           <rect width="308" height="170" />

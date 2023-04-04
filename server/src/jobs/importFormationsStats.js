@@ -5,10 +5,11 @@ import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
-import { bcn, formationsStats } from "../common/db/collections/collections.js";
+import { upsert } from "../common/db/mongodb.js";
+import { bcn, formationsStats, acceEtablissements } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
-import { findRegionByNom } from "../common/regions.js";
+import { findRegionByNom, findDepartementByCode } from "../common/regions.js";
 import { computeCustomStats, getFormationMillesimes, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
 
 const logger = getLoggerWithContext("import");
@@ -70,6 +71,34 @@ async function loadParameters(parameters) {
   return results;
 }
 
+async function buildLocalisation(uai) {
+  const etablissements = await acceEtablissements().findOne({
+    numero_uai: uai,
+  });
+
+  if (!etablissements) {
+    logger.error({ uai: uai }, `Etablissement inconnu dans la liste ACCE`);
+    return null;
+  }
+
+  const codeDepartement =
+    etablissements.departement_insee_3[0] == "0"
+      ? etablissements.departement_insee_3.substr(1)
+      : etablissements.departement_insee_3;
+  const departement = findDepartementByCode(codeDepartement);
+  if (!departement) {
+    logger.error({ uai: uai }, `Département (${codeDepartement}) inconnu`);
+    return null;
+  }
+
+  return {
+    departement,
+    code_postal: etablissements.code_postal_uai,
+    code_commune: etablissements.commune,
+    nom_commune: etablissements.commune_libe,
+  };
+}
+
 export async function importFormationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
 
@@ -116,25 +145,35 @@ export async function importFormationsStats(options = {}) {
 
         try {
           const certification = await bcn().findOne({ code_certification: formationStats.code_certification });
-          const stats = omit(formationStats, INSERJEUNES_IGNORED_STATS_NAMES);
+          const stats = omit(omit(formationStats, INSERJEUNES_IGNORED_STATS_NAMES), "metadata");
           const customStats = computeCustomStats(formationStats);
-
-          const res = await formationsStats().updateOne(
+          const res = await upsert(
+            formationsStats(),
             query,
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
+                "_meta.created_on": new Date(),
+                "_meta.updated_on": new Date(),
               },
               $set: omitNil({
                 ...stats,
                 ...customStats,
                 region: pick(params.region, ["code", "nom"]),
+                localisation: await buildLocalisation(formationStats.uai),
                 code_formation_diplome: certification?.code_formation_diplome,
                 diplome: certification?.diplome,
-                "_meta.inserjeunes": pick(formationStats, INSERJEUNES_IGNORED_STATS_NAMES),
+                "_meta.inserjeunes": {
+                  ...pick(formationStats, INSERJEUNES_IGNORED_STATS_NAMES),
+                  UAI: omitNil(formationStats.metadata.UAI),
+                },
               }),
             },
-            { upsert: true }
+            {
+              $set: {
+                "_meta.updated_on": new Date(),
+              },
+            }
           );
 
           if (res.upsertedCount) {

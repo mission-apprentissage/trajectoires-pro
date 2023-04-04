@@ -1,4 +1,5 @@
 
+
 <svg width="328" height="620" viewBox="0 0 328 620" fill="none" xmlns="http://www.w3.org/2000/svg">
   
     <title>Certification 1022105, établissement 0751234J</title>
@@ -7,8 +8,7 @@
     <desc>Données InserJeunes pour la certification 1022105 (BAC filière apprentissage) dispensée par l&#39;établissement 0751234J, pour le millesime 2021_2022</desc>
 
 
-  
-<defs>
+  <defs>
   <style type="text/css">
     @font-face {
       font-family: "Marianne";
@@ -84,8 +84,12 @@
   <g class="region">
     <svg x="0" y="10">
       <text>
+        
         <tspan x="0" y="15"> Les chiffres pour la région</tspan>
         <tspan x="0" y="35"> Île-de-France</tspan>
+        
+
+        
       </text>
     </svg>
   </g>

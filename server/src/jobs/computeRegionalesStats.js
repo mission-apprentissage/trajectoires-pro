@@ -1,4 +1,5 @@
 import { oleoduc, writeData } from "oleoduc";
+import { upsert } from "../common/db/mongodb.js";
 import { formationsStats, regionalesStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
@@ -81,17 +82,24 @@ export async function computeRegionalesStats() {
         const missingStats = await getMissingStats(query);
 
         try {
-          const res = await regionalesStats().updateOne(
+          const res = await upsert(
+            regionalesStats(),
             query,
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
+                "_meta.created_on": new Date(),
+                "_meta.updated_on": new Date(),
               },
               $set: omitNil({
                 ...omit(stats, missingStats),
               }),
             },
-            { upsert: true }
+            {
+              $set: {
+                "_meta.updated_on": new Date(),
+              },
+            }
           );
 
           if (res.upsertedCount) {

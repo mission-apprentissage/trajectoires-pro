@@ -2,7 +2,7 @@ import nock from "nock"; // eslint-disable-line node/no-unpublished-import
 import { InserJeunesApi } from "../../src/common/inserjeunes/InserJeunesApi.js";
 import { generateCodeCertification } from "./testUtils.js";
 
-function createNock(baseUrl, options = {}) {
+export function createNock(baseUrl, options = {}) {
   let client = nock(baseUrl);
   return options.stack ? client : client.persist();
 }
@@ -53,8 +53,8 @@ export function mockInserJeunesApi(callback, options) {
                   id_uai_etab: "0751234J",
                   libelle_etab: "Centre de formation",
                   adresse_etab_voie: "31 rue des lilas",
-                  adresse_etab_localite: "Paris",
-                  adresse_etab_code_postal: "75019",
+                  adresse_etab_localite: "Montpellier",
+                  adresse_etab_code_postal: "34090",
                 },
               },
               data: [

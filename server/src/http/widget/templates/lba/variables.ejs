@@ -20,6 +20,8 @@ about=`*Données issues du dispositif InserJeunes${millesime ? ' promotion ' + m
 about_short=[`*Données issues du dispositif InserJeunes`, `${millesime ? ' promotion ' + millesimeText : ''}`] 
 
 regionDesc=[`Les chiffres pour la région`,`${region ? region.nom : ''}`] 
+departementDesc=[`Les chiffres pour le département`,`${departement ? departement.nom : ''}`] 
+hasLocalisation = region || departement
 
 filiereProDesc="Pour la voie scolaire" 
 filiereApprentissageDesc="Pour la voie apprentissage" 

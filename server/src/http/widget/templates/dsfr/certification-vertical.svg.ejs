@@ -1,8 +1,8 @@
 <%- await include('variables'); %>
 <%_
 deltaHeight=75
-height=region ? 210 + nbIndicateur * deltaHeight : 155 + nbIndicateur * deltaHeight 
-currentHeight = region ? 30 : 10
+height=hasLocalisation ? 210 + nbIndicateur * deltaHeight : 155 + nbIndicateur * deltaHeight 
+currentHeight = hasLocalisation ? 30 : 10
 -%>
 <svg version="1.1" width="320" height="<%= height %>" viewBox="0 0 320 <%= height %>" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
   <%- await include('../common/description'); %>
@@ -14,7 +14,7 @@ currentHeight = region ? 30 : 10
       <rect x="0" y="62" class="border" width="319" height="<%= height - 64 %>" />
       <svg y="110" x="20">
         <g class="blocks">
-          <svg <% if (region) { %>y="30" <% } %>>
+          <svg <% if (hasLocalisation) { %>y="30" <% } %>>
             <g class="block">
 
               <svg x="0" y="<%= currentHeight %>" class="block">
@@ -127,7 +127,7 @@ currentHeight = region ? 30 : 10
 
     <g class=" mainTitle">
       <svg>
-        <rect width="700" height="<%= region ? 140 : 92 %>" />
+        <rect width="700" height="<%= hasLocalisation ? 140 : 92 %>" />
         <text>
           <tspan x="30" y="30"><%= title[0] %></tspan>
           <tspan x="30" y="54"><%= title[1] %></tspan>
@@ -135,6 +135,9 @@ currentHeight = region ? 30 : 10
           <% if (region) { %>
           <tspan x="30" y="104" class="region"><%= regionDesc[0] %></tspan>
           <tspan x="30" y="124" class="region"><%= regionDesc[1] %></tspan>
+          <% } else if (departement) { %>
+          <tspan x="30" y="104" class="region"><%= departementDesc[0] %></tspan>
+          <tspan x="30" y="124" class="region"><%= departementDesc[1] %></tspan>
           <% } %>
         </text>
       </svg>

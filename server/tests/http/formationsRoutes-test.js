@@ -94,6 +94,15 @@ describe("formationsRoutes", () => {
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
             region: { code: "11", nom: "Île-de-France" },
+            localisation: {
+              code_commune: "75103",
+              code_postal: "75003",
+              departement: {
+                code: "75",
+                nom: "Paris",
+              },
+              nom_commune: "Paris 03ème Arrondissement",
+            },
           },
         ],
         pagination: {
@@ -441,6 +450,15 @@ describe("formationsRoutes", () => {
         taux_autres_18_mois: 15,
         taux_autres_24_mois: 16,
         region: { code: "11", nom: "Île-de-France" },
+        localisation: {
+          code_commune: "75103",
+          code_postal: "75003",
+          departement: {
+            code: "75",
+            nom: "Paris",
+          },
+          nom_commune: "Paris 03ème Arrondissement",
+        },
         _meta: {
           titre: "Certification 12345678, établissement 0751234J",
           details:

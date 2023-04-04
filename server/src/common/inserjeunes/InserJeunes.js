@@ -1,8 +1,9 @@
 import { Readable } from "stream";
 import { transformData, filterData, accumulateData, flattenArray, oleoduc, writeData } from "oleoduc";
-
+import { isEmpty } from "lodash-es";
 import { InserJeunesApi } from "./InserJeunesApi.js";
-import { streamNestedJsonArray } from "../utils/streamUtils.js";
+
+import { streamNestedJsonArray, streamNestedJson } from "../utils/streamUtils.js";
 
 function getFiliere(dimension) {
   return dimension["id_formation_apprentissage"] ? "apprentissage" : "pro";
@@ -60,6 +61,26 @@ function computeMissingStats() {
   });
 }
 
+async function transformApiMetadata(statsFromApi) {
+  let data = {};
+
+  await oleoduc(
+    Readable.from([statsFromApi]),
+    streamNestedJson("metadata.UAI"),
+    writeData(async (d) => {
+      if (isEmpty(d)) {
+        throw new Error(`L'établissement n'a pas d'adresse`);
+      }
+
+      data = {
+        UAI: d,
+      };
+    })
+  );
+
+  return data;
+}
+
 async function transformApiStats(statsFromApi, groupBy) {
   let stats = [];
   await oleoduc(
@@ -87,8 +108,9 @@ class InserJeunes {
 
   async getFormationsStats(uai, millesime) {
     const etablissementsStats = await this.api.fetchEtablissementStats(uai, millesime);
+    const metadata = await transformApiMetadata(etablissementsStats, this.adresseAPI);
 
-    return await transformApiStats(etablissementsStats, groupByCertification({ uai, millesime }));
+    return await transformApiStats(etablissementsStats, groupByCertification({ uai, millesime, metadata }));
   }
 
   async getCertificationsStats(millesime, filiere) {

@@ -19,9 +19,11 @@ export function schema() {
       diplome: diplomeSchema(),
       _meta: object(
         {
+          created_on: date(),
+          updated_on: date(),
           date_import: date(),
         },
-        { required: ["date_import"] }
+        { required: ["created_on", "updated_on", "date_import"] }
       ),
     },
     {

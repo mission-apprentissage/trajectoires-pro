@@ -1,3 +1,5 @@
+import { flatten } from "lodash-es";
+
 const REGIONS = [
   {
     code: "00",
@@ -313,4 +315,12 @@ export function findRegionByAcademie(code) {
 
 export function getRegions() {
   return REGIONS;
+}
+
+export function findDepartementByCode(code) {
+  return getDepartements().find((departement) => departement.code === code) || null;
+}
+
+export function getDepartements() {
+  return flatten(REGIONS.map((region) => region.departements));
 }

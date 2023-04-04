@@ -33,6 +33,7 @@ export async function sendStats(type, stats, res, options = {}) {
         description,
         millesime: stats.millesime,
         region: stats.region,
+        departement: stats.departement,
       },
       { theme, direction }
     );
@@ -71,6 +72,7 @@ export async function sendFilieresStats(filieresStats, res, options = {}) {
         description,
         millesime: validFiliere.millesime,
         region: validFiliere.region,
+        departement: validFiliere.departement,
       },
       { theme, direction }
     );

@@ -1,5 +1,5 @@
 
-<svg version="1.1" width="320" height="795" viewBox="0 0 320 795" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
+<svg version="1.1" width="320" height="815" viewBox="0 0 320 815" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
   
     <title>Certification 12345678</title>
 
@@ -122,10 +122,10 @@
 
 
     <g class="content">
-      <rect x="0" y="62" class="border" width="319" height="731" />
+      <rect x="0" y="62" class="border" width="319" height="751" />
       <svg y="120" x="10">
         <g class="blocks">
-          <svg y="30" >
+          <svg y="50" >
             
             <g class="blockFiliere">
               <svg x="0">
@@ -137,10 +137,10 @@
                   </text>
                 </g>
                 <g class=" block">
-                  
                   <svg x="10" y="58" class="block">
                     <rect width="60" height="35" />
 
+                    
                     <text class="number">
                       <tspan x="30" y="26">100%</tspan>
                     </text>
@@ -151,14 +151,14 @@
                     <text class="details">
                       <tspan x="75" y="46">(tout type d&#39;emploi salarié du privé) </tspan>
                     </text>
+                    
                   </svg>
                   
-                  
 
-                  
                   <svg x="10" y="133" class="block">
                     <rect width="60" height="35" />
 
+                    
                     <text class="number">
                       <tspan x="30" y="26">10%</tspan>
                     </text>
@@ -169,14 +169,15 @@
                       <tspan x="75" y="30">(Formation supérieure,redoublants,</tspan>
                       <tspan x="75" y="46">changement de filière)</tspan>
                     </text>
+                    
                   </svg>
                   
-                  
 
 
-                  
                   <svg x="10" y="208" class="block">
                     <rect width="60" height="35" />
+
+                    
                     <text class="number">
                       <tspan x="30" y="26">0%</tspan>
                     </text>
@@ -187,8 +188,8 @@
                       <tspan x="75" y="30">(recherche d’emploi, service civique,</tspan>
                       <tspan x="75" y="46">à l’étranger, indépendant, etc.)</tspan>
                     </text>
+                    
                   </svg>
-                  
                   
                 </g>
               </svg>
@@ -207,10 +208,10 @@
                   </text>
                 </g>
                 <g class=" block">
-                  
                   <svg x="10" y="58" class="block">
                     <rect width="60" height="35" />
 
+                    
                     <text class="number">
                       <tspan x="30" y="26">100%</tspan>
                     </text>
@@ -221,14 +222,14 @@
                     <text class="details">
                       <tspan x="75" y="46">(tout type d&#39;emploi salarié du privé) </tspan>
                     </text>
+                    
                   </svg>
                   
-                  
 
-                  
                   <svg x="10" y="133" class="block">
                     <rect width="60" height="35" />
 
+                    
                     <text class="number">
                       <tspan x="30" y="26">10%</tspan>
                     </text>
@@ -239,14 +240,14 @@
                       <tspan x="75" y="30">(Formation supérieure,redoublants,</tspan>
                       <tspan x="75" y="46">changement de filière)</tspan>
                     </text>
+                    
                   </svg>
                   
-                  
 
 
-                  
                   <svg x="10" y="208" class="block">
                     <rect width="60" height="35" />
+                    
                     <text class="number">
                       <tspan x="30" y="26">0%</tspan>
                     </text>
@@ -257,8 +258,8 @@
                       <tspan x="75" y="30">(recherche d’emploi, service civique,</tspan>
                       <tspan x="75" y="46">à l’étranger, indépendant, etc.)</tspan>
                     </text>
+                    
                   </svg>
-                  
                   
                 </g>
               </svg>
@@ -266,10 +267,10 @@
             
 
             <text class="about">
-              <tspan x="10" y="599">
+              <tspan x="10" y="619">
                 *Données issues du dispositif InserJeunes
               </tspan>
-              <tspan x="10" y="615">
+              <tspan x="10" y="635">
                  promotion 2020
               </tspan>
             </text>
@@ -280,13 +281,14 @@
 
     <g class=" mainTitle">
       <svg>
-        <rect width="320" height="120" />
+        <rect width="320" height="140" />
         <text>
           <tspan x="30" y="30">Que deviennent les</tspan>
           <tspan x="30" y="54">apprenants après cette</tspan>
           <tspan x="30" y="78">formation ?</tspan>
           
-          <tspan x="30" y="104" class="region">Les chiffres pour la région Île-de-France</tspan>
+          <tspan x="30" y="104" class="region">Les chiffres pour la région</tspan>
+          <tspan x="30" y="120" class="region">Île-de-France</tspan>
           
         </text>
       </svg>

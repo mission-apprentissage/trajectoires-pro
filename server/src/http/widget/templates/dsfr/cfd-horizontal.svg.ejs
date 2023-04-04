@@ -2,9 +2,9 @@
 <%_
 deltaHeight=55
 blocksHeight = hasPro && hasApprentissage ? 6 * deltaHeight : 3 * deltaHeight;
-height=region ? 325 + blocksHeight : 290 + blocksHeight
+height=hasLocalisation ? 325 + blocksHeight : 290 + blocksHeight
 height = !hasPro || !hasApprentissage ? height - 80 : height;
-aboutPosY = region ? height - 175 : height - 140;
+aboutPosY = hasLocalisation ? height - 175 : height - 140;
 currentHeight = 58
 -%>
 <svg version="1.1" width="720" height="<%= height %>" viewBox="0 0 720 <%= height %>" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
@@ -18,7 +18,7 @@ currentHeight = 58
       <rect x="0" y="62" class="border" width="699" height="<%= height - 64 %>" />
       <svg y="80" x="20">
         <g class="blocks">
-          <svg <% if (region) { %>y="30" <% } %>>
+          <svg <% if (hasLocalisation) { %>y="30" <% } %>>
             <% if (hasPro ) { %>
             <g class="blockFiliere">
               <svg x="10">
@@ -228,11 +228,13 @@ currentHeight = 58
 
     <g class=" mainTitle">
       <svg>
-        <rect width="700" height="<%= region ? 93 : 64 %>" />
+        <rect width="700" height="<%= hasLocalisation ? 93 : 64 %>" />
         <text>
           <tspan x="30" y="40"><%= title.join(' ') %></tspan>
           <% if (region) { %>
           <tspan x="30" y="70" class="region"><%= regionDesc[0] %> <%= regionDesc[1] %></tspan>
+          <% } else if (departement) { %>
+          <tspan x="30" y="70" class="region"><%= departementDesc[0] %> <%= departementDesc[1] %></tspan>
           <% } %>
         </text>
       </svg>

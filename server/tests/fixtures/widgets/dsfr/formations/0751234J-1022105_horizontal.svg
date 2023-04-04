@@ -125,12 +125,13 @@
       <rect x="0" y="62" class="border" width="699" height="266" />
       <svg y="80" x="20">
         <g class="blocks">
-          <svg y="30">
+          <svg y="30" >
             <g class="block">
-              
+
               <svg x="0" y="10" class="block">
                 <rect width="60" height="35" />
 
+                
                 <text class="number">
                   <tspan x="30" y="26">50%</tspan>
                 </text>
@@ -140,14 +141,14 @@
                 <text class="details">
                   <tspan x="75" y="30">(tout type d&#39;emploi salarié du privé) </tspan>
                 </text>
+                
               </svg>
               
-              
 
-              
               <svg x="0" y="65" class="block">
                 <rect width="60" height="35" />
 
+                
                 <text class="number">
                   <tspan x="30" y="26">25%</tspan>
                 </text>
@@ -157,14 +158,16 @@
                 <text class="details">
                   <tspan x="75" y="30">(Formation supérieure,redoublants, changement de filière)</tspan>
                 </text>
+
+                
               </svg>
               
-              
 
 
-              
+
               <svg x="0" y="120" class="block">
                 <rect width="60" height="35" />
+                
                 <text class="number">
                   <tspan x="30" y="26">12%</tspan>
                 </text>
@@ -174,8 +177,8 @@
                 <text class="details">
                   <tspan x="75" y="30">(recherche d’emploi, service civique, à l’étranger, indépendant, etc.) </tspan>
                 </text>
+                
               </svg>
-              
               
             </g>
 
@@ -198,7 +201,7 @@
         <text>
           <tspan x="30" y="40">Que deviennent les apprenants après cette formation ?</tspan>
           
-          <tspan x="30" y="70" class="region">Les chiffres pour cet établissement</tspan>
+          <tspan x="30" y="70" class="region">Les chiffres pour la région Île-de-France</tspan>
           
         </text>
       </svg>

@@ -1,6 +1,7 @@
 import { Readable } from "stream";
 import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
+import { upsert } from "../common/db/mongodb.js";
 import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
@@ -46,11 +47,14 @@ export async function importCertificationsStats(options = {}) {
           const stats = omit(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(certificationStats);
 
-          const res = await certificationsStats().updateOne(
+          const res = await upsert(
+            certificationsStats(),
             query,
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
+                "_meta.created_on": new Date(),
+                "_meta.updated_on": new Date(),
               },
               $set: omitNil({
                 ...stats,
@@ -60,7 +64,11 @@ export async function importCertificationsStats(options = {}) {
                 "_meta.inserjeunes": pick(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES),
               }),
             },
-            { upsert: true }
+            {
+              $set: {
+                "_meta.updated_on": new Date(),
+              },
+            }
           );
 
           if (res.upsertedCount) {

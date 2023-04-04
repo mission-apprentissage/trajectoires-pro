@@ -1,6 +1,7 @@
 import { compose, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
 import { getBCNTable, getDiplome } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
+import { upsert } from "../common/db/mongodb.js";
 import { bcn } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { parseAsUTCDate } from "../common/utils/dateUtils.js";
@@ -63,17 +64,24 @@ export async function importBCN(options = {}) {
         }
 
         try {
-          const res = await bcn().updateOne(
+          const res = await upsert(
+            bcn(),
             {
               code_certification: data.code_certification,
             },
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
+                "_meta.created_on": new Date(),
+                "_meta.updated_on": new Date(),
               },
               $set: omitNil(data),
             },
-            { upsert: true }
+            {
+              $set: {
+                "_meta.updated_on": new Date(),
+              },
+            }
           );
 
           if (res.upsertedCount) {

@@ -2,7 +2,7 @@ import { assert } from "chai";
 import { omit, pickBy } from "lodash-es";
 import { importFormationsStats } from "../../src/jobs/importFormationsStats.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
-import { insertCFD, insertFormationsStats, insertMEF } from "../utils/fakeData.js";
+import { insertCFD, insertFormationsStats, insertMEF, insertACCEEtablissements } from "../utils/fakeData.js";
 import { formationsStats } from "../../src/common/db/collections/collections.js";
 
 describe("importFormationsStats", () => {
@@ -53,6 +53,10 @@ describe("importFormationsStats", () => {
       },
     });
 
+    await insertACCEEtablissements({
+      numero_uai: "0751234J",
+    });
+
     const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
@@ -73,10 +77,26 @@ describe("importFormationsStats", () => {
         code: "76",
         nom: "Occitanie",
       },
+      localisation: {
+        code_commune: "34172",
+        code_postal: "34090",
+        departement: {
+          code: "34",
+          nom: "Hérault",
+        },
+        nom_commune: "Montpellier",
+      },
     });
     assert.ok(found._meta.date_import);
     assert.deepStrictEqual(found._meta.inserjeunes, {
       taux_poursuite_etudes: 6,
+      UAI: {
+        adresse_etab_code_postal: "34090",
+        adresse_etab_localite: "Montpellier",
+        adresse_etab_voie: "31 rue des lilas",
+        id_uai_etab: "0751234J",
+        libelle_etab: "Centre de formation",
+      },
     });
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
@@ -101,6 +121,10 @@ describe("importFormationsStats", () => {
       diplome: { code: "4", libelle: "BAC" },
     });
 
+    await insertACCEEtablissements({
+      numero_uai: "0751234J",
+    });
+
     const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
@@ -120,6 +144,15 @@ describe("importFormationsStats", () => {
       region: {
         code: "76",
         nom: "Occitanie",
+      },
+      localisation: {
+        code_commune: "34172",
+        code_postal: "34090",
+        departement: {
+          code: "34",
+          nom: "Hérault",
+        },
+        nom_commune: "Montpellier",
       },
     });
     assert.ok(found._meta.date_import);
