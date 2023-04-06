@@ -7,6 +7,7 @@ import {
   certificationsStats,
   formationsStats,
   regionalesStats,
+  metrics,
 } from "../../src/common/db/collections/collections.js";
 import { ALL, getStatsCompute } from "../../src/common/stats.js";
 
@@ -106,6 +107,20 @@ export function insertMEF(custom = {}) {
         diplome: { code: "4", libelle: "BAC" },
         libelle: "BAC PRO",
         _meta: { date_import: new Date() },
+      },
+      custom
+    )
+  );
+}
+
+export function insertMetrics(custom = {}) {
+  return metrics().insertOne(
+    merge(
+      {},
+      {
+        time: new Date(),
+        consumer: "localhost",
+        url: "/api/",
       },
       custom
     )

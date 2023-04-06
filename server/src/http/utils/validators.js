@@ -1,12 +1,13 @@
 import Joi from "joi";
 import { getRegions } from "../../common/regions.js";
+import { formatArrayParameters } from "./formatters.js";
 
 const customJoi = Joi.extend((joi) => ({
   type: "arrayOf",
   base: joi.array(),
   // eslint-disable-next-line no-unused-vars
   coerce(value, helpers) {
-    return { value: value.split ? value.split(/,|\|/) : value };
+    return { value: formatArrayParameters(value) };
   },
 }));
 
