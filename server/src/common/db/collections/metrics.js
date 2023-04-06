@@ -1,4 +1,4 @@
-import { date, integer, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { date, integer, object, objectId, string, arrayOf } from "./jsonSchema/jsonSchemaTypes.js";
 
 export const name = "metrics";
 
@@ -11,6 +11,8 @@ export function indexes() {
     [{ extension: 1 }],
     [{ uai: 1 }],
     [{ code_certification: 1 }],
+    [{ codes_certifications: 1 }],
+    [{ regions: 1 }],
   ];
 }
 
@@ -24,6 +26,8 @@ export function schema() {
       extension: string(),
       uai: string(),
       code_certification: string(),
+      codes_certifications: arrayOf(string()),
+      regions: arrayOf(string()),
       v: integer(),
     },
     { required: ["time", "consumer", "url"] }

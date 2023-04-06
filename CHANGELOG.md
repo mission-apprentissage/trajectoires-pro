@@ -123,7 +123,7 @@ INSEE.
 
 ### Filières
 
-Il est désormais possible d'appeler la route `/api/inserjeunes/certifications/:codes_certifications` avec un
+Il est désormais possible d'appeler la route `/api/inserjeunes/certifications/:code_certification` avec un
 paramètre `vue=filieres`.
 
 Ce paramètre permet d'obtenir les statistiques agrégées par filière (pro et apprentissage).
