@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.0.0...v1.1.0) (2023-04-06)
+
+
+### Features
+
+* ajout des champs codes_certifications et regions dans les metrics ([#189](https://github.com/mission-apprentissage/trajectoires-pro/issues/189)) ([35d7f82](https://github.com/mission-apprentissage/trajectoires-pro/commit/35d7f82ab5f16a3e2f38b5c7859f051eab8eac58))
+
 # 1.0.0 (2023-03-28)
 
 
