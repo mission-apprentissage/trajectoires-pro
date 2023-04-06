@@ -7,6 +7,7 @@ import { writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
 import { importBCN } from "./jobs/importBCN.js";
 import { importStats } from "./jobs/importStats.js";
+import { backfillMetrics } from "./jobs/backfillMetrics.js";
 import { asArray } from "./common/utils/stringUtils.js";
 
 cli
@@ -44,9 +45,19 @@ cli
   .command("migrate")
   .description("Execute les scripts de migration")
   .option("--dropIndexes", "Supprime les anciens indexes")
+  .option("--removeAll", "Supprime les données")
   .action((options) => {
     runScript(() => {
       return migrate(options);
+    });
+  });
+
+cli
+  .command("backfillMetrics")
+  .description("Backfill les metrics (champs codes_certifications et regions)")
+  .action((options) => {
+    runScript(() => {
+      return backfillMetrics(options);
     });
   });
 
