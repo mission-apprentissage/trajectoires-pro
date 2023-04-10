@@ -20,6 +20,10 @@ export const templates = {
       vertical: path.join(__dirname, `./dsfr/cfd-vertical.svg.ejs`),
       horizontal: path.join(__dirname, `./dsfr/cfd-horizontal.svg.ejs`),
     },
+    error: {
+      vertical: path.join(__dirname, `./dsfr/error.svg.ejs`),
+      horizontal: path.join(__dirname, `./dsfr/error.svg.ejs`),
+    },
   },
   lba: {
     formation: {
@@ -33,6 +37,10 @@ export const templates = {
     cfd: {
       vertical: path.join(__dirname, `./lba/cfd-vertical.svg.ejs`),
       horizontal: path.join(__dirname, `./lba/cfd-horizontal.svg.ejs`),
+    },
+    error: {
+      vertical: path.join(__dirname, `./lba/error.svg.ejs`),
+      horizontal: path.join(__dirname, `./lba/error.svg.ejs`),
     },
   },
 };

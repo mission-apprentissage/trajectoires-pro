@@ -64,7 +64,7 @@ paths:
         401:
           $ref: "#/components/responses/401"
         404:
-          $ref: "#/components/responses/404"
+          $ref: "#/components/responses/404-Code-Certification"
 
   /api/inserjeunes/certifications/{code_certification}.svg:
     get:
@@ -75,6 +75,7 @@ paths:
         - $ref: "#/components/parameters/vue"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
+        - $ref: "#/components/parameters/imageOnError"
       responses:
         200:
           $ref: "#/components/responses/SVGResponse"
@@ -83,7 +84,7 @@ paths:
         401:
           $ref: "#/components/responses/401"
         404:
-          $ref: "#/components/responses/404"
+          $ref: "#/components/responses/404-Code-Certification"
 
   /api/inserjeunes/regionales:
     get:
@@ -187,7 +188,7 @@ paths:
         401:
           $ref: "#/components/responses/401"
         404:
-          $ref: "#/components/responses/404"
+          $ref: "#/components/responses/404-Code-Regionale"
 
   /api/inserjeunes/regionales/{code_region}/certifications/{code_certification}.svg:
     get:
@@ -199,6 +200,7 @@ paths:
         - $ref: "#/components/parameters/vue"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
+        - $ref: "#/components/parameters/imageOnError"
       responses:
         200:
           $ref: "#/components/responses/SVGResponse"
@@ -207,7 +209,7 @@ paths:
         401:
           $ref: "#/components/responses/401"
         404:
-          $ref: "#/components/responses/404"
+          $ref: "#/components/responses/404-Code-Regionale"
 
   /api/inserjeunes/formations:
     get:
@@ -268,7 +270,7 @@ paths:
         401:
           $ref: "#/components/responses/401"
         404:
-          $ref: "#/components/responses/404"
+          $ref: "#/components/responses/404-Code-Formation"
 
   /api/inserjeunes/formations/{uai}-{code_certification}.svg:
     get:
@@ -279,6 +281,7 @@ paths:
         - $ref: "#/components/parameters/millesime"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
+        - $ref: "#/components/parameters/imageOnError"
       responses:
         200:
           $ref: "#/components/responses/SVGResponse"
@@ -287,7 +290,7 @@ paths:
         401:
           $ref: "#/components/responses/401"
         404:
-          $ref: "#/components/responses/404"
+          $ref: "#/components/responses/404-Code-Formation"
 
 components:
   parameters:
@@ -407,6 +410,15 @@ components:
         enum: [ "dsfr", "lba" ]
         default: "dsfr"
 
+    imageOnError:
+      name: imageOnError
+      description: "Retourne une image en cas d'erreur 404"
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: ""
+
     # Path parameters
     uai:
       name: uai
@@ -494,6 +506,18 @@ components:
           type: string
         message:
           type: string
+        data:
+          description: "Optionnel"
+          type: object
+          properties:
+            millesimes:
+              type: string
+              description: "Millésime demandé (ou dernier millésime)"
+            millesimesDisponible:
+              type: array
+              description: "Millésimes avec des données"
+              items:
+                type: string
     Pagination:
       type: object
       properties:
@@ -759,7 +783,55 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-
+    "404-Code-Certification":
+      description: Not Found
+      content:
+        application/json:
+          examples:
+            Certification inconnue:
+              value: |
+                {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Certification inconnue"
+                }
+            Pas de donnée pour le millésime:
+             $ref: "#/components/examples/MillesimeNotFoundExample"
+          schema:
+            $ref: "#/components/schemas/Error"
+    "404-Code-Regionale":
+      description: Not Found
+      content:
+        application/json:
+          examples:
+            Certification inconnue:
+              value: |
+                {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Pas de données disponibles"
+                }
+            Pas de donnée pour le millésime:
+             $ref: "#/components/examples/MillesimeNotFoundExample"
+          schema:
+            $ref: "#/components/schemas/Error"
+    "404-Code-Formation":
+      description: Not Found
+      content:
+        application/json:
+          examples:
+            Certification inconnue:
+              value: |
+                {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Formation inconnue"
+                }
+            Pas de donnée pour le millésime:
+             $ref: "#/components/examples/MillesimeNotFoundExample"
+          schema:
+            $ref: "#/components/schemas/Error"
+    
     CertificationsResponse:
       description: La liste des certifications avec leurs statistiques
       content:
@@ -874,6 +946,21 @@ components:
             type: string
             format: xml
 
+  examples:
+    MillesimeNotFoundExample:
+      value: |
+              {
+                "statusCode": 404,
+                "error": "Not Found",
+                "message": "Pas de données pour le millésime",
+                "data": {
+                  "millesime": "2022",
+                  "millesimesDisponible": [
+                    "2021",
+                    "2020"
+                  ]
+                }
+              }
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

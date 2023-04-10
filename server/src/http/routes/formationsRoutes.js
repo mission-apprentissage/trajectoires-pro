@@ -4,14 +4,14 @@ import Joi from "joi";
 import * as validators from "../utils/validators.js";
 import { arrayOf, validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
-import { addCsvHeaders, addJsonHeaders, sendStats } from "../utils/responseUtils.js";
-import { findAndPaginate } from "../../common/utils/dbUtils.js";
+import { addCsvHeaders, addJsonHeaders, sendStats, sendErrorSvg } from "../utils/responseUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
-import Boom from "boom";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
-import { formationsStats } from "../../common/db/collections/collections.js";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
-import { transformDisplayStat } from "../../common/stats.js";
+import { getLastMillesimesFormations, transformDisplayStat } from "../../common/stats.js";
+
+import FormationsRepository from "../../common/repositories/formations.js";
+import { ErrorFormationNotFound, ErrorNoDataForMillesime } from "../errors.js";
 
 export default () => {
   const router = express.Router();
@@ -33,18 +33,16 @@ export default () => {
         }
       );
 
-      let { find, pagination } = await findAndPaginate(
-        formationsStats(),
+      let { find, pagination } = await FormationsRepository.findAndPaginate(
         {
-          ...(uais.length > 0 ? { uai: { $in: uais } } : {}),
-          ...(regions.length > 0 ? { "region.code": { $in: regions } } : {}),
-          ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
-          ...(code_certifications.length > 0 ? { code_certification: { $in: code_certifications } } : {}),
+          uai: uais,
+          region: regions,
+          millesime: millesimes,
+          code_certification: code_certifications,
         },
         {
           limit: items_par_page,
           page,
-          projection: { _id: 0, _meta: 0 },
         }
       );
 
@@ -71,40 +69,53 @@ export default () => {
         });
       }
 
-      compose(find.stream(), transformDisplayStat(true), extensionTransformer, res);
+      compose(find, transformDisplayStat(true), extensionTransformer, res);
     })
   );
 
   router.get(
     "/api/inserjeunes/formations/:uai-:code_certification.:ext?",
     tryCatch(async (req, res) => {
-      const { uai, code_certification, millesime, direction, theme, ext } = await validate(
+      const { uai, code_certification, millesime, direction, theme, ext, imageOnError } = await validate(
         { ...req.params, ...req.query },
         {
           uai: Joi.string()
             .pattern(/^[0-9]{7}[A-Z]{1}$/)
             .required(),
           code_certification: Joi.string().required(),
-          millesime: Joi.string(),
+          millesime: Joi.string().default(getLastMillesimesFormations()),
           ...validators.svg(),
         }
       );
 
-      const results = await formationsStats()
-        .find(
-          { uai, code_certification, ...(millesime ? { millesime: formatMillesime(millesime) } : {}) },
-          { projection: { _id: 0, _meta: 0 } }
-        )
-        .limit(1)
-        .sort({ millesime: -1 })
-        .toArray();
+      try {
+        const exist = await FormationsRepository.exist({ uai, code_certification });
+        if (!exist) {
+          throw new ErrorFormationNotFound();
+        }
 
-      if (results.length === 0) {
-        throw Boom.notFound("Formation inconnue");
+        const result = await FormationsRepository.find({
+          uai,
+          code_certification,
+          millesime: formatMillesime(millesime),
+        });
+
+        if (!result) {
+          const millesimesAvailable = await FormationsRepository.findMillesime({ uai, code_certification });
+          throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
+        }
+
+        const stats = transformDisplayStat()(result);
+        return sendStats("formation", stats, res, { direction, theme, ext });
+      } catch (err) {
+        if (imageOnError) {
+          if (err instanceof ErrorFormationNotFound || err instanceof ErrorNoDataForMillesime) {
+            return sendErrorSvg(res, { direction, theme, ext });
+          }
+        }
+
+        throw err;
       }
-
-      const stats = transformDisplayStat()(results[0]);
-      return sendStats("formation", stats, res, { direction, theme, ext });
     })
   );
 

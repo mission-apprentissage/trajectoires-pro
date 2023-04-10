@@ -332,7 +332,6 @@ describe("certificationsRoutes", () => {
     it("Vérifie qu'on peut obtenir la certification la plus récente", async () => {
       const { httpClient } = await startServer();
       await insertCertificationsStats({
-        millesime: "2020",
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         filiere: "apprentissage",
@@ -390,6 +389,43 @@ describe("certificationsRoutes", () => {
       });
     });
 
+    it("Ne retourne pas de stats par défaut si il n'y a pas de données pour le millésime le plus récent", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({
+        millesime: "2019",
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        filiere: "apprentissage",
+        nb_annee_term: 100,
+        nb_poursuite_etudes: 1,
+        nb_en_emploi_24_mois: 2,
+        nb_en_emploi_18_mois: 3,
+        nb_en_emploi_12_mois: 4,
+        nb_en_emploi_6_mois: 5,
+        nb_sortant: 6,
+        taux_rupture_contrats: 7,
+        taux_en_formation: 8,
+        taux_en_emploi_24_mois: 9,
+        taux_en_emploi_18_mois: 10,
+        taux_en_emploi_12_mois: 11,
+        taux_en_emploi_6_mois: 12,
+        taux_autres_6_mois: 13,
+        taux_autres_12_mois: 14,
+        taux_autres_18_mois: 15,
+        taux_autres_24_mois: 16,
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/certifications/12345678`);
+
+      assert.strictEqual(response.status, 404);
+      assert.deepStrictEqual(response.data, {
+        error: "Not Found",
+        message: "Pas de données pour le millésime",
+        data: { millesime: "2020", millesimesDisponible: ["2019"] },
+        statusCode: 404,
+      });
+    });
+
     it("Vérifie qu'on peut obtenir une certification pour un millesime", async () => {
       const { httpClient } = await startServer();
       await insertCertificationsStats({ code_certification: "12345678", millesime: "2018" });
@@ -409,7 +445,6 @@ describe("certificationsRoutes", () => {
           code_certification: "12345678",
           code_formation_diplome: "12345678",
           filiere: "apprentissage",
-          millesime: "2020",
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
@@ -423,7 +458,6 @@ describe("certificationsRoutes", () => {
           code_certification: "23830024202",
           code_formation_diplome: "12345678",
           filiere: "pro",
-          millesime: "2020",
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
@@ -516,6 +550,7 @@ describe("certificationsRoutes", () => {
         it("Vérifie qu'on peut obtenir une image SVG", async () => {
           const { httpClient } = await startServer();
           await insertCertificationsStats({
+            millesime: "2020",
             code_certification: "23830024203",
             filiere: "apprentissage",
             taux_en_formation: 5,
@@ -629,6 +664,52 @@ describe("certificationsRoutes", () => {
           );
           expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
         });
+
+        describe("Vérifie qu'on obtient une image en cas d'erreur avec le paramètre imageOnError", () => {
+          it("La formation n'existe pas", async () => {
+            const { httpClient } = await startServer();
+
+            const response = await httpClient.get(
+              "/api/inserjeunes/certifications/23830024203.svg?imageOnError=true&theme=" + theme
+            );
+
+            assert.strictEqual(response.status, 200);
+            assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+            const svgFixture = await fs.promises.readFile(
+              `tests/fixtures/widgets/${theme}/certifications/error.svg`,
+              "utf8"
+            );
+            expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+          });
+
+          it("Pas de données pour le millésime", async () => {
+            const { httpClient } = await startServer();
+
+            await insertCertificationsStats({
+              millesime: "2019",
+              code_certification: "23830024203",
+              filiere: "apprentissage",
+              taux_en_formation: 5,
+              taux_en_emploi_6_mois: 6,
+              taux_autres_6_mois: 7,
+              nb_annee_term: 20,
+            });
+
+            const response = await httpClient.get(
+              "/api/inserjeunes/certifications/23830024203.svg?imageOnError=true&theme=" + theme
+            );
+
+            assert.strictEqual(response.status, 200);
+            assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+            const svgFixture = await fs.promises.readFile(
+              `tests/fixtures/widgets/${theme}/certifications/error.svg`,
+              "utf8"
+            );
+            expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+          });
+        });
       });
     });
 
@@ -669,7 +750,7 @@ describe("certificationsRoutes", () => {
       await dbCollection("certificationsStats").insertOne({
         code_certification: "23830024203",
         code_formation_diplome: "12345678",
-        millesime: "2018",
+        millesime: "2020",
         filiere: "apprentissage",
         diplome: { code: "4", libelle: "BAC" },
       });
@@ -698,7 +779,6 @@ describe("certificationsRoutes", () => {
           code_certification: "12345678",
           code_formation_diplome: "12345678",
           filiere: "apprentissage",
-          millesime: "2020",
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
@@ -711,7 +791,6 @@ describe("certificationsRoutes", () => {
           code_certification: "23830024202",
           code_formation_diplome: "12345678",
           filiere: "pro",
-          millesime: "2020",
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
@@ -791,7 +870,6 @@ describe("certificationsRoutes", () => {
           code_certification: "12345678",
           code_formation_diplome: "12345678",
           filiere: "apprentissage",
-          millesime: "2020",
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
@@ -804,7 +882,6 @@ describe("certificationsRoutes", () => {
           code_certification: "23830024202",
           code_formation_diplome: "12345678",
           filiere: "pro",
-          millesime: "2020",
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
