@@ -1,18 +1,18 @@
 import express from "express";
-import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
+import { mapValues } from "lodash-es";
 import Joi from "joi";
+import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
+import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
 import * as validators from "../utils/validators.js";
 import { arrayOf, validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
-import { findAndPaginate } from "../../common/utils/dbUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
-import { certificationsStats } from "../../common/db/collections/collections.js";
-import { addCsvHeaders, addJsonHeaders, sendFilieresStats, sendStats } from "../utils/responseUtils.js";
-import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
-import Boom from "boom";
+import { addCsvHeaders, addJsonHeaders, sendFilieresStats, sendStats, sendErrorSvg } from "../utils/responseUtils.js";
 import { findCodeFormationDiplome } from "../../common/bcn.js";
-import { getFilieresStats, transformDisplayStat } from "../../common/stats.js";
+import { getLastMillesimes, transformDisplayStat } from "../../common/stats.js";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
+import CertificationsRepository from "../../common/repositories/certifications.js";
+import { ErrorNoDataForMillesime, ErrorCertificationNotFound } from "../errors.js";
 
 export default () => {
   const router = express.Router();
@@ -28,16 +28,11 @@ export default () => {
         }
       );
 
-      let { find, pagination } = await findAndPaginate(
-        certificationsStats(),
-        {
-          ...(millesimes.length > 0 ? { millesime: { $in: millesimes.map(formatMillesime) } } : {}),
-          ...(code_certifications.length > 0 ? { code_certification: { $in: code_certifications } } : {}),
-        },
+      let { find, pagination } = await CertificationsRepository.findAndPaginate(
+        { millesime: millesimes.map(formatMillesime), code_certification: code_certifications },
         {
           limit: items_par_page,
           page,
-          projection: { _id: 0, _meta: 0 },
         }
       );
 
@@ -63,18 +58,18 @@ export default () => {
         });
       }
 
-      return compose(find.stream(), transformDisplayStat(true), extensionTransformer, res);
+      return compose(find, transformDisplayStat(true), extensionTransformer, res);
     })
   );
 
   router.get(
     "/api/inserjeunes/certifications/:codes_certifications.:ext?",
     tryCatch(async (req, res) => {
-      const { codes_certifications, millesime, vue, ...options } = await validate(
+      const { codes_certifications, millesime, vue, imageOnError, ...options } = await validate(
         { ...req.params, ...req.query },
         {
           codes_certifications: arrayOf(Joi.string().required()).default([]).min(1),
-          millesime: Joi.string(),
+          millesime: Joi.string().default(getLastMillesimes()),
           ...validators.vues(),
           ...validators.svg(),
         }
@@ -82,23 +77,40 @@ export default () => {
 
       if (vue === "filieres" || codes_certifications.length > 1) {
         const cfd = await findCodeFormationDiplome(codes_certifications);
-        const filieresStats = await getFilieresStats(certificationsStats(), cfd, millesime);
+        const filieresStats = mapValues(
+          await CertificationsRepository.getFilieresStats({
+            code_formation_diplome: cfd,
+            millesime,
+          }),
+          transformDisplayStat()
+        );
         return sendFilieresStats(filieresStats, res, options);
       }
 
-      const code_certification = codes_certifications[0];
-      const results = await certificationsStats()
-        .find({ code_certification, ...(millesime ? { millesime } : {}) }, { projection: { _id: 0, _meta: 0 } })
-        .limit(1)
-        .sort({ millesime: -1 })
-        .toArray();
+      try {
+        const code_certification = codes_certifications[0];
+        const exist = await CertificationsRepository.exist({ code_certification });
+        if (!exist) {
+          throw new ErrorCertificationNotFound();
+        }
 
-      if (results.length === 0) {
-        throw Boom.notFound("Certification inconnue");
+        const result = await CertificationsRepository.find({ code_certification, millesime });
+        if (!result) {
+          const millesimesAvailable = await CertificationsRepository.findMillesime({ code_certification });
+          throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
+        }
+
+        const stats = transformDisplayStat()(result);
+        return sendStats("certification", stats, res, options);
+      } catch (err) {
+        if (imageOnError) {
+          if (err instanceof ErrorCertificationNotFound || err instanceof ErrorNoDataForMillesime) {
+            return sendErrorSvg(res, options);
+          }
+        }
+
+        throw err;
       }
-
-      const stats = transformDisplayStat()(results[0]);
-      return sendStats("certification", stats, res, options);
     })
   );
 

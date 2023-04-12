@@ -14,6 +14,15 @@ export function addCsvHeaders(res, options = {}) {
   res.setHeader("Content-Type", `text/csv; charset=UTF-8`);
 }
 
+export function sendSvg(res, content) {
+  res.setHeader("content-type", "image/svg+xml");
+  return res.status(200).send(content);
+}
+
+export async function sendErrorSvg(res, options) {
+  return sendSvg(res, await buildWidget("error", {}, options));
+}
+
 export async function sendStats(type, stats, res, options = {}) {
   const { ext, theme, direction } = options;
   const description = buildDescription(stats);
@@ -37,8 +46,7 @@ export async function sendStats(type, stats, res, options = {}) {
       { theme, direction }
     );
 
-    res.setHeader("content-type", "image/svg+xml");
-    return res.status(200).send(widget);
+    return sendSvg(res, widget);
   }
 }
 

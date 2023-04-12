@@ -1,8 +1,8 @@
-import { isNil, mapValues, flow, merge } from "lodash-es";
+import { isNil, mapValues, flow, merge, omit } from "lodash-es";
 import { transformData } from "oleoduc";
-import { $field, $percentage, $sumOf, $removeNullOrZero } from "./utils/mongodbUtils.js";
-import { omitNil } from "./utils/objectUtils.js";
+import { $field, $percentage, $removeNullOrZero } from "./utils/mongodbUtils.js";
 import { percentage } from "./utils/numberUtils.js";
+import config from "../config.js";
 
 export const INSERJEUNES_STATS_NAMES = [
   "nb_annee_term",
@@ -38,11 +38,19 @@ export const TAUX = /^taux_.*$/;
 export const VALEURS = /^nb_.*$/;
 
 export function getMillesimes() {
-  return ["2019", "2020", "2021"];
+  return config.millesimes.default;
 }
 
-export function getFormationMillesimes() {
-  return ["2018_2019", "2019_2020", "2020_2021"];
+export function getLastMillesimes() {
+  return config.millesimes.default[config.millesimes.default.length - 1];
+}
+
+export function getMillesimesFormations() {
+  return config.millesimes.formations;
+}
+
+export function getLastMillesimesFormations() {
+  return config.millesimes.formations[config.millesimes.formations.length - 1];
 }
 
 function divide({ dividend, divisor }) {
@@ -166,62 +174,14 @@ export function buildDescription(stats) {
   };
 }
 
-export async function getFilieresStats(collection, cfd, millesime = null, region = null) {
-  const results = await collection
-    .aggregate([
-      {
-        $match: {
-          code_formation_diplome: cfd,
-          ...(millesime ? { millesime } : {}),
-          ...(region ? { "region.code": region } : {}),
-        },
-      },
-      {
-        $group: {
-          _id: { filiere: "$filiere", millesime: "$millesime" },
-          codes_certifications: { $addToSet: "$code_certification" },
-          code_formation_diplome: { $first: "$code_formation_diplome" },
-          filiere: { $first: "$filiere" },
-          millesime: { $first: "$millesime" },
-          diplome: { $first: "$diplome" },
-          ...(region ? { region: { $first: "$region" } } : {}),
-          ...getStats(VALEURS, (statName) => $sumOf($field(statName))),
-        },
-      },
-      {
-        $addFields: {
-          ...computeCustomStats("aggregate"),
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-        },
-      },
-      {
-        $group: {
-          _id: "$millesime",
-          stats: { $push: "$$ROOT" },
-        },
-      },
-      {
-        $sort: { _id: -1 },
-      },
-    ])
-    .limit(1)
-    .toArray();
-
-  return mapValues(
-    omitNil({
-      pro: results[0]?.stats?.find((s) => s.filiere === "pro"),
-      apprentissage: results[0]?.stats?.find((s) => s.filiere === "apprentissage"),
-    }),
-    transformDisplayStat()
-  );
-}
-
 function transformDisplayStatRules() {
   const rules = [
+    // Filtre les _id et les _meta
+    {
+      cond: (data) => data,
+      transformation: (data) => omit(data, "_id", "_meta"),
+      message: (data) => data,
+    },
     {
       // Remplace les taux par null si le nbr en année terminales < 20
       cond: (data) => data.nb_annee_term < 20,
