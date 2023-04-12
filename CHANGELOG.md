@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.1.0...v1.1.1) (2023-04-12)
+
+
+### Bug Fixes
+
+* renvoi le dernier millesime par defaut ([#190](https://github.com/mission-apprentissage/trajectoires-pro/issues/190)) ([d5a23a4](https://github.com/mission-apprentissage/trajectoires-pro/commit/d5a23a488aa9d4c14a5a0122dd58f70880c1fe7e))
+
 # [1.1.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.0.0...v1.1.0) (2023-04-06)
 
 
