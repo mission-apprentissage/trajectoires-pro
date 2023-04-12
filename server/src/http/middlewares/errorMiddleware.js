@@ -4,6 +4,9 @@ function boomify(rawError) {
   let error;
   if (rawError.isBoom) {
     error = rawError;
+    if (error?.data?.public) {
+      error.output.payload.data = error?.data?.public;
+    }
   } else if (rawError.name === "ValidationError") {
     //This is a joi validation error
     error = Boom.badRequest("Erreur de validation");
