@@ -48,7 +48,7 @@ export default () => {
     "/api/inserjeunes/regionales.:ext?",
     checkApiKey(),
     tryCatch(async (req, res) => {
-      const { millesimes, code_certifications, page, items_par_page, ...rest } = await validate(
+      const { millesimes, code_certifications, regions, page, items_par_page, ...rest } = await validate(
         { ...req.query, ...req.params },
         {
           ...validators.regions(),
@@ -57,7 +57,7 @@ export default () => {
       );
 
       const paginable = await RegionalesRepository.findAndPaginate(
-        { millesime: millesimes, code_certification: code_certifications },
+        { region: regions, millesime: millesimes, code_certification: code_certifications },
         {
           limit: items_par_page,
           page,

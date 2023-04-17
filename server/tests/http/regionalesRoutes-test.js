@@ -118,6 +118,22 @@ describe("regionalesRoutes", () => {
       assert.strictEqual(response.data.regionales[0].filiere, "pro");
     });
 
+    it("Vérifie qu'on peut obtenir les stats régionales pour une région", async () => {
+      const { httpClient } = await startServer();
+      await insertRegionalesStats({ millesime: "2018" });
+      await insertRegionalesStats({ millesime: "2020", region: { code: "24", nom: "Centre-Val de Loire" } });
+
+      const response = await httpClient.get(`/api/inserjeunes/regionales?regions=11`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.pagination.total, 1);
+      assert.strictEqual(response.data.regionales[0].millesime, "2018");
+    });
+
     it("Vérifie qu'on peut obtenir les stats régionales pour un millesime", async () => {
       const { httpClient } = await startServer();
       await insertRegionalesStats({ millesime: "2018" });
@@ -408,6 +424,77 @@ describe("regionalesRoutes", () => {
         },
       });
     });
+
+    it("Vérifie qu'on peut obtenir les stats pour une région en utilisant un code postal", async () => {
+      const { httpClient } = await startServer();
+      await insertRegionalesStats({
+        region: { code: "11", nom: "Île-de-France" },
+        millesime: "2020",
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        filiere: "apprentissage",
+        nb_annee_term: 100,
+        nb_poursuite_etudes: 1,
+        nb_en_emploi_24_mois: 2,
+        nb_en_emploi_18_mois: 3,
+        nb_en_emploi_12_mois: 4,
+        nb_en_emploi_6_mois: 5,
+        nb_sortant: 6,
+        taux_rupture_contrats: 7,
+        taux_en_formation: 8,
+        taux_en_emploi_24_mois: 9,
+        taux_en_emploi_18_mois: 10,
+        taux_en_emploi_12_mois: 11,
+        taux_en_emploi_6_mois: 12,
+        taux_autres_6_mois: 13,
+        taux_autres_12_mois: 14,
+        taux_autres_18_mois: 15,
+        taux_autres_24_mois: 16,
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/regionales/75000`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.deepStrictEqual(response.data, {
+        regionales: [
+          {
+            region: { code: "11", nom: "Île-de-France" },
+            millesime: "2020",
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            diplome: { code: "4", libelle: "BAC" },
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 1,
+            nb_en_emploi_24_mois: 2,
+            nb_en_emploi_18_mois: 3,
+            nb_en_emploi_12_mois: 4,
+            nb_en_emploi_6_mois: 5,
+            nb_sortant: 6,
+            taux_rupture_contrats: 7,
+            taux_en_formation: 8,
+            taux_en_emploi_24_mois: 9,
+            taux_en_emploi_18_mois: 10,
+            taux_en_emploi_12_mois: 11,
+            taux_en_emploi_6_mois: 12,
+            taux_autres_6_mois: 13,
+            taux_autres_12_mois: 14,
+            taux_autres_18_mois: 15,
+            taux_autres_24_mois: 16,
+          },
+        ],
+        pagination: {
+          nombre_de_page: 1,
+          page: 1,
+          items_par_page: 10,
+          total: 1,
+        },
+      });
+    });
   });
 
   describe("Obtention", () => {
@@ -498,6 +585,17 @@ describe("regionalesRoutes", () => {
       await insertRegionalesStats({ code_certification: "12345678", millesime: "2019" });
 
       const response = await httpClient.get(`/api/inserjeunes/regionales/11/certifications/12345678?millesime=2018`);
+
+      assert.strictEqual(response.status, 200);
+      assert.deepStrictEqual(response.data.millesime, "2018");
+    });
+
+    it("Vérifie qu'on peut obtenir une certification pour un millesime et un code postal", async () => {
+      const { httpClient } = await startServer();
+      await insertRegionalesStats({ code_certification: "12345678", millesime: "2018" });
+      await insertRegionalesStats({ code_certification: "12345678", millesime: "2019" });
+
+      const response = await httpClient.get(`/api/inserjeunes/regionales/75000/certifications/12345678?millesime=2018`);
 
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data.millesime, "2018");
@@ -617,6 +715,82 @@ describe("regionalesRoutes", () => {
         error: "Not Found",
         message: "Pas de données disponibles",
         statusCode: 404,
+      });
+    });
+
+    it("Vérifie qu'on retourne une erreur 400 si la région n'est pas valide", async () => {
+      const { httpClient } = await startServer();
+      await insertRegionalesStats({ code_certification: "12345678", millesime: "2018" });
+      await insertRegionalesStats({ code_certification: "12345678", millesime: "2019" });
+
+      const response = await httpClient.get(`/api/inserjeunes/regionales/12/certifications/12345678?millesime=2018`);
+
+      assert.strictEqual(response.status, 400);
+      assert.deepStrictEqual(response.data, {
+        statusCode: 400,
+        error: "Bad Request",
+        message: "Erreur de validation",
+        details: [
+          {
+            message:
+              '"region" must be one of [00, 01, 02, 03, 04, 06, 11, 24, 27, 28, 32, 44, 52, 53, 75, 76, 84, 93, 94]',
+            path: ["region"],
+            type: "any.only",
+            context: {
+              valids: [
+                "00",
+                "01",
+                "02",
+                "03",
+                "04",
+                "06",
+                "11",
+                "24",
+                "27",
+                "28",
+                "32",
+                "44",
+                "52",
+                "53",
+                "75",
+                "76",
+                "84",
+                "93",
+                "94",
+              ],
+              label: "region",
+              value: "12",
+              key: "region",
+            },
+          },
+        ],
+      });
+    });
+
+    it("Vérifie qu'on retourne une erreur 400 si le code postal n'est pas valide", async () => {
+      const { httpClient } = await startServer();
+      await insertRegionalesStats({ code_certification: "12345678", millesime: "2018" });
+      await insertRegionalesStats({ code_certification: "12345678", millesime: "2019" });
+
+      const response = await httpClient.get(`/api/inserjeunes/regionales/99000/certifications/12345678?millesime=2018`);
+
+      assert.strictEqual(response.status, 400);
+      assert.deepStrictEqual(response.data, {
+        statusCode: 400,
+        error: "Bad Request",
+        message: "Erreur de validation",
+        details: [
+          {
+            message: '"region" must be a valid postal code or region code',
+            path: ["region"],
+            type: "postal_code.invalid",
+            context: {
+              label: "region",
+              value: "99000",
+              key: "region",
+            },
+          },
+        ],
       });
     });
   });
