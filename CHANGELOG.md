@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.1.2...v1.1.3) (2023-04-17)
+
+
+### Bug Fixes
+
+* erreur 500 dans la vue filière lorsqu'une filière n'a pas de données ([dd2dcf4](https://github.com/mission-apprentissage/trajectoires-pro/commit/dd2dcf4116c9886072d292df7fc917b9beed3598))
+
 ## [1.1.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.1.1...v1.1.2) (2023-04-17)
 
 
