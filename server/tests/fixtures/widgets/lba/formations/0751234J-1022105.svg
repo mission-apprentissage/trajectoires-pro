@@ -119,8 +119,7 @@
             <tspan x="154" y="90">sont en emploi au bout de 6 mois</tspan>
           </text>
           <text class="details">
-            <tspan x="154" y="115">(Quelque soit le type d’emploi</tspan>
-            <tspan x="154" y="135">et son secteur)</tspan>
+            <tspan x="154" y="115">(Tout type d&#39;emploi salarié du privé)</tspan>
           </text>
           
         </svg>

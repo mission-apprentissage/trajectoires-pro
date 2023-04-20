@@ -1,15 +1,34 @@
 import Joi from "joi";
-import { getRegions } from "../../common/regions.js";
+import { getRegions, findRegionByCodePostal } from "../../common/regions.js";
 import { formatArrayParameters } from "./formatters.js";
 
-const customJoi = Joi.extend((joi) => ({
-  type: "arrayOf",
-  base: joi.array(),
-  // eslint-disable-next-line no-unused-vars
-  coerce(value, helpers) {
-    return { value: formatArrayParameters(value) };
-  },
-}));
+const customJoi = Joi.extend(
+  (joi) => ({
+    type: "arrayOf",
+    base: joi.array(),
+    // eslint-disable-next-line no-unused-vars
+    coerce(value, helpers) {
+      return { value: formatArrayParameters(value) };
+    },
+  }),
+  (joi) => ({
+    type: "postalCodeToRegion",
+    base: joi.string(),
+    messages: {
+      "postal_code.invalid": "{{#label}} must be a valid postal code or region code",
+    },
+    // eslint-disable-next-line no-unused-vars
+    coerce(value, helpers) {
+      if (value.length !== 5) {
+        return { value };
+      }
+
+      const region = findRegionByCodePostal(value)?.code;
+
+      return { value: region, errors: !region ? helpers.error("postal_code.invalid") : null };
+    },
+  })
+);
 
 export function arrayOf(itemSchema = Joi.string()) {
   return customJoi.arrayOf().items(itemSchema).single();
@@ -17,13 +36,13 @@ export function arrayOf(itemSchema = Joi.string()) {
 
 export function regions() {
   return {
-    regions: arrayOf(Joi.string().valid(...getRegions().map((r) => r.code))).default([]),
+    regions: arrayOf(customJoi.postalCodeToRegion().valid(...getRegions().map((r) => r.code))).default([]),
   };
 }
 
 export function region() {
   return {
-    region: Joi.string().valid(...getRegions().map((r) => r.code)),
+    region: customJoi.postalCodeToRegion().valid(...getRegions().map((r) => r.code)),
   };
 }
 
