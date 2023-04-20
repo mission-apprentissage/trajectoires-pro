@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.1.3...v1.2.0) (2023-04-20)
+
+
+### Features
+
+* route régionale par code postal ([#193](https://github.com/mission-apprentissage/trajectoires-pro/issues/193)) ([5a27eb6](https://github.com/mission-apprentissage/trajectoires-pro/commit/5a27eb6beeec083acd5b630be63b6bbf92c0d4bc))
+
 ## [1.1.3](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.1.2...v1.1.3) (2023-04-17)
 
 
