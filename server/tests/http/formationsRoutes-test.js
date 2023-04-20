@@ -689,23 +689,71 @@ describe("formationsRoutes", () => {
       expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
     });
 
-    it("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {
-      const { httpClient } = await startServer();
+    describe("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {
+      it("Retourne une image d'erreur par défaut", async () => {
+        const { httpClient } = await startServer();
+        const response = await httpClient.get("/api/inserjeunes/formations/0751234P-1022101.svg");
 
-      const response = await httpClient.get("/api/inserjeunes/formations/0751234P-1022101.svg");
+        const svgFixture = await fs.promises.readFile(`tests/fixtures/widgets/dsfr/formations/error.svg`, "utf8");
 
-      assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data.message, "Formation inconnue");
+        assert.strictEqual(response.status, 200);
+        assert.strictEqual(response.data, svgFixture);
+      });
+
+      it("Retourne une image vide quand imageOnError est empty", async () => {
+        const { httpClient } = await startServer();
+
+        const response = await httpClient.get("/api/inserjeunes/formations/0751234P-1022101.svg?imageOnError=empty");
+
+        const svgFixture = await fs.promises.readFile(`tests/fixtures/widgets/dsfr/formations/error_empty.svg`, "utf8");
+
+        assert.strictEqual(response.status, 200);
+        assert.strictEqual(response.data, svgFixture);
+      });
+
+      it("Quand imageOnError est false", async () => {
+        const { httpClient } = await startServer();
+
+        const response = await httpClient.get("/api/inserjeunes/formations/0751234P-1022101.svg?imageOnError=false");
+
+        assert.strictEqual(response.status, 404);
+        assert.strictEqual(response.data.message, "Formation inconnue");
+      });
     });
 
-    it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
-      const { httpClient } = await startServer();
-      await formationsStats().insertOne(newFormationStats({ uai: "0751234J", code_certification: "1022105" }));
+    describe("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
+      it("Retourne une image d'erreur par défaut", async () => {
+        const { httpClient } = await startServer();
+        await formationsStats().insertOne(newFormationStats({ uai: "0751234J", code_certification: "1022105" }));
 
-      const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
+        const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
 
-      assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data.message, "Données non disponibles");
+        const svgFixture = await fs.promises.readFile(`tests/fixtures/widgets/dsfr/formations/error.svg`, "utf8");
+
+        assert.strictEqual(response.status, 200);
+        assert.strictEqual(response.data, svgFixture);
+      });
+
+      it("Retourne une image vide quand imageOnError est empty", async () => {
+        const { httpClient } = await startServer();
+        await formationsStats().insertOne(newFormationStats({ uai: "0751234J", code_certification: "1022105" }));
+
+        const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?imageOnError=empty");
+        const svgFixture = await fs.promises.readFile(`tests/fixtures/widgets/dsfr/formations/error_empty.svg`, "utf8");
+
+        assert.strictEqual(response.status, 200);
+        assert.strictEqual(response.data, svgFixture);
+      });
+
+      it("Quand imageOnError est false", async () => {
+        const { httpClient } = await startServer();
+        await formationsStats().insertOne(newFormationStats({ uai: "0751234J", code_certification: "1022105" }));
+
+        const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?imageOnError=false");
+
+        assert.strictEqual(response.status, 404);
+        assert.strictEqual(response.data.message, "Données non disponibles");
+      });
     });
 
     it("Vérifie qu'on obtient une erreur quand le format de l'UAI est invalide", async () => {

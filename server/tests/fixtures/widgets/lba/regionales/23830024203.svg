@@ -1,4 +1,5 @@
 
+
 <svg width="328" height="620" viewBox="0 0 328 620" fill="none" xmlns="http://www.w3.org/2000/svg">
   
     <title>Certification 23830024203</title>
@@ -7,8 +8,7 @@
     <desc>Données InserJeunes pour la certification 23830024203 (BAC filière apprentissage) pour le millesime 2018_2019</desc>
 
 
-  
-<defs>
+  <defs>
   <style type="text/css">
     @font-face {
       font-family: "Marianne";
@@ -80,18 +80,20 @@
     }
   </style>
 </defs>
-  
+
   <g class="region">
     <svg x="0" y="10">
       <text>
+        
         <tspan x="0" y="15"> Les chiffres pour la région</tspan>
         <tspan x="0" y="35"> Île-de-France</tspan>
+        
       </text>
     </svg>
   </g>
-  
+
   <g class="blocks">
-    <svg y="40" >
+    <svg y="40">
       <g class="block">
         <svg x="0" y="10" class="block">
           <rect width="308" height="170" />
@@ -119,7 +121,7 @@
             <tspan x="154" y="90">sont en emploi au bout de 6 mois</tspan>
           </text>
           <text class="details">
-            <tspan x="154" y="115">(Tout type d&#39;emploi salarié du privé)</tspan>
+            <tspan x="154" y="115">(tout type d&#39;emploi salarié du privé)</tspan>
           </text>
           
         </svg>

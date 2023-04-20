@@ -124,12 +124,12 @@
       <rect x="0" y="62" class="border" width="319" height="371" />
       <svg y="110" x="20">
         <g class="blocks">
-          <svg y="30" >
+          <svg y="30">
             <g class="block">
-              
+
               <svg x="0" y="30" class="block">
                 <rect width="60" height="35" />
-
+                
                 <text class="number">
                   <tspan x="30" y="26">8%</tspan>
                 </text>
@@ -138,16 +138,17 @@
                   <tspan x="75" y="32">fin de la formation</tspan>
                 </text>
                 <text class="details">
-                  <tspan x="75" y="46">(tout type d&#39;emploi salarié du privé) </tspan>
+                  <tspan x="75" y="46">(tout type d&#39;emploi salarié du privé)</tspan>
                 </text>
+
+                
               </svg>
               
-              
 
-              
+
               <svg x="0" y="105" class="block">
                 <rect width="60" height="35" />
-
+                
                 <text class="number">
                   <tspan x="30" y="26">5%</tspan>
                 </text>
@@ -158,13 +159,15 @@
                   <tspan x="75" y="30">(Formation supérieure,redoublants,</tspan>
                   <tspan x="75" y="44">changement de filière)</tspan>
                 </text>
+                
               </svg>
               
-              
 
-              
+
+
               <svg x="0" y="180" class="block">
                 <rect width="60" height="35" />
+                
                 <text class="number">
                   <tspan x="30" y="26">5%</tspan>
                 </text>
@@ -175,8 +178,8 @@
                   <tspan x="75" y="30">(recherche d’emploi, service civique,</tspan>
                   <tspan x="75" y="44">à l’étranger, indépendant, etc.)</tspan>
                 </text>
+                
               </svg>
-              
               
             </g>
 

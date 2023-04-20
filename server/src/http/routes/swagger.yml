@@ -412,12 +412,17 @@ components:
 
     imageOnError:
       name: imageOnError
-      description: "Retourne une image en cas d'erreur 404"
+      description: |
+        Retourne une image en cas d'erreur 404
+        * true : retourne une image
+        * false : retourne le message d'erreur
+        * empty : retourne une image de type pixel vide
       in: query
       required: false
       schema:
-        type: boolean
-        default: ""
+        type: string
+        enum: [ "true", "false", "empty"]
+        default: "true"
 
     # Path parameters
     uai:

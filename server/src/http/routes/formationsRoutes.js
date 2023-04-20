@@ -4,7 +4,7 @@ import Joi from "joi";
 import * as validators from "../utils/validators.js";
 import { arrayOf, validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
-import { addCsvHeaders, addJsonHeaders, sendStats, sendErrorSvg } from "../utils/responseUtils.js";
+import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "../utils/responseUtils.js";
 import { formatMillesime } from "../utils/formatters.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
@@ -76,7 +76,7 @@ export default () => {
   router.get(
     "/api/inserjeunes/formations/:uai-:code_certification.:ext?",
     tryCatch(async (req, res) => {
-      const { uai, code_certification, millesime, direction, theme, ext, imageOnError } = await validate(
+      const { uai, code_certification, millesime, ...options } = await validate(
         { ...req.params, ...req.query },
         {
           uai: Joi.string()
@@ -88,34 +88,31 @@ export default () => {
         }
       );
 
-      try {
-        const exist = await FormationsRepository.exist({ uai, code_certification });
-        if (!exist) {
-          throw new ErrorFormationNotFound();
-        }
-
-        const result = await FormationsRepository.find({
-          uai,
-          code_certification,
-          millesime: formatMillesime(millesime),
-        });
-
-        if (!result) {
-          const millesimesAvailable = await FormationsRepository.findMillesime({ uai, code_certification });
-          throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
-        }
-
-        const stats = transformDisplayStat()(result);
-        return sendStats("formation", stats, res, { direction, theme, ext });
-      } catch (err) {
-        if (imageOnError) {
-          if (err instanceof ErrorFormationNotFound || err instanceof ErrorNoDataForMillesime) {
-            return sendErrorSvg(res, { direction, theme, ext });
+      return sendImageOnError(
+        async () => {
+          const exist = await FormationsRepository.exist({ uai, code_certification });
+          if (!exist) {
+            throw new ErrorFormationNotFound();
           }
-        }
 
-        throw err;
-      }
+          const result = await FormationsRepository.find({
+            uai,
+            code_certification,
+            millesime: formatMillesime(millesime),
+          });
+
+          if (!result) {
+            const millesimesAvailable = await FormationsRepository.findMillesime({ uai, code_certification });
+            throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
+          }
+
+          const stats = transformDisplayStat()(result);
+          return sendStats("formation", stats, res, options);
+        },
+        res,
+        { type: "formations" },
+        options
+      );
     })
   );
 

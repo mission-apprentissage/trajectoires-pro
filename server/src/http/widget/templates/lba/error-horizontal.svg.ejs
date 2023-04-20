@@ -1,0 +1,38 @@
+<%- await include('variables'); %>
+<% height=289 %>
+<svg version="1.1" width="882" height="<%= height %>" viewBox="0 0 882 <%= height %>" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <%- await include('../common/description'); %>
+  <%- await include('common'); %>
+
+  <g class="region">
+    <svg x="0" y="10">
+      <text>
+        <% if (type === "regionales") { %>
+        <tspan x="0" y="15"><%= regionDesc[0] %> <%= regionDesc[1] %></tspan>
+        <% } else if (type === "formations") { %>
+        <tspan x="0" y="15"><%= detailVueEtablissement %></tspan>
+        <% } else if (type === "certifications") { %>
+        <tspan x="0" y="15"><%= detailVueNationale %></tspan>
+        <% } %>
+      </text>
+    </svg>
+  </g>
+  <g class="blocks">
+    <svg y="40">
+      <g class="block">
+        <svg x="0" y="10" class="block">
+          <rect width="882" height="50" />
+          <text class="description">
+            <tspan x="441" y="30"><%= unavailable %></tspan>
+          </text>
+        </svg>
+      </g>
+
+      <text class="about">
+        <tspan x="0" y="90">
+          <%= about %>
+        </tspan>
+      </text>
+    </svg>
+  </g>
+</svg>
