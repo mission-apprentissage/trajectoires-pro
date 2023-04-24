@@ -70,6 +70,21 @@ services:
     networks:
       - trajectoires_pro_network
 
+  entretien:
+    image: entretien
+    container_name: entretien
+    build:
+      context: entretien
+    mem_limit: 1g
+    restart: unless-stopped
+    networks:
+      - trajectoires_pro_network
+    depends_on:
+      - mongodb
+    environment:
+      - TRAJECTOIRES_PRO_MONGODB_URI=mongodb://entretien:27017/entretien?retryWrites=true&w=majority
+      - TRAJECTOIRES_PRO_LOG_DESTINATIONS=stdout,mongodb
+
 networks:
   trajectoires_pro_network:
     name: trajectoires_pro_network

@@ -1,0 +1,384 @@
+html, body {
+  background: #172a3a;
+  margin: 0;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Oswald', sans-serif;
+}
+main {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+#tabs {
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: flex-end;
+}
+#tabs > ul {
+  list-style: none;
+  padding: 0;
+  margin: 46px 0 0;
+}
+#tabs > ul > li {
+  background: rgb(15, 32, 45);
+  padding: 10px;
+  cursor: pointer;
+  margin: 0 10px 0 0;
+  display: inline-block;
+}
+#tabs span.add {
+  width: 50px;
+  text-align: center;
+  font-size: 25px;
+  font-family: verdana, sans-serif;
+  cursor: pointer;
+  line-height: 44px;
+  background: rgb(15, 32, 45);
+}
+#tabs > ul > li.active, #tabs > ul > li:hover, #tabs span.add:hover {
+  background: rgb(9, 20, 28);
+}
+#tabs span.close {
+  font-family: verdana, sans-serif;
+  margin-left: 10px;
+}
+#tabs span.close:hover {
+  color: #c00;
+}
+
+#tab-container {
+  display: flex;
+  flex: 1;
+}
+section.tab {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+h1 { text-indent: 2rem; }
+
+/* Disable chrome autofill input field coloring */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px rgb(15, 32, 45) inset !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+input, select {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  background: rgb(15, 32, 45);
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(9, 20, 28);
+  border-image: initial;
+  padding: 6px 12px;
+}
+form {
+  background: rgb(9, 20, 28);
+  padding: 2rem;
+  display: flex;
+}
+form > * {
+  flex: 1;
+  display: flex;
+}
+form input, form select {
+  flex: 1;
+  margin: 0 20px;
+}
+
+.work-area {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+.work-area > section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1vw;
+  background: rgb(15, 32, 45);
+  min-width: 48vw;
+  max-width: 48vw;
+}
+
+/* Left side */
+.left > section {
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+}
+textarea {
+  flex: 1;
+  padding: 1rem;
+  background: rgb(23, 43, 58);
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 16px;
+  border: none;
+}
+textarea.hideText {
+  text-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+  text-fill-color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.textarea-highlight {
+  position: absolute;
+  height: 96%; /* TODO: Probably problematic at various screen sizes */
+  pointer-events: none;
+  background: none;
+  white-space: pre-wrap; /* behave like a textarea */
+}
+
+.execute {
+  position: absolute;
+  left: 50%;
+  margin-left: -40px;
+  border-radius: 50px;
+  height: 70px;
+  width: 70px;
+  margin-top: 10rem;
+  background: rgb(9, 20, 28);
+  border: 5px solid rgb(15, 32, 45);
+  font-size: 40px;
+  cursor: pointer;
+}
+.execute > .play {
+  margin-left: 20px;
+  position: relative;
+  top: 2px;
+}
+.loader {
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spin 1s ease-in-out infinite;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+
+@keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
+}
+
+/* Right side */
+.pagination {
+  display: flex;
+}
+output {
+  margin-right: 1vw;
+  margin-bottom: 10px;
+  flex: 1;
+  max-width: 14vw;
+}
+.pagination > input::before {
+  content: attr(min);
+  margin: 0 5px;
+  display: inline-block;
+  line-height: 20px;
+}
+.pagination > input {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  flex: 1;
+  margin-bottom: 10px;
+}
+.pagination > input::after {
+  content: attr(max);
+  display: inline-block;
+  margin: 0 5px;
+  line-height: 20px;
+}
+input[type=range].slider {
+  -webkit-appearance: none;
+}
+input[type=range].slider:focus {
+  outline: none;
+}
+input[type=range].slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 25.6px;
+  cursor: pointer;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+  background: #172b3a;
+  border-radius: 0px;
+  border: 0px solid #010101;
+}
+input[type=range].slider::-webkit-slider-thumb {
+  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
+  border: 0px solid #ff1e00;
+  height: 27px;
+  width: 18px;
+  border-radius: 0px;
+  background: rgba(152, 195, 121, 0.93);
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -0.7px;
+}
+input[type=range].slider:focus::-webkit-slider-runnable-track {
+  background: #1e394c;
+}
+input[type=range].slider::-moz-range-track {
+  width: 100%;
+  height: 25.6px;
+  cursor: pointer;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+  background: #172b3a;
+  border-radius: 0px;
+  border: 0px solid #010101;
+}
+input[type=range].slider::-moz-range-thumb {
+  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
+  border: 0px solid #ff1e00;
+  height: 27px;
+  width: 18px;
+  border-radius: 0px;
+  background: rgba(152, 195, 121, 0.93);
+  cursor: pointer;
+}
+input[type=range].slider::-ms-track {
+  width: 100%;
+  height: 25.6px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range].slider::-ms-fill-lower {
+  background: #101d28;
+  border: 0px solid #010101;
+  border-radius: 0px;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+}
+input[type=range].slider::-ms-fill-upper {
+  background: #172b3a;
+  border: 0px solid #010101;
+  border-radius: 0px;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+}
+input[type=range].slider::-ms-thumb {
+  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
+  border: 0px solid #ff1e00;
+  height: 27px;
+  width: 18px;
+  border-radius: 0px;
+  background: rgba(152, 195, 121, 0.93);
+  cursor: pointer;
+  height: 25.6px;
+}
+input[type=range].slider:focus::-ms-fill-lower {
+  background: #172b3a;
+}
+input[type=range].slider:focus::-ms-fill-upper {
+  background: #1e394c;
+}
+
+.view-settings {
+  position: absolute;
+  top: 25px;
+  right: 1vw;
+}
+.view-settings label:first-child {
+  border-radius: 5px 0 0 5px;
+  margin-right: 1px;
+}
+.view-settings label {
+  padding: 10px;
+  border-radius: 0 5px 5px 0;
+  background: rgb(9, 20, 28);
+  cursor: pointer;
+}
+.view-settings [name="view-settings"] {
+  -webkit-appearance: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.view-settings [type="number"] {
+  margin-left: 10px;
+  padding: 6px 0 6px 6px;
+  text-align: right;
+}
+
+pre {
+  padding: 1rem;
+  margin: 0;
+  height: 100%;
+  font-family: 'Ubuntu Mono', monospace;
+  background: rgb(23, 43, 58);
+  overflow: auto;
+}
+.string { color: #98c379; }
+.number { color: #c678dd; }
+.boolean, .null { color: #56b6c2; }
+.key { color: #d19a66; }
+
+.hide { display: none !important; }
+
+.error-circle {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  background: #990000;
+  border-radius: 50%;
+  border: 2px solid white;
+  color: white;
+  font-size: 15px;
+  font-family: verdana;
+  text-align: center;
+  display: inline-block;
+  margin: 10px;
+}
+
+.additional-options {
+  background: rgb(9, 20, 28);
+  position: relative;
+}
+.additional-options > ul.tabs {
+  list-style: none;
+  padding: 0 1vw;
+}
+.additional-options > ul.tabs > li {
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 1vw;
+}
+.additional-options > section {
+  height: 0;
+  transition: height .15s ease-in-out;
+  will-change: height, margin;
+  display: flex;
+}
+.additional-options > section.active {
+  height: 50vh;
+  margin: 1vh 1vw;
+}
+.additional-options section:not(.active) > * {
+  height: 0;
+  padding: 0;
+}
+.additional-options .active pre {
+  height: auto;
+}
+.additional-options .view-eval pre {
+  width: 100%;
+}
