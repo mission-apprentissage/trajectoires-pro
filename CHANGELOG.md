@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.3.0...v1.3.1) (2023-06-07)
+
+
+### Bug Fixes
+
+* correction des tests du widgets ([3455ca8](https://github.com/mission-apprentissage/trajectoires-pro/commit/3455ca8445ae6100fd8ba1f10c29d858a0cfb2f6))
+
 # [1.3.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.2.0...v1.3.0) (2023-06-07)
 
 
