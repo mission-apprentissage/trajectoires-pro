@@ -690,14 +690,12 @@ describe("formationsRoutes", () => {
     });
 
     describe("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {
-      it("Retourne une image d'erreur par défaut", async () => {
+      it("Retourne une erreur par défaut", async () => {
         const { httpClient } = await startServer();
         const response = await httpClient.get("/api/inserjeunes/formations/0751234P-1022101.svg");
 
-        const svgFixture = await fs.promises.readFile(`tests/fixtures/widgets/dsfr/formations/error.svg`, "utf8");
-
-        assert.strictEqual(response.status, 200);
-        assert.strictEqual(response.data, svgFixture);
+        assert.strictEqual(response.status, 404);
+        assert.strictEqual(response.data.message, "Formation inconnue");
       });
 
       it("Retourne une image vide quand imageOnError est empty", async () => {
@@ -722,16 +720,14 @@ describe("formationsRoutes", () => {
     });
 
     describe("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
-      it("Retourne une image d'erreur par défaut", async () => {
+      it("Retourne une erreur par défaut", async () => {
         const { httpClient } = await startServer();
         await formationsStats().insertOne(newFormationStats({ uai: "0751234J", code_certification: "1022105" }));
 
         const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
 
-        const svgFixture = await fs.promises.readFile(`tests/fixtures/widgets/dsfr/formations/error.svg`, "utf8");
-
-        assert.strictEqual(response.status, 200);
-        assert.strictEqual(response.data, svgFixture);
+        assert.strictEqual(response.status, 404);
+        assert.strictEqual(response.data.message, "Données non disponibles");
       });
 
       it("Retourne une image vide quand imageOnError est empty", async () => {
