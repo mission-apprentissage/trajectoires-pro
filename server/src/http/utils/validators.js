@@ -64,7 +64,7 @@ export function svg() {
     direction: Joi.string().valid("horizontal", "vertical"),
     theme: Joi.string().valid("dsfr", "lba"),
     ext: Joi.string().valid("svg"),
-    imageOnError: Joi.string().empty(["", null]).valid("true", "false", "empty").default("true"),
+    imageOnError: Joi.string().empty(["", null]).valid("true", "false", "empty").default("false"),
   };
 }
 export function vues() {
