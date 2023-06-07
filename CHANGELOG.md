@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.2.0...v1.3.0) (2023-06-07)
+
+
+### Features
+
+* ajout d'un widget d'erreur ([#194](https://github.com/mission-apprentissage/trajectoires-pro/issues/194)) ([1822d47](https://github.com/mission-apprentissage/trajectoires-pro/commit/1822d47d3958810af42328713c32be9365a55314))
+
 # [1.2.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.1.3...v1.2.0) (2023-04-20)
 
 

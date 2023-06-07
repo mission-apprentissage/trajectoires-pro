@@ -1,0 +1,61 @@
+<%- await include('variables'); %>
+<%_
+deltaHeight=55
+height=165 + 1 * deltaHeight
+currentHeight = 10
+-%>
+<svg version="1.1" width="720" height="<%= height %>" viewBox="0 0 720 <%= height %>" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
+  <%- await include('../common/description'); %>
+  <%- await include('common'); %>
+
+  <g class="blockTitle">
+
+
+    <g class="content">
+      <rect x="0" y="62" class="border" width="699" height="<%= height - 64 %>" />
+      <svg y="80" x="20">
+        <g class="blocks">
+          <svg y="30">
+            <g class="block">
+
+              <svg x="0" y="<%= currentHeight %>" class="block">
+                <text class="description">
+                  <tspan x="5" y="14"><%= unavailable.substr(0, 72) %></tspan>
+                </text>
+                <text class="description">
+                  <tspan x="5" y="30"><%= unavailable.substr(73) %></tspan>
+                </text>
+              </svg>
+              <% currentHeight = currentHeight + deltaHeight %>
+            </g>
+
+            <text class="about">
+              <tspan x="0" y="<%= currentHeight + 14 %>">
+                <%= about_short[0] %>
+              </tspan>
+              <tspan x="0" y="<%= currentHeight + 30 %>">
+                <%= about_short[1] %>
+              </tspan>
+            </text>
+          </svg>
+        </g>
+      </svg>
+    </g>
+
+    <g class=" mainTitle">
+      <svg>
+        <rect width="700" height="93" />
+        <text>
+          <tspan x="30" y="40"><%= title.join(' ') %></tspan>
+          <% if (type === "regionales") { %>
+          <tspan x="30" y="70" class="region"><%= regionDesc[0] %> <%= regionDesc[1] %></tspan>
+          <% } else if (type === "formations") { %>
+          <tspan x="30" y="70" class="region"><%= detailVueEtablissement %></tspan>
+          <% } else if (type === "certifications") { %>
+          <tspan x="30" y="70" class="region"><%= detailVueNationale %></tspan>
+          <% } %>
+        </text>
+      </svg>
+    </g>
+  </g>
+</svg>

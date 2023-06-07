@@ -21,8 +21,12 @@ export const templates = {
       horizontal: path.join(__dirname, `./dsfr/cfd-horizontal.svg.ejs`),
     },
     error: {
-      vertical: path.join(__dirname, `./dsfr/error.svg.ejs`),
-      horizontal: path.join(__dirname, `./dsfr/error.svg.ejs`),
+      vertical: path.join(__dirname, `./dsfr/error-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `./dsfr/error-horizontal.svg.ejs`),
+    },
+    errorEmpty: {
+      vertical: path.join(__dirname, `./dsfr/error-empty.svg.ejs`),
+      horizontal: path.join(__dirname, `./dsfr/error-empty.svg.ejs`),
     },
   },
   lba: {
@@ -39,8 +43,12 @@ export const templates = {
       horizontal: path.join(__dirname, `./lba/cfd-horizontal.svg.ejs`),
     },
     error: {
-      vertical: path.join(__dirname, `./lba/error.svg.ejs`),
-      horizontal: path.join(__dirname, `./lba/error.svg.ejs`),
+      vertical: path.join(__dirname, `./lba/error-vertical.svg.ejs`),
+      horizontal: path.join(__dirname, `./lba/error-horizontal.svg.ejs`),
+    },
+    errorEmpty: {
+      vertical: path.join(__dirname, `./lba/error-empty.svg.ejs`),
+      horizontal: path.join(__dirname, `./lba/error-empty.svg.ejs`),
     },
   },
 };

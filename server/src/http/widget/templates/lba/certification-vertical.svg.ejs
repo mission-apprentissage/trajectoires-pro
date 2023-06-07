@@ -3,18 +3,22 @@
 <svg width="328" height="<%= height %>" viewBox="0 0 328 <%= height %>" fill="none" xmlns="http://www.w3.org/2000/svg">
   <%- await include('../common/description'); %>
   <%- await include('common'); %>
-  <% if (region) { %>
+
   <g class="region">
     <svg x="0" y="10">
       <text>
+        <% if (region) { %>
         <tspan x="0" y="15"> <%= regionDesc[0] %></tspan>
         <tspan x="0" y="35"> <%= regionDesc[1] %></tspan>
+        <% } else { %>
+        <tspan x="0" y="15"> <%= detailVueNationale %></tspan>
+        <% } %>
       </text>
     </svg>
   </g>
-  <% } %>
+
   <g class="blocks">
-    <svg <% if (region) { %>y="40" <% } %>>
+    <svg y="<%= region ? 40 : 20 %>">
       <g class="block">
         <svg x="0" y="10" class="block">
           <rect width="308" height="170" />
@@ -31,10 +35,10 @@
           </text>
           <% } else { %>
           <text class="description">
-            <tspan x="154" y="55"><%= unavailable_en_formation[0] %></tspan>
-            <tspan x="154" y="75"><%= unavailable_en_formation[1] %></tspan>
-            <tspan x="154" y="95"><%= unavailable_en_formation[2] %></tspan>
-            <tspan x="154" y="115"><%= unavailable_en_formation[3] %></tspan>
+            <tspan x="154" y="55"><%= unavailable_en_formation_split[0] %></tspan>
+            <tspan x="154" y="75"><%= unavailable_en_formation_split[1] %></tspan>
+            <tspan x="154" y="95"><%= unavailable_en_formation_split[2] %></tspan>
+            <tspan x="154" y="115"><%= unavailable_en_formation_split[3] %></tspan>
           </text>
           <% }%>
         </svg>
@@ -46,16 +50,16 @@
             <tspan x="154" y="55"><%= stats?.taux_en_emploi_6_mois?.valeur %>%</tspan>
           </text>
           <text class="description">
-            <tspan x="154" y="90"><%= description_en_emploi_6_mois %></tspan>
+            <tspan x="154" y="90"><%= description_en_emploi_6_mois_override %></tspan>
           </text>
           <text class="details">
-            <tspan x="154" y="115"><%= details_en_emploi_6_mois[0] %></tspan>
+            <tspan x="154" y="115"><%= details_en_emploi_6_mois %></tspan>
           </text>
           <% } else { %>
           <text class="description">
-            <tspan x="154" y="65"><%= unavailable_en_emploi_6_mois[0] %></tspan>
-            <tspan x="154" y="85"><%= unavailable_en_emploi_6_mois[1] %></tspan>
-            <tspan x="154" y="105"><%= unavailable_en_emploi_6_mois[2] %></tspan>
+            <tspan x="154" y="65"><%= unavailable_en_emploi_6_mois_split[0] %></tspan>
+            <tspan x="154" y="85"><%= unavailable_en_emploi_6_mois_split[1] %></tspan>
+            <tspan x="154" y="105"><%= unavailable_en_emploi_6_mois_split[2] %></tspan>
           </text>
           <% }%>
         </svg>
@@ -67,18 +71,18 @@
             <tspan x="154" y="55"><%= stats?.taux_autres_6_mois?.valeur %>%</tspan>
           </text>
           <text class="description">
-            <tspan x="154" y="90"><%= description_autres_6_mois %></tspan>
+            <tspan x="154" y="90"><%= description_autres_6_mois_override %></tspan>
           </text>
           <text class="details">
-            <tspan x="154" y="115"><%= details_autres_6_mois[0] %></tspan>
-            <tspan x="154" y="135"><%= details_autres_6_mois[1] %></tspan>
-            <tspan x="154" y="155"><%= details_autres_6_mois[2] %></tspan>
+            <tspan x="154" y="115"><%= details_autres_6_mois_split[0] %></tspan>
+            <tspan x="154" y="135"><%= details_autres_6_mois_split[1] %></tspan>
+            <tspan x="154" y="155"><%= details_autres_6_mois_split[2] %></tspan>
           </text>
           <% } else { %>
           <text class="description">
-            <tspan x="154" y="65"><%= unavailable_autres_6_mois[0] %></tspan>
-            <tspan x="154" y="85"><%= unavailable_autres_6_mois[1] %></tspan>
-            <tspan x="154" y="105"><%= unavailable_autres_6_mois[2] %></tspan>
+            <tspan x="154" y="65"><%= unavailable_autres_6_mois_split[0] %></tspan>
+            <tspan x="154" y="85"><%= unavailable_autres_6_mois_split[1] %></tspan>
+            <tspan x="154" y="105"><%= unavailable_autres_6_mois_split[2] %></tspan>
           </text>
           <% }%>
         </svg>

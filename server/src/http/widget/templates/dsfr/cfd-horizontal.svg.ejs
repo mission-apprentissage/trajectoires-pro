@@ -1,10 +1,12 @@
 <%- await include('variables'); %>
 <%_
+deltaUnavalaible=exist.pro ? 80 + deltaHeight : 0
 deltaHeight=55
-blocksHeight = hasPro && hasApprentissage ? 6 * deltaHeight : 3 * deltaHeight;
-height=region ? 325 + blocksHeight : 290 + blocksHeight
-height = !hasPro || !hasApprentissage ? height - 80 : height;
-aboutPosY = region ? height - 175 : height - 140;
+nbExist = exist.pro && exist.apprentissage ? 2 : 1;
+blocksHeight = hasPro && hasApprentissage ? 6 * deltaHeight : (2 + nbExist) * deltaHeight;
+height=region ? 300 + blocksHeight : 275 + blocksHeight
+height = !exist.pro || !exist.apprentissage ? height - 80 : height;
+aboutPosY = region ? height - 160 : height - 125;
 currentHeight = 58
 -%>
 <svg version="1.1" width="720" height="<%= height %>" viewBox="0 0 720 <%= height %>" fill="none" style="background-color:white" xmlns="http://www.w3.org/2000/svg">
@@ -19,6 +21,7 @@ currentHeight = 58
       <svg y="80" x="20">
         <g class="blocks">
           <svg <% if (region) { %>y="30" <% } %>>
+            <% if (exist.pro) { %>
             <% if (hasPro ) { %>
             <g class="blockFiliere">
               <svg x="10">
@@ -29,7 +32,7 @@ currentHeight = 58
                     <tspan x="10" y="35"><%= filiereProDesc %></tspan>
                   </text>
                 </g>
-                <g class=" block">
+                <g class="block">
                   <svg x="10" y="<%= currentHeight %>" class="block">
                     <rect width="60" height="35" />
                     <% if (stats?.pro?.taux_en_emploi_6_mois) { %>
@@ -40,7 +43,7 @@ currentHeight = 58
                       <tspan x="75" y="14"><%= description_en_emploi_6_mois %></tspan>
                     </text>
                     <text class="details">
-                      <tspan x="75" y="30"><%= details_en_emploi_6_mois[0] %> <%= details_en_emploi_6_mois[1] %></tspan>
+                      <tspan x="75" y="30"><%= details_en_emploi_6_mois %></tspan>
                     </text>
                     <% } else { %>
                     <text class="number">
@@ -95,7 +98,7 @@ currentHeight = 58
                       <tspan x="75" y="14"><%= description_autres_6_mois %></tspan>
                     </text>
                     <text class="details">
-                      <tspan x="75" y="30"><%= details_autres_6_mois[0] %> <%= details_autres_6_mois[1] %> <%= details_autres_6_mois[2] %></tspan>
+                      <tspan x="75" y="30"><%= details_autres_6_mois_split[0] %> <%= details_autres_6_mois_split[1] %> <%= details_autres_6_mois_split[2] %></tspan>
                     </text>
                     <% } else { %>
                     <text class="number">
@@ -113,12 +116,38 @@ currentHeight = 58
                 </g>
               </svg>
             </g>
-            <% } %>
-
-            <% if (hasApprentissage) { %>
+            <% } else { %>
             <g class="blockFiliere">
               <% currentHeight = 58 %>
               <svg x="10" y="<%= hasPro ? 80 + nbIndicateurPro * deltaHeight : 0 %>">
+                <rect x="0" y="0" class="borderFiliere" width="639" height="<%= deltaHeight + deltaHeight %>"></rect>
+                <rect x="0" y="0" class="borderTopFiliere" width="640" height="4"></rect>
+                <g class="filiere">
+                  <text>
+                    <tspan x="10" y="35"><%= filiereProDesc %></tspan>
+                  </text>
+                </g>
+                <g class="block">
+                  <svg x="10" y="<%= currentHeight %>" class="block">
+                    <text class="description">
+                      <tspan x="5" y="14"><%= unavailablePro.substr(0, 72) %></tspan>
+                    </text>
+                    <text class="description">
+                      <tspan x="5" y="30"><%= unavailablePro.substr(73) %></tspan>
+                    </text>
+                  </svg>
+                  <% currentHeight = currentHeight + deltaHeight %>
+                </g>
+              </svg>
+            </g>
+            <% } %>
+            <% } %>
+
+            <% if (exist.apprentissage) { %>
+            <% if (hasApprentissage) { %>
+            <g class="blockFiliere">
+              <% currentHeight = 58 %>
+              <svg x="10" y="<%= hasPro ? 80 + nbIndicateurPro * deltaHeight : deltaUnavalaible %>">
                 <rect x="0" y="0" class="borderFiliere" width="639" height="<%= deltaHeight + nbIndicateurApprentissage * deltaHeight %>"></rect>
                 <rect x="0" y="0" class="borderTopFiliere" width="640" height="4"></rect>
                 <g class="filiere">
@@ -126,7 +155,7 @@ currentHeight = 58
                     <tspan x="10" y="35"><%= filiereApprentissageDesc %></tspan>
                   </text>
                 </g>
-                <g class=" block">
+                <g class="block">
                   <svg x="10" y="<%= currentHeight %>" class="block">
                     <rect width="60" height="35" />
 
@@ -138,7 +167,7 @@ currentHeight = 58
                       <tspan x="75" y="14"><%= description_en_emploi_6_mois %></tspan>
                     </text>
                     <text class="details">
-                      <tspan x="75" y="30"><%= details_en_emploi_6_mois[0] %> <%= details_en_emploi_6_mois[1] %></tspan>
+                      <tspan x="75" y="30"><%= details_en_emploi_6_mois %></tspan>
                     </text>
                     <% } else { %>
                     <text class="number">
@@ -193,7 +222,7 @@ currentHeight = 58
                       <tspan x="75" y="14"><%= description_autres_6_mois %></tspan>
                     </text>
                     <text class="details">
-                      <tspan x="75" y="30"><%= details_autres_6_mois[0] %> <%= details_autres_6_mois[1] %> <%= details_autres_6_mois[2] %></tspan>
+                      <tspan x="75" y="30"><%= details_autres_6_mois_split[0] %> <%= details_autres_6_mois_split[1] %> <%= details_autres_6_mois_split[2] %></tspan>
                     </text>
                     <% } else { %>
                     <text class="number">
@@ -211,14 +240,36 @@ currentHeight = 58
                 </g>
               </svg>
             </g>
+            <% } else { %>
+            <g class="blockFiliere">
+              <% currentHeight = 58 %>
+              <svg x="10" y="<%= 80 + nbIndicateurPro * deltaHeight %>">
+                <rect x="0" y="0" class="borderFiliere" width="639" height="<%= deltaHeight + deltaHeight %>"></rect>
+                <rect x="0" y="0" class="borderTopFiliere" width="640" height="4"></rect>
+                <g class="filiere">
+                  <text>
+                    <tspan x="10" y="35"><%= filiereApprentissageDesc %></tspan>
+                  </text>
+                </g>
+                <g class="block">
+                  <svg x="10" y="<%= currentHeight %>" class="block">
+                    <text class="description">
+                      <tspan x="5" y="14"><%= unavailableApprentissage.substr(0, 72) %></tspan>
+                    </text>
+                    <text class="description">
+                      <tspan x="5" y="30"><%= unavailableApprentissage.substr(73) %></tspan>
+                    </text>
+                  </svg>
+                  <% currentHeight = currentHeight + deltaHeight %>
+                </g>
+              </svg>
+            </g>
+            <% } %>
             <% } %>
 
             <text class="about">
               <tspan x="10" y="<%= aboutPosY + 14 %>">
-                <%= about_short[0] %>
-              </tspan>
-              <tspan x="10" y="<%= aboutPosY + 30 %>">
-                <%= about_short[1] %>
+                <%= about_short[0] %> <%= about_short[1] %>
               </tspan>
             </text>
           </svg>

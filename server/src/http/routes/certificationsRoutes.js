@@ -7,7 +7,13 @@ import * as validators from "../utils/validators.js";
 import { arrayOf, validate } from "../utils/validators.js";
 import { checkApiKey } from "../middlewares/authMiddleware.js";
 import { formatMillesime } from "../utils/formatters.js";
-import { addCsvHeaders, addJsonHeaders, sendFilieresStats, sendStats, sendErrorSvg } from "../utils/responseUtils.js";
+import {
+  addCsvHeaders,
+  addJsonHeaders,
+  sendFilieresStats,
+  sendStats,
+  sendImageOnError,
+} from "../utils/responseUtils.js";
 import { findCodeFormationDiplome } from "../../common/bcn.js";
 import { getLastMillesimes, transformDisplayStat } from "../../common/stats.js";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
@@ -65,7 +71,7 @@ export default () => {
   router.get(
     "/api/inserjeunes/certifications/:codes_certifications.:ext?",
     tryCatch(async (req, res) => {
-      const { codes_certifications, millesime, vue, imageOnError, ...options } = await validate(
+      const { codes_certifications, millesime, vue, ...options } = await validate(
         { ...req.params, ...req.query },
         {
           codes_certifications: arrayOf(Joi.string().required()).default([]).min(1),
@@ -77,40 +83,46 @@ export default () => {
 
       if (vue === "filieres" || codes_certifications.length > 1) {
         const cfd = await findCodeFormationDiplome(codes_certifications);
-        const filieresStats = mapValues(
-          await CertificationsRepository.getFilieresStats({
-            code_formation_diplome: cfd,
-            millesime,
-          }),
-          transformDisplayStat()
+
+        const filieresStats = cfd
+          ? mapValues(
+              await CertificationsRepository.getFilieresStats({
+                code_formation_diplome: cfd,
+                millesime,
+              }),
+              transformDisplayStat()
+            )
+          : {};
+
+        return sendImageOnError(
+          async () => await sendFilieresStats(filieresStats, res, options),
+          res,
+          { type: "certifications" },
+          options
         );
-        return sendFilieresStats(filieresStats, res, options);
       }
 
-      try {
-        const code_certification = codes_certifications[0];
-        const exist = await CertificationsRepository.exist({ code_certification });
-        if (!exist) {
-          throw new ErrorCertificationNotFound();
-        }
-
-        const result = await CertificationsRepository.find({ code_certification, millesime });
-        if (!result) {
-          const millesimesAvailable = await CertificationsRepository.findMillesime({ code_certification });
-          throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
-        }
-
-        const stats = transformDisplayStat()(result);
-        return sendStats("certification", stats, res, options);
-      } catch (err) {
-        if (imageOnError) {
-          if (err instanceof ErrorCertificationNotFound || err instanceof ErrorNoDataForMillesime) {
-            return sendErrorSvg(res, options);
+      return sendImageOnError(
+        async () => {
+          const code_certification = codes_certifications[0];
+          const exist = await CertificationsRepository.exist({ code_certification });
+          if (!exist) {
+            throw new ErrorCertificationNotFound();
           }
-        }
 
-        throw err;
-      }
+          const result = await CertificationsRepository.find({ code_certification, millesime });
+          if (!result) {
+            const millesimesAvailable = await CertificationsRepository.findMillesime({ code_certification });
+            throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
+          }
+
+          const stats = transformDisplayStat()(result);
+          return sendStats("certification", stats, res, options);
+        },
+        res,
+        { type: "certifications" },
+        options
+      );
     })
   );
 
