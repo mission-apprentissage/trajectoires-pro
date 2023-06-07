@@ -1,8 +1,16 @@
 import { DateTime } from "luxon";
 import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../widget/widget.js";
-import Boom from "boom";
 import { buildDescription, buildDescriptionFiliere } from "../../common/stats.js";
 import { isEmpty } from "lodash-es";
+import { findRegionByCode } from "../../common/regions.js";
+import {
+  ErrorRegionaleNotFound,
+  ErrorNoDataForMillesime,
+  ErrorFormationNotFound,
+  ErrorCertificationNotFound,
+  ErrorNoDataAvailable,
+  ErrorCertificationsNotFound,
+} from "../errors.js";
 
 export function addJsonHeaders(res) {
   res.setHeader("Content-Type", `application/json`);
@@ -19,8 +27,12 @@ export function sendSvg(res, content) {
   return res.status(200).send(content);
 }
 
-export async function sendErrorSvg(res, options) {
-  return sendSvg(res, await buildWidget("error", {}, options));
+export async function sendErrorSvgEmpty(res, options = {}) {
+  return sendSvg(res, await buildWidget("errorEmpty", {}, options));
+}
+
+export async function sendErrorSvg(res, data = {}, options = {}) {
+  return sendSvg(res, await buildWidget("error", data, options));
 }
 
 export async function sendStats(type, stats, res, options = {}) {
@@ -32,7 +44,7 @@ export async function sendStats(type, stats, res, options = {}) {
     return res.json({ ...stats, _meta: metadata });
   } else {
     if (!isWidgetAvailable(stats)) {
-      throw Boom.notFound("Données non disponibles");
+      throw new ErrorNoDataAvailable();
     }
 
     const widget = await buildWidget(
@@ -54,7 +66,7 @@ export async function sendFilieresStats(filieresStats, res, options = {}) {
   const { ext } = options;
 
   if (isEmpty(filieresStats)) {
-    throw Boom.notFound("Certifications inconnues");
+    throw new ErrorCertificationsNotFound();
   }
 
   if (ext !== "svg") {
@@ -62,7 +74,7 @@ export async function sendFilieresStats(filieresStats, res, options = {}) {
   } else {
     const { pro, apprentissage } = filieresStats;
     if (!isWidgetAvailable(pro) && !isWidgetAvailable(apprentissage)) {
-      throw Boom.notFound("Données non disponibles");
+      throw new ErrorNoDataAvailable();
     }
 
     const { direction, theme } = options;
@@ -76,6 +88,10 @@ export async function sendFilieresStats(filieresStats, res, options = {}) {
           pro: pro && prepareStatsForWidget(pro),
           apprentissage: apprentissage && prepareStatsForWidget(apprentissage),
         },
+        exist: {
+          pro: !!pro,
+          apprentissage: !!apprentissage,
+        },
         description,
         millesime: validFiliere.millesime,
         region: validFiliere.region,
@@ -85,5 +101,40 @@ export async function sendFilieresStats(filieresStats, res, options = {}) {
 
     res.setHeader("content-type", "image/svg+xml");
     return res.status(200).send(widget);
+  }
+}
+
+export async function sendImageOnError(cb, res, data = {}, options = { imageOnError: "true" }) {
+  const { imageOnError = "true", ext } = options;
+  const errorsToRescue = [
+    ErrorRegionaleNotFound,
+    ErrorFormationNotFound,
+    ErrorCertificationNotFound,
+    ErrorCertificationsNotFound,
+    ErrorNoDataForMillesime,
+    ErrorNoDataAvailable,
+  ];
+
+  try {
+    return await cb();
+  } catch (err) {
+    if (imageOnError !== "false" && ext === "svg") {
+      if (errorsToRescue.some((error) => err instanceof error)) {
+        if (imageOnError === "empty") {
+          return sendErrorSvgEmpty(res, options);
+        }
+
+        return sendErrorSvg(
+          res,
+          {
+            ...data,
+            ...(data.regionCode ? { region: findRegionByCode(data.regionCode) } : {}),
+          },
+          options
+        );
+      }
+    }
+
+    throw err;
   }
 }

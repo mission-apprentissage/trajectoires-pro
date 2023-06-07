@@ -1,4 +1,5 @@
 
+
 <svg version="1.1" width="882" height="289" viewBox="0 0 882 289" fill="none" xmlns="http://www.w3.org/2000/svg">
   
     <title>Certification 1022105, établissement 0751234J</title>
@@ -7,8 +8,7 @@
     <desc>Données InserJeunes pour la certification 1022105 (BAC filière apprentissage) dispensée par l&#39;établissement 0751234J, pour le millesime 2018_2019</desc>
 
 
-  
-<defs>
+  <defs>
   <style type="text/css">
     @font-face {
       font-family: "Marianne";
@@ -81,18 +81,16 @@
   </style>
 </defs>
 
-  
   <g class="region">
     <svg x="0" y="10">
       <text>
-        <tspan x="0" y="15"> Les chiffres pour la région,Île-de-France</tspan>
+        <tspan x="0" y="15">Les chiffres pour cet établissement</tspan>
       </text>
     </svg>
   </g>
-  
 
   <g class="blocks">
-    <svg y="40" >
+    <svg y="40">
       <g class="block">
         <svg x="0" y="10" class="block">
           <rect width="264" height="170" />
@@ -119,7 +117,7 @@
             <tspan x="154" y="90">sont en emploi au bout de 6 mois</tspan>
           </text>
           <text class="details">
-            <tspan x="154" y="115">(Tout type d&#39;emploi salarié du privé)</tspan>
+            <tspan x="154" y="115">(tout type d&#39;emploi salarié du privé)</tspan>
           </text>
 
           

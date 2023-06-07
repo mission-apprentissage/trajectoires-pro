@@ -25,11 +25,11 @@ currentHeight = 10
                   <tspan x="30" y="26"><%= stats?.taux_en_emploi_6_mois?.valeur %>%</tspan>
                 </text>
                 <text class="description">
-                  <tspan x="75" y="14"><%= description_en_emploi_6_mois_part[0] %></tspan>
-                  <tspan x="75" y="32"><%= description_en_emploi_6_mois_part[1] %></tspan>
+                  <tspan x="75" y="14"><%= description_en_emploi_6_mois_split[0] %></tspan>
+                  <tspan x="75" y="32"><%= description_en_emploi_6_mois_split[1] %></tspan>
                 </text>
                 <text class="details">
-                  <tspan x="75" y="46"><%= details_en_emploi_6_mois[0] %> <%= details_en_emploi_6_mois[1] %></tspan>
+                  <tspan x="75" y="46"><%= details_en_emploi_6_mois %></tspan>
                 </text>
 
                 <% } else { %>
@@ -90,8 +90,8 @@ currentHeight = 10
                   <tspan x="75" y="14"><%= description_autres_6_mois %></tspan>
                 </text>
                 <text class="details">
-                  <tspan x="75" y="30"><%= details_autres_6_mois[0] %></tspan>
-                  <tspan x="75" y="44"><%= details_autres_6_mois[1] %></tspan>
+                  <tspan x="75" y="30"><%= details_autres_6_mois_split[0] %></tspan>
+                  <tspan x="75" y="44"><%= details_autres_6_mois_split[1] %></tspan>
                 </text>
                 <% } else { %>
                 <text class="number">

@@ -127,6 +127,7 @@
         <g class="blocks">
           <svg >
             
+            
             <g class="blockFiliere">
               <svg x="0">
                 <rect x="0" y="0" class="borderFiliere" width="299" height="270"></rect>
@@ -136,7 +137,7 @@
                     <tspan x="10" y="35">Pour la voie scolaire</tspan>
                   </text>
                 </g>
-                <g class=" block">
+                <g class="block">
                   <svg x="10" y="58" class="block">
                     <rect width="60" height="35" />
 
@@ -149,7 +150,7 @@
                       <tspan x="75" y="30">fin de la formation</tspan>
                     </text>
                     <text class="details">
-                      <tspan x="75" y="46">(tout type d&#39;emploi salarié du privé) </tspan>
+                      <tspan x="75" y="46">(tout type d&#39;emploi salarié du privé)</tspan>
                     </text>
                     
                   </svg>
@@ -195,7 +196,9 @@
               </svg>
             </g>
             
+            
 
+            
             
             <g class="blockFiliere">
               
@@ -207,7 +210,7 @@
                     <tspan x="10" y="35">Pour la voie apprentissage</tspan>
                   </text>
                 </g>
-                <g class=" block">
+                <g class="block">
                   <svg x="10" y="58" class="block">
                     <rect width="60" height="35" />
 
@@ -220,7 +223,7 @@
                       <tspan x="75" y="30">fin de la formation</tspan>
                     </text>
                     <text class="details">
-                      <tspan x="75" y="46">(tout type d&#39;emploi salarié du privé) </tspan>
+                      <tspan x="75" y="46">(tout type d&#39;emploi salarié du privé)</tspan>
                     </text>
                     
                   </svg>
@@ -264,6 +267,7 @@
                 </g>
               </svg>
             </g>
+            
             
 
             <text class="about">
