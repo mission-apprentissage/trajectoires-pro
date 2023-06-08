@@ -152,25 +152,38 @@ export function computeCustomStats(data) {
   });
 }
 
-export function buildDescriptionFiliere(stats) {
-  const { pro, apprentissage } = stats;
+export function buildDescriptionFiliere(pro, apprentissage) {
+  const validFiliere = pro || apprentissage;
+
+  const cfds = new Set([...(pro?.codes_formation_diplome || []), ...(apprentissage?.codes_formation_diplome || [])]);
+  const descriptionFiliere = [
+    ...(pro ? [`${pro.diplome?.libelle || ""} filière ${pro.filiere}`.trim()] : []),
+    ...(apprentissage ? [`${apprentissage.diplome?.libelle || ""} filière ${apprentissage.filiere}`.trim()] : []),
+  ];
+
   return {
-    titre: `Certification ${pro.code_formation_diplome}${pro.uai ? `, établissement ${pro.uai}` : ""}`,
-    details:
-      `Données InserJeunes pour la certification ${pro.code_formation_diplome} (${pro.diplome.libelle} filière ${pro.filiere}` +
-      ` et ${apprentissage.diplome.libelle} filière ${apprentissage.filiere})` +
-      `${pro.uai ? ` dispensée par l'établissement ${pro.uai},` : ""} pour le millesime ${pro.millesime}`,
+    titre:
+      cfds.size === 1
+        ? `Certification ${validFiliere.code_formation_diplome}`
+        : `Certifications ${[...cfds].join(", ")}`,
+    details: `Données InserJeunes pour la/les certification ${[...cfds].join(", ")} (${descriptionFiliere.join(
+      " et "
+    )}) pour le millesime ${validFiliere.millesime}${
+      validFiliere.region ? ` et la région ${validFiliere.region.nom}` : ""
+    }`,
   };
 }
 
 export function buildDescription(stats) {
-  const { code_certification, filiere, uai, millesime, diplome } = stats;
+  const { code_certification, filiere, uai, millesime, diplome, region } = stats;
 
   return {
     titre: `Certification ${code_certification}${uai ? `, établissement ${uai}` : ""}`,
     details:
       `Données InserJeunes pour la certification ${code_certification} (${diplome.libelle} filière ${filiere})` +
-      `${uai ? ` dispensée par l'établissement ${uai},` : ""} pour le millesime ${millesime}`,
+      `${uai ? ` dispensée par l'établissement ${uai},` : ""} pour le millesime ${millesime}${
+        !uai && region ? ` et la région ${region.nom}` : ""
+      }`,
   };
 }
 

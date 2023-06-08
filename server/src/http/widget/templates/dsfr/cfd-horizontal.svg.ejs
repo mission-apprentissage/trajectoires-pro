@@ -1,7 +1,7 @@
 <%- await include('variables'); %>
 <%_
-deltaUnavalaible=exist.pro ? 80 + deltaHeight : 0
 deltaHeight=55
+deltaUnavalaible=exist.pro ? 80 + deltaHeight : 0
 nbExist = exist.pro && exist.apprentissage ? 2 : 1;
 blocksHeight = hasPro && hasApprentissage ? 6 * deltaHeight : (2 + nbExist) * deltaHeight;
 height=region ? 300 + blocksHeight : 275 + blocksHeight

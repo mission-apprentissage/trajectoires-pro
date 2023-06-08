@@ -1,12 +1,15 @@
-import chai, { assert, expect } from "chai";
+import chai, { expect } from "chai";
 import chaiDiff from "chai-diff";
 import fs from "fs";
+import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertCertificationsStats, insertCFD, insertMEF } from "../utils/fakeData.js";
 import { dbCollection } from "../../src/common/db/mongodb.js";
 
+chai.use(deepEqualInAnyOrder);
 chai.use(chaiDiff);
+const { assert } = chai;
 
 describe("certificationsRoutes", () => {
   describe("Recherche", () => {
@@ -475,6 +478,7 @@ describe("certificationsRoutes", () => {
         apprentissage: {
           codes_certifications: ["12345678"],
           code_formation_diplome: "12345678",
+          codes_formation_diplome: ["12345678"],
           diplome: {
             code: "4",
             libelle: "BAC",
@@ -502,6 +506,7 @@ describe("certificationsRoutes", () => {
         pro: {
           codes_certifications: ["23830024202"],
           code_formation_diplome: "12345678",
+          codes_formation_diplome: ["12345678"],
           diplome: {
             code: "4",
             libelle: "BAC",
@@ -831,185 +836,425 @@ describe("certificationsRoutes", () => {
   });
 
   describe("Vue filières", () => {
-    it("Vérifie qu'on peut obtenir les données pour deux filières (cfd)", async () => {
-      const { httpClient } = await startServer();
-      await Promise.all([
-        insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
-        insertCertificationsStats({
-          code_certification: "12345678",
-          code_formation_diplome: "12345678",
-          filiere: "apprentissage",
-          nb_sortant: 100,
-          nb_annee_term: 100,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_24_mois: 25,
-          nb_en_emploi_18_mois: 25,
-          nb_en_emploi_12_mois: 25,
-          nb_en_emploi_6_mois: 50,
-        }),
-        insertCertificationsStats({
-          code_certification: "23830024202",
-          code_formation_diplome: "12345678",
-          filiere: "pro",
-          nb_sortant: 100,
-          nb_annee_term: 100,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_24_mois: 25,
-          nb_en_emploi_18_mois: 25,
-          nb_en_emploi_12_mois: 25,
-          nb_en_emploi_6_mois: 50,
-        }),
-      ]);
+    describe("Lorsque que le CFD est identique pour toute les certifications", async () => {
+      it("Vérifie qu'on peut obtenir les données pour deux filières (cfd)", async () => {
+        const { httpClient } = await startServer();
+        await Promise.all([
+          insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
+          insertCertificationsStats({
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertCertificationsStats({
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+        ]);
 
-      const response = await httpClient.get("/api/inserjeunes/certifications/12345678,23830024202");
+        const response = await httpClient.get("/api/inserjeunes/certifications/12345678,23830024202");
 
-      assert.strictEqual(response.status, 200);
-      assert.deepStrictEqual(response.data, {
-        apprentissage: {
-          codes_certifications: ["12345678"],
-          code_formation_diplome: "12345678",
-          diplome: {
-            code: "4",
-            libelle: "BAC",
+        assert.strictEqual(response.status, 200);
+        assert.deepStrictEqual(response.data, {
+          apprentissage: {
+            codes_certifications: ["12345678"],
+            code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            filiere: "apprentissage",
+            millesime: "2020",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
           },
-          filiere: "apprentissage",
-          millesime: "2020",
-          nb_sortant: 100,
-          nb_annee_term: 100,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_24_mois: 25,
-          nb_en_emploi_18_mois: 25,
-          nb_en_emploi_12_mois: 25,
-          nb_en_emploi_6_mois: 50,
-          //computed
-          taux_en_formation: 5,
-          taux_en_emploi_24_mois: 25,
-          taux_en_emploi_18_mois: 25,
-          taux_en_emploi_12_mois: 25,
-          taux_en_emploi_6_mois: 50,
-          taux_autres_6_mois: 45,
-          taux_autres_12_mois: 70,
-          taux_autres_18_mois: 70,
-          taux_autres_24_mois: 70,
-        },
-        pro: {
-          codes_certifications: ["23830024202"],
-          code_formation_diplome: "12345678",
-          diplome: {
-            code: "4",
-            libelle: "BAC",
+          pro: {
+            codes_certifications: ["23830024202"],
+            code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            filiere: "pro",
+            millesime: "2020",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
           },
-          filiere: "pro",
-          millesime: "2020",
-          nb_sortant: 100,
-          nb_annee_term: 100,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_24_mois: 25,
-          nb_en_emploi_18_mois: 25,
-          nb_en_emploi_12_mois: 25,
-          nb_en_emploi_6_mois: 50,
-          //computed
-          taux_en_formation: 5,
-          taux_en_emploi_24_mois: 25,
-          taux_en_emploi_18_mois: 25,
-          taux_en_emploi_12_mois: 25,
-          taux_en_emploi_6_mois: 50,
-          taux_autres_6_mois: 45,
-          taux_autres_12_mois: 70,
-          taux_autres_18_mois: 70,
-          taux_autres_24_mois: 70,
-        },
+        });
+      });
+
+      it("Vérifie qu'on peut obtenir les données pour deux filières (mef)", async () => {
+        const { httpClient } = await startServer();
+        await Promise.all([
+          insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
+          insertCertificationsStats({
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertCertificationsStats({
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+        ]);
+
+        const response = await httpClient.get("/api/inserjeunes/certifications/12345678,23830024202");
+
+        assert.strictEqual(response.status, 200);
+        assert.deepStrictEqual(response.data, {
+          apprentissage: {
+            codes_certifications: ["12345678"],
+            code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            filiere: "apprentissage",
+            millesime: "2020",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+          pro: {
+            codes_certifications: ["23830024202"],
+            code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            filiere: "pro",
+            millesime: "2020",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+        });
       });
     });
 
-    it("Vérifie qu'on peut obtenir les données pour deux filières (mef)", async () => {
-      const { httpClient } = await startServer();
-      await Promise.all([
-        insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
-        insertCertificationsStats({
-          code_certification: "12345678",
-          code_formation_diplome: "12345678",
-          filiere: "apprentissage",
-          nb_sortant: 100,
-          nb_annee_term: 100,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_24_mois: 25,
-          nb_en_emploi_18_mois: 25,
-          nb_en_emploi_12_mois: 25,
-          nb_en_emploi_6_mois: 50,
-        }),
-        insertCertificationsStats({
-          code_certification: "23830024202",
-          code_formation_diplome: "12345678",
-          filiere: "pro",
-          nb_sortant: 100,
-          nb_annee_term: 100,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_24_mois: 25,
-          nb_en_emploi_18_mois: 25,
-          nb_en_emploi_12_mois: 25,
-          nb_en_emploi_6_mois: 50,
-        }),
-      ]);
+    describe("Lorsque que les certifications ont plusieurs CFD", async () => {
+      it("Vérifie qu'on peut obtenir les données aggregées (cfd)", async () => {
+        const { httpClient } = await startServer();
+        await Promise.all([
+          insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
+          insertCFD({ code_certification: "87654321", code_formation_diplome: "87654321" }),
+          insertCertificationsStats({
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertCertificationsStats({
+            code_certification: "87654321",
+            code_formation_diplome: "87654321",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertCertificationsStats({
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertCertificationsStats({
+            code_certification: "23876543212",
+            code_formation_diplome: "87654321",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+        ]);
 
-      const response = await httpClient.get("/api/inserjeunes/certifications/12345678,23830024202");
+        const response = await httpClient.get("/api/inserjeunes/certifications/12345678,87654321");
 
-      assert.strictEqual(response.status, 200);
-      assert.deepStrictEqual(response.data, {
-        apprentissage: {
-          codes_certifications: ["12345678"],
-          code_formation_diplome: "12345678",
-          diplome: {
-            code: "4",
-            libelle: "BAC",
+        assert.strictEqual(response.status, 200);
+        assert.deepEqualInAnyOrder(response.data, {
+          apprentissage: {
+            codes_certifications: ["87654321", "12345678"],
+            codes_formation_diplome: ["87654321", "12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            filiere: "apprentissage",
+            millesime: "2020",
+            nb_sortant: 200,
+            nb_annee_term: 200,
+            nb_poursuite_etudes: 10,
+            nb_en_emploi_24_mois: 50,
+            nb_en_emploi_18_mois: 50,
+            nb_en_emploi_12_mois: 50,
+            nb_en_emploi_6_mois: 100,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
           },
-          filiere: "apprentissage",
-          millesime: "2020",
-          nb_sortant: 100,
-          nb_annee_term: 100,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_24_mois: 25,
-          nb_en_emploi_18_mois: 25,
-          nb_en_emploi_12_mois: 25,
-          nb_en_emploi_6_mois: 50,
-          //computed
-          taux_en_formation: 5,
-          taux_en_emploi_24_mois: 25,
-          taux_en_emploi_18_mois: 25,
-          taux_en_emploi_12_mois: 25,
-          taux_en_emploi_6_mois: 50,
-          taux_autres_6_mois: 45,
-          taux_autres_12_mois: 70,
-          taux_autres_18_mois: 70,
-          taux_autres_24_mois: 70,
-        },
-        pro: {
-          codes_certifications: ["23830024202"],
-          code_formation_diplome: "12345678",
-          diplome: {
-            code: "4",
-            libelle: "BAC",
+          pro: {
+            codes_certifications: ["23830024202", "23876543212"],
+            codes_formation_diplome: ["87654321", "12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            filiere: "pro",
+            millesime: "2020",
+            nb_sortant: 200,
+            nb_annee_term: 200,
+            nb_poursuite_etudes: 10,
+            nb_en_emploi_24_mois: 50,
+            nb_en_emploi_18_mois: 50,
+            nb_en_emploi_12_mois: 50,
+            nb_en_emploi_6_mois: 100,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
           },
-          filiere: "pro",
-          millesime: "2020",
-          nb_sortant: 100,
-          nb_annee_term: 100,
-          nb_poursuite_etudes: 5,
-          nb_en_emploi_24_mois: 25,
-          nb_en_emploi_18_mois: 25,
-          nb_en_emploi_12_mois: 25,
-          nb_en_emploi_6_mois: 50,
-          //computed
-          taux_en_formation: 5,
-          taux_en_emploi_24_mois: 25,
-          taux_en_emploi_18_mois: 25,
-          taux_en_emploi_12_mois: 25,
-          taux_en_emploi_6_mois: 50,
-          taux_autres_6_mois: 45,
-          taux_autres_12_mois: 70,
-          taux_autres_18_mois: 70,
-          taux_autres_24_mois: 70,
-        },
+        });
+      });
+
+      it("Vérifie qu'on peut obtenir les données aggregées (mef)", async () => {
+        const { httpClient } = await startServer();
+        await Promise.all([
+          insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
+          insertMEF({ code_certification: "23876543212", code_formation_diplome: "87654321" }),
+          insertCertificationsStats({
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertCertificationsStats({
+            code_certification: "87654321",
+            code_formation_diplome: "87654321",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertCertificationsStats({
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertCertificationsStats({
+            code_certification: "23876543212",
+            code_formation_diplome: "87654321",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+        ]);
+
+        const response = await httpClient.get("/api/inserjeunes/certifications/23876543212,23830024202");
+
+        assert.strictEqual(response.status, 200);
+        assert.deepEqualInAnyOrder(response.data, {
+          apprentissage: {
+            codes_certifications: ["87654321", "12345678"],
+            codes_formation_diplome: ["87654321", "12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            filiere: "apprentissage",
+            millesime: "2020",
+            nb_sortant: 200,
+            nb_annee_term: 200,
+            nb_poursuite_etudes: 10,
+            nb_en_emploi_24_mois: 50,
+            nb_en_emploi_18_mois: 50,
+            nb_en_emploi_12_mois: 50,
+            nb_en_emploi_6_mois: 100,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+          pro: {
+            codes_certifications: ["23876543212", "23830024202"],
+            codes_formation_diplome: ["87654321", "12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            filiere: "pro",
+            millesime: "2020",
+            nb_sortant: 200,
+            nb_annee_term: 200,
+            nb_poursuite_etudes: 10,
+            nb_en_emploi_24_mois: 50,
+            nb_en_emploi_18_mois: 50,
+            nb_en_emploi_12_mois: 50,
+            nb_en_emploi_6_mois: 100,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+        });
       });
     });
   });

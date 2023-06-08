@@ -79,8 +79,6 @@ export async function sendFilieresStats(filieresStats, res, options = {}) {
 
     const { direction, theme } = options;
     const validFiliere = pro || apprentissage;
-    const description = pro && apprentissage ? buildDescriptionFiliere(filieresStats) : buildDescription(validFiliere);
-
     const widget = await buildWidget(
       "cfd",
       {
@@ -92,7 +90,7 @@ export async function sendFilieresStats(filieresStats, res, options = {}) {
           pro: !!pro,
           apprentissage: !!apprentissage,
         },
-        description,
+        description: buildDescriptionFiliere(pro, apprentissage),
         millesime: validFiliere.millesime,
         region: validFiliere.region,
       },

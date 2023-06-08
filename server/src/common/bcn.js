@@ -46,6 +46,13 @@ export async function findCodeFormationDiplome(codeCertification) {
   return found?.code_formation_diplome;
 }
 
+export async function findCodesFormationDiplome(codeCertification) {
+  const found = await bcn()
+    .find({ code_certification: { $in: castArray(codeCertification) } })
+    .toArray();
+  return found.map((f) => f.code_formation_diplome);
+}
+
 export async function getBCNTable(tableName, options = {}) {
   let stream =
     options[tableName] ||

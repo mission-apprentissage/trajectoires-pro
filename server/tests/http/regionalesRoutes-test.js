@@ -1,12 +1,15 @@
-import chai, { assert, expect } from "chai";
+import chai, { expect } from "chai";
 import chaiDiff from "chai-diff";
 import fs from "fs";
+import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertCFD, insertMEF, insertRegionalesStats } from "../utils/fakeData.js";
 import { dbCollection } from "../../src/common/db/mongodb.js";
 
+chai.use(deepEqualInAnyOrder);
 chai.use(chaiDiff);
+const { assert } = chai;
 
 describe("regionalesRoutes", () => {
   describe("Recherche", () => {
@@ -556,7 +559,7 @@ describe("regionalesRoutes", () => {
         _meta: {
           titre: "Certification 12345678",
           details:
-            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millesime 2018_2019",
+            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millesime 2018_2019 et la région Île-de-France",
         },
       });
     });
@@ -643,6 +646,7 @@ describe("regionalesRoutes", () => {
         apprentissage: {
           codes_certifications: ["12345678"],
           code_formation_diplome: "12345678",
+          codes_formation_diplome: ["12345678"],
           diplome: {
             code: "4",
             libelle: "BAC",
@@ -674,6 +678,7 @@ describe("regionalesRoutes", () => {
         pro: {
           codes_certifications: ["23830024202"],
           code_formation_diplome: "12345678",
+          codes_formation_diplome: ["12345678"],
           diplome: {
             code: "4",
             libelle: "BAC",
@@ -1044,6 +1049,474 @@ describe("regionalesRoutes", () => {
       );
 
       assert.strictEqual(response.status, 400);
+    });
+  });
+
+  describe("Vue filières", () => {
+    describe("Lorsque que le CFD est identique pour toute les certifications", async () => {
+      it("Vérifie qu'on peut obtenir les données pour deux filières (cfd)", async () => {
+        const { httpClient } = await startServer();
+        await Promise.all([
+          insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
+          await insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          await insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+        ]);
+
+        const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/12345678,23830024202");
+
+        assert.strictEqual(response.status, 200);
+        assert.deepStrictEqual(response.data, {
+          apprentissage: {
+            codes_certifications: ["12345678"],
+            code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            region: {
+              code: "11",
+              nom: "Île-de-France",
+            },
+            filiere: "apprentissage",
+            millesime: "2018_2019",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+          pro: {
+            codes_certifications: ["23830024202"],
+            code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            region: {
+              code: "11",
+              nom: "Île-de-France",
+            },
+            filiere: "pro",
+            millesime: "2018_2019",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+        });
+      });
+
+      it("Vérifie qu'on peut obtenir les données pour deux filières (mef)", async () => {
+        const { httpClient } = await startServer();
+        await Promise.all([
+          insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
+          insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+        ]);
+
+        const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/12345678,23830024202");
+
+        assert.strictEqual(response.status, 200);
+        assert.deepStrictEqual(response.data, {
+          apprentissage: {
+            codes_certifications: ["12345678"],
+            code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            region: {
+              code: "11",
+              nom: "Île-de-France",
+            },
+            filiere: "apprentissage",
+            millesime: "2018_2019",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+          pro: {
+            codes_certifications: ["23830024202"],
+            code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            region: {
+              code: "11",
+              nom: "Île-de-France",
+            },
+            filiere: "pro",
+            millesime: "2018_2019",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+        });
+      });
+    });
+
+    describe("Lorsque que les certifications ont plusieurs CFD", async () => {
+      it("Vérifie qu'on peut obtenir les données aggregées (cfd)", async () => {
+        const { httpClient } = await startServer();
+        await Promise.all([
+          insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
+          insertCFD({ code_certification: "87654321", code_formation_diplome: "87654321" }),
+          insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "87654321",
+            code_formation_diplome: "87654321",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "23876543212",
+            code_formation_diplome: "87654321",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+        ]);
+
+        const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/12345678,87654321");
+
+        assert.strictEqual(response.status, 200);
+        assert.deepEqualInAnyOrder(response.data, {
+          apprentissage: {
+            codes_certifications: ["87654321", "12345678"],
+            codes_formation_diplome: ["87654321", "12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            region: {
+              code: "11",
+              nom: "Île-de-France",
+            },
+            filiere: "apprentissage",
+            millesime: "2018_2019",
+            nb_sortant: 200,
+            nb_annee_term: 200,
+            nb_poursuite_etudes: 10,
+            nb_en_emploi_24_mois: 50,
+            nb_en_emploi_18_mois: 50,
+            nb_en_emploi_12_mois: 50,
+            nb_en_emploi_6_mois: 100,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+          pro: {
+            codes_certifications: ["23830024202", "23876543212"],
+            codes_formation_diplome: ["87654321", "12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            region: {
+              code: "11",
+              nom: "Île-de-France",
+            },
+            filiere: "pro",
+            millesime: "2018_2019",
+            nb_sortant: 200,
+            nb_annee_term: 200,
+            nb_poursuite_etudes: 10,
+            nb_en_emploi_24_mois: 50,
+            nb_en_emploi_18_mois: 50,
+            nb_en_emploi_12_mois: 50,
+            nb_en_emploi_6_mois: 100,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+        });
+      });
+
+      it("Vérifie qu'on peut obtenir les données aggregées (mef)", async () => {
+        const { httpClient } = await startServer();
+        await Promise.all([
+          insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
+          insertMEF({ code_certification: "23876543212", code_formation_diplome: "87654321" }),
+          insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "87654321",
+            code_formation_diplome: "87654321",
+            filiere: "apprentissage",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+          insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "23876543212",
+            code_formation_diplome: "87654321",
+            filiere: "pro",
+            nb_sortant: 100,
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 5,
+            nb_en_emploi_24_mois: 25,
+            nb_en_emploi_18_mois: 25,
+            nb_en_emploi_12_mois: 25,
+            nb_en_emploi_6_mois: 50,
+          }),
+        ]);
+
+        const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/23876543212,23830024202");
+
+        assert.strictEqual(response.status, 200);
+        assert.deepEqualInAnyOrder(response.data, {
+          apprentissage: {
+            codes_certifications: ["87654321", "12345678"],
+            codes_formation_diplome: ["87654321", "12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            region: {
+              code: "11",
+              nom: "Île-de-France",
+            },
+            filiere: "apprentissage",
+            millesime: "2018_2019",
+            nb_sortant: 200,
+            nb_annee_term: 200,
+            nb_poursuite_etudes: 10,
+            nb_en_emploi_24_mois: 50,
+            nb_en_emploi_18_mois: 50,
+            nb_en_emploi_12_mois: 50,
+            nb_en_emploi_6_mois: 100,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+          pro: {
+            codes_certifications: ["23876543212", "23830024202"],
+            codes_formation_diplome: ["87654321", "12345678"],
+            diplome: {
+              code: "4",
+              libelle: "BAC",
+            },
+            region: {
+              code: "11",
+              nom: "Île-de-France",
+            },
+            filiere: "pro",
+            millesime: "2018_2019",
+            nb_sortant: 200,
+            nb_annee_term: 200,
+            nb_poursuite_etudes: 10,
+            nb_en_emploi_24_mois: 50,
+            nb_en_emploi_18_mois: 50,
+            nb_en_emploi_12_mois: 50,
+            nb_en_emploi_6_mois: 100,
+            //computed
+            taux_en_formation: 5,
+            taux_en_emploi_24_mois: 25,
+            taux_en_emploi_18_mois: 25,
+            taux_en_emploi_12_mois: 25,
+            taux_en_emploi_6_mois: 50,
+            taux_autres_6_mois: 45,
+            taux_autres_12_mois: 70,
+            taux_autres_18_mois: 70,
+            taux_autres_24_mois: 70,
+          },
+        });
+      });
     });
   });
 });
