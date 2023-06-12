@@ -872,7 +872,7 @@ components:
             type: string
         codes_formation_diplome:
           type: array
-          description: "Tableaux des CFD des certifications"
+          description: "Tableau des CFD des certifications"
           items:
             type: string
         code_formation_diplome:
