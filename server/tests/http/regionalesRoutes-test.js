@@ -879,6 +879,85 @@ describe("regionalesRoutes", () => {
           expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
         });
 
+        it("Vérifie qu'on peut obtenir le widget avec une vue CFD quand il y a plusieurs CFD différents", async () => {
+          const { httpClient } = await startServer();
+          await Promise.all([
+            insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
+            insertCFD({ code_certification: "87654321", code_formation_diplome: "87654321" }),
+            insertRegionalesStats({
+              region: { code: "11", nom: "Île-de-France" },
+              code_certification: "12345678",
+              code_formation_diplome: "12345678",
+              filiere: "apprentissage",
+              millesime: "2018_2019",
+              nb_sortant: 100,
+              nb_annee_term: 50,
+              nb_poursuite_etudes: 5,
+              nb_en_emploi_24_mois: 25,
+              nb_en_emploi_18_mois: 25,
+              nb_en_emploi_12_mois: 25,
+              nb_en_emploi_6_mois: 50,
+            }),
+            insertRegionalesStats({
+              region: { code: "11", nom: "Île-de-France" },
+              code_certification: "87654321",
+              code_formation_diplome: "87654321",
+              filiere: "apprentissage",
+              millesime: "2018_2019",
+              nb_sortant: 100,
+              nb_annee_term: 50,
+              nb_poursuite_etudes: 5,
+              nb_en_emploi_24_mois: 25,
+              nb_en_emploi_18_mois: 25,
+              nb_en_emploi_12_mois: 25,
+              nb_en_emploi_6_mois: 50,
+            }),
+            insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
+            insertMEF({ code_certification: "23876543212", code_formation_diplome: "87654321" }),
+            insertRegionalesStats({
+              region: { code: "11", nom: "Île-de-France" },
+              code_certification: "23830024202",
+              code_formation_diplome: "12345678",
+              filiere: "pro",
+              millesime: "2018_2019",
+              nb_sortant: 100,
+              nb_annee_term: 50,
+              nb_poursuite_etudes: 5,
+              nb_en_emploi_24_mois: 25,
+              nb_en_emploi_18_mois: 25,
+              nb_en_emploi_12_mois: 25,
+              nb_en_emploi_6_mois: 50,
+            }),
+            insertRegionalesStats({
+              region: { code: "11", nom: "Île-de-France" },
+              code_certification: "23876543212",
+              code_formation_diplome: "87654321",
+              filiere: "pro",
+              millesime: "2018_2019",
+              nb_sortant: 100,
+              nb_annee_term: 50,
+              nb_poursuite_etudes: 5,
+              nb_en_emploi_24_mois: 25,
+              nb_en_emploi_18_mois: 25,
+              nb_en_emploi_12_mois: 25,
+              nb_en_emploi_6_mois: 50,
+            }),
+          ]);
+
+          const response = await httpClient.get(
+            "/api/inserjeunes/regionales/11/certifications/12345678|23876543212.svg?vue=filieres&theme=" + theme
+          );
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/regionales/12345678_87654321_filiere.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+
         describe("Vérifie qu'on obtient une image en cas d'erreur avec le paramètre imageOnError", () => {
           it("La formation n'existe pas", async () => {
             const { httpClient } = await startServer();

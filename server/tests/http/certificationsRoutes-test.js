@@ -623,6 +623,81 @@ describe("certificationsRoutes", () => {
           expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
         });
 
+        it("Vérifie qu'on peut obtenir le widget avec une vue CFD quand il y a plusieurs CFD différents", async () => {
+          const { httpClient } = await startServer();
+          await Promise.all([
+            insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
+            insertCFD({ code_certification: "87654321", code_formation_diplome: "87654321" }),
+            insertCertificationsStats({
+              code_certification: "12345678",
+              code_formation_diplome: "12345678",
+              filiere: "apprentissage",
+              millesime: "2020",
+              nb_sortant: 100,
+              nb_annee_term: 100,
+              nb_poursuite_etudes: 5,
+              nb_en_emploi_24_mois: 25,
+              nb_en_emploi_18_mois: 25,
+              nb_en_emploi_12_mois: 25,
+              nb_en_emploi_6_mois: 50,
+            }),
+            insertCertificationsStats({
+              code_certification: "87654321",
+              code_formation_diplome: "87654321",
+              filiere: "apprentissage",
+              millesime: "2020",
+              nb_sortant: 100,
+              nb_annee_term: 100,
+              nb_poursuite_etudes: 5,
+              nb_en_emploi_24_mois: 25,
+              nb_en_emploi_18_mois: 25,
+              nb_en_emploi_12_mois: 25,
+              nb_en_emploi_6_mois: 50,
+            }),
+            insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" }),
+            insertMEF({ code_certification: "23876543212", code_formation_diplome: "87654321" }),
+            insertCertificationsStats({
+              code_certification: "23830024202",
+              code_formation_diplome: "12345678",
+              filiere: "pro",
+              millesime: "2020",
+              nb_sortant: 100,
+              nb_annee_term: 100,
+              nb_poursuite_etudes: 5,
+              nb_en_emploi_24_mois: 25,
+              nb_en_emploi_18_mois: 25,
+              nb_en_emploi_12_mois: 25,
+              nb_en_emploi_6_mois: 50,
+            }),
+            insertCertificationsStats({
+              code_certification: "23876543212",
+              code_formation_diplome: "87654321",
+              filiere: "pro",
+              millesime: "2020",
+              nb_sortant: 100,
+              nb_annee_term: 100,
+              nb_poursuite_etudes: 5,
+              nb_en_emploi_24_mois: 25,
+              nb_en_emploi_18_mois: 25,
+              nb_en_emploi_12_mois: 25,
+              nb_en_emploi_6_mois: 50,
+            }),
+          ]);
+
+          const response = await httpClient.get(
+            "/api/inserjeunes/certifications/12345678|23876543212.svg?vue=filieres&theme=" + theme
+          );
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/certifications/23830024203_23876543212_filieres.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+
         it("Vérifie qu'on peut obtenir le widget pour deux filières", async () => {
           const { httpClient } = await startServer();
           await Promise.all([

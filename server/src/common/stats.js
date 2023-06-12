@@ -155,18 +155,18 @@ export function computeCustomStats(data) {
 export function buildDescriptionFiliere(pro, apprentissage) {
   const validFiliere = pro || apprentissage;
 
-  const cfds = new Set([...(pro?.codes_formation_diplome || []), ...(apprentissage?.codes_formation_diplome || [])]);
+  const cfds = [
+    ...new Set([...(pro?.codes_formation_diplome || []), ...(apprentissage?.codes_formation_diplome || [])]),
+  ].sort();
   const descriptionFiliere = [
     ...(pro ? [`${pro.diplome?.libelle || ""} filière ${pro.filiere}`.trim()] : []),
     ...(apprentissage ? [`${apprentissage.diplome?.libelle || ""} filière ${apprentissage.filiere}`.trim()] : []),
   ];
-
+  const certificationText = cfds.length === 1 ? "la certification" : "les certifications";
   return {
     titre:
-      cfds.size === 1
-        ? `Certification ${validFiliere.code_formation_diplome}`
-        : `Certifications ${[...cfds].join(", ")}`,
-    details: `Données InserJeunes pour la/les certification ${[...cfds].join(", ")} (${descriptionFiliere.join(
+      cfds.length === 1 ? `Certification ${validFiliere.code_formation_diplome}` : `Certifications ${cfds.join(", ")}`,
+    details: `Données InserJeunes pour ${certificationText} ${cfds.join(", ")} (${descriptionFiliere.join(
       " et "
     )}) pour le millesime ${validFiliere.millesime}${
       validFiliere.region ? ` et la région ${validFiliere.region.nom}` : ""
