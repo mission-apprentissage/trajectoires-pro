@@ -1,11 +1,12 @@
 
 
-<svg version="1.1" width="882" height="289" viewBox="0 0 882 289" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<svg width="656" height="600" viewBox="0 0 656 600" fill="none" xmlns="http://www.w3.org/2000/svg">
   
-    <title>Certification 1022105, établissement 0751234J</title>
+    <title>Certifications 12345678, 87654321</title>
 
 
-    <desc>Données InserJeunes pour la certification 1022105 (BAC filière apprentissage) dispensée par l'établissement 0751234J, pour le millesime 2018_2019</desc>
+    <desc>Données InserJeunes pour les certifications 12345678, 87654321 (BAC filière pro et BAC filière apprentissage) pour le millesime 2020</desc>
 
 
   <defs>
@@ -81,33 +82,34 @@
   </style>
 </defs>
 
-  <g class="region">
-    <svg x="0" y="10">
-      <text>
-        <tspan x="0" y="15">Les chiffres pour cet établissement</tspan>
-      </text>
-    </svg>
-  </g>
-
+  
   <g class="blocks">
-    <svg y="40">
+    <svg >
+      
+      
+      <g class="filiere">
+        <text>
+          <tspan x="0" y="15">Pour la voie scolaire</tspan>
+        </text>
+      </g>
       <g class="block">
-        <svg x="0" y="10" class="block">
-          <rect width="264" height="170" />
-           <text class="number">
-            <tspan x="130" y="55">25%</tspan>
+        <svg x="0" y="25" class="block">
+          <rect width="308" height="170" />
+          
+          <text class="number">
+            <tspan x="154" y="55">5%</tspan>
           </text>
           <text class="description">
-            <tspan x="130" y="90">sont inscrits en formation</tspan>
+            <tspan x="154" y="90">sont inscrits en formation</tspan>
           </text>
           <text class="details">
-            <tspan x="130" y="115">(Formation supérieure,redoublants,</tspan>
-            <tspan x="130" y="135">changement de filière)</tspan>
+            <tspan x="154" y="115">(Formation supérieure,redoublants,</tspan>
+            <tspan x="154" y="135">changement de filière)</tspan>
           </text>
           
         </svg>
 
-        <svg x="272" y="10" class="block">
+        <svg x="0" y="205" class="block">
           <rect width="308" height="170" />
           
           <text class="number">
@@ -119,31 +121,93 @@
           <text class="details">
             <tspan x="154" y="115">(tout type d&#39;emploi salarié du privé)</tspan>
           </text>
-
           
         </svg>
 
-        <svg x="588" y="10" class="block">
-          <rect width="291" height="170" />
+        <svg x="0" y="385" class="block">
+          <rect width="308" height="170" />
           
           <text class="number">
-            <tspan x="145.5" y="55">12%</tspan>
+            <tspan x="154" y="55">45%</tspan>
           </text>
           <text class="description">
-            <tspan x="145.5" y="90">sont dans d’autres cas</tspan>
+            <tspan x="154" y="90">sont dans d’autres cas</tspan>
           </text>
           <text class="details">
-            <tspan x="145.5" y="115">(Recherche d’emploi, service</tspan>
-            <tspan x="145.5" y="135">civique, à l’étranger, statut</tspan>
-            <tspan x="145.5" y="155">indépendant, etc.)</tspan>
+            <tspan x="154" y="115">(Recherche d’emploi, service</tspan>
+            <tspan x="154" y="135">civique, à l’étranger, statut</tspan>
+            <tspan x="154" y="155">indépendant, etc.)</tspan>
           </text>
           
         </svg>
       </g>
+      
+      
+
+      
+      <svg x="330">
+        
+        <g class="filiere">
+          <text>
+            <tspan x="0" y="15">Pour la voie apprentissage</tspan>
+          </text>
+        </g>
+        <g class="block">
+          <svg x="0" y="25" class="block">
+            <rect width="308" height="170" />
+            
+            <text class="number">
+              <tspan x="154" y="55">5%</tspan>
+            </text>
+            <text class="description">
+              <tspan x="154" y="90">sont inscrits en formation</tspan>
+            </text>
+            <text class="details">
+              <tspan x="154" y="115">(Formation supérieure,redoublants,</tspan>
+              <tspan x="154" y="135">changement de filière)</tspan>
+            </text>
+            
+          </svg>
+
+          <svg x="0" y="205" class="block">
+            <rect width="308" height="170" />
+            
+            <text class="number">
+              <tspan x="154" y="55">50%</tspan>
+            </text>
+            <text class="description">
+              <tspan x="154" y="90">sont en emploi au bout de 6 mois</tspan>
+            </text>
+            <text class="details">
+              <tspan x="154" y="115">(tout type d&#39;emploi salarié du privé)</tspan>
+            </text>
+            
+          </svg>
+
+          <svg x="0" y="385" class="block">
+            <rect width="308" height="170" />
+            
+            <text class="number">
+              <tspan x="154" y="55">45%</tspan>
+            </text>
+            <text class="description">
+              <tspan x="154" y="90">sont dans d’autres cas</tspan>
+            </text>
+            <text class="details">
+              <tspan x="154" y="115">(Recherche d’emploi, service</tspan>
+              <tspan x="154" y="135">civique, à l’étranger, statut</tspan>
+              <tspan x="154" y="155">indépendant, etc.)</tspan>
+            </text>
+            
+          </svg>
+        </g>
+        
+      </svg>
+      
 
       <text class="about">
-        <tspan x="0" y="215">
-          *Données issues du dispositif InserJeunes promotion 2018 à 2019
+        <tspan x="0" y="575">
+          *Données issues du dispositif InserJeunes promotion 2020
         </tspan>
       </text>
     </svg>

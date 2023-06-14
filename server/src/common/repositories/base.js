@@ -1,3 +1,4 @@
+import { omitNil } from "../utils/objectUtils.js";
 import { dbCollection } from "../db/mongodb.js";
 import { $field, $sumOf } from "../utils/mongodbUtils.js";
 import * as Stats from "../stats.js";
@@ -79,10 +80,12 @@ export class MongoRepository extends Repository {
           $group: {
             _id: { filiere: "$filiere", millesime: "$millesime" },
             codes_certifications: { $addToSet: "$code_certification" },
+            codes_formation_diplome: { $addToSet: "$code_formation_diplome" },
             code_formation_diplome: { $first: "$code_formation_diplome" },
             filiere: { $first: "$filiere" },
             millesime: { $first: "$millesime" },
             diplome: { $first: "$diplome" },
+            diplomes: { $addToSet: "$diplome" },
             ...(query["region.code"] ? { region: { $first: "$region" } } : {}),
             ...Stats.getStats(Stats.VALEURS, (statName) => $sumOf($field(statName))),
           },
@@ -98,6 +101,17 @@ export class MongoRepository extends Repository {
           },
         },
         {
+          $addFields: {
+            diplome: {
+              $cond: [{ $gt: [{ $size: "$diplomes" }, 1] }, "$$REMOVE", "$diplome"],
+            },
+            diplomes: "$$REMOVE",
+            code_formation_diplome: {
+              $cond: [{ $eq: [{ $size: "$codes_formation_diplome" }, 1] }, "$code_formation_diplome", "$$REMOVE"],
+            },
+          },
+        },
+        {
           $group: {
             _id: "$millesime",
             stats: { $push: "$$ROOT" },
@@ -110,9 +124,9 @@ export class MongoRepository extends Repository {
       .limit(1)
       .next();
 
-    return {
+    return omitNil({
       pro: result?.stats?.find((s) => s.filiere === "pro"),
       apprentissage: result?.stats?.find((s) => s.filiere === "apprentissage"),
-    };
+    });
   }
 }
