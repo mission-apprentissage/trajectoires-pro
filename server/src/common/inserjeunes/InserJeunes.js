@@ -17,7 +17,7 @@ function getFiliere(filiere) {
     case "apprentissage":
       return "apprentissage";
     default:
-      throw new Error("Filiere inconnue");
+      throw new Error(`Filiere ${filiere} inconnue`);
   }
 }
 

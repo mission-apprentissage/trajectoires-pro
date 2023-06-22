@@ -5,13 +5,15 @@ import { bcn, certificationsStats } from "../common/db/collections/collections.j
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { computeCustomStats, getMillesimes, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
-import { omit, pick } from "lodash-es";
+import { omit, pick, merge } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
 export async function importCertificationsStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
-  const ij = options.inserjeunes || new InserJeunes();
+  // Set a default retry for the InserJeunes API
+  const inserjeunesOptions = merge({ apiOptions: { retry: { retries: 5 } } }, options.inserjeunesOptions || {});
+  const ij = options.inserjeunes || new InserJeunes(inserjeunesOptions);
   const millesimes = options.millesimes || getMillesimes();
   const filieres = options.filieres || ["apprentissage", "voie_pro_sco_educ_nat"];
 

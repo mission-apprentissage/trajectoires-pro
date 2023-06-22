@@ -358,7 +358,11 @@ describe("importCertificationsStats", () => {
         .reply(400, { msg: "filiere incorrect" });
     });
 
-    const stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["inconnue"] });
+    const stats = await importCertificationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { minTimeout: 0 } } },
+      millesimes: ["2020"],
+      filieres: ["inconnue"],
+    });
 
     const count = await certificationsStats().countDocuments({});
     assert.strictEqual(count, 0);
@@ -378,7 +382,11 @@ describe("importCertificationsStats", () => {
         .reply(200, "{json:");
     });
 
-    const stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["inconnue"] });
+    const stats = await importCertificationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { minTimeout: 0 } } },
+      millesimes: ["2020"],
+      filieres: ["inconnue"],
+    });
 
     const count = await certificationsStats().countDocuments({});
     assert.strictEqual(count, 0);

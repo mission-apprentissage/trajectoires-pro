@@ -25,8 +25,8 @@ async function fetchStream(url, options = {}) {
 }
 
 async function fetchJson(url, options = {}) {
-  let response = await _fetch(url, { ...options, responseType: "json" });
-  return response.data;
+  let response = await _fetch(url, { ...options, responseType: "text" });
+  return JSON.parse(response.data);
 }
 
 async function fetchJsonWithRetry(url, options = {}, retryOptions = { retries: 3 }) {

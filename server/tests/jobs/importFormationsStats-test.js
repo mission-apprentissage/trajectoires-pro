@@ -529,6 +529,7 @@ describe("importFormationsStats", () => {
     });
 
     const stats = await importFormationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { retries: 0 } } },
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 

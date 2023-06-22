@@ -1,5 +1,5 @@
 import { Readable } from "stream";
-import { omit, pick } from "lodash-es";
+import { omit, pick, merge } from "lodash-es";
 import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData, filterData } from "oleoduc";
 import { bcn, regionalesStats } from "../common/db/collections/collections.js";
@@ -12,7 +12,10 @@ const logger = getLoggerWithContext("import");
 
 export async function importRegionalesStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
-  const ij = options.inserjeunes || new InserJeunes();
+  // Set a default retry for the InserJeunes API
+  const inserjeunesOptions = merge({ apiOptions: { retry: { retries: 5 } } }, options.inserjeunesOptions || {});
+  const ij = options.inserjeunes || new InserJeunes(inserjeunesOptions);
+
   const millesimes = options.millesimes || getMillesimesRegionales();
   const codes_region_academique =
     options.codes_region_academique || getRegions().map(({ code_region_academique }) => code_region_academique);
@@ -27,10 +30,18 @@ export async function importRegionalesStats(options = {}) {
     // Ignore les codes région académique 00 et 13 (Non géré par IJ)
     return codes_region_academique
       .filter((code) => !["00", "13"].includes(code))
-      .map((code_region_academique) => ({
-        millesime,
-        region: findRegionByCodeRegionAcademique(code_region_academique),
-      }));
+      .map((code_region_academique) => {
+        const region = findRegionByCodeRegionAcademique(code_region_academique);
+
+        if (!region) {
+          throw new Error(`Code région académique ${code_region_academique} inconnu`);
+        }
+
+        return {
+          millesime,
+          region,
+        };
+      });
   });
 
   await oleoduc(
