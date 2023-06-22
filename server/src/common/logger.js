@@ -127,6 +127,16 @@ export const logger = bunyan.createLogger({
         ...(err.errInfo ? { errInfo: err.errInfo } : {}),
       };
     },
+    request: (err) => {
+      return bunyan.stdSerializers.err(omit(err, ["socket", "agent", "res", "_redirectable"]));
+    },
+    response: (err) => {
+      return bunyan.stdSerializers.err({
+        data: err?.data,
+        status: err?.status,
+        headers: err?.headers,
+      });
+    },
   },
   streams: createStreams(),
 });

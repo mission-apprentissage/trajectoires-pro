@@ -75,6 +75,26 @@ class InserJeunesApi extends RateLimitedApi {
     });
   }
 
+  async fetchRegionalesStats(millesime, code_region_academique) {
+    return this.execute(async () => {
+      if (!this.isAuthenticated() || this.isAccessTokenExpired()) {
+        await this.login();
+      }
+
+      const response = await fetchJsonWithRetry(
+        `${InserJeunesApi.baseApiUrl}/region/${code_region_academique}/millesime/${millesime}`,
+        {
+          headers: {
+            ...this.getAuthHeaders(),
+          },
+        },
+        { ...this.retry }
+      );
+
+      return response;
+    });
+  }
+
   async fetchCertificationStats(millesime, filiere) {
     return this.execute(async () => {
       if (!this.isAuthenticated() || this.isAccessTokenExpired()) {

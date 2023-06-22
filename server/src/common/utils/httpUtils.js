@@ -37,7 +37,7 @@ async function fetchJsonWithRetry(url, options = {}, retryOptions = { retries: 3
     {
       ...(retryOptions || {}),
       onRetry: (err) => {
-        logger.error({ err: err }, `Retrying ${url}...`);
+        logger.error({ err: err, request: err.request, response: err.response }, `Retrying ${url}...`);
       },
     }
   );
