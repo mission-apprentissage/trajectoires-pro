@@ -1,6 +1,6 @@
 import { migrateMongodb } from "../common/db/mongodb.js";
 import { promiseAllProps } from "../common/utils/asyncUtils.js";
-import { certificationsStats, formationsStats, regionalesStats } from "../common/db/collections/collections.js";
+import { certificationsStats, formationsStats, regionalesStats, bcn } from "../common/db/collections/collections.js";
 
 const VERSION = 4;
 
@@ -13,6 +13,7 @@ export async function migrate(options = {}) {
       }
 
       return promiseAllProps({
+        bcn: bcn().remove({}),
         certificationsStats: certificationsStats().remove({}),
         formationsStats: formationsStats().remove({}),
         regionalesStats: regionalesStats().remove({}),

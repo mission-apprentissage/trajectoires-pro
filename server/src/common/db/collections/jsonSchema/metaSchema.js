@@ -33,7 +33,7 @@ export function metaSchema(additionalSchema = []) {
         created_on: date(),
         updated_on: date(),
       },
-      { required: ["created_on", "updated_on"] }
+      {}
     ),
     ...additionalSchema
   );
