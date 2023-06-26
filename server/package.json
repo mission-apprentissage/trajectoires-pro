@@ -39,6 +39,7 @@
     "json-schema-to-typescript": "10.1.5",
     "lodash-es": "4.17.21",
     "luxon": "2.3.2",
+    "mockdate": "3.0.5",
     "mongodb": "4.5.0",
     "oleoduc": "0.7.0",
     "passport": "0.5.2",

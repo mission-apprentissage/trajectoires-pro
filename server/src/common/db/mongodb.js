@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { merge } from "lodash-es";
 import config from "../../config.js";
 import { getCollectionDescriptors } from "./collections/collections.js";
 import { writeData } from "oleoduc";
@@ -121,6 +122,26 @@ export async function migrateMongodb(version, callback, options = {}) {
   const res = await callback();
 
   await dbCollection("migrations").insertOne({ version });
+
+  return res;
+}
+
+export async function upsert(collection, query, fields, onModified = {}) {
+  const res = await collection.updateOne(query, fields, { upsert: true });
+
+  if (res.modifiedCount) {
+    await collection.updateOne(
+      query,
+      merge(
+        {
+          $set: {
+            "_meta.updated_on": new Date(),
+          },
+        },
+        onModified
+      )
+    );
+  }
 
   return res;
 }

@@ -1,5 +1,6 @@
 import { Readable } from "stream";
 import { omit, pick, merge } from "lodash-es";
+import { upsert } from "../common/db/mongodb.js";
 import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData, filterData } from "oleoduc";
 import { bcn, regionalesStats } from "../common/db/collections/collections.js";
@@ -72,23 +73,21 @@ export async function importRegionalesStats(options = {}) {
           const stats = omit(regionaleStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(regionaleStats);
 
-          const res = await regionalesStats().updateOne(
-            query,
-            {
-              $setOnInsert: {
-                "_meta.date_import": new Date(),
-              },
-              $set: omitNil({
-                ...stats,
-                ...customStats,
-                region: pick(region, ["code", "nom", "code_region_academique"]),
-                code_formation_diplome: certification?.code_formation_diplome,
-                diplome: certification?.diplome,
-                "_meta.inserjeunes": pick(regionaleStats, INSERJEUNES_IGNORED_STATS_NAMES),
-              }),
+          const res = await upsert(regionalesStats(), query, {
+            $setOnInsert: {
+              "_meta.date_import": new Date(),
+              "_meta.created_on": new Date(),
+              "_meta.updated_on": new Date(),
             },
-            { upsert: true }
-          );
+            $set: omitNil({
+              ...stats,
+              ...customStats,
+              region: pick(region, ["code", "nom", "code_region_academique"]),
+              code_formation_diplome: certification?.code_formation_diplome,
+              diplome: certification?.diplome,
+              "_meta.inserjeunes": pick(regionaleStats, INSERJEUNES_IGNORED_STATS_NAMES),
+            }),
+          });
 
           if (res.upsertedCount) {
             logger.info("Nouvelle stats regionale ajoutée", query);

@@ -1,9 +1,10 @@
 import chai, { assert } from "chai";
 import chaiAsPromised from "chai-as-promised";
+import MockDate from "mockdate";
 import { importRegionalesStats } from "../../src/jobs/importRegionalesStats.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
 import { insertCFD, insertMEF, insertRegionalesStats } from "../utils/fakeData.js";
-import { omit, pickBy } from "lodash-es";
+import { pickBy } from "lodash-es";
 import { regionalesStats } from "../../src/common/db/collections/collections.js";
 
 chai.use(chaiAsPromised);
@@ -22,6 +23,14 @@ describe("importRegionalesStats", () => {
         .reply(200, responses.regionales(response));
     });
   }
+
+  before(() => {
+    MockDate.set("2023-01-01");
+  });
+
+  after(() => {
+    MockDate.reset();
+  });
 
   it("Vérifie qu'on peut importer les stats d'une région (apprentissage)", async () => {
     mockApi("2020_2021", "01", {
@@ -61,7 +70,7 @@ describe("importRegionalesStats", () => {
     const stats = await importRegionalesStats({ millesimes: ["2020_2021"], codes_region_academique: ["01"] });
 
     const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
+    assert.deepStrictEqual(found, {
       millesime: "2020_2021",
       filiere: "apprentissage",
       nb_en_emploi_6_mois: 6,
@@ -76,10 +85,14 @@ describe("importRegionalesStats", () => {
         code_region_academique: "01",
         nom: "Auvergne-Rhône-Alpes",
       },
-    });
-    assert.ok(found._meta.date_import);
-    assert.deepStrictEqual(found._meta.inserjeunes, {
-      taux_poursuite_etudes: 6,
+      _meta: {
+        inserjeunes: {
+          taux_poursuite_etudes: 6,
+        },
+        created_on: new Date("2023-01-01T00:00:00.000Z"),
+        updated_on: new Date("2023-01-01T00:00:00.000Z"),
+        date_import: new Date("2023-01-01T00:00:00.000Z"),
+      },
     });
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
@@ -108,7 +121,7 @@ describe("importRegionalesStats", () => {
     const stats = await importRegionalesStats({ millesimes: ["2020_2021"], codes_region_academique: ["01"] });
 
     const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
+    assert.deepStrictEqual(found, {
       filiere: "pro",
       millesime: "2020_2021",
       code_certification: "12345678900",
@@ -123,8 +136,13 @@ describe("importRegionalesStats", () => {
         code_region_academique: "01",
         nom: "Auvergne-Rhône-Alpes",
       },
+      _meta: {
+        inserjeunes: {},
+        created_on: new Date("2023-01-01T00:00:00.000Z"),
+        updated_on: new Date("2023-01-01T00:00:00.000Z"),
+        date_import: new Date("2023-01-01T00:00:00.000Z"),
+      },
     });
-    assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
@@ -401,7 +419,7 @@ describe("importRegionalesStats", () => {
       { millesime: "2020_2021", "region.code_region_academique": "01" },
       { projection: { _id: 0 } }
     );
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
+    assert.deepStrictEqual(found, {
       code_certification: "12345678",
       code_formation_diplome: "48286940",
       diplome: {
@@ -416,13 +434,19 @@ describe("importRegionalesStats", () => {
         code_region_academique: "01",
         nom: "Auvergne-Rhône-Alpes",
       },
+      _meta: {
+        inserjeunes: {},
+        created_on: new Date("2023-01-01T00:00:00.000Z"),
+        updated_on: new Date("2023-01-01T00:00:00.000Z"),
+        date_import: new Date("2023-01-01T00:00:00.000Z"),
+      },
     });
 
     found = await regionalesStats().findOne(
       { millesime: "2020_2021", "region.code_region_academique": "02" },
       { projection: { _id: 0 } }
     );
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
+    assert.deepStrictEqual(found, {
       code_certification: "12345678",
       code_formation_diplome: "48286940",
       diplome: {
@@ -436,6 +460,12 @@ describe("importRegionalesStats", () => {
         code: "27",
         code_region_academique: "02",
         nom: "Bourgogne-Franche-Comté",
+      },
+      _meta: {
+        inserjeunes: {},
+        created_on: new Date("2023-01-01T00:00:00.000Z"),
+        updated_on: new Date("2023-01-01T00:00:00.000Z"),
+        date_import: new Date("2023-01-01T00:00:00.000Z"),
       },
     });
   });

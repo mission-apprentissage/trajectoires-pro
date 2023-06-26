@@ -1,6 +1,7 @@
 import { Readable } from "stream";
 import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
+import { upsert } from "../common/db/mongodb.js";
 import { bcn, certificationsStats } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
@@ -48,22 +49,20 @@ export async function importCertificationsStats(options = {}) {
           const stats = omit(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(certificationStats);
 
-          const res = await certificationsStats().updateOne(
-            query,
-            {
-              $setOnInsert: {
-                "_meta.date_import": new Date(),
-              },
-              $set: omitNil({
-                ...stats,
-                ...customStats,
-                code_formation_diplome: certification?.code_formation_diplome,
-                diplome: certification?.diplome,
-                "_meta.inserjeunes": pick(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES),
-              }),
+          const res = await upsert(certificationsStats(), query, {
+            $setOnInsert: {
+              "_meta.date_import": new Date(),
+              "_meta.created_on": new Date(),
+              "_meta.updated_on": new Date(),
             },
-            { upsert: true }
-          );
+            $set: omitNil({
+              ...stats,
+              ...customStats,
+              code_formation_diplome: certification?.code_formation_diplome,
+              diplome: certification?.diplome,
+              "_meta.inserjeunes": pick(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES),
+            }),
+          });
 
           if (res.upsertedCount) {
             logger.info("Nouvelle stats de certification ajoutée", query);

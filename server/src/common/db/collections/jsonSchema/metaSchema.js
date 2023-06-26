@@ -1,6 +1,16 @@
+import { merge } from "lodash-es";
 import { date, integer, object } from "./jsonSchemaTypes.js";
 
-export function metaSchema() {
+export function metaBCNSchema() {
+  return object(
+    {
+      date_import: date(),
+    },
+    { required: ["date_import"] }
+  );
+}
+
+export function metaIJSchema() {
   return object(
     {
       date_import: date(),
@@ -13,5 +23,18 @@ export function metaSchema() {
       }),
     },
     { required: ["date_import"] }
+  );
+}
+
+export function metaSchema(additionalSchema = []) {
+  return merge(
+    object(
+      {
+        created_on: date(),
+        updated_on: date(),
+      },
+      { required: ["created_on", "updated_on"] }
+    ),
+    ...additionalSchema
   );
 }
