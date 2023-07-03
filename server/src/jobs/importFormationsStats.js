@@ -123,8 +123,8 @@ export async function importFormationsStats(options = {}) {
           const res = await upsert(formationsStats(), query, {
             $setOnInsert: {
               "_meta.date_import": new Date(),
-              "_meta.created_on": new Date(),
-              "_meta.updated_on": new Date(),
+              // "_meta.created_on": new Date(),
+              // "_meta.updated_on": new Date(),
             },
             $set: omitNil({
               ...stats,
@@ -133,6 +133,8 @@ export async function importFormationsStats(options = {}) {
               code_formation_diplome: certification?.code_formation_diplome,
               diplome: certification?.diplome,
               "_meta.inserjeunes": pick(formationStats, INSERJEUNES_IGNORED_STATS_NAMES),
+              "_meta.created_on": new Date(),
+              "_meta.updated_on": new Date(),
             }),
           });
 

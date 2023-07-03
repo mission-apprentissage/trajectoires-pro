@@ -72,10 +72,14 @@ export async function importBCN(options = {}) {
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
+                // "_meta.created_on": new Date(),
+                // "_meta.updated_on": new Date(),
+              },
+              $set: omitNil({
+                ...data,
                 "_meta.created_on": new Date(),
                 "_meta.updated_on": new Date(),
-              },
-              $set: omitNil(data),
+              }),
             }
           );
 
