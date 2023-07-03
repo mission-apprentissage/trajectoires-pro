@@ -1,5 +1,6 @@
 import assert from "assert";
 import { merge, omit } from "lodash-es";
+import MockDate from "mockdate";
 import { createStream } from "../utils/testUtils.js";
 import { importBCN } from "../../src/jobs/importBCN.js";
 import { bcn } from "../../src/common/db/collections/collections.js";
@@ -17,6 +18,14 @@ function getBcnTables(custom = {}) {
 }
 
 describe("importBCN", () => {
+  before(() => {
+    MockDate.set("2023-01-01");
+  });
+
+  after(() => {
+    MockDate.reset();
+  });
+
   it("Vérifie qu'on peut importer les mefs", async () => {
     let stats = await importBCN(
       getBcnTables({
@@ -26,15 +35,19 @@ describe("importBCN", () => {
     );
 
     const found = await bcn().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
+    assert.deepStrictEqual(found, {
       type: "mef",
       code_certification: "99999999911",
       code_formation_diplome: "40023203",
       date_fermeture: new Date("2022-08-31T00:00:00.000Z"),
       diplome: { code: "4", libelle: "BAC" },
       libelle: "BAC PRO",
+      _meta: {
+        created_on: new Date("2023-01-01T00:00:00.000Z"),
+        updated_on: new Date("2023-01-01T00:00:00.000Z"),
+        date_import: new Date("2023-01-01T00:00:00.000Z"),
+      },
     });
-    assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0, total: 1 });
   });
 
@@ -61,7 +74,7 @@ describe("importBCN", () => {
     );
 
     const found = await bcn().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
+    assert.deepStrictEqual(found, {
       type: "cfd",
       code_certification: "40023203",
       code_formation_diplome: "40023203",
@@ -71,8 +84,12 @@ describe("importBCN", () => {
         code: "4",
         libelle: "BAC",
       },
+      _meta: {
+        created_on: new Date("2023-01-01T00:00:00.000Z"),
+        updated_on: new Date("2023-01-01T00:00:00.000Z"),
+        date_import: new Date("2023-01-01T00:00:00.000Z"),
+      },
     });
-    assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0, total: 1 });
   });
 

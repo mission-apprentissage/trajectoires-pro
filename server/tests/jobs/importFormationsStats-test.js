@@ -1,5 +1,6 @@
 import { assert } from "chai";
-import { omit, pickBy } from "lodash-es";
+import { pickBy } from "lodash-es";
+import MockDate from "mockdate";
 import { importFormationsStats } from "../../src/jobs/importFormationsStats.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
 import { insertCFD, insertFormationsStats, insertMEF } from "../utils/fakeData.js";
@@ -19,6 +20,14 @@ describe("importFormationsStats", () => {
         .reply(200, responses.uai(response));
     });
   }
+
+  before(() => {
+    MockDate.set("2023-01-01");
+  });
+
+  after(() => {
+    MockDate.reset();
+  });
 
   it("Vérifie qu'on peut importer les stats d'une formation (apprentissage)", async () => {
     mockApi("0751234J", "2018_2019", {
@@ -58,7 +67,7 @@ describe("importFormationsStats", () => {
     });
 
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
+    assert.deepStrictEqual(found, {
       uai: "0751234J",
       code_certification: "12345678",
       code_formation_diplome: "12345678",
@@ -73,11 +82,16 @@ describe("importFormationsStats", () => {
         code: "76",
         nom: "Occitanie",
       },
+      _meta: {
+        inserjeunes: {
+          taux_poursuite_etudes: 6,
+        },
+        created_on: new Date("2023-01-01T00:00:00.000Z"),
+        updated_on: new Date("2023-01-01T00:00:00.000Z"),
+        date_import: new Date("2023-01-01T00:00:00.000Z"),
+      },
     });
-    assert.ok(found._meta.date_import);
-    assert.deepStrictEqual(found._meta.inserjeunes, {
-      taux_poursuite_etudes: 6,
-    });
+
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
@@ -106,7 +120,7 @@ describe("importFormationsStats", () => {
     });
 
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
+    assert.deepStrictEqual(found, {
       uai: "0751234J",
       code_certification: "12345678900",
       code_formation_diplome: "12345678",
@@ -121,8 +135,13 @@ describe("importFormationsStats", () => {
         code: "76",
         nom: "Occitanie",
       },
+      _meta: {
+        inserjeunes: {},
+        created_on: new Date("2023-01-01T00:00:00.000Z"),
+        updated_on: new Date("2023-01-01T00:00:00.000Z"),
+        date_import: new Date("2023-01-01T00:00:00.000Z"),
+      },
     });
-    assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
@@ -529,6 +548,7 @@ describe("importFormationsStats", () => {
     });
 
     const stats = await importFormationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { retries: 0 } } },
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
 

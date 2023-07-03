@@ -4,8 +4,21 @@ import { transformData, filterData, accumulateData, flattenArray, oleoduc, write
 import { InserJeunesApi } from "./InserJeunesApi.js";
 import { streamNestedJsonArray } from "../utils/streamUtils.js";
 
-function getFiliere(dimension) {
+function getFiliereFromIDType(dimension) {
   return dimension["id_formation_apprentissage"] ? "apprentissage" : "pro";
+}
+
+function getFiliere(filiere) {
+  switch (filiere) {
+    case "voie_pro_sco_educ_nat":
+      return "pro";
+    case "voie_pro_sco_agri":
+      return "agricole";
+    case "apprentissage":
+      return "apprentissage";
+    default:
+      throw new Error(`Filiere ${filiere} inconnue`);
+  }
 }
 
 function getCodeCertification(dimension) {
@@ -22,6 +35,7 @@ function groupByCertification(additionalData = {}) {
   return accumulateData(
     (acc, stats) => {
       const dimension = stats.dimensions[0];
+      const filiere = stats.filiere || null;
       const code = getCodeCertification(dimension);
 
       const index = acc.findIndex((item) => item.code_certification === code);
@@ -29,7 +43,7 @@ function groupByCertification(additionalData = {}) {
       if (index === -1) {
         acc.push({
           ...additionalData,
-          filiere: getFiliere(dimension),
+          filiere: filiere ? getFiliere(filiere) : getFiliereFromIDType(dimension),
           code_certification: code,
           [stats.id_mesure]: stats.valeur_mesure,
         });
@@ -89,6 +103,14 @@ class InserJeunes {
     const etablissementsStats = await this.api.fetchEtablissementStats(uai, millesime);
 
     return await transformApiStats(etablissementsStats, groupByCertification({ uai, millesime }));
+  }
+
+  async getRegionalesStats(millesime, code_region_academique) {
+    // l'API IJ renvoi un JSON dans un JSON sauf sur la route regionale
+    // stringify le JSON reçu pour être cohérent avec les autres routes
+    const regionalesStats = JSON.stringify(await this.api.fetchRegionalesStats(millesime, code_region_academique));
+
+    return await transformApiStats(regionalesStats, groupByCertification({ millesime }));
   }
 
   async getCertificationsStats(millesime, filiere) {

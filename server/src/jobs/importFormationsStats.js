@@ -1,6 +1,7 @@
 import { compose, flattenArray, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
 import { Readable } from "stream";
 import { omit, pick, merge } from "lodash-es";
+import { upsert } from "../common/db/mongodb.js";
 import { getFromStorage } from "../common/utils/ovhUtils.js";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
@@ -119,23 +120,21 @@ export async function importFormationsStats(options = {}) {
           const stats = omit(formationStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(formationStats);
 
-          const res = await formationsStats().updateOne(
-            query,
-            {
-              $setOnInsert: {
-                "_meta.date_import": new Date(),
-              },
-              $set: omitNil({
-                ...stats,
-                ...customStats,
-                region: pick(params.region, ["code", "nom"]),
-                code_formation_diplome: certification?.code_formation_diplome,
-                diplome: certification?.diplome,
-                "_meta.inserjeunes": pick(formationStats, INSERJEUNES_IGNORED_STATS_NAMES),
-              }),
+          const res = await upsert(formationsStats(), query, {
+            $setOnInsert: {
+              "_meta.date_import": new Date(),
+              "_meta.created_on": new Date(),
+              "_meta.updated_on": new Date(),
             },
-            { upsert: true }
-          );
+            $set: omitNil({
+              ...stats,
+              ...customStats,
+              region: pick(params.region, ["code", "nom"]),
+              code_formation_diplome: certification?.code_formation_diplome,
+              diplome: certification?.diplome,
+              "_meta.inserjeunes": pick(formationStats, INSERJEUNES_IGNORED_STATS_NAMES),
+            }),
+          });
 
           if (res.upsertedCount) {
             logger.info("Nouvelle stats de formation ajoutée", query);

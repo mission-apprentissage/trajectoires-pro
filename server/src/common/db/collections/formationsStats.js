@@ -2,7 +2,7 @@ import { object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 import { statsSchema } from "./jsonSchema/statsSchema.js";
 import { regionSchema } from "./jsonSchema/regionSchema.js";
-import { metaSchema } from "./jsonSchema/metaSchema.js";
+import { metaSchema, metaIJSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "formationsStats";
 
@@ -27,7 +27,7 @@ export function schema() {
       diplome: diplomeSchema(),
       region: regionSchema(),
       ...statsSchema(),
-      _meta: metaSchema(),
+      _meta: metaSchema([metaIJSchema()]),
     },
     {
       required: ["uai", "millesime", "code_certification", "code_formation_diplome", "filiere", "diplome", "region"],

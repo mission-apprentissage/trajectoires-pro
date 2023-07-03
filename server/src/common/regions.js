@@ -1,6 +1,7 @@
 const REGIONS = [
   {
     code: "00",
+    code_region_academique: "00",
     nom: "Collectivités d'outre-mer",
     departements: [
       { code: "987", nom: "Polynésie Française" },
@@ -23,36 +24,42 @@ const REGIONS = [
   },
   {
     code: "01",
+    code_region_academique: "07",
     nom: "Guadeloupe",
     departements: [{ code: "971", nom: "Guadeloupe" }],
     academies: [{ code: "32", nom: "Guadeloupe" }],
   },
   {
     code: "02",
+    code_region_academique: "12",
     nom: "Martinique",
     departements: [{ code: "972", nom: "Martinique" }],
     academies: [{ code: "31", nom: "Martinique" }],
   },
   {
     code: "03",
+    code_region_academique: "08",
     nom: "Guyane",
     departements: [{ code: "973", nom: "Guyane" }],
     academies: [{ code: "33", nom: "Guyane" }],
   },
   {
     code: "04",
+    code_region_academique: "11",
     nom: "La Réunion",
     departements: [{ code: "974", nom: "La Réunion" }],
     academies: [{ code: "28", nom: "La Réunion" }],
   },
   {
     code: "06",
+    code_region_academique: "13",
     nom: "Mayotte",
     departements: [{ code: "976", nom: "Mayotte" }],
     academies: [{ code: "43", nom: "Mayotte" }],
   },
   {
     code: "11",
+    code_region_academique: "10",
     nom: "Île-de-France",
     departements: [
       { code: "75", nom: "Paris" },
@@ -72,6 +79,7 @@ const REGIONS = [
   },
   {
     code: "24",
+    code_region_academique: "04",
     nom: "Centre-Val de Loire",
     departements: [
       { code: "28", nom: "Eure-et-Loir" },
@@ -85,6 +93,7 @@ const REGIONS = [
   },
   {
     code: "27",
+    code_region_academique: "02",
     nom: "Bourgogne-Franche-Comté",
     departements: [
       { code: "70", nom: "Haute-Saône" },
@@ -103,6 +112,7 @@ const REGIONS = [
   },
   {
     code: "28",
+    code_region_academique: "14",
     nom: "Normandie",
     departements: [
       { code: "76", nom: "Seine-Maritime" },
@@ -115,6 +125,7 @@ const REGIONS = [
   },
   {
     code: "32",
+    code_region_academique: "09",
     nom: "Hauts-de-France",
     departements: [
       { code: "80", nom: "Somme" },
@@ -130,6 +141,7 @@ const REGIONS = [
   },
   {
     code: "44",
+    code_region_academique: "06",
     nom: "Grand Est",
     departements: [
       { code: "88", nom: "Vosges" },
@@ -151,6 +163,7 @@ const REGIONS = [
   },
   {
     code: "52",
+    code_region_academique: "17",
     nom: "Pays de la Loire",
     departements: [
       { code: "72", nom: "Sarthe" },
@@ -163,6 +176,7 @@ const REGIONS = [
   },
   {
     code: "53",
+    code_region_academique: "03",
     nom: "Bretagne",
     departements: [
       { code: "29", nom: "Finistère" },
@@ -174,6 +188,7 @@ const REGIONS = [
   },
   {
     code: "75",
+    code_region_academique: "15",
     nom: "Nouvelle-Aquitaine",
     departements: [
       { code: "79", nom: "Deux-Sèvres" },
@@ -197,6 +212,7 @@ const REGIONS = [
   },
   {
     code: "76",
+    code_region_academique: "16",
     nom: "Occitanie",
     departements: [
       { code: "81", nom: "Tarn" },
@@ -220,6 +236,7 @@ const REGIONS = [
   },
   {
     code: "84",
+    code_region_academique: "01",
     nom: "Auvergne-Rhône-Alpes",
     departements: [
       { code: "73", nom: "Savoie" },
@@ -243,6 +260,7 @@ const REGIONS = [
   },
   {
     code: "93",
+    code_region_academique: "18",
     nom: "Provence-Alpes-Côte d'Azur",
     departements: [
       { code: "83", nom: "Var" },
@@ -259,6 +277,7 @@ const REGIONS = [
   },
   {
     code: "94",
+    code_region_academique: "05",
     nom: "Corse",
     departements: [
       { code: "20", nom: "Corse" },
@@ -301,6 +320,10 @@ export function findRegionByNom(nom) {
 
 export function findRegionByCode(code) {
   return REGIONS.find((region) => region.code === code) || null;
+}
+
+export function findRegionByCodeRegionAcademique(code) {
+  return REGIONS.find((region) => region.code_region_academique === code) || null;
 }
 
 export function findRegionByCodeInsee(code) {

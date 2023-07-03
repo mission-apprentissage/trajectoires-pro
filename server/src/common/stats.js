@@ -49,6 +49,10 @@ export function getMillesimesFormations() {
   return config.millesimes.formations;
 }
 
+export function getMillesimesRegionales() {
+  return config.millesimes.regionales;
+}
+
 export function getLastMillesimesFormations() {
   return config.millesimes.formations[config.millesimes.formations.length - 1];
 }

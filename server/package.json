@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "async-retry": "1.3.3",
-    "axios": "0.27.2",
+    "axios": "1.4.0",
     "body-parser": "1.20.0",
     "boom": "7.3.0",
     "bunyan": "1.8.15",
@@ -39,6 +39,7 @@
     "json-schema-to-typescript": "10.1.5",
     "lodash-es": "4.17.21",
     "luxon": "2.3.2",
+    "mockdate": "3.0.5",
     "mongodb": "4.5.0",
     "oleoduc": "0.7.0",
     "passport": "0.5.2",
