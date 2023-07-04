@@ -1,5 +1,4 @@
 ARG TRAJECTOIRES_PRO_ENV=production
-
 #From https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 # Install dependencies only when needed
 FROM node:16-alpine AS deps
@@ -19,7 +18,16 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
-ENV BUILD_STANDALONE true
+
+ARG METABASE_SECRET_KEY
+ARG METABASE_SITE_URL
+ARG METABASE_DASHBOARD_STATS_ID
+ARG METABASE_DASHBOARD_STATS_DETAILS_ID
+
+ENV METABASE_SECRET_KEY $METABASE_SECRET_KEY
+ENV METABASE_SITE_URL $METABASE_SITE_URL
+ENV METABASE_DASHBOARD_STATS_ID $METABASE_DASHBOARD_STATS_ID
+ENV METABASE_DASHBOARD_STATS_DETAILS_ID $METABASE_DASHBOARD_STATS_DETAILS_ID
 
 RUN yarn build
 
