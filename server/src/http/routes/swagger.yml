@@ -66,6 +66,23 @@ paths:
         404:
           $ref: "#/components/responses/404-Code-Certification"
 
+  /api/inserjeunes/certifications/{codes_certifications}:
+    get:
+      description: Obtenir les statistiques agrégées de plusieurs certifications sous la forme d'une vue par filière (pro et apprentissage)
+      parameters:
+        - $ref: "#/components/parameters/multiple_codes_certifications"
+        - $ref: "#/components/parameters/millesime"
+      responses:
+        200:
+          $ref: "#/components/responses/FilieresResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404-Code-Certification"
+
+
   /api/inserjeunes/certifications/{code_certification}.svg:
     get:
       description: Génère une image SVG (widget) avec les statistiques d'une certification
@@ -85,6 +102,26 @@ paths:
           $ref: "#/components/responses/401"
         404:
           $ref: "#/components/responses/404-Code-Certification"
+
+  /api/inserjeunes/certifications/{codes_certifications}.svg:
+    get:
+      description: Génère une image SVG (widget) avec les statistiques agrégées de plusieurs certifications sous la forme d'une vue par filière (pro et apprentissage).
+      parameters:
+        - $ref: "#/components/parameters/multiple_codes_certifications"
+        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/direction"
+        - $ref: "#/components/parameters/theme"
+        - $ref: "#/components/parameters/imageOnError"
+      responses:
+        200:
+          $ref: "#/components/responses/SVGResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404-Code-Certification"
+
 
   /api/inserjeunes/regionales:
     get:
@@ -190,6 +227,23 @@ paths:
         404:
           $ref: "#/components/responses/404-Code-Regionale"
 
+  /api/inserjeunes/regionales/{code_region}/certifications/{codes_certifications}:
+    get:
+      description: Obtenir les statistiques agrégées de plusieurs certifications sous la forme d'une vue par filière (pro et apprentissage)
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/multiple_codes_certifications"
+        - $ref: "#/components/parameters/millesime"
+      responses:
+        200:
+          $ref: "#/components/responses/FilieresRegionaleResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404-Code-Regionale"
+
   /api/inserjeunes/regionales/{code_region}/certifications/{code_certification}.svg:
     get:
       description: Génère une image SVG (widget) avec les statistiques d'une certification
@@ -198,6 +252,26 @@ paths:
         - $ref: "#/components/parameters/code_certification"
         - $ref: "#/components/parameters/millesime"
         - $ref: "#/components/parameters/vue"
+        - $ref: "#/components/parameters/direction"
+        - $ref: "#/components/parameters/theme"
+        - $ref: "#/components/parameters/imageOnError"
+      responses:
+        200:
+          $ref: "#/components/responses/SVGResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404-Code-Regionale"
+
+  /api/inserjeunes/regionales/{code_region}/certifications/{codes_certifications}.svg:
+    get:
+      description: Génère une image SVG (widget) avec les  statistiques agrégées de plusieurs certifications sous la forme d'une vue par filière (pro et apprentissage).
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/multiple_codes_certifications"
+        - $ref: "#/components/parameters/millesime"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
         - $ref: "#/components/parameters/imageOnError"
@@ -382,7 +456,7 @@ components:
       name: vue
       in: query
       description: |
-        Retourne les statistiques représentées sous la forme d'une vue
+        Retourne les statistiques représentées sous la forme d'une vue (voir réponse de [/api/inserjeunes/certifications/{codes_certifications}](#/default/get_api_inserjeunes_certifications__codes_certifications_))
         
         Vues :
          ```
@@ -586,6 +660,13 @@ components:
         filiere:
           type: string
           enum: [ "apprentissage", "pro" ]
+        diplome:
+          type: object
+          properties:
+            code:
+              type: string
+            libelle:
+              type: string
         nb_sortant:
           type: number
         nb_annee_term:
@@ -769,6 +850,89 @@ components:
         _meta:
           $ref: "#/components/schemas/Meta"
 
+    CertificationFiliere:
+      type: object
+      description: |
+        Statistiques pour une/plusieurs certifications en vue filière.
+
+        Les taux retournés sont :
+          * null quand les effectifs (nb_annee_term) sont < 20
+          * absent si l'on ne peut pas les calculer (données manquantes)
+      required:
+        - millesime
+        - filiere
+        - _meta
+      properties:
+        millesime:
+          type: string
+        codes_certifications:
+          type: array
+          description: "Codes de certifications"
+          items:
+            type: string
+        codes_formation_diplome:
+          type: array
+          description: "Tableau des CFD des certifications"
+          items:
+            type: string
+        code_formation_diplome:
+          type: string
+          description: "CFD (lorsqu'un seul CFD est retourné)"
+        filiere:
+          type: string
+          enum: [ "apprentissage", "pro" ]
+        diplome:
+          type: object
+          description: Renvoi le diplome uniquement si le diplome de toutes les certifications est le même
+          properties:
+            code:
+              type: string
+            libelle:
+              type: string
+        nb_sortant:
+          type: number
+        nb_annee_term:
+          type: number
+        nb_poursuite_etudes:
+          type: number
+        nb_en_emploi_24_mois:
+          type: number
+        nb_en_emploi_18_mois:
+          type: number
+        nb_en_emploi_12_mois:
+          type: number
+        nb_en_emploi_6_mois:
+          type: number
+        taux_en_emploi_24_mois:
+          type: number
+          nullable: true
+        taux_en_emploi_18_mois:
+          type: number
+          nullable: true
+        taux_en_emploi_12_mois:
+          type: number
+          nullable: true
+        taux_en_emploi_6_mois:
+          type: number
+          nullable: true
+        taux_en_formation:
+          type: number
+          nullable: true
+        taux_autres_6_mois:
+          type: number
+          nullable: true
+        taux_autres_12_mois:
+          type: number
+          nullable: true
+        taux_autres_18_mois:
+          type: number
+          nullable: true
+        taux_autres_24_mois:
+          type: number
+          nullable: true
+        _meta:
+          $ref: "#/components/schemas/Meta"
+
   responses:
     '400':
       description: Bad Request
@@ -932,16 +1096,40 @@ components:
             $ref: "#/components/schemas/Formation"
 
     FilieresResponse:
-      description: Statistiques aggrégées par filière pour une ou plusieurs certifications
+      description: |
+        Statistiques agrégées par filière pour une ou plusieurs certifications
       content:
         "*/*":
           schema:
             type: object
             properties:
               pro:
-                $ref: "#/components/schemas/Certification"
+                $ref: "#/components/schemas/CertificationFiliere"
               apprentissage:
-                $ref: "#/components/schemas/Certification"
+                $ref: "#/components/schemas/CertificationFiliere"
+
+    FilieresRegionaleResponse:
+      description: |
+        Statistiques agrégées par filière pour une ou plusieurs certifications
+      content:
+        "*/*":
+          schema:
+            type: object
+            properties:
+              pro:
+                allOf:
+                  - $ref: "#/components/schemas/CertificationFiliere"
+                  - type: object
+                    properties:
+                      region:
+                        $ref: "#/components/schemas/Region"
+              apprentissage:
+                allOf:
+                  - $ref: "#/components/schemas/CertificationFiliere"
+                  - type: object
+                    properties:
+                      region:
+                        $ref: "#/components/schemas/Region"
 
     SVGResponse:
       description: Une image SVG

@@ -5,3 +5,8 @@ location / {
     }
     return 307 https://beta.gouv.fr/startups/?incubateur=mission-inserjeunes;
 }
+
+location /ui {
+    set $upstream http://ui:3000;
+    include includes/proxy.conf;
+}

@@ -14,7 +14,7 @@ import {
   sendStats,
   sendImageOnError,
 } from "../utils/responseUtils.js";
-import { findCodeFormationDiplome } from "../../common/bcn.js";
+import { findCodesFormationDiplome } from "../../common/bcn.js";
 import { getLastMillesimesFormations, transformDisplayStat } from "../../common/stats.js";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
 import RegionalesRepository from "../../common/repositories/regionales.js";
@@ -99,31 +99,32 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/regionales/:region/certifications/:code_certification.:ext?",
+    "/api/inserjeunes/regionales/:region/certifications/:codes_certifications.:ext?",
     tryCatch(async (req, res) => {
-      const { region, code_certification, millesime, vue, ...options } = await validate(
+      const { region, codes_certifications, millesime, vue, ...options } = await validate(
         { ...req.params, ...req.query },
         {
           ...validators.region(),
-          code_certification: Joi.string().required(),
+          codes_certifications: validators.arrayOf(Joi.string().required()).default([]).min(1),
           millesime: Joi.string().default(getLastMillesimesFormations()),
           ...validators.vues(),
           ...validators.svg(),
         }
       );
 
-      if (vue === "filieres") {
-        const cfd = await findCodeFormationDiplome(code_certification);
-        const filieresStats = cfd
-          ? mapValues(
-              await RegionalesRepository.getFilieresStats({
-                code_formation_diplome: cfd,
-                millesime,
-                region,
-              }),
-              transformDisplayStat()
-            )
-          : {};
+      if (vue === "filieres" || codes_certifications.length > 1) {
+        const cfds = await findCodesFormationDiplome(codes_certifications);
+        const filieresStats =
+          cfds && cfds.length > 0
+            ? mapValues(
+                await RegionalesRepository.getFilieresStats({
+                  code_formation_diplome: cfds,
+                  millesime,
+                  region,
+                }),
+                transformDisplayStat()
+              )
+            : {};
 
         return sendImageOnError(
           async () => await sendFilieresStats(filieresStats, res, options),
@@ -135,6 +136,7 @@ export default () => {
 
       return sendImageOnError(
         async () => {
+          const code_certification = codes_certifications[0];
           const exist = await RegionalesRepository.exist({ region, code_certification });
           if (!exist) {
             throw new ErrorRegionaleNotFound();

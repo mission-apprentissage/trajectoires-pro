@@ -1,3 +1,17 @@
+# [1.4.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.3.1...v1.4.0) (2023-07-04)
+
+
+### Bug Fixes
+
+* environment variables in dockerfile ([0834062](https://github.com/mission-apprentissage/trajectoires-pro/commit/0834062df32491c8ac6d35fff3ea457e0252a803))
+* fix env in dockerfile ([986032a](https://github.com/mission-apprentissage/trajectoires-pro/commit/986032aca6e955cfa82f21308e12e1c55cafbadc))
+* remove public from dockerfile ([33a1898](https://github.com/mission-apprentissage/trajectoires-pro/commit/33a1898acd80457cbecc6eaf19c6ef7d3105530c))
+
+
+### Features
+
+* page stats ([dfed65c](https://github.com/mission-apprentissage/trajectoires-pro/commit/dfed65cac4b04fa40f0d1f7abe0b87c0139833b7))
+
 ## [1.3.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.3.0...v1.3.1) (2023-06-07)
 
 

@@ -44,6 +44,7 @@ describe("responseUtils", () => {
           apprentissage: {
             codes_certifications: ["12345678"],
             code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
             diplome: {
               code: "4",
               libelle: "BAC",
@@ -65,6 +66,7 @@ describe("responseUtils", () => {
           pro: {
             codes_certifications: ["23830024202"],
             code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
             diplome: {
               code: "4",
               libelle: "BAC",
@@ -106,6 +108,7 @@ describe("responseUtils", () => {
           pro: {
             codes_certifications: ["23830024202"],
             code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
             diplome: {
               code: "4",
               libelle: "BAC",
@@ -147,11 +150,12 @@ describe("responseUtils", () => {
           apprentissage: {
             codes_certifications: ["23830024202"],
             code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
             diplome: {
               code: "4",
               libelle: "BAC",
             },
-            filiere: "pro",
+            filiere: "apprentissage",
             millesime: "2020",
             nb_sortant: 100,
             nb_annee_term: 50,

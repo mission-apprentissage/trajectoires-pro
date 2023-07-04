@@ -14,7 +14,7 @@ import {
   sendStats,
   sendImageOnError,
 } from "../utils/responseUtils.js";
-import { findCodeFormationDiplome } from "../../common/bcn.js";
+import { findCodesFormationDiplome } from "../../common/bcn.js";
 import { getLastMillesimes, transformDisplayStat } from "../../common/stats.js";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
 import CertificationsRepository from "../../common/repositories/certifications.js";
@@ -82,17 +82,17 @@ export default () => {
       );
 
       if (vue === "filieres" || codes_certifications.length > 1) {
-        const cfd = await findCodeFormationDiplome(codes_certifications);
-
-        const filieresStats = cfd
-          ? mapValues(
-              await CertificationsRepository.getFilieresStats({
-                code_formation_diplome: cfd,
-                millesime,
-              }),
-              transformDisplayStat()
-            )
-          : {};
+        const cfds = await findCodesFormationDiplome(codes_certifications);
+        const filieresStats =
+          cfds && cfds.length > 0
+            ? mapValues(
+                await CertificationsRepository.getFilieresStats({
+                  code_formation_diplome: cfds,
+                  millesime,
+                }),
+                transformDisplayStat()
+              )
+            : {};
 
         return sendImageOnError(
           async () => await sendFilieresStats(filieresStats, res, options),

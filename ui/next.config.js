@@ -1,41 +1,42 @@
-function inline(value) {
-  return value.replace(/\s{2,}/g, " ").trim();
-}
-
-const contentSecurityPolicy = `
-      default-src 'self';
-      base-uri 'self';
-      block-all-mixed-content;
-      font-src 'self' https: data:;
-      frame-ancestors 'self';
-      img-src 'self' data:;
-      object-src 'none';
-      script-src 'self' ${
-        process.env.NODE_ENV === "development" ? "'unsafe-eval'" : ""
-      };
-      script-src-attr 'none';
-      style-src 'self' https: 'unsafe-inline';
-      upgrade-insecure-requests;
-`;
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
+  swcMinify: true,
   experimental: {
-    outputStandalone: true,
+    appDir: true,
   },
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          {
-            key: "Content-Security-Policy",
-            value: inline(contentSecurityPolicy),
+  output: "standalone",
+  basePath: "/ui",
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.woff2$/,
+      type: "asset/resource",
+    });
+
+    return config;
+  },
+  modularizeImports: {
+    "@mui/material": {
+      transform: "@mui/material/{{member}}",
+    },
+    "@mui/icons-material": {
+      transform: "@mui/icons-material/{{member}}",
+    },
+  },
+  env: {
+    METABASE: {
+      dashboards: {
+        stats: {
+          id: parseInt(process.env.METABASE_DASHBOARD_STATS_ID), //53,
+          defaultQueryParams: {
+            adresse_ip: ["213.91.3.170", "213.91.3.180", "195.83.117.34"],
           },
-        ],
+        },
+        statsDetails: {
+          id: parseInt(process.env.METABASE_DASHBOARD_STATS_DETAILS_ID), //47,
+        },
       },
-    ];
+    },
   },
 };
 

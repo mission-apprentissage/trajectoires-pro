@@ -28,6 +28,8 @@ export function insertCertificationsStats(custom = {}) {
         ...getStatsCompute(ALL, () => generateStatValue()),
         _meta: {
           date_import: new Date(),
+          created_on: new Date(),
+          updated_on: new Date(),
         },
       },
       custom
@@ -49,6 +51,8 @@ export function insertRegionalesStats(custom = {}) {
         ...getStatsCompute(ALL, () => generateStatValue()),
         _meta: {
           date_import: new Date(),
+          created_on: new Date(),
+          updated_on: new Date(),
         },
       },
       custom
@@ -71,6 +75,8 @@ export function insertFormationsStats(custom = {}) {
         region: { code: "11", nom: "Île-de-France" },
         _meta: {
           date_import: new Date(),
+          created_on: new Date(),
+          updated_on: new Date(),
         },
       },
       custom
@@ -88,7 +94,7 @@ export function insertCFD(custom = {}) {
         code_formation_diplome: createCodeFormationDiplome(),
         libelle: "BAC PRO BATIMENT",
         diplome: { code: "4", libelle: "BAC" },
-        _meta: { date_import: new Date() },
+        _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
       },
       custom
     )
@@ -106,7 +112,7 @@ export function insertMEF(custom = {}) {
         date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
         diplome: { code: "4", libelle: "BAC" },
         libelle: "BAC PRO",
-        _meta: { date_import: new Date() },
+        _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
       },
       custom
     )

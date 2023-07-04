@@ -5,6 +5,7 @@ import {
   findRegionByCodeInsee,
   findRegionByCode,
   findRegionByAcademie,
+  findRegionByCodeRegionAcademique,
 } from "../../src/common/regions.js";
 
 describe("regions", () => {
@@ -34,5 +35,9 @@ describe("regions", () => {
 
   it("Permet de trouver une région avec son code", () => {
     assert.deepStrictEqual(findRegionByCode("11").nom, "Île-de-France");
+  });
+
+  it("Permet de trouver une région avec son code région académique", () => {
+    assert.deepStrictEqual(findRegionByCodeRegionAcademique("01").nom, "Auvergne-Rhône-Alpes");
   });
 });

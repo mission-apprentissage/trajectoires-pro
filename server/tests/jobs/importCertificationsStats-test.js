@@ -1,8 +1,9 @@
 import assert from "assert";
+import MockDate from "mockdate";
 import { importCertificationsStats } from "../../src/jobs/importCertificationsStats.js";
 import { mockInserJeunesApi } from "../utils/apiMocks.js";
 import { insertCFD, insertCertificationsStats, insertMEF } from "../utils/fakeData.js";
-import { omit, pickBy } from "lodash-es";
+import { pickBy } from "lodash-es";
 import { certificationsStats } from "../../src/common/db/collections/collections.js";
 
 describe("importCertificationsStats", () => {
@@ -19,6 +20,14 @@ describe("importCertificationsStats", () => {
         .reply(200, responses.certifications(response));
     });
   }
+
+  before(() => {
+    MockDate.set("2023-01-01");
+  });
+
+  after(() => {
+    MockDate.reset();
+  });
 
   it("Vérifie qu'on peut importer les stats d'une certification (apprentissage)", async () => {
     mockApi("2020", "apprentissage", {
@@ -56,7 +65,7 @@ describe("importCertificationsStats", () => {
     const stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["apprentissage"] });
 
     const found = await certificationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
+    assert.deepStrictEqual(found, {
       millesime: "2020",
       filiere: "apprentissage",
       nb_en_emploi_6_mois: 6,
@@ -66,10 +75,14 @@ describe("importCertificationsStats", () => {
         code: "4",
         libelle: "BAC",
       },
-    });
-    assert.ok(found._meta.date_import);
-    assert.deepStrictEqual(found._meta.inserjeunes, {
-      taux_poursuite_etudes: 6,
+      _meta: {
+        inserjeunes: {
+          taux_poursuite_etudes: 6,
+        },
+        created_on: new Date("2023-01-01T00:00:00.000Z"),
+        updated_on: new Date("2023-01-01T00:00:00.000Z"),
+        date_import: new Date("2023-01-01T00:00:00.000Z"),
+      },
     });
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
@@ -97,7 +110,7 @@ describe("importCertificationsStats", () => {
     const stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["voie_pro_sco_educ_nat"] });
 
     const found = await certificationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
+    assert.deepStrictEqual(found, {
       filiere: "pro",
       millesime: "2020",
       code_certification: "12345678900",
@@ -107,8 +120,13 @@ describe("importCertificationsStats", () => {
         code: "4",
         libelle: "BAC",
       },
+      _meta: {
+        inserjeunes: {},
+        created_on: new Date("2023-01-01T00:00:00.000Z"),
+        updated_on: new Date("2023-01-01T00:00:00.000Z"),
+        date_import: new Date("2023-01-01T00:00:00.000Z"),
+      },
     });
-    assert.ok(found._meta.date_import);
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
@@ -358,7 +376,11 @@ describe("importCertificationsStats", () => {
         .reply(400, { msg: "filiere incorrect" });
     });
 
-    const stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["inconnue"] });
+    const stats = await importCertificationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { minTimeout: 0 } } },
+      millesimes: ["2020"],
+      filieres: ["inconnue"],
+    });
 
     const count = await certificationsStats().countDocuments({});
     assert.strictEqual(count, 0);
@@ -378,7 +400,11 @@ describe("importCertificationsStats", () => {
         .reply(200, "{json:");
     });
 
-    const stats = await importCertificationsStats({ millesimes: ["2020"], filieres: ["inconnue"] });
+    const stats = await importCertificationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { minTimeout: 0 } } },
+      millesimes: ["2020"],
+      filieres: ["inconnue"],
+    });
 
     const count = await certificationsStats().countDocuments({});
     assert.strictEqual(count, 0);
