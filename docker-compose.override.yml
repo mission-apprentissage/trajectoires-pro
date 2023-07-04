@@ -10,10 +10,6 @@ services:
     build:
       args:
         TRAJECTOIRES_PRO_ENV: dev
-    volumes:
-      - ./ui:/app:z
-      - /app/node_modules/
-      - /app/.next
     mem_limit: 1g
     stdin_open: true
 

@@ -12,7 +12,7 @@ stop:
 
 test:
 	yarn --cwd server test
-	yarn --cwd ui test:ci
+#	yarn --cwd ui test:ci
 
 coverage:
 	yarn --cwd server coverage

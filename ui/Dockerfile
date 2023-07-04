@@ -19,11 +19,12 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV BUILD_STANDALONE true
 
 RUN yarn build
 
 # Production image, copy all the files and run next
-FROM node:16-alpine AS ui-production
+FROM node:16-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
@@ -34,7 +35,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
-# COPY --from=builder-production /app/next.config.js ./
+COPY --from=builder-production /app/next.config.js ./
 COPY --from=builder-production /app/public ./public
 COPY --from=builder-production /app/package.json ./package.json
 
@@ -43,17 +44,10 @@ COPY --from=builder-production /app/package.json ./package.json
 COPY --from=builder-production --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder-production --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+
 USER nextjs
+
 EXPOSE 3000
+
 ENV PORT 3000
 CMD ["node", "server.js"]
-
-FROM node:16-alpine AS ui-dev
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-EXPOSE 3000
-ENV PORT 3000
-CMD ["yarn", "dev"]
-
-FROM ui-${TRAJECTOIRES_PRO_ENV} as final
-
