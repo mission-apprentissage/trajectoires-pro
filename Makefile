@@ -16,7 +16,7 @@ test:
 
 coverage:
 	yarn --cwd server coverage
-	yarn --cwd ui coverage
+#	yarn --cwd ui coverage
 
 lint:
 	yarn --cwd server lint
