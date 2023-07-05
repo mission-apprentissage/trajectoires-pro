@@ -10,15 +10,11 @@ services:
     build:
       args:
         TRAJECTOIRES_PRO_ENV: dev
-    volumes:
-      - ./ui:/app:z
-      - /app/node_modules/
-      - /app/.next
     mem_limit: 1g
     stdin_open: true
 
   server:
-    command: ["yarn", "debug"]
+    command: [ "yarn", "debug" ]
     ports:
       - "127.0.0.1:9229:9229" # Allows remote debugging
     volumes:
