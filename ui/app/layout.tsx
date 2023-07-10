@@ -9,8 +9,47 @@ import Link from "next/link";
 import { Typograhpy } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
 import { Header } from "@codegouvfr/react-dsfr/Header";
-import { headerFooterDisplayItem } from "@codegouvfr/react-dsfr/Display";
 import { fr } from "@codegouvfr/react-dsfr";
+
+export function Layout({ children }: { children: JSX.Element }) {
+  return (
+    <DsfrProvider>
+      <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
+        <MuiDsfrThemeProvider>
+          <Header
+            brandTop={<>Exposition - Statistique</>}
+            serviceTitle="Exposition - Statistique"
+            homeLinkProps={{
+              href: "/",
+              title: "Exposition - Statistique",
+            }}
+            quickAccessItems={[]}
+          />
+          <div
+            style={{
+              flex: 1,
+              width: "100%",
+              margin: "auto",
+              maxWidth: 1200,
+              ...fr.spacing("padding", {
+                topBottom: "10v",
+              }),
+            }}
+          >
+            <Container variant="content" maxWidth={false}>
+              <Typograhpy variant="h3">{"Page statistiques du projet Exposition d'InserJeunes"}</Typograhpy>
+              <Typograhpy variant="body1">{""}</Typograhpy>
+
+              <Container variant="subContent" maxWidth={false}>
+                {children}
+              </Container>
+            </Container>
+          </div>
+        </MuiDsfrThemeProvider>
+      </NextAppDirEmotionCacheProvider>
+    </DsfrProvider>
+  );
+}
 
 export default function RootLayout({ children }: { children: JSX.Element }) {
   const lang = "fr";
@@ -29,16 +68,18 @@ export default function RootLayout({ children }: { children: JSX.Element }) {
         <DsfrHead
           Link={Link}
           preloadFonts={[
-            //"Marianne-Light",
-            //"Marianne-Light_Italic",
             "Marianne-Regular",
-            //"Marianne-Regular_Italic",
             "Marianne-Medium",
-            //"Marianne-Medium_Italic",
-            "Marianne-Bold",
-            //"Marianne-Bold_Italic",
-            //"Spectral-Regular",
-            //"Spectral-ExtraBold"
+            // //"Marianne-Light",
+            // //"Marianne-Light_Italic",
+            // "Marianne-Regular",
+            // //"Marianne-Regular_Italic",
+            // "Marianne-Medium",
+            // //"Marianne-Medium_Italic",
+            // "Marianne-Bold",
+            // //"Marianne-Bold_Italic",
+            // //"Spectral-Regular",
+            // //"Spectral-ExtraBold"
           ]}
         />
       </head>
@@ -49,41 +90,7 @@ export default function RootLayout({ children }: { children: JSX.Element }) {
           flexDirection: "column",
         }}
       >
-        <DsfrProvider>
-          <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
-            <MuiDsfrThemeProvider>
-              <Header
-                brandTop={<>Exposition - Statistique</>}
-                serviceTitle="Exposition - Statistique"
-                homeLinkProps={{
-                  href: "/",
-                  title: "Exposition - Statistique",
-                }}
-                quickAccessItems={[]}
-              />
-              <div
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  margin: "auto",
-                  maxWidth: 1200,
-                  ...fr.spacing("padding", {
-                    topBottom: "10v",
-                  }),
-                }}
-              >
-                <Container variant="content" maxWidth={false}>
-                  <Typograhpy variant="h3">{"Page statistiques du projet Exposition d'InserJeunes"}</Typograhpy>
-                  <Typograhpy variant="body1">{""}</Typograhpy>
-
-                  <Container variant="subContent" maxWidth={false}>
-                    {children}
-                  </Container>
-                </Container>
-              </div>
-            </MuiDsfrThemeProvider>
-          </NextAppDirEmotionCacheProvider>
-        </DsfrProvider>
+        <Layout>{children}</Layout>
       </body>
     </html>
   );
