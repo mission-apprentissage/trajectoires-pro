@@ -29,8 +29,18 @@ services:
   ui:
     image: trajectoires_pro_ui
     container_name: trajectoires_pro_ui
+    environment:
+      - METABASE_SECRET_KEY=${METABASE_SECRET_KEY}
+      - METABASE_SITE_URL=${METABASE_SITE_URL}
+      - METABASE_DASHBOARD_STATS_ID=${METABASE_DASHBOARD_STATS_ID}
+      - METABASE_DASHBOARD_STATS_DETAILS_ID=${METABASE_DASHBOARD_STATS_DETAILS_ID}
     build:
       context: ui
+      args:
+        - METABASE_SECRET_KEY=${METABASE_SECRET_KEY}
+        - METABASE_SITE_URL=${METABASE_SITE_URL}
+        - METABASE_DASHBOARD_STATS_ID=${METABASE_DASHBOARD_STATS_ID}
+        - METABASE_DASHBOARD_STATS_DETAILS_ID=${METABASE_DASHBOARD_STATS_DETAILS_ID}
     mem_limit: 256m
     networks:
       - trajectoires_pro_network

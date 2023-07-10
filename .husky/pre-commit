@@ -6,7 +6,7 @@ set -eu
 function validate_commit() {
   cd .
   local sensible_files_pattern="\.(csv|xls|xls(x?)|json|env)$"
-  local exception="package.json$"
+  local exception="package.json|tsconfig.json$"
   local files
   files=$(git diff --cached --name-only | grep -v -E "$exception" | grep -E "$sensible_files_pattern") || true
 
