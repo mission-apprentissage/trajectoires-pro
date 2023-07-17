@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.4.0...v1.4.1) (2023-07-17)
+
+
+### Bug Fixes
+
+* vue filieres quand les champs sont null ([#200](https://github.com/mission-apprentissage/trajectoires-pro/issues/200)) ([85f078a](https://github.com/mission-apprentissage/trajectoires-pro/commit/85f078a78155207db34c3b613ff38153d73e45e4))
+
 # [1.4.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.3.1...v1.4.0) (2023-07-10)
 
 
