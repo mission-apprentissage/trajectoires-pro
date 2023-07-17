@@ -1,6 +1,6 @@
 import { omitNil } from "../utils/objectUtils.js";
 import { dbCollection } from "../db/mongodb.js";
-import { $field, $sumOf } from "../utils/mongodbUtils.js";
+import { $field, $sumOfArray } from "../utils/mongodbUtils.js";
 import * as Stats from "../stats.js";
 
 export class Repository {}
@@ -87,7 +87,14 @@ export class MongoRepository extends Repository {
             diplome: { $first: "$diplome" },
             diplomes: { $addToSet: "$diplome" },
             ...(query["region.code"] ? { region: { $first: "$region" } } : {}),
-            ...Stats.getStats(Stats.VALEURS, (statName) => $sumOf($field(statName))),
+            ...Stats.getStats(Stats.VALEURS, (statName) => ({
+              $push: $field(statName),
+            })),
+          },
+        },
+        {
+          $addFields: {
+            ...Stats.getStats(Stats.VALEURS, (statName) => $sumOfArray($field(statName))),
           },
         },
         {

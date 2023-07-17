@@ -1,6 +1,6 @@
 import { isNil, mapValues, flow, merge, omit } from "lodash-es";
 import { transformData } from "oleoduc";
-import { $field, $percentage, $removeNullOrZero } from "./utils/mongodbUtils.js";
+import { $field, $percentage, $removeNullOrZero, $removeWhenAllNull } from "./utils/mongodbUtils.js";
 import { percentage } from "./utils/numberUtils.js";
 import config from "../config.js";
 
@@ -74,12 +74,16 @@ function percentageAndSubtract({ dividends, divisor, minuend }) {
     },
 
     aggregate: () => {
-      return $removeNullOrZero($field(divisor), {
-        $max: [
-          0,
-          { $subtract: [minuend, { $sum: [...dividends.map((d) => $percentage($field(d), $field(divisor)))] }] },
-        ],
-      });
+      return $removeWhenAllNull(
+        dividends.map((d) => $field(d)),
+        $removeNullOrZero($field(divisor), {
+          $max: [
+            0,
+            { $subtract: [minuend, { $sum: [...dividends.map((d) => $percentage($field(d), $field(divisor)))] }] },
+          ],
+        }),
+        null
+      );
     },
   };
 }
