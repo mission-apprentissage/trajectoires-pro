@@ -15,7 +15,7 @@ function createCodeFormationDiplome() {
   return faker.helpers.replaceSymbols("4#######");
 }
 
-export function insertCertificationsStats(custom = {}) {
+export function insertCertificationsStats(custom = {}, withStat = true) {
   return certificationsStats().insertOne(
     merge(
       {},
@@ -25,7 +25,7 @@ export function insertCertificationsStats(custom = {}) {
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
         filiere: "apprentissage",
-        ...getStatsCompute(ALL, () => generateStatValue()),
+        ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
         _meta: {
           date_import: new Date(),
           created_on: new Date(),
@@ -37,7 +37,7 @@ export function insertCertificationsStats(custom = {}) {
   );
 }
 
-export function insertRegionalesStats(custom = {}) {
+export function insertRegionalesStats(custom = {}, withStat = true) {
   return regionalesStats().insertOne(
     merge(
       {},
@@ -48,7 +48,7 @@ export function insertRegionalesStats(custom = {}) {
         code_certification: generateCodeCertification("4"),
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
-        ...getStatsCompute(ALL, () => generateStatValue()),
+        ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
         _meta: {
           date_import: new Date(),
           created_on: new Date(),
@@ -60,7 +60,7 @@ export function insertRegionalesStats(custom = {}) {
   );
 }
 
-export function insertFormationsStats(custom = {}) {
+export function insertFormationsStats(custom = {}, withStat = true) {
   return formationsStats().insertOne(
     merge(
       {},
@@ -71,7 +71,7 @@ export function insertFormationsStats(custom = {}) {
         code_certification: generateCodeCertification("4"),
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
-        ...getStatsCompute(ALL, () => generateStatValue()),
+        ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
         region: { code: "11", nom: "Île-de-France" },
         _meta: {
           date_import: new Date(),

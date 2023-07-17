@@ -271,6 +271,87 @@ describe("repositories", () => {
           });
         });
       });
+
+      it("Ne renvoie pas de somme pour une statistique quand tout les champs sont null", async () => {
+        insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" });
+        insertCertificationsStats(
+          {
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            millesime: "2020",
+            nb_annee_term: 10,
+          },
+          false
+        );
+        insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" });
+        insertCertificationsStats(
+          {
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            millesime: "2020",
+            nb_annee_term: 10,
+          },
+          false
+        );
+
+        const result = await CertificationRepository.getFilieresStats({
+          code_formation_diplome: "12345678",
+          millesime: "2020",
+        });
+
+        assert.deepStrictEqual(result, {
+          pro: {
+            codes_certifications: ["23830024202"],
+            code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
+            filiere: "pro",
+            millesime: "2020",
+            diplome: { code: "4", libelle: "BAC" },
+            nb_annee_term: 10,
+            nb_en_emploi_12_mois: null,
+            nb_en_emploi_18_mois: null,
+            nb_en_emploi_24_mois: null,
+            nb_en_emploi_6_mois: null,
+            taux_autres_12_mois: null,
+            taux_autres_18_mois: null,
+            taux_autres_24_mois: null,
+            taux_autres_6_mois: null,
+            nb_poursuite_etudes: null,
+            nb_sortant: null,
+            taux_en_emploi_12_mois: null,
+            taux_en_emploi_18_mois: null,
+            taux_en_emploi_24_mois: null,
+            taux_en_emploi_6_mois: null,
+            taux_en_formation: null,
+          },
+          apprentissage: {
+            codes_certifications: ["12345678"],
+            code_formation_diplome: "12345678",
+            codes_formation_diplome: ["12345678"],
+            filiere: "apprentissage",
+            millesime: "2020",
+            diplome: { code: "4", libelle: "BAC" },
+            nb_annee_term: 10,
+            nb_en_emploi_12_mois: null,
+            nb_en_emploi_18_mois: null,
+            nb_en_emploi_24_mois: null,
+            nb_en_emploi_6_mois: null,
+            nb_poursuite_etudes: null,
+            taux_autres_12_mois: null,
+            taux_autres_18_mois: null,
+            taux_autres_24_mois: null,
+            taux_autres_6_mois: null,
+            nb_sortant: null,
+            taux_en_emploi_12_mois: null,
+            taux_en_emploi_18_mois: null,
+            taux_en_emploi_24_mois: null,
+            taux_en_emploi_6_mois: null,
+            taux_en_formation: null,
+          },
+        });
+      });
     });
   });
 });
