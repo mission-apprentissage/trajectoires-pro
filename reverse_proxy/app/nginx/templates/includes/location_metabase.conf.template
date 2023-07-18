@@ -4,4 +4,8 @@ location /metabase/ {
     proxy_set_header        X-Real-IP $remote_addr;
     proxy_set_header        X-Forwarded-Host $server_name;
     proxy_set_header        X-Forwarded-Proto $scheme;
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
+    proxy_read_timeout 36000s;
+    send_timeout 300s;
 }
