@@ -6,7 +6,7 @@ const nextConfig = {
     appDir: true,
   },
   output: "standalone",
-  basePath: "/ui",
+  basePath: "/statistiques",
   webpack: (config) => {
     config.module.rules.push({
       test: /\.woff2$/,
