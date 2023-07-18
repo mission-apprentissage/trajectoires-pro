@@ -20,6 +20,7 @@ services:
       - ANOMALY_OUTBOUND=4
       - DNS_SERVER=127.0.0.11
       - PROXY=1
+      - PROXY_TIMEOUT=300
       - ACCESSLOG=/data/access.log
       - ERRORLOG=/data/error.log
       - LOGLEVEL=warn
