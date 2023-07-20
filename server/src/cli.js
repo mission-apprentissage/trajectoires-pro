@@ -2,7 +2,6 @@ import "dotenv/config";
 import { program as cli } from "commander";
 import { createWriteStream } from "fs";
 import { runScript } from "./common/runScript.js";
-import { migrate } from "./jobs/migrate.js";
 import { writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
 import { importBCN } from "./jobs/importBCN.js";
@@ -38,17 +37,6 @@ cli
       const output = out || writeToStdout();
 
       await exportCodeCertifications(output);
-    });
-  });
-
-cli
-  .command("migrate")
-  .description("Execute les scripts de migration")
-  .option("--dropIndexes", "Supprime les anciens indexes")
-  .option("--removeAll", "Supprime les données")
-  .action((options) => {
-    runScript(() => {
-      return migrate(options);
     });
   });
 

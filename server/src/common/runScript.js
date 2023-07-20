@@ -1,4 +1,4 @@
-import { closeMongodbConnection, connectToMongodb, configureValidation, configureIndexes } from "./db/mongodb.js";
+import { closeMongodbConnection, connectToMongodb } from "./db/mongodb.js";
 import prettyMilliseconds from "pretty-ms";
 import { isEmpty } from "lodash-es";
 import { getLoggerWithContext } from "./logger.js";
@@ -52,8 +52,6 @@ async function runScript(job) {
     timer.start();
 
     await connectToMongodb();
-    await configureValidation();
-    await configureIndexes();
 
     const results = await job();
 
