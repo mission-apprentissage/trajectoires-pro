@@ -73,7 +73,7 @@ services:
       - trajectoires_pro_network
 
   metabase:
-    image: metabase/metabase:v0.46.5
+    image: metabase/metabase:v0.46.6.1
     container_name: trajectoires_pro_metabase
     mem_limit: 2g
     depends_on:
