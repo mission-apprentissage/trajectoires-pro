@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.4.1...v1.4.2) (2023-07-31)
+
+
+### Bug Fixes
+
+* mise à jour des libelles de diplomes ([#203](https://github.com/mission-apprentissage/trajectoires-pro/issues/203)) ([871636e](https://github.com/mission-apprentissage/trajectoires-pro/commit/871636ecfc960a067ef6ea726884fd4bf77e7803))
+
 ## [1.4.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.4.0...v1.4.1) (2023-07-17)
 
 
