@@ -1,7 +1,6 @@
 import { MongoClient } from "mongodb";
 import { merge } from "lodash-es";
 import config from "../../config.js";
-import { getCollectionDescriptors } from "./collections/collections.js";
 import { writeData } from "oleoduc";
 import { logger } from "../logger.js";
 
@@ -59,71 +58,6 @@ export async function createCollectionIfNeeded(name) {
   if (!collections.find((c) => c.name === name)) {
     await db.createCollection(name).catch(() => {});
   }
-}
-
-export async function configureIndexes(options = {}) {
-  await ensureInitialization();
-  await Promise.all(
-    getCollectionDescriptors().map(async ({ name, indexes }) => {
-      let shouldDropIndexes = options.dropIndexes || false;
-      let dbCol = dbCollection(name);
-
-      logger.debug(`Configuring indexes for collection ${name} (drop:${shouldDropIndexes})...`);
-      if (shouldDropIndexes) {
-        await dbCol.dropIndexes({ background: false });
-      }
-
-      if (!indexes) {
-        return;
-      }
-
-      await Promise.all(
-        indexes().map(([index, options]) => {
-          return dbCol.createIndex(index, options);
-        })
-      );
-    })
-  );
-}
-
-export async function configureValidation() {
-  await ensureInitialization();
-  await Promise.all(
-    getCollectionDescriptors().map(async ({ name, schema }) => {
-      await createCollectionIfNeeded(name);
-
-      if (!schema) {
-        return;
-      }
-
-      logger.debug(`Configuring validation for collection ${name}...`);
-      let db = getDatabase();
-      await db.command({
-        collMod: name,
-        validationLevel: "strict",
-        validationAction: "error",
-        validator: {
-          $jsonSchema: schema(),
-        },
-      });
-    })
-  );
-}
-
-export async function migrateMongodb(version, callback, options = {}) {
-  let count = await dbCollection("migrations").count({ version });
-  if (count > 0) {
-    throw new Error(`La migration ${version} a déjà été réalisée`);
-  }
-
-  await configureIndexes({ dropIndexes: options.dropIndexes || false });
-  await configureValidation();
-
-  const res = await callback();
-
-  await dbCollection("migrations").insertOne({ version });
-
-  return res;
 }
 
 export async function upsert(collection, query, fields, onModified = {}) {
