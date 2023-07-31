@@ -1,4 +1,4 @@
-import { compose, transformData } from "oleoduc";
+import { compose, transformData, writeData, oleoduc } from "oleoduc";
 import { fetchStream } from "./utils/httpUtils.js";
 import iconv from "iconv-lite";
 import { parseCsv } from "./utils/csvUtils.js";
@@ -6,39 +6,48 @@ import { bcn } from "./db/collections/collections.js";
 import { castArray } from "lodash-es";
 
 const ANCIENS_NIVEAUX_MAPPER = {
-  5: "3",
-  4: "4",
-  3: "5",
-  2: "6",
-  1: "7",
+  5: "3", // CAP
+  4: "4", // BAC
+  3: "5", // BTS
+  2: "6", // LIC
+  1: "7", // MASTER
   0: "0", //Mention complémentaire
 };
 
-const NIVEAUX_LIBELLES = {
-  0: "MC",
-  3: "CAP",
-  4: "BAC",
-  5: "BTS",
-  6: "LIC",
-  7: "MASTER",
-};
-
-export function getDiplome(codeFormation) {
+export function getDiplome(codeFormation, niveauxDiplome) {
   if (!codeFormation) {
     return null;
   }
 
-  const niveau = codeFormation.substring(0, 1);
-  const code = ANCIENS_NIVEAUX_MAPPER[niveau];
+  const niveau = codeFormation.substring(0, 3);
+  const code = ANCIENS_NIVEAUX_MAPPER[niveau[0]];
+  const libelle = niveauxDiplome?.find(({ niveau: n }) => n === niveau)?.libelle_court;
 
-  if (!code) {
+  if (!code || !libelle) {
     return null;
   }
 
   return {
     code: code,
-    libelle: NIVEAUX_LIBELLES[code],
+    libelle: libelle,
   };
+}
+
+export async function getNiveauxDiplome(options) {
+  const niveauxDiplome = [];
+
+  await oleoduc(
+    await getBCNTable("N_NIVEAU_FORMATION_DIPLOME", options),
+    writeData((data) => {
+      niveauxDiplome.push({
+        niveau: data["NIVEAU_FORMATION_DIPLOME"],
+        libelle_court: data["LIBELLE_COURT"],
+        libelle: data["LIBELLE_100"],
+      });
+    })
+  );
+
+  return niveauxDiplome;
 }
 
 export async function findCodeFormationDiplome(codeCertification) {

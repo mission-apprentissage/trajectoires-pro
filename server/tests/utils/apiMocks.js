@@ -7,6 +7,13 @@ function createNock(baseUrl, options = {}) {
   return options.stack ? client : client.persist();
 }
 
+export function mockBCN(callback, options) {
+  let client = createNock(`https://infocentre.pleiade.education.fr/bcn/index.php/export`, options);
+  callback(client);
+
+  return client;
+}
+
 export function mockInserJeunesApi(callback, options) {
   let client = createNock(InserJeunesApi.baseApiUrl, options);
   callback(client, {

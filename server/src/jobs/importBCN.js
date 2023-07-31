@@ -1,6 +1,6 @@
 import { compose, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
 import { upsert } from "../common/db/mongodb.js";
-import { getBCNTable, getDiplome } from "../common/bcn.js";
+import { getBCNTable, getDiplome, getNiveauxDiplome } from "../common/bcn.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { bcn } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
@@ -9,12 +9,13 @@ import { parseAsUTCDate } from "../common/utils/dateUtils.js";
 const logger = getLoggerWithContext("import");
 
 export async function streamCfds(options = {}) {
+  const niveauxDiplome = await getNiveauxDiplome(options);
   return compose(
     mergeStreams(
       await getBCNTable("V_FORMATION_DIPLOME", options), //Apprentissage
       await getBCNTable("N_FORMATION_DIPLOME", options)
     ),
-    transformData((data) => {
+    transformData(async (data) => {
       const cfd = data["FORMATION_DIPLOME"];
 
       return {
@@ -22,7 +23,7 @@ export async function streamCfds(options = {}) {
         code_certification: cfd,
         code_formation_diplome: cfd,
         libelle: `${data["LIBELLE_COURT"]} ${data["LIBELLE_STAT_33"]}`,
-        diplome: getDiplome(cfd),
+        diplome: getDiplome(cfd, niveauxDiplome),
         date_fermeture: parseAsUTCDate(data["DATE_FERMETURE"]),
       };
     })
@@ -31,10 +32,11 @@ export async function streamCfds(options = {}) {
 
 export async function streamMefs(options = {}) {
   const stream = await getBCNTable("N_MEF", options);
+  const niveauxDiplome = await getNiveauxDiplome(options);
 
   return compose(
     stream,
-    transformData((data) => {
+    transformData(async (data) => {
       const mefstat11 = data["MEF_STAT_11"];
       const cfd = data["FORMATION_DIPLOME"];
 
@@ -43,7 +45,7 @@ export async function streamMefs(options = {}) {
         code_certification: mefstat11,
         code_formation_diplome: cfd,
         libelle: data["LIBELLE_LONG"],
-        diplome: getDiplome(cfd),
+        diplome: getDiplome(cfd, niveauxDiplome),
         date_fermeture: parseAsUTCDate(data["DATE_FERMETURE"]),
       };
     })
