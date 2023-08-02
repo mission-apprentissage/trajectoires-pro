@@ -10,4 +10,5 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
+ENV HAS_PROXY true
 CMD ["yarn", "dev"]
