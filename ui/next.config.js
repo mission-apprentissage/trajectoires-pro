@@ -7,6 +7,7 @@ const nextConfig = {
   },
   output: "standalone",
   basePath: "",
+  assetPrefix: process.env.HAS_PROXY === "true" ? "/assets/" : "",
   webpack: (config) => {
     config.module.rules.push({
       test: /\.woff2$/,
