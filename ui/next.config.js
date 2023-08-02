@@ -6,8 +6,15 @@ const nextConfig = {
     appDir: true,
   },
   output: "standalone",
-  basePath: "",
-  assetPrefix: process.env.HAS_PROXY === "true" ? "/assets/" : "",
+  basePath: "/statistiques",
+  async rewrites() {
+    return [
+      {
+        source: "/:path*",
+        destination: "/statistiques/:path*",
+      },
+    ];
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.woff2$/,
