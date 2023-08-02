@@ -1,8 +1,8 @@
-import { MongoRepository } from "./base.js";
+import { StatsRepository } from "./base.js";
 import { dbCollection } from "../db/mongodb.js";
 import { name } from "../db/collections/formationsStats.js";
 
-export class FormationsRepository extends MongoRepository {
+export class FormationsRepository extends StatsRepository {
   constructor() {
     super(name);
   }

@@ -2,8 +2,8 @@ import "server-only";
 
 import * as Metabase from "#/app/api/metabase";
 import MetabaseIframe from "#/app/components/MetabaseIframe";
-import { Typograhpy } from "../components/MaterialUINext";
-import { MetabaseConfig } from "../types/metabase";
+import { Typograhpy } from "../../components/MaterialUINext";
+import { MetabaseConfig } from "../../types/metabase";
 import Config from "#/app/config";
 
 export const revalidate = 0;

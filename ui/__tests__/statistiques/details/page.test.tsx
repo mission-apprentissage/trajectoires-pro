@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
-import Page from "#/app/details/page";
+import Page from "#/app/statistiques/details/page";
 import { faker } from "@faker-js/faker";
 import moment from "moment";
 

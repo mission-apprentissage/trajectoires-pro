@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
-import Page from "#/app/page";
+import Page from "#/app/statistiques/page";
 import config from "#/app/config";
 
 describe("Page", () => {

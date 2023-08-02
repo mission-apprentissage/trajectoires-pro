@@ -14,7 +14,7 @@ import {
   sendStats,
   sendImageOnError,
 } from "../utils/responseUtils.js";
-import { findCodesFormationDiplome } from "../../common/bcn.js";
+import BCNRepository from "../../common/repositories/bcn.js";
 import { getLastMillesimes, transformDisplayStat } from "../../common/stats.js";
 import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
 import CertificationsRepository from "../../common/repositories/certifications.js";
@@ -82,7 +82,7 @@ export default () => {
       );
 
       if (vue === "filieres" || codes_certifications.length > 1) {
-        const cfds = await findCodesFormationDiplome(codes_certifications);
+        const cfds = await BCNRepository.findCodesFormationDiplome(codes_certifications);
         const filieresStats =
           cfds && cfds.length > 0
             ? mapValues(
