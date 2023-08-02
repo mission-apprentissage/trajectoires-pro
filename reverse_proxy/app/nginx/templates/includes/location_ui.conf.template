@@ -14,9 +14,3 @@ location /statistiques {
     set $upstream http://ui:3000;
     include includes/proxy.conf;
 }
-
-location /assets {
-    set $upstream http://ui:3000;
-    rewrite /assets/(.*) /$1  break;
-    include includes/proxy.conf;
-}
