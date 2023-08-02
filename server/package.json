@@ -43,6 +43,7 @@
     "migrate-mongo": "10.0.0",
     "mockdate": "3.0.5",
     "moment": "2.29.4",
+    "moment-timezone": "0.5.43",
     "mongodb": "4.5.0",
     "oleoduc": "0.7.0",
     "passport": "0.5.2",
