@@ -93,7 +93,9 @@ export function insertCFD(custom = {}) {
         code_certification: createCodeFormationDiplome(),
         code_formation_diplome: createCodeFormationDiplome(),
         libelle: "BAC PRO BATIMENT",
+        libelle_long: "BAC PRO BATIMENT",
         diplome: { code: "4", libelle: "BAC" },
+        date_ouverture: new Date(),
         _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
       },
       custom
@@ -112,6 +114,8 @@ export function insertMEF(custom = {}) {
         date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
         diplome: { code: "4", libelle: "BAC" },
         libelle: "BAC PRO",
+        libelle_long: "BAC PRO BATIMENT",
+        date_ouverture: new Date(),
         _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
       },
       custom

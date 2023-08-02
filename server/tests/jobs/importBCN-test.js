@@ -38,8 +38,8 @@ describe("importBCN", () => {
 
     let stats = await importBCN(
       getBcnTables({
-        N_MEF: createStream(`MEF|MEF_STAT_11|MEF_STAT_9|FORMATION_DIPLOME|LIBELLE_LONG|DATE_FERMETURE
-999999991|99999999911|999999999|40023203|BAC PRO|31/08/2022`),
+        N_MEF: createStream(`MEF|MEF_STAT_11|MEF_STAT_9|FORMATION_DIPLOME|LIBELLE_LONG|DATE_FERMETURE|DATE_OUVERTURE
+999999991|99999999911|999999999|40023203|BAC PRO|31/08/2022|31/07/2022`),
       })
     );
 
@@ -49,8 +49,10 @@ describe("importBCN", () => {
       code_certification: "99999999911",
       code_formation_diplome: "40023203",
       date_fermeture: new Date("2022-08-31T00:00:00.000Z"),
+      date_ouverture: new Date("2022-07-31T00:00:00.000Z"),
       diplome: { code: "4", libelle: "BAC PRO" },
       libelle: "BAC PRO",
+      libelle_long: "BAC PRO",
       _meta: {
         created_on: new Date("2023-01-01T00:00:00.000Z"),
         updated_on: new Date("2023-01-01T00:00:00.000Z"),
@@ -72,8 +74,8 @@ describe("importBCN", () => {
 
     let stats = await importBCN(
       getBcnTables({
-        N_MEF: createStream(`MEF|MEF_STAT_11|MEF_STAT_9|FORMATION_DIPLOME|LIBELLE_LONG|DATE_FERMETURE
-999999991|99999999911|999999999|INCONNU|BAC PRO|31/08/2022`),
+        N_MEF: createStream(`MEF|MEF_STAT_11|MEF_STAT_9|FORMATION_DIPLOME|LIBELLE_LONG|DATE_FERMETURE|DATE_OUVERTURE
+999999991|99999999911|999999999|INCONNU|BAC PRO|31/08/2022|31/07/2022`),
       })
     );
 
@@ -94,8 +96,8 @@ describe("importBCN", () => {
     let stats = await importBCN(
       getBcnTables({
         V_FORMATION_DIPLOME:
-          createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|LIBELLE_COURT|LIBELLE_STAT_33|DATE_FERMETURE
-40023203|403|BAC PRO|BATIMENT|31/08/2022`),
+          createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|LIBELLE_COURT|LIBELLE_STAT_33|LIBELLE_LONG_200|DATE_FERMETURE|DATE_OUVERTURE
+40023203|403|BAC PRO|BATIMENT|BAC PRO BATIMENT|31/08/2022|31/07/2022`),
       })
     );
 
@@ -105,6 +107,8 @@ describe("importBCN", () => {
       code_certification: "40023203",
       code_formation_diplome: "40023203",
       libelle: "BAC PRO BATIMENT",
+      libelle_long: "BAC PRO BATIMENT",
+      date_ouverture: new Date("2022-07-31T00:00:00.000Z"),
       date_fermeture: new Date("2022-08-31T00:00:00.000Z"),
       diplome: {
         code: "4",
@@ -131,8 +135,8 @@ describe("importBCN", () => {
     let stats = await importBCN(
       getBcnTables({
         N_FORMATION_DIPLOME: createStream(
-          `FORMATION_DIPLOME|ANCIEN_DIPLOME_1|NOUVEAU_DIPLOME_1|LIBELLE_COURT|LIBELLE_STAT_33
-14545678|||BAC PRO|BATIMENT`
+          `FORMATION_DIPLOME|ANCIEN_DIPLOME_1|NOUVEAU_DIPLOME_1|LIBELLE_COURT|LIBELLE_STAT_33|LIBELLE_LONG_200|DATE_OUVERTURE
+14545678|||BAC PRO|BATIMENT|BAC PRO BATIMENT|31/07/2022`
         ),
       })
     );
@@ -143,6 +147,8 @@ describe("importBCN", () => {
       code_certification: "14545678",
       code_formation_diplome: "14545678",
       libelle: "BAC PRO BATIMENT",
+      libelle_long: "BAC PRO BATIMENT",
+      date_ouverture: new Date("2022-07-31T00:00:00.000Z"),
       diplome: {
         code: "7",
         libelle: "MASTER",
@@ -164,7 +170,8 @@ describe("importBCN", () => {
 
     let stats = await importBCN(
       getBcnTables({
-        N_FORMATION_DIPLOME: createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME\n99999902|999`),
+        N_FORMATION_DIPLOME: createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|LIBELLE_LONG_200|DATE_OUVERTURE
+        99999902|999|TEST|31/07/2022`),
       })
     );
 

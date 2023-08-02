@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { merge } from "lodash-es";
+import { merge, mergeWith, isArray } from "lodash-es";
 import config from "../../config.js";
 import { writeData } from "oleoduc";
 import { logger } from "../logger.js";
@@ -18,6 +18,11 @@ export function sendLogsToMongodb(logger, level = "info") {
     level: level,
     stream: writeData((data) => dbCollection("logs").insertOne(data)),
   });
+}
+
+export function setMongoDBClient(client) {
+  clientHolder = client;
+  return client;
 }
 
 export async function connectToMongodb(uri = config.mongodb.uri) {
@@ -78,4 +83,27 @@ export async function upsert(collection, query, fields, onModified = {}) {
   }
 
   return res;
+}
+
+export async function mergeSchema(collectionName, newSchema) {
+  const db = getDatabase();
+  const collectionInfos = await db.listCollections({ name: collectionName }).toArray();
+  const validator = collectionInfos[0].options.validator;
+
+  const oldSchema = validator?.$jsonSchema || {};
+
+  const mergeCustomizer = (objValue, srcValue) => {
+    if (isArray(objValue)) {
+      return objValue.concat(srcValue);
+    }
+  };
+
+  return await db.command({
+    collMod: collectionName,
+    validationLevel: "strict",
+    validationAction: "error",
+    validator: {
+      $jsonSchema: mergeWith(oldSchema, newSchema, mergeCustomizer),
+    },
+  });
 }
