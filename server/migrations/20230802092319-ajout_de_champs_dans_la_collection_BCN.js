@@ -6,8 +6,8 @@ const schema = {
   properties: {
     libelle_long: string(),
     date_ouverture: date(),
-    date_premiere_session: date(),
-    date_derniere_session: date(),
+    date_premiere_session: string(),
+    date_derniere_session: string(),
   },
   required: ["libelle_long", "date_ouverture"],
 };
