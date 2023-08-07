@@ -5,6 +5,7 @@ import { omitNil } from "../common/utils/objectUtils.js";
 import { bcn } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { parseAsUTCDate } from "../common/utils/dateUtils.js";
+import { importContinuum } from "./importContinuum.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -107,5 +108,7 @@ export async function importBCN(options = {}) {
     )
   );
 
-  return stats;
+  const statsContinuum = await importContinuum(options);
+
+  return { stats, statsContinuum };
 }

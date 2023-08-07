@@ -1,0 +1,96 @@
+import { oleoduc, transformData, writeData } from "oleoduc";
+import { getBCNTable } from "../common/bcn.js";
+import { omitNil } from "../common/utils/objectUtils.js";
+import { omit } from "lodash-es";
+import { bcn } from "../common/db/collections/collections.js";
+import { getLoggerWithContext } from "../common/logger.js";
+
+const logger = getLoggerWithContext("import");
+
+async function updateDiplomeList(data) {
+  const res = await bcn().updateOne(
+    {
+      code_certification: data.code_certification,
+    },
+    {
+      $set: omitNil(omit(data, "ancien_diplome", "nouveau_diplome")),
+      $addToSet: {
+        ancien_diplome: { $each: data.ancien_diplome },
+        nouveau_diplome: { $each: data.nouveau_diplome },
+      },
+    }
+  );
+
+  const resOldDiplome =
+    data.ancien_diplome?.length > 0
+      ? await bcn().updateMany(
+          { code_certification: { $in: data.ancien_diplome } },
+          {
+            $addToSet: {
+              nouveau_diplome: data.code_certification,
+            },
+          }
+        )
+      : null;
+
+  const resNewDiplome =
+    data.nouveau_diplome?.length > 0
+      ? await bcn().updateMany(
+          { code_certification: { $in: data.nouveau_diplome } },
+          {
+            $addToSet: {
+              ancien_diplome: data.code_certification,
+            },
+          }
+        )
+      : null;
+
+  const isModified = res.modifiedCount || resOldDiplome?.modifiedCount || resNewDiplome?.modifiedCount;
+  return { isModified, res, resOldDiplome, resNewDiplome };
+}
+
+export async function importContinuum(options = {}) {
+  const stats = { total: 0, updated: 0, failed: 0 };
+
+  await oleoduc(
+    await getBCNTable("N_FORMATION_DIPLOME", options),
+    transformData((data) => {
+      const parseDiplomeList = (match, data) => {
+        const list = Object.keys(data)
+          .filter((key) => key.startsWith(match))
+          .map((key) => data[key]);
+        return list;
+      };
+
+      return {
+        code_certification: data["FORMATION_DIPLOME"],
+        date_premiere_session: data["DATE_PREMIERE_SESSION"] || null,
+        date_derniere_session: data["DATE_DERNIERE_SESSION"] || null,
+        ancien_diplome: parseDiplomeList("ANCIEN_DIPLOME_", data),
+        nouveau_diplome: parseDiplomeList("NOUVEAU_DIPLOME_", data),
+      };
+    }),
+    writeData(
+      async (data) => {
+        stats.total++;
+
+        try {
+          const res = await updateDiplomeList(data);
+
+          if (res.isModified) {
+            logger.debug(`Code ${data.code_certification} mis à jour`);
+            stats.updated++;
+          } else {
+            logger.trace(`Code ${data.code_certification} déjà à jour`);
+          }
+        } catch (e) {
+          logger.error(e, `Impossible d'importer le code ${data.code_certification}`);
+          stats.failed++;
+        }
+      },
+      { parallel: 10 }
+    )
+  );
+
+  return stats;
+}
