@@ -176,7 +176,10 @@ describe("importBCN", () => {
       nouveau_diplome: [],
     });
     assert.ok(found._meta.date_import);
-    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0, total: 1 });
+    assert.deepStrictEqual(stats, {
+      stats: { created: 1, failed: 0, updated: 0, total: 1 },
+      statsContinuum: { total: 0, failed: 0, updated: 0 },
+    });
   });
 
   it("Vérifie qu'on peut gérer les codes formation avec diplome inconnu", async () => {

@@ -107,5 +107,7 @@ export async function importBCN(options = {}) {
     )
   );
 
-  return stats;
+  const statsContinuum = await importContinuum(options);
+
+  return { stats, statsContinuum };
 }
