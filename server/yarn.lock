@@ -3976,10 +3976,10 @@ object-inspect@^1.12.3, object-inspect@^1.9.0:
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.12.3.tgz#ba62dffd67ee256c8c086dfae69e016cd1f198b9"
   integrity sha512-geUvdk7c+eizMNUDkRpW1wJwgfOiOeHbxBR/hLXK1aT6zmVSO0jsQcs7fj6MGw89jC/cjGfLcNOrtMYtGqm81g==
 
-oleoduc@0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/oleoduc/-/oleoduc-0.7.0.tgz#1b55f98126297dd6a30dac691c60bb10403f2198"
-  integrity sha512-PL2tbPkwptK5KOKZVq58cmbRTnH0kkuY2DPqr+zt/CIJeMM7AGDAefx5thAjUGeI/rvXm0/BURhyM3XRVqyLNA==
+oleoduc@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/oleoduc/-/oleoduc-0.8.0.tgz#68599936b35cbd17b584caf2e484159079bc82fe"
+  integrity sha512-7IhXHZjFa1FBWRDnUi4GlwBEwn2olLX2+1uBVY8JrozZ3pMibRQOCBN1/kYTDzQFjCgcB8q8pCB7Icbt32n+/A==
   dependencies:
     cyclist "1.0.1"
     parallel-transform "1.2.0"

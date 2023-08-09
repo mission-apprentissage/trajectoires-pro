@@ -73,6 +73,12 @@ export async function importRegionalesStats(options = {}) {
           const stats = omit(regionaleStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(regionaleStats);
 
+          // Delete data compute with continuum job (= when type is not self)
+          await regionalesStats().deleteOne({
+            ...query,
+            "donnee_source.type": { $ne: "self" },
+          });
+
           const res = await upsert(regionalesStats(), query, {
             $setOnInsert: {
               "_meta.date_import": new Date(),
@@ -85,6 +91,10 @@ export async function importRegionalesStats(options = {}) {
               region: pick(region, ["code", "nom", "code_region_academique"]),
               code_formation_diplome: certification?.code_formation_diplome,
               diplome: certification?.diplome,
+              donnee_source: {
+                code_certification: regionaleStats.code_certification,
+                type: "self",
+              },
               "_meta.inserjeunes": pick(regionaleStats, INSERJEUNES_IGNORED_STATS_NAMES),
             }),
           });

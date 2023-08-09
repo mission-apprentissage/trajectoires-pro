@@ -49,6 +49,12 @@ export async function importCertificationsStats(options = {}) {
           const stats = omit(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(certificationStats);
 
+          // Delete data compute with continuum job (= when type is not self)
+          await certificationsStats().deleteOne({
+            ...query,
+            "donnee_source.type": { $ne: "self" },
+          });
+
           const res = await upsert(certificationsStats(), query, {
             $setOnInsert: {
               "_meta.date_import": new Date(),
@@ -60,6 +66,10 @@ export async function importCertificationsStats(options = {}) {
               ...customStats,
               code_formation_diplome: certification?.code_formation_diplome,
               diplome: certification?.diplome,
+              donnee_source: {
+                code_certification: certificationStats.code_certification,
+                type: "self",
+              },
               "_meta.inserjeunes": pick(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES),
             }),
           });

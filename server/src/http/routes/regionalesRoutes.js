@@ -142,7 +142,7 @@ export default () => {
             throw new ErrorRegionaleNotFound();
           }
 
-          const result = await RegionalesRepository.find({ region, code_certification, millesime });
+          const result = await RegionalesRepository.first({ region, code_certification, millesime });
           if (!result) {
             const millesimesAvailable = await RegionalesRepository.findMillesime({ region, code_certification });
             throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);

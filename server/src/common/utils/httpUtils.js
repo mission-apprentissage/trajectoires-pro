@@ -1,8 +1,6 @@
 import axios from "axios";
-import { compose, transformData } from "oleoduc";
 import asyncRetry from "async-retry";
 import { getLoggerWithContext } from "../logger.js";
-
 const logger = getLoggerWithContext("http");
 
 async function _fetch(url, options = {}) {
@@ -18,10 +16,7 @@ async function _fetch(url, options = {}) {
 
 async function fetchStream(url, options = {}) {
   let response = await _fetch(url, { ...options, responseType: "stream" });
-  return compose(
-    response.data,
-    transformData((d) => d.toString())
-  );
+  return response.data;
 }
 
 async function fetchJson(url, options = {}) {

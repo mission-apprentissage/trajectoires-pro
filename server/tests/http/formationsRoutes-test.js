@@ -4,27 +4,8 @@ import fs from "fs";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertFormationsStats } from "../utils/fakeData.js";
-import { formationsStats } from "../../src/common/db/collections/collections.js";
-import { merge } from "lodash-es";
 
 chai.use(chaiDiff);
-
-function newFormationStats(custom = {}) {
-  return merge(
-    {},
-    {
-      uai: "0751234J",
-      code_certification: "1022105",
-      code_formation_diplome: "12345678",
-      diplome: { code: "4", libelle: "BAC" },
-      millesime: "2018_2019",
-      filiere: "apprentissage",
-      region: { code: "11", nom: "Île-de-France" },
-    },
-    custom
-  );
-}
-
 describe("formationsRoutes", () => {
   describe("Recherche", () => {
     function getAuthHeaders() {
@@ -94,6 +75,10 @@ describe("formationsRoutes", () => {
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
             region: { code: "11", nom: "Île-de-France" },
+            donnee_source: {
+              code_certification: "12345678",
+              type: "self",
+            },
           },
         ],
         pagination: {
@@ -441,6 +426,10 @@ describe("formationsRoutes", () => {
         taux_autres_18_mois: 15,
         taux_autres_24_mois: 16,
         region: { code: "11", nom: "Île-de-France" },
+        donnee_source: {
+          code_certification: "12345678",
+          type: "self",
+        },
         _meta: {
           titre: "Certification 12345678, établissement 0751234J",
           details:
@@ -555,13 +544,9 @@ describe("formationsRoutes", () => {
 
         it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (vertical)", async () => {
           const { httpClient } = await startServer();
-          await formationsStats().insertOne(
-            newFormationStats({
-              uai: "0751234J",
-              code_certification: "1022105",
-              nb_annee_term: 20,
-              taux_en_emploi_6_mois: 50,
-            })
+          await insertFormationsStats(
+            { uai: "0751234J", code_certification: "1022105", nb_annee_term: 20, taux_en_emploi_6_mois: 50 },
+            false
           );
 
           const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?theme=" + theme);
@@ -578,13 +563,9 @@ describe("formationsRoutes", () => {
 
         it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (horizontale)", async () => {
           const { httpClient } = await startServer();
-          await formationsStats().insertOne(
-            newFormationStats({
-              uai: "0751234J",
-              code_certification: "1022105",
-              nb_annee_term: 20,
-              taux_en_emploi_6_mois: 50,
-            })
+          await insertFormationsStats(
+            { uai: "0751234J", code_certification: "1022105", nb_annee_term: 20, taux_en_emploi_6_mois: 50 },
+            false
           );
 
           const response = await httpClient.get(
@@ -603,15 +584,16 @@ describe("formationsRoutes", () => {
 
         it("Vérifie qu'on peut obtenir une image SVG avec une donnée égale à 0", async () => {
           const { httpClient } = await startServer();
-          await formationsStats().insertOne(
-            newFormationStats({
+          await insertFormationsStats(
+            {
               uai: "0751234J",
               code_certification: "1022105",
               nb_annee_term: 20,
               taux_en_formation: 0,
               taux_en_emploi_6_mois: 50,
               taux_autres_6_mois: 10,
-            })
+            },
+            false
           );
 
           const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?theme=" + theme);
@@ -722,7 +704,7 @@ describe("formationsRoutes", () => {
     describe("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
       it("Retourne une erreur par défaut", async () => {
         const { httpClient } = await startServer();
-        await formationsStats().insertOne(newFormationStats({ uai: "0751234J", code_certification: "1022105" }));
+        await insertFormationsStats({ uai: "0751234J", code_certification: "1022105" }, false);
 
         const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg");
 
@@ -732,7 +714,7 @@ describe("formationsRoutes", () => {
 
       it("Retourne une image vide quand imageOnError est empty", async () => {
         const { httpClient } = await startServer();
-        await formationsStats().insertOne(newFormationStats({ uai: "0751234J", code_certification: "1022105" }));
+        await insertFormationsStats({ uai: "0751234J", code_certification: "1022105" }, false);
 
         const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?imageOnError=empty");
         const svgFixture = await fs.promises.readFile(`tests/fixtures/widgets/dsfr/formations/error_empty.svg`, "utf8");
@@ -743,7 +725,7 @@ describe("formationsRoutes", () => {
 
       it("Quand imageOnError est false", async () => {
         const { httpClient } = await startServer();
-        await formationsStats().insertOne(newFormationStats({ uai: "0751234J", code_certification: "1022105" }));
+        await insertFormationsStats({ uai: "0751234J", code_certification: "1022105" }, false);
 
         const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg?imageOnError=false");
 

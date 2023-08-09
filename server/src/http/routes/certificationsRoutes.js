@@ -110,7 +110,7 @@ export default () => {
             throw new ErrorCertificationNotFound();
           }
 
-          const result = await CertificationsRepository.find({ code_certification, millesime });
+          const result = await CertificationsRepository.first({ code_certification, millesime });
           if (!result) {
             const millesimesAvailable = await CertificationsRepository.findMillesime({ code_certification });
             throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);

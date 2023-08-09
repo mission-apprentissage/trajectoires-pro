@@ -49,7 +49,7 @@ async function updateDiplomeList(data) {
   return { isModified, res, resOldDiplome, resNewDiplome };
 }
 
-export async function importContinuum(options = {}) {
+export async function importBCNContinuum(options = {}) {
   const stats = { total: 0, updated: 0, failed: 0 };
 
   await oleoduc(
@@ -62,12 +62,16 @@ export async function importContinuum(options = {}) {
         return list;
       };
 
-      return {
+      const newData = {
         code_certification: data["FORMATION_DIPLOME"],
         date_premiere_session: data["DATE_PREMIERE_SESSION"] || null,
         date_derniere_session: data["DATE_DERNIERE_SESSION"] || null,
-        ancien_diplome: parseDiplomeList("ANCIEN_DIPLOME_", data),
-        nouveau_diplome: parseDiplomeList("NOUVEAU_DIPLOME_", data),
+      };
+
+      return {
+        ...newData,
+        ancien_diplome: parseDiplomeList("ANCIEN_DIPLOME_", data).filter((c) => c != newData.code_certification),
+        nouveau_diplome: parseDiplomeList("NOUVEAU_DIPLOME_", data).filter((c) => c != newData.code_certification),
       };
     }),
     writeData(

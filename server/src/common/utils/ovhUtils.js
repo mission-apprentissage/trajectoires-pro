@@ -2,6 +2,7 @@
 import axios from "axios";
 import config from "../../config.js";
 import { fetchStream } from "./httpUtils.js";
+import { compose, transformData } from "oleoduc";
 
 export async function authenticate(uri) {
   let regExp = new RegExp(/^(https:\/\/)(.+):(.+):(.+)@(.*)$/);
@@ -48,11 +49,14 @@ export async function requestObjectAccess(path, options = {}) {
 
 export async function getFromStorage(path, options = {}) {
   let { url, token } = await requestObjectAccess(path, options);
-  return fetchStream(url, {
-    method: "GET",
-    headers: {
-      "X-Auth-Token": token,
-      Accept: "application/json",
-    },
-  });
+  return compose(
+    fetchStream(url, {
+      method: "GET",
+      headers: {
+        "X-Auth-Token": token,
+        Accept: "application/json",
+      },
+    }),
+    transformData((d) => d.toString())
+  );
 }

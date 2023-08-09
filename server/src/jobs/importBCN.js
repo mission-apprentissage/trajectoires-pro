@@ -5,7 +5,6 @@ import { omitNil } from "../common/utils/objectUtils.js";
 import { bcn } from "../common/db/collections/collections.js";
 import { getLoggerWithContext } from "../common/logger.js";
 import { parseAsUTCDate } from "../common/utils/dateUtils.js";
-import { importContinuum } from "./importContinuum.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -18,6 +17,8 @@ function fieldsValue(data, niveauxDiplome) {
     diplome: getDiplome(cfd, niveauxDiplome),
     date_ouverture: parseAsUTCDate(data["DATE_OUVERTURE"]),
     date_fermeture: parseAsUTCDate(data["DATE_FERMETURE"]),
+    ancien_diplome: [],
+    nouveau_diplome: [],
   };
 }
 
@@ -106,7 +107,5 @@ export async function importBCN(options = {}) {
     )
   );
 
-  const statsContinuum = await importContinuum(options);
-
-  return { stats, statsContinuum };
+  return stats;
 }

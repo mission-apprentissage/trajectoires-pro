@@ -16,16 +16,21 @@ function createCodeFormationDiplome() {
 }
 
 export function insertCertificationsStats(custom = {}, withStat = true) {
+  const code_certification = custom?.code_certification || generateCodeCertification("4");
   return certificationsStats().insertOne(
     merge(
       {},
       {
         millesime: "2020",
-        code_certification: generateCodeCertification("4"),
+        code_certification: code_certification,
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
         filiere: "apprentissage",
         ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
+        donnee_source: {
+          code_certification,
+          type: "self",
+        },
         _meta: {
           date_import: new Date(),
           created_on: new Date(),
@@ -38,6 +43,7 @@ export function insertCertificationsStats(custom = {}, withStat = true) {
 }
 
 export function insertRegionalesStats(custom = {}, withStat = true) {
+  const code_certification = custom?.code_certification || generateCodeCertification("4");
   return regionalesStats().insertOne(
     merge(
       {},
@@ -45,10 +51,14 @@ export function insertRegionalesStats(custom = {}, withStat = true) {
         region: { code: "11", nom: "Île-de-France" },
         millesime: "2018_2019",
         filiere: "apprentissage",
-        code_certification: generateCodeCertification("4"),
+        code_certification,
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
         ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
+        donnee_source: {
+          code_certification,
+          type: "self",
+        },
         _meta: {
           date_import: new Date(),
           created_on: new Date(),
@@ -61,6 +71,7 @@ export function insertRegionalesStats(custom = {}, withStat = true) {
 }
 
 export function insertFormationsStats(custom = {}, withStat = true) {
+  const code_certification = custom?.code_certification || generateCodeCertification("4");
   return formationsStats().insertOne(
     merge(
       {},
@@ -68,11 +79,15 @@ export function insertFormationsStats(custom = {}, withStat = true) {
         uai: createUAI(faker.helpers.replaceSymbols("075####")),
         millesime: "2018_2019",
         filiere: "apprentissage",
-        code_certification: generateCodeCertification("4"),
+        code_certification,
         code_formation_diplome: createCodeFormationDiplome(),
         diplome: { code: "4", libelle: "BAC" },
         ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
         region: { code: "11", nom: "Île-de-France" },
+        donnee_source: {
+          code_certification,
+          type: "self",
+        },
         _meta: {
           date_import: new Date(),
           created_on: new Date(),

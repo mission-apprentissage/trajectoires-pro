@@ -5,7 +5,6 @@ import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import config from "../../src/config.js";
 import { startServer } from "../utils/testUtils.js";
 import { insertCertificationsStats, insertCFD, insertMEF } from "../utils/fakeData.js";
-import { dbCollection } from "../../src/common/db/mongodb.js";
 
 chai.use(deepEqualInAnyOrder);
 chai.use(chaiDiff);
@@ -77,6 +76,10 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 14,
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
+            donnee_source: {
+              code_certification: "12345678",
+              type: "self",
+            },
           },
         ],
         pagination: {
@@ -384,6 +387,10 @@ describe("certificationsRoutes", () => {
         taux_autres_12_mois: 14,
         taux_autres_18_mois: 15,
         taux_autres_24_mois: 16,
+        donnee_source: {
+          code_certification: "12345678",
+          type: "self",
+        },
         _meta: {
           titre: "Certification 12345678",
           details:
@@ -851,13 +858,16 @@ describe("certificationsRoutes", () => {
     describe("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stat", async () => {
       it("Retourne une erreur par défaut", async () => {
         const { httpClient } = await startServer();
-        await dbCollection("certificationsStats").insertOne({
-          code_certification: "23830024203",
-          code_formation_diplome: "12345678",
-          millesime: "2020",
-          filiere: "apprentissage",
-          diplome: { code: "4", libelle: "BAC" },
-        });
+        await insertCertificationsStats(
+          {
+            code_certification: "23830024203",
+            code_formation_diplome: "12345678",
+            millesime: "2020",
+            filiere: "apprentissage",
+            diplome: { code: "4", libelle: "BAC" },
+          },
+          false
+        );
         const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg");
 
         assert.strictEqual(response.status, 404);
@@ -866,13 +876,16 @@ describe("certificationsRoutes", () => {
 
       it("Retourne une image vide quand imageOnError est empty", async () => {
         const { httpClient } = await startServer();
-        await dbCollection("certificationsStats").insertOne({
-          code_certification: "23830024203",
-          code_formation_diplome: "12345678",
-          millesime: "2020",
-          filiere: "apprentissage",
-          diplome: { code: "4", libelle: "BAC" },
-        });
+        await insertCertificationsStats(
+          {
+            code_certification: "23830024203",
+            code_formation_diplome: "12345678",
+            millesime: "2020",
+            filiere: "apprentissage",
+            diplome: { code: "4", libelle: "BAC" },
+          },
+          false
+        );
         const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg?imageOnError=empty");
 
         const svgFixture = await fs.promises.readFile(
@@ -886,13 +899,16 @@ describe("certificationsRoutes", () => {
 
       it("Quand imageOnError est false", async () => {
         const { httpClient } = await startServer();
-        await dbCollection("certificationsStats").insertOne({
-          code_certification: "23830024203",
-          code_formation_diplome: "12345678",
-          millesime: "2020",
-          filiere: "apprentissage",
-          diplome: { code: "4", libelle: "BAC" },
-        });
+        await insertCertificationsStats(
+          {
+            code_certification: "23830024203",
+            code_formation_diplome: "12345678",
+            millesime: "2020",
+            filiere: "apprentissage",
+            diplome: { code: "4", libelle: "BAC" },
+          },
+          false
+        );
         const response = await httpClient.get("/api/inserjeunes/certifications/23830024203.svg?imageOnError=false");
 
         assert.strictEqual(response.status, 404);

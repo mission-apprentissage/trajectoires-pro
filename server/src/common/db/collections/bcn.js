@@ -27,15 +27,7 @@ export function schema() {
       ancien_diplome: arrayOf(string()),
     },
     {
-      required: [
-        "type",
-        "code_certification",
-        "code_formation_diplome",
-        "libelle",
-        "libelle_long",
-        "date_ouverture",
-        "_meta",
-      ],
+      required: ["type", "code_certification", "code_formation_diplome", "libelle", "libelle_long", "_meta"],
       additionalProperties: true,
     }
   );

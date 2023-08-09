@@ -1,5 +1,5 @@
 import { omit, without } from "lodash-es";
-import { date, string } from "../src/common/db/collections/jsonSchema/jsonSchemaTypes.js";
+import { arrayOf, date, string } from "../src/common/db/collections/jsonSchema/jsonSchemaTypes.js";
 import * as MongoDB from "../src/common/db/mongodb.js";
 
 const schema = {
@@ -8,8 +8,10 @@ const schema = {
     date_ouverture: date(),
     date_premiere_session: string(),
     date_derniere_session: string(),
+    ancien_diplome: arrayOf(string()),
+    nouveau_diplome: arrayOf(string()),
   },
-  required: ["libelle_long", "date_ouverture"],
+  required: ["libelle_long"],
 };
 
 export const up = async (db, client) => {
@@ -20,6 +22,10 @@ export const up = async (db, client) => {
 export const down = async (db, client) => {
   const collectionInfos = await db.listCollections({ name: "bcn" }).toArray();
   const validator = collectionInfos[0].options.validator;
+
+  if (!validator) {
+    return;
+  }
 
   const oldSchema = validator.$jsonSchema;
   const newSchema = {

@@ -34,8 +34,12 @@ export class MongoRepository extends Repository {
     }, {});
   }
 
+  async findAll() {
+    return dbCollection(this.getCollection()).find({}).stream();
+  }
+
   // eslint-disable-next-line no-unused-vars
-  find(query) {
+  first(query) {
     throw new Error("Not implemented.");
   }
 

@@ -9,11 +9,11 @@ export class BCNRepository extends MongoRepository {
   }
 
   async exist({ code_certification }) {
-    return (await this.find({ code_certification })) ? true : false;
+    return (await this.first({ code_certification })) ? true : false;
   }
 
-  async find({ code_certification }) {
-    const query = this.prepare({ code_certification });
+  async first({ code_certification, ...rest }) {
+    const query = this.prepare({ code_certification, ...rest });
     return dbCollection(this.getCollection()).find(query).limit(1).next();
   }
 
@@ -29,6 +29,39 @@ export class BCNRepository extends MongoRepository {
     return await this._findAndPaginate(query, {
       ...options,
     });
+  }
+
+  async diplomeChildrenGraph({ code_certification }) {
+    const query = this.prepare({ code_certification });
+    const result = await dbCollection(this.getCollection())
+      .aggregate([
+        {
+          $match: query,
+        },
+        {
+          $graphLookup: {
+            from: name,
+            startWith: "$nouveau_diplome",
+            connectFromField: "nouveau_diplome",
+            connectToField: "code_certification",
+            as: "childs",
+            depthField: "depth",
+          },
+        },
+      ])
+      .limit(1)
+      .next();
+
+    const graph = result.childs.reduce((acc, child) => {
+      if (!acc[child.depth]) {
+        acc[child.depth] = [];
+      }
+      acc[child.depth].push(child);
+
+      return acc;
+    }, []);
+
+    return graph;
   }
 }
 

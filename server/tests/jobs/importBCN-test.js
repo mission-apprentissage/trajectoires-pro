@@ -53,6 +53,8 @@ describe("importBCN", () => {
       diplome: { code: "4", libelle: "BAC PRO" },
       libelle: "BAC PRO",
       libelle_long: "BAC PRO",
+      ancien_diplome: [],
+      nouveau_diplome: [],
       _meta: {
         created_on: new Date("2023-01-01T00:00:00.000Z"),
         updated_on: new Date("2023-01-01T00:00:00.000Z"),
@@ -60,8 +62,10 @@ describe("importBCN", () => {
       },
     });
     assert.deepStrictEqual(stats, {
-      stats: { created: 1, failed: 0, updated: 0, total: 1 },
-      statsContinuum: { total: 0, failed: 0, updated: 0 },
+      created: 1,
+      failed: 0,
+      updated: 0,
+      total: 1,
     });
   });
 
@@ -85,8 +89,10 @@ describe("importBCN", () => {
     let found = await bcn().findOne({}, { projection: { _id: 0 } });
     assert.ok(!found.diplome);
     assert.deepStrictEqual(stats, {
-      stats: { created: 1, failed: 0, updated: 0, total: 1 },
-      statsContinuum: { total: 0, failed: 0, updated: 0 },
+      created: 1,
+      failed: 0,
+      updated: 0,
+      total: 1,
     });
   });
 
@@ -120,6 +126,8 @@ describe("importBCN", () => {
         code: "4",
         libelle: "BAC PRO",
       },
+      ancien_diplome: [],
+      nouveau_diplome: [],
       _meta: {
         created_on: new Date("2023-01-01T00:00:00.000Z"),
         updated_on: new Date("2023-01-01T00:00:00.000Z"),
@@ -127,8 +135,10 @@ describe("importBCN", () => {
       },
     });
     assert.deepStrictEqual(stats, {
-      stats: { created: 1, failed: 0, updated: 0, total: 1 },
-      statsContinuum: { total: 0, failed: 0, updated: 0 },
+      created: 1,
+      failed: 0,
+      updated: 0,
+      total: 1,
     });
   });
 
@@ -162,12 +172,11 @@ describe("importBCN", () => {
         code: "7",
         libelle: "MASTER",
       },
+      ancien_diplome: [],
+      nouveau_diplome: [],
     });
     assert.ok(found._meta.date_import);
-    assert.deepStrictEqual(stats, {
-      stats: { created: 1, failed: 0, updated: 0, total: 1 },
-      statsContinuum: { total: 0, failed: 0, updated: 0 },
-    });
+    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0, total: 1 });
   });
 
   it("Vérifie qu'on peut gérer les codes formation avec diplome inconnu", async () => {
@@ -190,103 +199,10 @@ describe("importBCN", () => {
     let found = await bcn().findOne({}, { projection: { _id: 0 } });
     assert.ok(!found.diplome);
     assert.deepStrictEqual(stats, {
-      stats: { created: 1, failed: 0, updated: 0, total: 1 },
-      statsContinuum: { total: 0, failed: 0, updated: 0 },
-    });
-  });
-
-  it("Vérifie qu'on peut importer les anciens/nouveaux diplomes", async () => {
-    mockBCN((client) => {
-      client.get("/CSV?n=N_NIVEAU_FORMATION_DIPLOME&separator=%7C").reply(
-        200,
-        `NIVEAU_FORMATION_DIPLOME|NIVEAU_INTERMINISTERIEL|LIBELLE_COURT|LIBELLE_100|ANCIEN_NIVEAU|DATE_OUVERTURE|DATE_FERMETURE|DATE_INTERVENTION|N_COMMENTAIRE|NIVEAU_QUALIFICATION_RNCP
-        145|1|MASTER|MASTER (LMD) INDIFFERENCIE||01/09/2004||10/12/2020||07`
-      );
-
-      client.get("/CSV?n=N_FORMATION_DIPLOME&separator=%7C").reply(
-        200,
-        `FORMATION_DIPLOME|DATE_PREMIERE_SESSION|DATE_DERNIERE_SESSION|ANCIEN_DIPLOME_1|ANCIEN_DIPLOME_2|NOUVEAU_DIPLOME_1|NOUVEAU_DIPLOME_2|LIBELLE_COURT|LIBELLE_STAT_33|LIBELLE_LONG_200|DATE_OUVERTURE
-      14545678|2018|2023|old_1|old_2|new_1|new_2|BAC PRO|BATIMENT|BAC PRO BATIMENT|31/07/2022`
-      );
-    });
-
-    let stats = await importBCN(getBcnTables({ N_FORMATION_DIPLOME: null }));
-
-    const found = await bcn().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(found, ["_meta"]), {
-      type: "cfd",
-      code_certification: "14545678",
-      code_formation_diplome: "14545678",
-      libelle: "BAC PRO BATIMENT",
-      libelle_long: "BAC PRO BATIMENT",
-      date_ouverture: new Date("2022-07-31T00:00:00.000Z"),
-      diplome: {
-        code: "7",
-        libelle: "MASTER",
-      },
-      ancien_diplome: ["old_1", "old_2"],
-      nouveau_diplome: ["new_1", "new_2"],
-      date_premiere_session: "2018",
-      date_derniere_session: "2023",
-    });
-    assert.ok(found._meta.date_import);
-    assert.deepStrictEqual(stats, {
-      stats: { created: 1, failed: 0, updated: 0, total: 1 },
-      statsContinuum: { total: 1, failed: 0, updated: 1 },
-    });
-  });
-
-  it("Vérifie qu'on ajoute les anciens/nouveaux diplomes manquants", async () => {
-    mockBCN((client) => {
-      client.get("/CSV?n=N_NIVEAU_FORMATION_DIPLOME&separator=%7C").reply(
-        200,
-        `NIVEAU_FORMATION_DIPLOME|NIVEAU_INTERMINISTERIEL|LIBELLE_COURT|LIBELLE_100|ANCIEN_NIVEAU|DATE_OUVERTURE|DATE_FERMETURE|DATE_INTERVENTION|N_COMMENTAIRE|NIVEAU_QUALIFICATION_RNCP
-        145|1|MASTER|MASTER (LMD) INDIFFERENCIE||01/09/2004||10/12/2020||07`
-      );
-
-      client.get("/CSV?n=N_FORMATION_DIPLOME&separator=%7C").reply(
-        200,
-        `FORMATION_DIPLOME|DATE_PREMIERE_SESSION|DATE_DERNIERE_SESSION|ANCIEN_DIPLOME_1|ANCIEN_DIPLOME_2|NOUVEAU_DIPLOME_1|NOUVEAU_DIPLOME_2|LIBELLE_COURT|LIBELLE_STAT_33|LIBELLE_LONG_200|DATE_OUVERTURE
-      14545678|2018|2023|old_1|old_2|new_1|new_2|BAC PRO|BATIMENT|BAC PRO BATIMENT|31/07/2022
-      old_1|2018|2023|old||new||BAC PRO|BATIMENT|BAC PRO BATIMENT|31/07/2022
-      new_1|2018|2023|old||new||BAC PRO|BATIMENT|BAC PRO BATIMENT|31/07/2022`
-      );
-    });
-
-    let stats = await importBCN(getBcnTables({ N_FORMATION_DIPLOME: null }));
-
-    const foundOld = await bcn().findOne({ code_certification: "old_1" }, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(foundOld, ["_meta"]), {
-      type: "cfd",
-      code_certification: "old_1",
-      code_formation_diplome: "old_1",
-      libelle: "BAC PRO BATIMENT",
-      libelle_long: "BAC PRO BATIMENT",
-      date_ouverture: new Date("2022-07-31T00:00:00.000Z"),
-      ancien_diplome: ["old"],
-      nouveau_diplome: ["new", "14545678"],
-      date_premiere_session: "2018",
-      date_derniere_session: "2023",
-    });
-    assert.ok(foundOld._meta.date_import);
-
-    const foundNew = await bcn().findOne({ code_certification: "new_1" }, { projection: { _id: 0 } });
-    assert.deepStrictEqual(omit(foundNew, ["_meta"]), {
-      type: "cfd",
-      code_certification: "new_1",
-      code_formation_diplome: "new_1",
-      libelle: "BAC PRO BATIMENT",
-      libelle_long: "BAC PRO BATIMENT",
-      date_ouverture: new Date("2022-07-31T00:00:00.000Z"),
-      ancien_diplome: ["old", "14545678"],
-      nouveau_diplome: ["new"],
-      date_premiere_session: "2018",
-      date_derniere_session: "2023",
-    });
-    assert.ok(foundNew._meta.date_import);
-    assert.deepStrictEqual(stats, {
-      stats: { created: 3, failed: 0, updated: 0, total: 3 },
-      statsContinuum: { total: 3, failed: 0, updated: 3 },
+      created: 1,
+      failed: 0,
+      updated: 0,
+      total: 1,
     });
   });
 });
