@@ -45,6 +45,8 @@ describe("repositories", () => {
               libelle_long: "BAC PRO BATIMENT",
               diplome: { code: "4", libelle: "BAC" },
               date_ouverture: new Date(),
+              nouveau_diplome: [],
+              ancien_diplome: [],
               _meta: {
                 date_import: new Date(),
                 created_on: new Date(),
@@ -60,6 +62,8 @@ describe("repositories", () => {
               libelle: "BAC PRO",
               libelle_long: "BAC PRO BATIMENT",
               date_ouverture: new Date(),
+              nouveau_diplome: [],
+              ancien_diplome: [],
               _meta: {
                 date_import: new Date(),
                 created_on: new Date(),

@@ -48,6 +48,8 @@ describe("bcnRoutes", () => {
             libelle_long: "BAC PRO BATIMENT",
             diplome: { code: "4", libelle: "BAC" },
             date_ouverture: "2023-01-01T00:00:00.000Z",
+            nouveau_diplome: [],
+            ancien_diplome: [],
           },
           {
             type: "mef",
@@ -58,6 +60,8 @@ describe("bcnRoutes", () => {
             libelle: "BAC PRO",
             libelle_long: "BAC PRO BATIMENT",
             date_ouverture: "2023-01-01T00:00:00.000Z",
+            nouveau_diplome: [],
+            ancien_diplome: [],
           },
         ],
         pagination: {

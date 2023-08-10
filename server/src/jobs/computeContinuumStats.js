@@ -31,7 +31,7 @@ const statCollections = {
 
 function streamStats(statName) {
   return compose(
-    getCollectionForStats(statName).find({}).stream(),
+    getCollectionForStats(statName).find({}).sort({ code_certification: 1 }).stream(),
     transformData((data) => ({
       data,
       statName,
@@ -156,12 +156,17 @@ async function computeChildren({ diplomeBCN, data, query, statName }) {
     return [];
   }
 
-  const exist = await getRepositoryForStats(statName).first({
+  const existSelf = await getRepositoryForStats(statName).first({
     ...query,
     code_certification: child_code_certification,
     "donnee_source.type": "self",
   });
-  if (exist) {
+  const existNew = await getRepositoryForStats(statName).first({
+    ...query,
+    code_certification: child_code_certification,
+    "donnee_source.type": "nouvelle",
+  });
+  if (existSelf || existNew) {
     return [];
   }
 
@@ -178,7 +183,7 @@ async function computeChildren({ diplomeBCN, data, query, statName }) {
 }
 
 export async function computeContinuumStats(options = {}) {
-  let stats = options.stats || ["certifications", "regionales"]; //, "formations", "regionales"];
+  let stats = options.stats || ["certifications", "regionales", "formations"];
   const result = { total: 0, created: 0, updated: 0, failed: 0 };
 
   function handleError(e, context = {}) {
@@ -225,7 +230,7 @@ export async function computeContinuumStats(options = {}) {
           result.created++;
         } else if (res.modifiedCount) {
           result.updated++;
-          logger.debug("Stats pour les anciens/nouveaux diplomes mise à jour", query);
+          logger.info("Stats pour les anciens/nouveaux diplomes mises à jour", query);
         } else {
           logger.trace("Stats pour anciens/nouveaux diplomes déjà à jour", query);
         }
