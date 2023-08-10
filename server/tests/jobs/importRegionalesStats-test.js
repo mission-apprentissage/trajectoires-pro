@@ -342,6 +342,40 @@ describe("importRegionalesStats", () => {
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
+  it("Vérifie que la voie agricole n'écrase pas la voie scolaire", async () => {
+    mockApi("2020_2021", "01", {
+      data: [
+        {
+          id_mesure: "nb_en_emploi_6_mois",
+          filiere: "voie_pro_sco_educ_nat",
+          valeur_mesure: 6,
+          dimensions: [
+            {
+              id_mefstat11: "12345678910",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_6_mois",
+          filiere: "voie_pro_sco_agri",
+          valeur_mesure: 12,
+          dimensions: [
+            {
+              id_mefstat11: "12345678910",
+            },
+          ],
+        },
+      ],
+    });
+    await insertMEF({ code_certification: "12345678910" });
+
+    const stats = await importRegionalesStats({ millesimes: ["2020_2021"], codes_region_academique: ["01"] });
+
+    const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
+    assert.deepStrictEqual(found.nb_en_emploi_6_mois, 6);
+    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
+  });
+
   it("Vérifie qu'on peut importer les stats d'une région sur plusieurs millesimes", async () => {
     mockApi("2020_2021", "01", {
       data: [
