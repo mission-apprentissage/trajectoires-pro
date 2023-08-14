@@ -35,15 +35,15 @@ function groupByCertification(additionalData = {}) {
   return accumulateData(
     (acc, stats) => {
       const dimension = stats.dimensions[0];
-      const filiere = stats.filiere || null;
+      const filiere = stats.filiere ? getFiliere(stats.filiere) : getFiliereFromIDType(dimension);
       const code = getCodeCertification(dimension);
 
-      const index = acc.findIndex((item) => item.code_certification === code);
+      const index = acc.findIndex((item) => item.code_certification === code && item.filiere === filiere);
 
       if (index === -1) {
         acc.push({
           ...additionalData,
-          filiere: filiere ? getFiliere(filiere) : getFiliereFromIDType(dimension),
+          filiere: filiere,
           code_certification: code,
           [stats.id_mesure]: stats.valeur_mesure,
         });
