@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.4.2...v1.4.3) (2023-08-14)
+
+
+### Bug Fixes
+
+* corrige l'erreur ou la voie agricole écrase la voie scolaire ([#207](https://github.com/mission-apprentissage/trajectoires-pro/issues/207)) ([87dd863](https://github.com/mission-apprentissage/trajectoires-pro/commit/87dd8634381b0b974c16f012395dff697ef8d746))
+
 ## [1.4.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.4.1...v1.4.2) (2023-07-31)
 
 
