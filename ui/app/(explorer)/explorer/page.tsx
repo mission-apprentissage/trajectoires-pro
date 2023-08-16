@@ -19,6 +19,8 @@ export default function Page() {
   const { isLoading, data } = useQuery({
     queryKey: ["bcn"],
     queryFn: () => bcn(100000),
+    staleTime: Infinity,
+    cacheTime: Infinity,
   });
 
   if (isLoading) {
