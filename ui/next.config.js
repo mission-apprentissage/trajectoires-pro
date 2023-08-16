@@ -6,13 +6,33 @@ const nextConfig = {
     appDir: true,
   },
   output: "standalone",
-  basePath: "/statistiques",
   async rewrites() {
     return [
-      {
-        source: "/:path*",
-        destination: "/statistiques/:path*",
-      },
+      ...(process.env.HOST_REWRITE === "true"
+        ? [
+            {
+              source: "/:path*",
+              has: [
+                {
+                  type: "host",
+                  value: process.env.INTERNAL_SITE_HOST, //"explorer.*.inserjeunes.beta.gouv.fr",
+                },
+              ],
+              destination: "/explorer/:path*",
+            },
+
+            {
+              source: "/:path*",
+              has: [
+                {
+                  type: "host",
+                  value: process.env.STATISTIQUES_SITE_HOST, //"statistiques.*.inserjeunes.beta.gouv.fr",
+                },
+              ],
+              destination: "/statistiques/:path*",
+            },
+          ]
+        : []),
     ];
   },
   webpack: (config) => {
