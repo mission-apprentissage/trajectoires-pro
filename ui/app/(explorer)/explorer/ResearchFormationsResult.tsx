@@ -165,7 +165,7 @@ export default function ResearchFormationsResult({
       },
       {
         accessorKey: "diplome.libelle",
-        header: "Diplome",
+        header: "Diplôme",
         size: 150,
       },
       {
