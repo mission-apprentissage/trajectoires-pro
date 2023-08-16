@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
-import { Layout } from "#/app/statistiques/layout";
+import { Layout } from "#/app/(statistiques)/layout";
 
 describe("Layout", () => {
   it("renders a layout", async () => {

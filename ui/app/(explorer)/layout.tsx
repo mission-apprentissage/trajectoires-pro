@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Header } from "@codegouvfr/react-dsfr/Header";
 import Providers from "#/app/provider";
 
-export function Layout({ children }: { children: JSX.Element }) {
+function Layout({ children }: { children: JSX.Element }) {
   return (
     <DsfrProvider>
       <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
