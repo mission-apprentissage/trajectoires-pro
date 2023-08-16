@@ -7,9 +7,8 @@ map $http_upgrade $connection_upgrade {
 }
 
 server {
-  listen ${PORT} default_server;
-  server_name _;
-  return 444;
+    listen 443 ssl default_server;
+    ssl_reject_handshake on;
 }
 
 server {
@@ -48,11 +47,4 @@ server {
 
     include includes/location_*.conf;
     include includes/env/location_*.conf;
-}
-
-
-server {
-  listen ${SSL_PORT};
-  server_name _;
-  return 444;
 }
