@@ -22,29 +22,17 @@ server {
 }
 
 
+server {
+    listen ${SSL_PORT} ssl;
+    server_name statistiques.${SERVER_NAME};
+    include includes/server.conf;
+    include includes/statistiques/location_*.conf;
+}
 
 server {
     listen ${SSL_PORT} ssl;
-
-    server_name ${SERVER_NAME};
-
-    ssl_certificate ${PROXY_SSL_CERT};
-    ssl_certificate_key ${PROXY_SSL_CERT_KEY};
-    ssl_session_timeout 1d;
-    ssl_session_cache shared:MozSSL:10m;
-    ssl_session_tickets off;
-
-    ssl_dhparam /etc/ssl/certs/dhparam-${PROXY_SSL_DH_BITS}.pem;
-
-    ssl_protocols ${PROXY_SSL_PROTOCOLS};
-    ssl_ciphers ${PROXY_SSL_CIPHERS};
-    ssl_prefer_server_ciphers ${PROXY_SSL_PREFER_CIPHERS};
-
-    ssl_stapling ${PROXY_SSL_OCSP_STAPLING};
-    ssl_stapling_verify ${PROXY_SSL_OCSP_STAPLING};
-
-    ssl_verify_client ${PROXY_SSL_VERIFY};
-
+    server_name ${SERVER_NAME} ${SERVER_NAME_ALTERNATIVE};
+    include includes/server.conf;
     include includes/location_*.conf;
     include includes/env/location_*.conf;
 }
