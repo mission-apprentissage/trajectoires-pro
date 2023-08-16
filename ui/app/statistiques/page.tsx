@@ -1,6 +1,6 @@
 import "server-only";
 import { headers } from "next/headers";
-import * as Metabase from "#/app/api/metabase";
+import * as Metabase from "#/app/statistiques/api/metabase";
 import MetabaseIframe from "#/app/components/MetabaseIframe";
 import { MetabaseConfig } from "#/app/types/metabase";
 import Config from "#/app/config";

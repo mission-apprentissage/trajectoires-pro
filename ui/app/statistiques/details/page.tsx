@@ -1,6 +1,6 @@
 import "server-only";
 
-import * as Metabase from "#/app/api/metabase";
+import * as Metabase from "#/app/statistiques/api/metabase";
 import MetabaseIframe from "#/app/components/MetabaseIframe";
 import { Typograhpy } from "#/app/components/MaterialUINext";
 import { MetabaseConfig } from "#/app/types/metabase";
