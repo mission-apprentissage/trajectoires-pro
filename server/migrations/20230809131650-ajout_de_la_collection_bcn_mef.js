@@ -64,7 +64,10 @@ function schema() {
 }
 
 export const up = async (db, client) => {
-  await db.createCollection(name);
+  let collections = await db.listCollections().toArray();
+  if (!collections.find((c) => c.name === name)) {
+    await db.createCollection(name);
+  }
 
   logger.debug(`Configuring indexes for collection ${name}...`);
   let dbCol = db.collection(name);
