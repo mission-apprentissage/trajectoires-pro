@@ -177,8 +177,8 @@ export default function ResearchFormationsResult({
         },
       },
       {
-        id: "fermer",
-        header: "Fermer",
+        id: "ferme",
+        header: "Fermé",
         size: 100,
         accessorFn: (row) => {
           return row.date_fermeture < new Date().toISOString() ? "Oui" : "Non";
