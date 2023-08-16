@@ -9,7 +9,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { chunk, flatten } from "lodash-es";
 import { AutoSizer } from "react-virtualized";
-import { Typograhpy, Grid, Box } from "../components/MaterialUINext";
+import { Typograhpy, Grid, Box } from "../../components/MaterialUINext";
 import { BCN } from "#/types/bcn";
 import { Certification } from "#/types/certification";
 export const revalidate = 0;
