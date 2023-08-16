@@ -112,7 +112,7 @@ export default function ResearchFormations({
         </Grid>
         <Grid item md={2}>
           <FormControl fullWidth>
-            <InputLabel id="diplome-label">Diplomes</InputLabel>
+            <InputLabel id="diplome-label">Diplômes</InputLabel>
             <Select
               fullWidth
               labelId="diplome-label"
@@ -120,7 +120,7 @@ export default function ResearchFormations({
               multiple
               value={selectedDiplomes}
               onChange={handleChangeDiplome}
-              input={<OutlinedInput label={"Diplomes"} placeholder={"Diplomes"} />}
+              input={<OutlinedInput label={"Diplômes"} placeholder={"Diplômes"} />}
               renderValue={(selected) => {
                 return selected.map((s) => diplomes.find((d) => d.value === s)?.label).join(", ");
               }}
