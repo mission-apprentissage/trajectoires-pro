@@ -11,6 +11,5 @@ location /ui {
 }
 
 location /statistiques {
-    set $upstream http://ui:3000;
-    include includes/proxy.conf;
+    return 301 https://statistiques.$host/;
 }
