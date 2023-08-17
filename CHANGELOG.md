@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.4.3...v1.5.0) (2023-08-17)
+
+
+### Features
+
+* Ajout du continuum pour les diplomes 1<=>1 ([#206](https://github.com/mission-apprentissage/trajectoires-pro/issues/206)) ([1f63c9f](https://github.com/mission-apprentissage/trajectoires-pro/commit/1f63c9fd0cbad67e92baa92621d84f76680b4cf9))
+
 ## [1.4.3](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.4.2...v1.4.3) (2023-08-14)
 
 
