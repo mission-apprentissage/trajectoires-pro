@@ -8,13 +8,15 @@ services:
 
   ui:
     build:
-      args:
-        TRAJECTOIRES_PRO_ENV: dev
+      dockerfile: ./Dockerfile.dev
     mem_limit: 1g
     stdin_open: true
-
+    volumes:
+      - trajectoires_pro_ui_data:/data:z
+      - /app/node_modules
+      - ./ui:/app:z
   server:
-    command: [ "yarn", "debug" ]
+    command: ["yarn", "debug"]
     ports:
       - "127.0.0.1:9229:9229" # Allows remote debugging
     volumes:
@@ -47,6 +49,9 @@ volumes:
   trajectoires_pro_server_data:
     driver: local
     name: trajectoires_pro_server_data
+  trajectoires_pro_ui_data:
+    driver: local
+    name: trajectoires_pro_ui_data
   trajectoires_pro_metabase_data:
     driver: local
     name: trajectoires_pro_metabase_data

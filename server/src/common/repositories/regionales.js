@@ -1,18 +1,18 @@
-import { MongoRepository } from "./base.js";
+import { StatsRepository } from "./base.js";
 import { dbCollection } from "../db/mongodb.js";
 import { name } from "../db/collections/regionalesStats.js";
 
-export class RegionalesRepository extends MongoRepository {
+export class RegionalesRepository extends StatsRepository {
   constructor() {
     super(name);
   }
 
   async exist({ region, code_certification }) {
-    return (await this.find({ "region.code": region, code_certification })) ? true : false;
+    return (await this.first({ "region.code": region, code_certification })) ? true : false;
   }
 
-  async find({ region, code_certification, millesime }) {
-    const query = this.prepare({ "region.code": region, code_certification, millesime });
+  async first({ region, code_certification, millesime, ...rest }) {
+    const query = this.prepare({ "region.code": region, code_certification, millesime, ...rest });
     return dbCollection(this.getCollection()).find(query).sort({ millesime: -1 }).limit(1).next();
   }
 

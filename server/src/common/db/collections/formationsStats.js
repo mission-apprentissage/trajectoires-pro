@@ -2,6 +2,7 @@ import { object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 import { statsSchema } from "./jsonSchema/statsSchema.js";
 import { regionSchema } from "./jsonSchema/regionSchema.js";
+import { continuumSchema } from "./jsonSchema/continuumSchema.js";
 import { metaSchema, metaIJSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "formationsStats";
@@ -27,10 +28,20 @@ export function schema() {
       diplome: diplomeSchema(),
       region: regionSchema(),
       ...statsSchema(),
+      ...continuumSchema(),
       _meta: metaSchema([metaIJSchema()]),
     },
     {
-      required: ["uai", "millesime", "code_certification", "code_formation_diplome", "filiere", "diplome", "region"],
+      required: [
+        "uai",
+        "millesime",
+        "code_certification",
+        "code_formation_diplome",
+        "filiere",
+        "diplome",
+        "region",
+        "donnee_source",
+      ],
       additionalProperties: false,
     }
   );

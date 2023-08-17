@@ -82,6 +82,10 @@ describe("importFormationsStats", () => {
         code: "76",
         nom: "Occitanie",
       },
+      donnee_source: {
+        code_certification: "12345678",
+        type: "self",
+      },
       _meta: {
         inserjeunes: {
           taux_poursuite_etudes: 6,
@@ -134,6 +138,10 @@ describe("importFormationsStats", () => {
       region: {
         code: "76",
         nom: "Occitanie",
+      },
+      donnee_source: {
+        code_certification: "12345678900",
+        type: "self",
       },
       _meta: {
         inserjeunes: {},

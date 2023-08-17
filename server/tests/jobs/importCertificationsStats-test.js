@@ -75,6 +75,10 @@ describe("importCertificationsStats", () => {
         code: "4",
         libelle: "BAC",
       },
+      donnee_source: {
+        code_certification: "12345678",
+        type: "self",
+      },
       _meta: {
         inserjeunes: {
           taux_poursuite_etudes: 6,
@@ -119,6 +123,10 @@ describe("importCertificationsStats", () => {
       diplome: {
         code: "4",
         libelle: "BAC",
+      },
+      donnee_source: {
+        code_certification: "12345678900",
+        type: "self",
       },
       _meta: {
         inserjeunes: {},

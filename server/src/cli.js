@@ -5,16 +5,25 @@ import { runScript } from "./common/runScript.js";
 import { writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
 import { importBCN } from "./jobs/importBCN.js";
+import { importBCNMEF } from "./jobs/importBCNMEF.js";
+import { importBCNContinuum } from "./jobs/importBCNContinuum.js";
+import { computeBCNMEFContinuum } from "./jobs/computeBCNMEFContinuum.js";
 import { importStats } from "./jobs/importStats.js";
 import { backfillMetrics } from "./jobs/backfillMetrics.js";
 import { asArray } from "./common/utils/stringUtils.js";
+import { computeContinuumStats } from "./jobs/computeContinuumStats.js";
 
 cli
   .command("importBCN")
   .description("Import les CFD et MEF depuis la BCN")
   .action(() => {
-    runScript(() => {
-      return importBCN();
+    runScript(async () => {
+      const statsBCN = await importBCN();
+      const statsMef = await importBCNMEF();
+      const statsContinuum = await importBCNContinuum();
+      const statsMefContinuum = await computeBCNMEFContinuum();
+
+      return { statsBCN, statsMef, statsContinuum, statsMefContinuum };
     });
   });
 
@@ -25,6 +34,16 @@ cli
   .action((stats) => {
     runScript(() => {
       return importStats({ stats });
+    });
+  });
+
+cli
+  .command("computeContinuumStats")
+  .description("Calcule les données statistiques manquantes pour les anciens/nouveaux diplomes")
+  .argument("[stats]", "Le nom des stats à importer (formations,certifications,regionales)", asArray)
+  .action((stats) => {
+    runScript(() => {
+      return computeContinuumStats({ stats });
     });
   });
 

@@ -8,45 +8,53 @@ import { parseAsUTCDate } from "../common/utils/dateUtils.js";
 
 const logger = getLoggerWithContext("import");
 
+function fieldsValue(data, niveauxDiplome) {
+  const cfd = data["FORMATION_DIPLOME"];
+
+  return {
+    code_certification: cfd,
+    code_formation_diplome: cfd,
+    diplome: getDiplome(cfd, niveauxDiplome),
+    date_ouverture: parseAsUTCDate(data["DATE_OUVERTURE"]),
+    date_fermeture: parseAsUTCDate(data["DATE_FERMETURE"]),
+    ancien_diplome: [],
+    nouveau_diplome: [],
+  };
+}
+
 export async function streamCfds(options = {}) {
   const niveauxDiplome = await getNiveauxDiplome(options);
+
   return compose(
     mergeStreams(
       await getBCNTable("V_FORMATION_DIPLOME", options), //Apprentissage
       await getBCNTable("N_FORMATION_DIPLOME", options)
     ),
     transformData(async (data) => {
-      const cfd = data["FORMATION_DIPLOME"];
-
       return {
+        ...fieldsValue(data, niveauxDiplome),
         type: "cfd",
-        code_certification: cfd,
-        code_formation_diplome: cfd,
         libelle: `${data["LIBELLE_COURT"]} ${data["LIBELLE_STAT_33"]}`,
-        diplome: getDiplome(cfd, niveauxDiplome),
-        date_fermeture: parseAsUTCDate(data["DATE_FERMETURE"]),
+        libelle_long: data["LIBELLE_LONG_200"],
       };
     })
   );
 }
 
 export async function streamMefs(options = {}) {
-  const stream = await getBCNTable("N_MEF", options);
   const niveauxDiplome = await getNiveauxDiplome(options);
+  const stream = await getBCNTable("N_MEF", options);
 
   return compose(
     stream,
     transformData(async (data) => {
       const mefstat11 = data["MEF_STAT_11"];
-      const cfd = data["FORMATION_DIPLOME"];
-
       return {
+        ...fieldsValue(data, niveauxDiplome),
         type: "mef",
         code_certification: mefstat11,
-        code_formation_diplome: cfd,
         libelle: data["LIBELLE_LONG"],
-        diplome: getDiplome(cfd, niveauxDiplome),
-        date_fermeture: parseAsUTCDate(data["DATE_FERMETURE"]),
+        libelle_long: data["LIBELLE_LONG"],
       };
     })
   );
@@ -98,5 +106,6 @@ export async function importBCN(options = {}) {
       { parallel: 10 }
     )
   );
+
   return stats;
 }

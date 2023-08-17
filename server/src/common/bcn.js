@@ -2,8 +2,6 @@ import { compose, transformData, writeData, oleoduc } from "oleoduc";
 import { fetchStream } from "./utils/httpUtils.js";
 import iconv from "iconv-lite";
 import { parseCsv } from "./utils/csvUtils.js";
-import { bcn } from "./db/collections/collections.js";
-import { castArray } from "lodash-es";
 
 const ANCIENS_NIVEAUX_MAPPER = {
   5: "3", // CAP
@@ -48,18 +46,6 @@ export async function getNiveauxDiplome(options) {
   );
 
   return niveauxDiplome;
-}
-
-export async function findCodeFormationDiplome(codeCertification) {
-  const found = await bcn().findOne({ code_certification: { $in: castArray(codeCertification) } });
-  return found?.code_formation_diplome;
-}
-
-export async function findCodesFormationDiplome(codeCertification) {
-  const found = await bcn()
-    .find({ code_certification: { $in: castArray(codeCertification) } })
-    .toArray();
-  return found.map((f) => f.code_formation_diplome);
 }
 
 export async function getBCNTable(tableName, options = {}) {

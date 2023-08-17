@@ -1,18 +1,18 @@
-import { MongoRepository } from "./base.js";
+import { StatsRepository } from "./base.js";
 import { dbCollection } from "../db/mongodb.js";
 import { name } from "../db/collections/certificationsStats.js";
 
-export class CertificationRepository extends MongoRepository {
+export class CertificationRepository extends StatsRepository {
   constructor() {
     super(name);
   }
 
   async exist({ code_certification }) {
-    return (await this.find({ code_certification })) ? true : false;
+    return (await this.first({ code_certification })) ? true : false;
   }
 
-  async find({ code_certification, millesime }) {
-    const query = this.prepare({ code_certification, millesime });
+  async first({ code_certification, millesime, ...rest }) {
+    const query = this.prepare({ code_certification, millesime, ...rest });
     return dbCollection(this.getCollection()).find(query).sort({ millesime: -1 }).limit(1).next();
   }
 

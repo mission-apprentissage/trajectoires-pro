@@ -7,6 +7,14 @@ const nextConfig = {
   },
   output: "standalone",
   basePath: "/statistiques",
+  async rewrites() {
+    return [
+      {
+        source: "/:path*",
+        destination: "/statistiques/:path*",
+      },
+    ];
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.woff2$/,

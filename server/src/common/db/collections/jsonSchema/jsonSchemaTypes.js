@@ -40,3 +40,10 @@ export function object(properties, custom = {}) {
     properties,
   };
 }
+
+export function enumOf(values, custom = {}) {
+  return {
+    enum: values,
+    ...custom,
+  };
+}

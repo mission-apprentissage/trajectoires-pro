@@ -95,7 +95,7 @@ export default () => {
             throw new ErrorFormationNotFound();
           }
 
-          const result = await FormationsRepository.find({
+          const result = await FormationsRepository.first({
             uai,
             code_certification,
             millesime: formatMillesime(millesime),

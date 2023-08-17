@@ -1,4 +1,4 @@
-import { date, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { date, object, objectId, string, arrayOf } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 import { metaSchema, metaBCNSchema } from "./jsonSchema/metaSchema.js";
 
@@ -17,11 +17,17 @@ export function schema() {
       code_formation_diplome: string(),
       date_fermeture: date(),
       libelle: string(),
+      libelle_long: string(),
       diplome: diplomeSchema(),
       _meta: metaSchema([metaBCNSchema()]),
+      date_ouverture: date(),
+      date_premiere_session: string(),
+      date_derniere_session: string(),
+      nouveau_diplome: arrayOf(string()),
+      ancien_diplome: arrayOf(string()),
     },
     {
-      required: ["type", "code_certification", "code_formation_diplome", "libelle", "_meta"],
+      required: ["type", "code_certification", "code_formation_diplome", "libelle", "libelle_long", "_meta"],
       additionalProperties: true,
     }
   );

@@ -34,8 +34,12 @@ export class MongoRepository extends Repository {
     }, {});
   }
 
+  async findAll() {
+    return dbCollection(this.getCollection()).find({}).stream();
+  }
+
   // eslint-disable-next-line no-unused-vars
-  find(query) {
+  first(query) {
     throw new Error("Not implemented.");
   }
 
@@ -47,6 +51,7 @@ export class MongoRepository extends Repository {
     let total = await dbCollection(this.getCollection()).countDocuments(query);
 
     return {
+      // return the collections as a stream
       find: dbCollection(this.getCollection())
         .find(query, options.projection ? { projection: options.projection } : {})
         .sort(options.sort || {})
@@ -70,6 +75,13 @@ export class MongoRepository extends Repository {
   // eslint-disable-next-line no-unused-vars
   exist(query) {
     throw new Error("Not implemented");
+  }
+}
+
+export class StatsRepository extends MongoRepository {
+  constructor(collection) {
+    super();
+    this.collection = collection;
   }
 
   async _getFilieresStats(query) {

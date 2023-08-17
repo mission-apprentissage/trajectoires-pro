@@ -85,6 +85,10 @@ describe("importRegionalesStats", () => {
         code_region_academique: "01",
         nom: "Auvergne-Rhône-Alpes",
       },
+      donnee_source: {
+        code_certification: "12345678",
+        type: "self",
+      },
       _meta: {
         inserjeunes: {
           taux_poursuite_etudes: 6,
@@ -135,6 +139,10 @@ describe("importRegionalesStats", () => {
         code: "84",
         code_region_academique: "01",
         nom: "Auvergne-Rhône-Alpes",
+      },
+      donnee_source: {
+        code_certification: "12345678900",
+        type: "self",
       },
       _meta: {
         inserjeunes: {},
@@ -468,6 +476,10 @@ describe("importRegionalesStats", () => {
         code_region_academique: "01",
         nom: "Auvergne-Rhône-Alpes",
       },
+      donnee_source: {
+        code_certification: "12345678",
+        type: "self",
+      },
       _meta: {
         inserjeunes: {},
         created_on: new Date("2023-01-01T00:00:00.000Z"),
@@ -494,6 +506,10 @@ describe("importRegionalesStats", () => {
         code: "27",
         code_region_academique: "02",
         nom: "Bourgogne-Franche-Comté",
+      },
+      donnee_source: {
+        code_certification: "12345678",
+        type: "self",
       },
       _meta: {
         inserjeunes: {},
