@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.5.0...v1.5.1) (2023-08-17)
+
+
+### Bug Fixes
+
+* ajout des fichiers établissements ([#209](https://github.com/mission-apprentissage/trajectoires-pro/issues/209)) ([a913432](https://github.com/mission-apprentissage/trajectoires-pro/commit/a9134323d9cf90325eb4f07007599a42041fefda))
+
 # [1.5.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.4.3...v1.5.0) (2023-08-17)
 
 
