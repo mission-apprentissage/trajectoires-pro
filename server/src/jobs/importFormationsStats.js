@@ -1,8 +1,9 @@
 import { compose, flattenArray, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
+import { createReadStream } from "fs";
 import { Readable } from "stream";
 import { omit, pick, merge } from "lodash-es";
 import { upsert } from "../common/db/mongodb.js";
-import { getFromStorage } from "../common/utils/ovhUtils.js";
+import path from "path";
 import { parseCsv } from "../common/utils/csvUtils.js";
 import { isUAIValid } from "../common/utils/validationUtils.js";
 import { InserJeunes } from "../common/inserjeunes/InserJeunes.js";
@@ -11,7 +12,9 @@ import { getLoggerWithContext } from "../common/logger.js";
 import { omitNil } from "../common/utils/objectUtils.js";
 import { findRegionByNom } from "../common/regions.js";
 import { computeCustomStats, getMillesimesFormations, INSERJEUNES_IGNORED_STATS_NAMES } from "../common/stats.js";
+import { getDirname } from "../common/utils/esmUtils.js";
 
+const __dirname = getDirname(import.meta.url);
 const logger = getLoggerWithContext("import");
 
 async function convertEtablissementsIntoParameters(millesime) {
@@ -22,7 +25,7 @@ async function convertEtablissementsIntoParameters(millesime) {
 
   const streams = await Promise.all(
     files.map(async (fileName) => {
-      const stream = await getFromStorage(fileName);
+      const stream = createReadStream(path.join(__dirname, "../../data/", fileName));
       return compose(stream, parseCsv());
     })
   );
