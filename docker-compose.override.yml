@@ -9,6 +9,11 @@ services:
   ui:
     build:
       dockerfile: ./Dockerfile.dev
+      args:
+        - METABASE_SECRET_KEY=${METABASE_SECRET_KEY}
+        - METABASE_SITE_URL=${METABASE_SITE_URL}
+        - METABASE_DASHBOARD_STATS_ID=${METABASE_DASHBOARD_STATS_ID}
+        - METABASE_DASHBOARD_STATS_DETAILS_ID=${METABASE_DASHBOARD_STATS_DETAILS_ID}
     mem_limit: 1g
     stdin_open: true
     volumes:
@@ -25,6 +30,10 @@ services:
     environment:
       - TRAJECTOIRES_PRO_ENV=dev
       - TRAJECTOIRES_PRO_LOG_LEVEL=debug
+      - METABASE_SECRET_KEY=${METABASE_SECRET_KEY}
+      - METABASE_SITE_URL=${METABASE_SITE_URL}
+      - METABASE_DASHBOARD_STATS_ID=${METABASE_DASHBOARD_STATS_ID}
+      - METABASE_DASHBOARD_STATS_DETAILS_ID=${METABASE_DASHBOARD_STATS_DETAILS_ID}
 
   mongodb:
     ports:
