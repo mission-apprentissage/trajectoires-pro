@@ -18,6 +18,7 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_TLS_REJECT_UNAUTHORIZED 0
 
 ARG METABASE_SECRET_KEY
 ARG METABASE_SITE_URL
@@ -62,6 +63,7 @@ WORKDIR /app
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_TLS_REJECT_UNAUTHORIZED 0
 ENV HAS_PROXY true
 
 RUN addgroup --system --gid 1001 nodejs
