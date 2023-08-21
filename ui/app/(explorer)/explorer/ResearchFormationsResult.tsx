@@ -11,8 +11,8 @@ import { chunk, flatten } from "lodash-es";
 import { AutoSizer } from "react-virtualized";
 import { Typograhpy, Grid, Box } from "../../components/MaterialUINext";
 import { BCNResearch } from "#/types/bcn";
-import { Certification } from "#/types/certification";
 import { findRegionByCode } from "#/common/regions";
+import { Certification } from "#/services/exposition/types";
 export const revalidate = 0;
 
 const MILLESIMES = ["2019", "2020", "2021"];

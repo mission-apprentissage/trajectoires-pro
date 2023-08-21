@@ -8,8 +8,28 @@ const nextConfig = {
   output: "standalone",
   async rewrites() {
     return [
-      ...(process.env.HOST_REWRITE === "true"
+      {
+        source: "/api/:path*",
+        destination: "/api/:path*",
+      },
+      ...(process.env.NEXT_PUBLIC_HOST_REWRITE === "true"
         ? [
+            {
+              source: "/api/:path*",
+              destination: "/api/:path*",
+            },
+
+            {
+              source: "/:path*",
+              has: [
+                {
+                  type: "host",
+                  value: process.env.INSERJEUNES_SITE_HOST, //"site.*.inserjeunes.beta.gouv.fr",
+                },
+              ],
+              destination: "/inserjeunes/:path*",
+            },
+
             {
               source: "/:path*",
               has: [

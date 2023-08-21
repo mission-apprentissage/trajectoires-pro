@@ -18,5 +18,5 @@ export function cacheWithObjectArgument<CachedFunction extends (...args: any) =>
     return cacheReact<(argumentsPrimitive: string) => R>((argumentsPrimitive: string) => {
       return fn(...JSON.parse(argumentsPrimitive));
     })(argumentsPrimitive);
-  };
+  } as unknown as CachedFunction;
 }

@@ -91,6 +91,7 @@ export async function importRegionalesStats(options = {}) {
               region: pick(region, ["code", "nom", "code_region_academique"]),
               code_formation_diplome: certification?.code_formation_diplome,
               diplome: certification?.diplome,
+              libelle_long: certification?.libelle_long,
               donnee_source: {
                 code_certification: regionaleStats.code_certification,
                 type: "self",

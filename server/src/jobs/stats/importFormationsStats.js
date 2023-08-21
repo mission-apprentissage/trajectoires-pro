@@ -141,6 +141,7 @@ export async function importFormationsStats(options = {}) {
               region: pick(params.region, ["code", "nom"]),
               code_formation_diplome: certification?.code_formation_diplome,
               diplome: certification?.diplome,
+              libelle_long: certification?.libelle_long,
               donnee_source: {
                 code_certification: formationStats.code_certification,
                 type: "self",

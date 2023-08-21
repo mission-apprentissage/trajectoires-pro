@@ -66,6 +66,7 @@ export async function importCertificationsStats(options = {}) {
               ...customStats,
               code_formation_diplome: certification?.code_formation_diplome,
               diplome: certification?.diplome,
+              libelle_long: certification?.libelle_long,
               donnee_source: {
                 code_certification: certificationStats.code_certification,
                 type: "self",

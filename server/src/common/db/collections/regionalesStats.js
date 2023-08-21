@@ -26,6 +26,7 @@ export function schema() {
       code_formation_diplome: string(),
       filiere: string({ enum: ["apprentissage", "pro"] }),
       diplome: diplomeSchema(),
+      libelle_long: string(),
       ...statsSchema(),
       ...continuumSchema(),
       _meta: metaSchema([metaIJSchema()]),

@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { BCN, BCNResearch } from "#/types/bcn";
-import { Paginations } from "#/types/pagination";
+import { BCN, BCNResearch, Paginations } from "#/services/exposition/types";
 import ResearchPage from "./ResearchPage";
 export const revalidate = 0;
 
