@@ -15,11 +15,6 @@ const nextConfig = {
       ...(process.env.NEXT_PUBLIC_HOST_REWRITE === "true"
         ? [
             {
-              source: "/api/:path*",
-              destination: "/api/:path*",
-            },
-
-            {
               source: "/:path*",
               has: [
                 {
