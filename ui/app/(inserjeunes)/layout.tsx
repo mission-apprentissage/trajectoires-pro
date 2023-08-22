@@ -12,6 +12,7 @@ import { Footer } from "@codegouvfr/react-dsfr/Footer";
 import Providers from "#/app/providers";
 import IJProviders from "./providers";
 import * as Url from "#/common/url";
+import LogoDares from "#/public/logo-dares.svg";
 
 function Layout({ children }: { children: JSX.Element }) {
   return (
@@ -57,7 +58,7 @@ function Layout({ children }: { children: JSX.Element }) {
                 {
                   alt: "[DARES]",
                   href: "https://dares.travail-emploi.gouv.fr/",
-                  imgUrl: "/logo-dares.svg",
+                  imgUrl: LogoDares.src,
                 },
                 {
                   alt: "[EDUC]",
