@@ -1,6 +1,6 @@
 import Container from "#/app/components/Container";
 import { Typograhpy, Box } from "#/app/components/MaterialUINext";
-import InformationSvg from "@codegouvfr/react-dsfr/dsfr/artwork/pictograms/system/information.svg";
+import InformationSvg from "#/public/dsfr/artwork/pictograms/system/information.svg";
 import { Button } from "@codegouvfr/react-dsfr/Button";
 
 export default function PageLayout({ children }: { children: React.ReactNode }) {
@@ -32,7 +32,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
               alt=" Tout comprendre des données InserJeunes ?"
               className="fr-responsive-img"
               style={{ height: "3rem", width: "auto" }}
-              src={`${InformationSvg.src}#artwork-minor`}
+              src={`${InformationSvg}#artwork-minor`}
               data-fr-js-ratio="true"
             />
             <Typograhpy variant="h5">Tout comprendre des données InserJeunes ?</Typograhpy>

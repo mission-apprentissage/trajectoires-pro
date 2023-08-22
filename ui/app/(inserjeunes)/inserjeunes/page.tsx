@@ -6,9 +6,9 @@ import Container from "#/app/components/Container";
 import Tile from "#/app/components/Tile";
 import Link from "#/app/components/Link";
 
-import SchoolSvg from "@codegouvfr/react-dsfr/dsfr/artwork/pictograms/buildings/school.svg";
-import HumanCoopSvg from "@codegouvfr/react-dsfr/dsfr/artwork/pictograms/environment/human-cooperation.svg";
-import AvatarSvg from "@codegouvfr/react-dsfr/dsfr/artwork/pictograms/digital/avatar.svg";
+import SchoolSvg from "#/public/dsfr/artwork/pictograms/buildings/school.svg";
+import HumanCoopSvg from "#/public/dsfr/artwork/pictograms/environment/human-cooperation.svg";
+import AvatarSvg from "#/public/dsfr/artwork/pictograms/digital/avatar.svg";
 export const revalidate = 0;
 
 export default function Page() {
@@ -29,7 +29,7 @@ export default function Page() {
           <Grid item md={4} xs={12}>
             <Tile
               enlargeLink={true}
-              imageUrl={`${AvatarSvg.src}#artwork-minor`}
+              imageUrl={`${AvatarSvg}#artwork-minor`}
               linkProps={{
                 href: "#",
               }}
@@ -48,7 +48,7 @@ export default function Page() {
             <Link href="/login" basePath="/inserjeunes" passHref legacyBehavior>
               <Tile
                 enlargeLink={true}
-                imageUrl={`${SchoolSvg.src}#artwork-minor`}
+                imageUrl={`${SchoolSvg}#artwork-minor`}
                 linkProps={{
                   href: "#",
                 }}
@@ -67,7 +67,7 @@ export default function Page() {
           <Grid item md={4} xs={12}>
             <Tile
               enlargeLink={true}
-              imageUrl={`${HumanCoopSvg.src}#artwork-minor`}
+              imageUrl={`${HumanCoopSvg}#artwork-minor`}
               linkProps={{
                 href: "#",
               }}

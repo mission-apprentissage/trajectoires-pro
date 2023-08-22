@@ -3,8 +3,8 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Button from "@codegouvfr/react-dsfr/Button";
 import { Box, Grid, Typography } from "@mui/material";
 import Container from "@mui/material/Container";
-import TechnicalErrorSvg from "@codegouvfr/react-dsfr/dsfr/artwork/pictograms/system/technical-error.svg";
-import OvoidSvg from "@codegouvfr/react-dsfr/dsfr/artwork/background/ovoid.svg";
+import TechnicalErrorSvg from "#/public/dsfr/artwork/pictograms/system/technical-error.svg";
+import OvoidSvg from "#/public/dsfr/artwork/background/ovoid.svg";
 import Link from "next/link";
 
 export default function NotFound() {
@@ -56,12 +56,12 @@ export default function NotFound() {
                 height="200"
                 viewBox="0 0 160 200"
               >
-                <use className="fr-artwork-motif" href={`${OvoidSvg.src}#artwork-motif`}></use>
-                <use className="fr-artwork-background" href={`${OvoidSvg.src}#artwork-background`}></use>
+                <use className="fr-artwork-motif" href={`${OvoidSvg}#artwork-motif`}></use>
+                <use className="fr-artwork-background" href={`${OvoidSvg}#artwork-background`}></use>
                 <g transform="translate(40, 60)">
-                  <use className="fr-artwork-decorative" href={`${TechnicalErrorSvg.src}#artwork-decorative`}></use>
-                  <use className="fr-artwork-minor" href={`${TechnicalErrorSvg.src}#artwork-minor`}></use>
-                  <use className="fr-artwork-major" href={`${TechnicalErrorSvg.src}#artwork-major`}></use>
+                  <use className="fr-artwork-decorative" href={`${TechnicalErrorSvg}#artwork-decorative`}></use>
+                  <use className="fr-artwork-minor" href={`${TechnicalErrorSvg}#artwork-minor`}></use>
+                  <use className="fr-artwork-major" href={`${TechnicalErrorSvg}#artwork-major`}></use>
                 </g>
               </svg>
             </Grid>
