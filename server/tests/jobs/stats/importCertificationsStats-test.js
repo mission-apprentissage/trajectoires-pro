@@ -75,6 +75,7 @@ describe("importCertificationsStats", () => {
         code: "4",
         libelle: "BAC",
       },
+      libelle_long: "BAC PRO BATIMENT",
       donnee_source: {
         code_certification: "12345678",
         type: "self",
@@ -124,6 +125,7 @@ describe("importCertificationsStats", () => {
         code: "4",
         libelle: "BAC",
       },
+      libelle_long: "BAC PRO BATIMENT",
       donnee_source: {
         code_certification: "12345678900",
         type: "self",

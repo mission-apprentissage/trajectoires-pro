@@ -9,25 +9,29 @@ import Link from "next/link";
 import { Header } from "@codegouvfr/react-dsfr/Header";
 import { Footer } from "@codegouvfr/react-dsfr/Footer";
 
+import { getServerSession } from "next-auth/next";
+import { Session } from "next-auth";
+import { authOptions } from "#/app/api/inserjeunes/auth/[...nextauth]/route";
+
 import Providers from "#/app/providers";
 import IJProviders from "./providers";
 import * as Url from "#/common/url";
 import LogoDares from "#/public/logo-dares.svg";
 
-function Layout({ children }: { children: JSX.Element }) {
+function Layout({ children, session }: { children: JSX.Element; session: Session | null }) {
   return (
     <DsfrProvider>
-      <Providers>
-        <IJProviders>
-          <Header
-            brandTop={<>InserJeunes</>}
-            serviceTitle="InserJeunes"
-            homeLinkProps={{
-              href: Url.getPath("/inserjeunes/"),
-              title: "InserJeunes",
-            }}
-            quickAccessItems={[]}
-          />
+      <IJProviders session={session}>
+        <Header
+          brandTop={<>InserJeunes</>}
+          serviceTitle="InserJeunes"
+          homeLinkProps={{
+            href: Url.getPath("/inserjeunes/"),
+            title: "InserJeunes",
+          }}
+          quickAccessItems={[]}
+        />
+        <Providers>
           {children}
           <Footer
             brandTop={
@@ -68,14 +72,16 @@ function Layout({ children }: { children: JSX.Element }) {
               ],
             }}
           />
-        </IJProviders>
-      </Providers>
+        </Providers>
+      </IJProviders>
     </DsfrProvider>
   );
 }
 
-export default function RootLayout({ children }: { children: JSX.Element }) {
+export default async function RootLayout({ children }: { children: JSX.Element }) {
   const lang = "fr";
+
+  const session = await getServerSession(authOptions);
 
   return (
     <html
@@ -113,7 +119,7 @@ export default function RootLayout({ children }: { children: JSX.Element }) {
           flexDirection: "column",
         }}
       >
-        <Layout>{children}</Layout>
+        <Layout session={session}>{children}</Layout>
       </body>
     </html>
   );

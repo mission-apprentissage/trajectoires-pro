@@ -78,6 +78,7 @@ describe("importFormationsStats", () => {
         code: "4",
         libelle: "BAC",
       },
+      libelle_long: "BAC PRO BATIMENT",
       region: {
         code: "76",
         nom: "Occitanie",
@@ -135,6 +136,7 @@ describe("importFormationsStats", () => {
         code: "4",
         libelle: "BAC",
       },
+      libelle_long: "BAC PRO BATIMENT",
       region: {
         code: "76",
         nom: "Occitanie",

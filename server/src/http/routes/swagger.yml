@@ -678,6 +678,8 @@ components:
           enum: [ "apprentissage", "pro" ]
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
+        libelle_long:
+          type: string
         diplome:
           type: object
           properties:
@@ -753,6 +755,8 @@ components:
           enum: [ "apprentissage", "pro" ]
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
+        libelle_long:
+          type: string
         nb_sortant:
           type: number
         nb_annee_term:
@@ -826,6 +830,8 @@ components:
           enum: [ "apprentissage", "pro" ]
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
+        libelle_long:
+          type: string
         nb_sortant:
           type: number
         nb_annee_term:

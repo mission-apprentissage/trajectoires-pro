@@ -89,6 +89,7 @@ describe("importRegionalesStats", () => {
         code_certification: "12345678",
         type: "self",
       },
+      libelle_long: "BAC PRO BATIMENT",
       _meta: {
         inserjeunes: {
           taux_poursuite_etudes: 6,
@@ -135,6 +136,7 @@ describe("importRegionalesStats", () => {
         code: "4",
         libelle: "BAC",
       },
+      libelle_long: "BAC PRO BATIMENT",
       region: {
         code: "84",
         code_region_academique: "01",
@@ -480,6 +482,7 @@ describe("importRegionalesStats", () => {
         code_certification: "12345678",
         type: "self",
       },
+      libelle_long: "BAC PRO BATIMENT",
       _meta: {
         inserjeunes: {},
         created_on: new Date("2023-01-01T00:00:00.000Z"),
@@ -499,6 +502,7 @@ describe("importRegionalesStats", () => {
         code: "4",
         libelle: "BAC",
       },
+      libelle_long: "BAC PRO BATIMENT",
       filiere: "apprentissage",
       millesime: "2020_2021",
       nb_en_emploi_6_mois: 19,
