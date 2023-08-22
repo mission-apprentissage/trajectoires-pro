@@ -4,7 +4,7 @@ import { Paginations as IJPaginations, Formation } from "#/services/exposition/t
 
 export async function etablissement(): Promise<Etablissement<CATypes.Etablissement>> {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const etablissement = await fetch(API_BASE_URL + "/inserjeunes/etablissement");
+  const etablissement = await fetch("/api/inserjeunes/etablissement");
   const json: Etablissement<CATypes.Etablissement> = await etablissement.json();
   return json;
 }
