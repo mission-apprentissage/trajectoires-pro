@@ -32,7 +32,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
               alt=" Tout comprendre des données InserJeunes ?"
               className="fr-responsive-img"
               style={{ height: "3rem", width: "auto" }}
-              src={`${InformationSvg}#artwork-minor`}
+              src={`${InformationSvg.src}#artwork-minor`}
               data-fr-js-ratio="true"
             />
             <Typograhpy variant="h5">Tout comprendre des données InserJeunes ?</Typograhpy>

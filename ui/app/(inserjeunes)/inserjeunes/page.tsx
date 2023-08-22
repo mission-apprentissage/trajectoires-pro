@@ -29,7 +29,7 @@ export default function Page() {
           <Grid item md={4} xs={12}>
             <Tile
               enlargeLink={true}
-              imageUrl={`${AvatarSvg}#artwork-minor`}
+              imageUrl={`${AvatarSvg.src}#artwork-minor`}
               linkProps={{
                 href: "#",
               }}
@@ -48,7 +48,7 @@ export default function Page() {
             <Link href="/login" basePath="/inserjeunes" passHref legacyBehavior>
               <Tile
                 enlargeLink={true}
-                imageUrl={`${SchoolSvg}#artwork-minor`}
+                imageUrl={`${SchoolSvg.src}#artwork-minor`}
                 linkProps={{
                   href: "#",
                 }}
@@ -67,7 +67,7 @@ export default function Page() {
           <Grid item md={4} xs={12}>
             <Tile
               enlargeLink={true}
-              imageUrl={`${HumanCoopSvg}#artwork-minor`}
+              imageUrl={`${HumanCoopSvg.src}#artwork-minor`}
               linkProps={{
                 href: "#",
               }}

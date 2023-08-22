@@ -42,12 +42,12 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
                 height="200"
                 viewBox="0 0 160 200"
               >
-                <use className="fr-artwork-motif" href={`${OvoidSvg}#artwork-motif`}></use>
-                <use className="fr-artwork-background" href={`${OvoidSvg}#artwork-background`}></use>
+                <use className="fr-artwork-motif" href={`${OvoidSvg.src}#artwork-motif`}></use>
+                <use className="fr-artwork-background" href={`${OvoidSvg.src}#artwork-background`}></use>
                 <g transform="translate(40, 60)">
-                  <use className="fr-artwork-decorative" href={`${TechnicalErrorSvg}#artwork-decorative`}></use>
-                  <use className="fr-artwork-minor" href={`${TechnicalErrorSvg}#artwork-minor`}></use>
-                  <use className="fr-artwork-major" href={`${TechnicalErrorSvg}#artwork-major`}></use>
+                  <use className="fr-artwork-decorative" href={`${TechnicalErrorSvg.src}#artwork-decorative`}></use>
+                  <use className="fr-artwork-minor" href={`${TechnicalErrorSvg.src}#artwork-minor`}></use>
+                  <use className="fr-artwork-major" href={`${TechnicalErrorSvg.src}#artwork-major`}></use>
                 </g>
               </svg>
             </Grid>
