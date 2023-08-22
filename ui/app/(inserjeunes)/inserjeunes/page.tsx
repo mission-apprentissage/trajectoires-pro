@@ -45,7 +45,7 @@ export default function Page() {
             />
           </Grid>
           <Grid item md={4} xs={12}>
-            <Link href="/login" basePath="/inserjeunes" passHref legacyBehavior>
+            <Link href="/etablissement" basePath="/inserjeunes" passHref legacyBehavior>
               <Tile
                 enlargeLink={true}
                 imageUrl={`${SchoolSvg.src}#artwork-minor`}

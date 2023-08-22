@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import Loader from "#/app/components/Loader";
 
 function withSession<T>(Component: React.FunctionComponent<T>) {
-  return (props: any) => {
+  const SessionComponent = (props: any) => {
     const { status, data: session } = useSession();
 
     if (status === "loading") {
@@ -18,6 +18,9 @@ function withSession<T>(Component: React.FunctionComponent<T>) {
 
     return <Component session={session} {...props} />;
   };
+
+  SessionComponent.displayName = "SessionComponent";
+  return SessionComponent;
 }
 
 export default withSession;
