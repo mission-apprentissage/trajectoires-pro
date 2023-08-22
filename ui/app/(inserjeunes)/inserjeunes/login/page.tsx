@@ -1,17 +1,17 @@
 "use client";
 import React from "react";
-import { Typography, Grid, Box } from "@mui/material";
+import { Typography, Grid } from "@mui/material";
 import { fr } from "@codegouvfr/react-dsfr";
 import { Input } from "@codegouvfr/react-dsfr/Input";
 import { PasswordInput } from "@codegouvfr/react-dsfr/blocks/PasswordInput";
 import { Button } from "@codegouvfr/react-dsfr/Button";
 import { Alert } from "@codegouvfr/react-dsfr/Alert";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Container from "#/app/components/Container";
 import { loginSchema } from "#/services/inserjeunes/validators";
 import { LoginRequest } from "#/services/inserjeunes/types";
-import { getProviders, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
 const NEXT_PUBLIC_HOST_REWRITE = process.env.NEXT_PUBLIC_HOST_REWRITE;
@@ -24,7 +24,6 @@ export default function Login() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<LoginRequest>({
     resolver: yupResolver(loginSchema),

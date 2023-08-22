@@ -1,5 +1,4 @@
 import "server-only";
-
 import { DsfrHead } from "@codegouvfr/react-dsfr/next-appdir/DsfrHead";
 import { getHtmlAttributes } from "@codegouvfr/react-dsfr/next-appdir/getHtmlAttributes";
 import StartDsfr from "../StartDsfr";
@@ -17,21 +16,22 @@ import Providers from "#/app/providers";
 import IJProviders from "./providers";
 import * as Url from "#/common/url";
 import LogoDares from "#/public/logo-dares.svg";
+import LoginHeader from "#/app/components/LoginHeader";
 
 function Layout({ children, session }: { children: JSX.Element; session: Session | null }) {
   return (
     <DsfrProvider>
       <IJProviders session={session}>
-        <Header
-          brandTop={<>InserJeunes</>}
-          serviceTitle="InserJeunes"
-          homeLinkProps={{
-            href: Url.getPath("/inserjeunes/"),
-            title: "InserJeunes",
-          }}
-          quickAccessItems={[]}
-        />
         <Providers>
+          <Header
+            brandTop={<>InserJeunes</>}
+            serviceTitle="InserJeunes"
+            homeLinkProps={{
+              href: Url.getPath("/inserjeunes/"),
+              title: "InserJeunes",
+            }}
+            quickAccessItems={[<LoginHeader key="login" />]}
+          />
           {children}
           <Footer
             brandTop={
