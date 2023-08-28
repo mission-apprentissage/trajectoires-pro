@@ -13,7 +13,7 @@ describe("Layout", () => {
     );
 
     const heading = screen.getByRole("heading", {
-      name: /Page statistiques du projet Exposition d'InserJeunes/i,
+      name: /Statistiques du projet Exposition d'InserJeunes/i,
     });
     expect(heading).toBeInTheDocument();
   });

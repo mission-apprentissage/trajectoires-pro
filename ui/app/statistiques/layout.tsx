@@ -37,7 +37,7 @@ export function Layout({ children }: { children: JSX.Element }) {
             }}
           >
             <Container variant="content" maxWidth={false}>
-              <Typograhpy variant="h3">{"Page statistiques du projet Exposition d'InserJeunes"}</Typograhpy>
+              <Typograhpy variant="h3">{"Statistiques du projet Exposition d'InserJeunes"}</Typograhpy>
               <Typograhpy variant="body1">{""}</Typograhpy>
 
               <Container variant="subContent" maxWidth={false}>
