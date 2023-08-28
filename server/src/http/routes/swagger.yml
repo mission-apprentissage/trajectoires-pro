@@ -638,6 +638,22 @@ components:
           items:
             type: string
           example: ["Les taux ne peuvent pas être affichés car il n'y a pas assez d'élèves pour fournir une information fiable."]
+    DonneeSource:
+      type: object
+      required:
+        - code
+        - nom
+      properties:
+        code_certification:
+          type: string
+          description: Le code de la certification d'ou proviennent les données (Similaire dans le cas type = self)
+        type:
+          type: string
+          description: |
+            Le type de la source des données :
+              * self : les données proviennent de la certification
+              * ancienne : les données proviennent d'une certification plus ancienne
+              * nouvelle : les données proviennent d'une certification plus récente
 
     Certification:
       type: object
@@ -660,6 +676,8 @@ components:
         filiere:
           type: string
           enum: [ "apprentissage", "pro" ]
+        donnee_source:
+          $ref: "#/components/schemas/DonneeSource"
         diplome:
           type: object
           properties:
@@ -733,6 +751,8 @@ components:
         filiere:
           type: string
           enum: [ "apprentissage", "pro" ]
+        donnee_source:
+          $ref: "#/components/schemas/DonneeSource"
         nb_sortant:
           type: number
         nb_annee_term:
@@ -804,6 +824,8 @@ components:
         filiere:
           type: string
           enum: [ "apprentissage", "pro" ]
+        donnee_source:
+          $ref: "#/components/schemas/DonneeSource"
         nb_sortant:
           type: number
         nb_annee_term:
@@ -1008,16 +1030,12 @@ components:
           schema:
             type: object
             properties:
-              organismes:
+              certifications:
                 type: array
                 items:
                   $ref: "#/components/schemas/Certification"
-              meta:
-                type: object
-                properties:
-                  pagination:
-                    $ref: "#/components/schemas/Pagination"
-                description: Informations complémentaires
+              pagination:
+                $ref: "#/components/schemas/Pagination"
         "text/csv; charset=UTF-8":
           schema:
             type: string
@@ -1039,16 +1057,12 @@ components:
           schema:
             type: object
             properties:
-              organismes:
+              regionales:
                 type: array
                 items:
                   $ref: "#/components/schemas/Regionale"
-              meta:
-                type: object
-                properties:
-                  pagination:
-                    $ref: "#/components/schemas/Pagination"
-                description: Informations complémentaires
+              pagination:
+                $ref: "#/components/schemas/Pagination"
         "text/csv; charset=UTF-8":
           schema:
             type: string
@@ -1071,16 +1085,12 @@ components:
           schema:
             type: object
             properties:
-              organismes:
+              formations:
                 type: array
                 items:
                   $ref: "#/components/schemas/Formation"
-              meta:
-                type: object
-                properties:
-                  pagination:
-                    $ref: "#/components/schemas/Pagination"
-                description: Informations complémentaires
+              pagination:
+                $ref: "#/components/schemas/Pagination"
         "text/csv; charset=UTF-8":
           schema:
             type: string
