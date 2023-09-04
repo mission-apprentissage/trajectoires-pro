@@ -1,9 +1,9 @@
 import chai, { assert, expect } from "chai";
 import chaiDiff from "chai-diff";
 import fs from "fs";
-import config from "../../src/config.js";
-import { startServer } from "../utils/testUtils.js";
-import { insertFormationsStats } from "../utils/fakeData.js";
+import config from "#src/config.js";
+import { startServer } from "#tests/utils/testUtils.js";
+import { insertFormationsStats } from "#tests/utils/fakeData.js";
 
 chai.use(chaiDiff);
 describe("formationsRoutes", () => {

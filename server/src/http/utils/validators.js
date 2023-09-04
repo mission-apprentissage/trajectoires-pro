@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { getRegions, findRegionByCodePostal } from "../../common/regions.js";
+import { getRegions, findRegionByCodePostal } from "#src/services/regions.js";
 import { formatArrayParameters } from "./formatters.js";
 
 const customJoi = Joi.extend(

@@ -1,6 +1,6 @@
 import { MongoRepository } from "./base.js";
-import { dbCollection } from "../db/mongodb.js";
-import { name } from "../db/collections/bcn_mef.js";
+import { dbCollection } from "#src/common/db/mongodb.js";
+import { name } from "#src/common/db/collections/bcn_mef.js";
 
 export class BCNMefRepository extends MongoRepository {
   constructor() {

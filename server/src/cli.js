@@ -4,14 +4,18 @@ import { createWriteStream } from "fs";
 import { runScript } from "./common/runScript.js";
 import { writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
-import { importBCN } from "./jobs/importBCN.js";
-import { importBCNMEF } from "./jobs/importBCNMEF.js";
-import { importBCNContinuum } from "./jobs/importBCNContinuum.js";
-import { computeBCNMEFContinuum } from "./jobs/computeBCNMEFContinuum.js";
-import { importStats } from "./jobs/importStats.js";
+import { importBCN } from "./jobs/bcn/importBCN.js";
+import { importBCNMEF } from "./jobs/bcn/importBCNMEF.js";
+import { importBCNContinuum } from "./jobs/bcn/importBCNContinuum.js";
+import { computeBCNMEFContinuum } from "./jobs/bcn/computeBCNMEFContinuum.js";
+import { importStats } from "./jobs/stats/importStats.js";
+import { importCfdRomes } from "./jobs/romes/importCfdRomes.js";
+import { importRomes } from "./jobs/romes/importRomes.js";
+import { importCfdMetiers } from "./jobs/romes/importCfdMetiers.js";
+import { importRomeMetiers } from "./jobs/romes/importRomeMetiers.js";
 import { backfillMetrics } from "./jobs/backfillMetrics.js";
 import { asArray } from "./common/utils/stringUtils.js";
-import { computeContinuumStats } from "./jobs/computeContinuumStats.js";
+import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
 
 cli
   .command("importBCN")
@@ -23,7 +27,31 @@ cli
       const statsContinuum = await importBCNContinuum();
       const statsMefContinuum = await computeBCNMEFContinuum();
 
-      return { statsBCN, statsMef, statsContinuum, statsMefContinuum };
+      return {
+        statsBCN,
+        statsMef,
+        statsContinuum,
+        statsMefContinuum,
+      };
+    });
+  });
+
+cli
+  .command("importRomes")
+  .description("Import les codes ROME depuis Data.gouv et Diagoriente")
+  .action(() => {
+    runScript(async () => {
+      const statsRomes = await importRomes();
+      const statsCfdRomes = await importCfdRomes();
+      const statsRomeMetiers = await importRomeMetiers();
+      const statsCfdMetiers = await importCfdMetiers();
+
+      return {
+        statsRomes,
+        statsCfdRomes,
+        statsRomeMetiers,
+        statsCfdMetiers,
+      };
     });
   });
 

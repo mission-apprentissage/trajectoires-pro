@@ -3,22 +3,22 @@ import Joi from "joi";
 import { mapValues } from "lodash-es";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 
-import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
-import * as validators from "../utils/validators.js";
-import { validate } from "../utils/validators.js";
-import { checkApiKey } from "../middlewares/authMiddleware.js";
+import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
+import * as validators from "#src/http/utils/validators.js";
+import { validate } from "#src/http/utils/validators.js";
+import { checkApiKey } from "#src/http/middlewares/authMiddleware.js";
 import {
   addCsvHeaders,
   addJsonHeaders,
   sendFilieresStats,
   sendStats,
   sendImageOnError,
-} from "../utils/responseUtils.js";
-import BCNRepository from "../../common/repositories/bcn.js";
-import { getLastMillesimesFormations, transformDisplayStat } from "../../common/stats.js";
-import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
-import RegionalesRepository from "../../common/repositories/regionales.js";
-import { ErrorRegionaleNotFound, ErrorNoDataForMillesime } from "../errors.js";
+} from "#src/http/utils/responseUtils.js";
+import BCNRepository from "#src/common/repositories/bcn.js";
+import { getLastMillesimesFormations, transformDisplayStat } from "#src/common/stats.js";
+import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
+import RegionalesRepository from "#src/common/repositories/regionales.js";
+import { ErrorRegionaleNotFound, ErrorNoDataForMillesime } from "#src/http/errors.js";
 
 export default () => {
   const router = express.Router();

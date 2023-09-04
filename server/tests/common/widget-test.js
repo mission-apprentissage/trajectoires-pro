@@ -1,5 +1,5 @@
 import assert from "assert";
-import { prepareStatsForWidget } from "../../src/http/widget/widget.js";
+import { prepareStatsForWidget } from "#src/http/widget/widget.js";
 
 describe("widget", () => {
   it("Doit calculer les taux pour le widget", () => {

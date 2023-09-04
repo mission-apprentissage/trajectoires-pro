@@ -1,9 +1,9 @@
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import chai from "chai";
 
-import RegionalesRepository from "../../../src/common/repositories/regionales.js";
+import RegionalesRepository from "#src/common/repositories/regionales.js";
 
-import { insertRegionalesStats } from "../../utils/fakeData.js";
+import { insertRegionalesStats } from "#tests/utils/fakeData.js";
 
 chai.use(deepEqualInAnyOrder);
 const { assert } = chai;

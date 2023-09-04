@@ -1,8 +1,8 @@
 import chai from "chai";
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import { isEqual } from "lodash-es";
-import { getCollectionDescriptors } from "../src/common/db/collections/collections.js";
-import { getDatabase } from "../src/common/db/mongodb.js";
+import { getCollectionDescriptors } from "#src/common/db/collections/collections.js";
+import { getDatabase } from "#src/common/db/mongodb.js";
 
 chai.use(deepEqualInAnyOrder);
 const { assert } = chai;

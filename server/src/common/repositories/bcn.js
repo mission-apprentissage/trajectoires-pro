@@ -1,6 +1,6 @@
 import { MongoRepository } from "./base.js";
-import { dbCollection } from "../db/mongodb.js";
-import { name } from "../db/collections/bcn.js";
+import { dbCollection } from "#src/common/db/mongodb.js";
+import { name } from "#src/common/db/collections/bcn.js";
 import { castArray } from "lodash-es";
 
 export class BCNRepository extends MongoRepository {

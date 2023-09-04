@@ -2,7 +2,7 @@ import { isNil, mapValues, flow, merge, omit } from "lodash-es";
 import { transformData } from "oleoduc";
 import { $field, $percentage, $removeNullOrZero, $removeWhenAllNull } from "./utils/mongodbUtils.js";
 import { percentage } from "./utils/numberUtils.js";
-import config from "../config.js";
+import config from "#src/config.js";
 
 export const INSERJEUNES_STATS_NAMES = [
   "nb_annee_term",

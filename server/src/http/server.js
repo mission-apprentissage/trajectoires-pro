@@ -1,19 +1,19 @@
 import express from "express";
 import bodyParser from "body-parser";
-import config from "../config.js";
-import { logger } from "../common/logger.js";
+import config from "#src/config.js";
+import { logger } from "#src/common/logger.js";
 import mongoSanitize from "express-mongo-sanitize";
 import { logMiddleware } from "./middlewares/logMiddleware.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import { tryCatch } from "./middlewares/tryCatchMiddleware.js";
 import { corsMiddleware } from "./middlewares/corsMiddleware.js";
-import { dbCollection } from "../common/db/mongodb.js";
+import { dbCollection } from "#src/common/db/mongodb.js";
 import certificationsRoutes from "./routes/certificationsRoutes.js";
 import regionalesRoutes from "./routes/regionalesRoutes.js";
 import formationsRoutes from "./routes/formationsRoutes.js";
 import bcnRoutes from "./routes/bcnRoutes.js";
 import swaggerRoutes from "./routes/swaggerRoutes.js";
-import { packageJson } from "../common/utils/esmUtils.js";
+import { packageJson } from "#src/common/utils/esmUtils.js";
 
 export default async () => {
   const app = express();

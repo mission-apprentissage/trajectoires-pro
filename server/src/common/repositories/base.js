@@ -1,7 +1,7 @@
-import { omitNil } from "../utils/objectUtils.js";
-import { dbCollection } from "../db/mongodb.js";
-import { $field, $sumOfArray } from "../utils/mongodbUtils.js";
-import * as Stats from "../stats.js";
+import { omitNil } from "#src/common/utils/objectUtils.js";
+import { dbCollection } from "#src/common/db/mongodb.js";
+import { $field, $sumOfArray } from "#src/common/utils/mongodbUtils.js";
+import * as Stats from "#src/common/stats.js";
 
 export class Repository {}
 
@@ -39,8 +39,9 @@ export class MongoRepository extends Repository {
   }
 
   // eslint-disable-next-line no-unused-vars
-  first(query) {
-    throw new Error("Not implemented.");
+  async first(query) {
+    const queryPrepared = this.prepare(query);
+    return dbCollection(this.getCollection()).find(queryPrepared).limit(1).next();
   }
 
   async _findAndPaginate(query, options) {
@@ -67,14 +68,21 @@ export class MongoRepository extends Repository {
     };
   }
 
-  // eslint-disable-next-line no-unused-vars
-  findAndPaginate(query, options = { page: 1, limit: 10 }) {
-    throw new Error("Not implemented");
+  async findAndPaginate(query, options = { page: 1, limit: 10 }) {
+    const queryPrepared = this.prepare(query);
+    return await this._findAndPaginate(queryPrepared, {
+      ...options,
+    });
   }
 
-  // eslint-disable-next-line no-unused-vars
-  exist(query) {
-    throw new Error("Not implemented");
+  async exist(query) {
+    const queryPrepared = this.prepare(query);
+    return (await this.first(queryPrepared)) ? true : false;
+  }
+
+  async find(query) {
+    const queryPrepared = this.prepare(query);
+    return dbCollection(this.getCollection()).find(queryPrepared).stream();
   }
 }
 

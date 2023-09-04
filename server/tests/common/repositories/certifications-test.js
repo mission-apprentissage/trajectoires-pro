@@ -1,9 +1,9 @@
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import chai from "chai";
 
-import CertificationRepository from "../../../src/common/repositories/certifications.js";
+import CertificationRepository from "#src/common/repositories/certifications.js";
 
-import { insertCFD, insertMEF, insertCertificationsStats } from "../../utils/fakeData.js";
+import { insertCFD, insertMEF, insertCertificationsStats } from "#tests/utils/fakeData.js";
 
 chai.use(deepEqualInAnyOrder);
 const { assert } = chai;

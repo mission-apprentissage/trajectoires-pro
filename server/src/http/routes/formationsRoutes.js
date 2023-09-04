@@ -1,17 +1,17 @@
 import express from "express";
-import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
+import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import Joi from "joi";
-import * as validators from "../utils/validators.js";
-import { arrayOf, validate } from "../utils/validators.js";
-import { checkApiKey } from "../middlewares/authMiddleware.js";
-import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "../utils/responseUtils.js";
-import { formatMillesime } from "../utils/formatters.js";
+import * as validators from "#src/http/utils/validators.js";
+import { arrayOf, validate } from "#src/http/utils/validators.js";
+import { checkApiKey } from "#src/http/middlewares/authMiddleware.js";
+import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src/http/utils/responseUtils.js";
+import { formatMillesime } from "#src/http/utils/formatters.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
-import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
-import { getLastMillesimesFormations, transformDisplayStat } from "../../common/stats.js";
+import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
+import { getLastMillesimesFormations, transformDisplayStat } from "#src/common/stats.js";
 
-import FormationsRepository from "../../common/repositories/formations.js";
-import { ErrorFormationNotFound, ErrorNoDataForMillesime } from "../errors.js";
+import FormationsRepository from "#src/common/repositories/formations.js";
+import { ErrorFormationNotFound, ErrorNoDataForMillesime } from "#src/http/errors.js";
 
 export default () => {
   const router = express.Router();

@@ -1,5 +1,5 @@
-import { logger } from "../src/common/logger.js";
-import { object, objectId, string, date } from "../src/common/db/collections/jsonSchema/jsonSchemaTypes.js";
+import { logger } from "#src/common/logger.js";
+import { object, objectId, string, date } from "#src/common/db/collections/jsonSchema/jsonSchemaTypes.js";
 
 const name = "bcn_mef";
 
@@ -63,8 +63,11 @@ function schema() {
   );
 }
 
-export const up = async (db, client) => {
-  await db.createCollection(name);
+export const up = async (db) => {
+  let collections = await db.listCollections().toArray();
+  if (!collections.find((c) => c.name === name)) {
+    await db.createCollection(name);
+  }
 
   logger.debug(`Configuring indexes for collection ${name}...`);
   let dbCol = db.collection(name);
@@ -86,6 +89,6 @@ export const up = async (db, client) => {
   });
 };
 
-export const down = async (db, client) => {
+export const down = async () => {
   // We do not remove the collection to avoid deleting data by error
 };
