@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.5.1...v1.6.0) (2023-09-05)
+
+
+### Features
+
+* ajout des collections rome, romeMetier, cfdRomes et cfdMetiers ([#213](https://github.com/mission-apprentissage/trajectoires-pro/issues/213)) ([7a87346](https://github.com/mission-apprentissage/trajectoires-pro/commit/7a87346bdb702c0d7b5515003dc872dac025e454))
+
 ## [1.5.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.5.0...v1.5.1) (2023-08-17)
 
 
