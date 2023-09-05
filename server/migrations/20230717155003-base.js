@@ -1,7 +1,7 @@
-import { logger } from "../src/common/logger.js";
+import { logger } from "#src/common/logger.js";
 import { getCollectionDescriptors } from "./20230717155003-base/collections.js";
 
-export const up = async (db, client) => {
+export const up = async (db) => {
   //Create collections only if needed
   await Promise.all(
     getCollectionDescriptors().map(async ({ name }) => {
@@ -51,7 +51,7 @@ export const up = async (db, client) => {
   );
 };
 
-export const down = async (db, client) => {
+export const down = async (db) => {
   // We do not remove the collections to avoid deleting data by error
 
   // Drop indexes

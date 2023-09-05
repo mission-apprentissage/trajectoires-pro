@@ -1,5 +1,5 @@
 import assert from "assert";
-import { startServer } from "../utils/testUtils.js";
+import { startServer } from "#tests/utils/testUtils.js";
 
 describe("healthcheckRoutes", () => {
   it("Vérifie que le server fonctionne", async () => {

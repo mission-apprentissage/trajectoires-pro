@@ -28,6 +28,26 @@ const config = {
       key: env.get("TRAJECTOIRES_PRO_API_KEY").required().asString(),
     },
   },
+  diagoriente: {
+    api: {
+      baseUrl: env.get("DIAGORIENTE_BASE_URL").default("https://oplc.diagoriente.beta.gouv.fr/graphql").asString(),
+      loginUrl: env
+        .get("DIAGORIENTE_LOGIN_URL")
+        .default("https://auth.diagoriente.beta.gouv.fr/auth/realms/oplc-production/protocol/openid-connect/token")
+        .asString(),
+      clientId: env.get("DIAGORIENTE_CLIENT_ID").required().asString(),
+      clientSecret: env.get("DIAGORIENTE_CLIENT_SECRET").required().asString(),
+      grandType: env.get("DIAGORIENTE_GRANT_TYPE").default("client_credentials").asString(),
+    },
+  },
+  datagouv: {
+    api: {
+      baseUrl: env.get("DATAGOUV_BASE_URL").default("https://www.data.gouv.fr/api/1").asString(),
+    },
+    datasets: {
+      rome: "1c893376-8476-4262-9a0e-8df519883e1e",
+    },
+  },
   millesimes: {
     default: env.get("TRAJECTOIRES_PRO_MILLESIMES").default("2019,2020,2021").asArray(),
     formations: env.get("TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS").default("2018_2019,2019_2020,2020_2021").asArray(),

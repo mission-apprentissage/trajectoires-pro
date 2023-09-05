@@ -1,6 +1,6 @@
 import { StatsRepository } from "./base.js";
-import { dbCollection } from "../db/mongodb.js";
-import { name } from "../db/collections/regionalesStats.js";
+import { dbCollection } from "#src/common/db/mongodb.js";
+import { name } from "#src/common/db/collections/regionalesStats.js";
 
 export class RegionalesRepository extends StatsRepository {
   constructor() {

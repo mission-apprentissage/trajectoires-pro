@@ -1,5 +1,5 @@
 import assert from "assert";
-import { formatMillesime } from "../../../src/http/utils/formatters.js";
+import { formatMillesime } from "#src/http/utils/formatters.js";
 
 describe("formatMillesime", () => {
   it("should not change correct format", () => {

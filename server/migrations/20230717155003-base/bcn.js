@@ -1,6 +1,6 @@
 import { date, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
-import { metaSchema, metaBCNSchema } from "./jsonSchema/metaSchema.js";
+import { metaSchema, metaImportSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "bcn";
 
@@ -18,7 +18,7 @@ export function schema() {
       date_fermeture: date(),
       libelle: string(),
       diplome: diplomeSchema(),
-      _meta: metaSchema([metaBCNSchema()]),
+      _meta: metaSchema([metaImportSchema()]),
     },
     {
       required: ["type", "code_certification", "code_formation_diplome", "libelle", "_meta"],

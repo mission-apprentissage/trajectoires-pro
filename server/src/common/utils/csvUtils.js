@@ -1,6 +1,6 @@
 import { parse } from "csv-parse";
 import { pickBy, isEmpty } from "lodash-es";
-import { ALL, getStats } from "../stats.js";
+import { ALL, getStats } from "#src/common/stats.js";
 
 export function parseCsv(options = {}) {
   return parse({

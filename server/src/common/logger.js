@@ -4,7 +4,7 @@ import bunyan from "bunyan";
 import BunyanSlack from "bunyan-slack";
 import chalk from "chalk"; // eslint-disable-line node/no-unpublished-import
 import { compose, writeData, transformData } from "oleoduc";
-import config from "../config.js";
+import config from "#src/config.js";
 
 function prettyPrintStream(outputName) {
   let levels = {

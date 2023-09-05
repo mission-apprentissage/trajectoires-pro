@@ -1,5 +1,5 @@
 import assert from "assert";
-import { isUAIValid, isSiretValid } from "../../src/common/utils/validationUtils.js";
+import { isUAIValid, isSiretValid } from "#src/common/utils/validationUtils.js";
 
 describe("validationUtils", () => {
   it("permet de valider une UAI", () => {

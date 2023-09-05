@@ -1,7 +1,7 @@
 import { assert } from "chai";
-import { insertMetrics } from "../utils/fakeData.js";
-import { metrics } from "../../src/common/db/collections/collections.js";
-import { backfillMetrics } from "../../src/jobs/backfillMetrics.js";
+import { insertMetrics } from "#tests/utils/fakeData.js";
+import { metrics } from "#src/common/db/collections/collections.js";
+import { backfillMetrics } from "#src/jobs/backfillMetrics.js";
 
 describe("backfillMetrics", () => {
   describe("Vérifie qu'on met à jour les champs manquants dans les metrics", async () => {

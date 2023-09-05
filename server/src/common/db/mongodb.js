@@ -1,8 +1,8 @@
 import { MongoClient } from "mongodb";
 import { merge, mergeWith, isArray } from "lodash-es";
-import config from "../../config.js";
+import config from "#src/config.js";
 import { writeData } from "oleoduc";
-import { logger } from "../logger.js";
+import { logger } from "#src/common/logger.js";
 
 let clientHolder;
 function ensureInitialization() {

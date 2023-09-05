@@ -1,5 +1,5 @@
 import assert from "assert";
-import { capitalizeFirstLetter, dateAsString } from "../../src/common/utils/stringUtils.js";
+import { capitalizeFirstLetter, dateAsString } from "#src/common/utils/stringUtils.js";
 
 describe("stringUtils", () => {
   it("permet de mettre la première lettre en capital", () => {

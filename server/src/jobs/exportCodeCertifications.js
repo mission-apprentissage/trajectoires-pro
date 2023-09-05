@@ -1,6 +1,6 @@
 import { oleoduc, transformData, transformIntoCSV } from "oleoduc";
-import { bcn, certificationsStats } from "../common/db/collections/collections.js";
-import { dateAsString } from "../common/utils/stringUtils.js";
+import { bcn, certificationsStats } from "#src/common/db/collections/collections.js";
+import { dateAsString } from "#src/common/utils/stringUtils.js";
 
 export function exportCodeCertifications(output) {
   return oleoduc(

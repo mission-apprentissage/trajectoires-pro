@@ -2,9 +2,9 @@ import chai from "chai";
 import chaiDiff from "chai-diff";
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import MockDate from "mockdate";
-import config from "../../src/config.js";
-import { startServer } from "../utils/testUtils.js";
-import { insertCFD, insertMEF } from "../utils/fakeData.js";
+import config from "#src/config.js";
+import { startServer } from "#tests/utils/testUtils.js";
+import { insertCFD, insertMEF } from "#tests/utils/fakeData.js";
 
 chai.use(deepEqualInAnyOrder);
 chai.use(chaiDiff);

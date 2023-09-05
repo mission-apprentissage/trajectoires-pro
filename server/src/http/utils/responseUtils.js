@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
-import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "../widget/widget.js";
-import { buildDescription, buildDescriptionFiliere } from "../../common/stats.js";
+import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "#src/http/widget/widget.js";
+import { buildDescription, buildDescriptionFiliere } from "#src/common/stats.js";
 import { isEmpty } from "lodash-es";
-import { findRegionByCode } from "../../common/regions.js";
+import { findRegionByCode } from "#src/services/regions.js";
 import {
   ErrorRegionaleNotFound,
   ErrorNoDataForMillesime,
@@ -10,7 +10,7 @@ import {
   ErrorCertificationNotFound,
   ErrorNoDataAvailable,
   ErrorCertificationsNotFound,
-} from "../errors.js";
+} from "#src/http/errors.js";
 
 export function addJsonHeaders(res) {
   res.setHeader("Content-Type", `application/json`);

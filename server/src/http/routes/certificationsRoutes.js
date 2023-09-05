@@ -2,23 +2,23 @@ import express from "express";
 import { mapValues } from "lodash-es";
 import Joi from "joi";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
-import { tryCatch } from "../middlewares/tryCatchMiddleware.js";
-import * as validators from "../utils/validators.js";
-import { arrayOf, validate } from "../utils/validators.js";
-import { checkApiKey } from "../middlewares/authMiddleware.js";
-import { formatMillesime } from "../utils/formatters.js";
+import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
+import * as validators from "#src/http/utils/validators.js";
+import { arrayOf, validate } from "#src/http/utils/validators.js";
+import { checkApiKey } from "#src/http/middlewares/authMiddleware.js";
+import { formatMillesime } from "#src/http/utils/formatters.js";
 import {
   addCsvHeaders,
   addJsonHeaders,
   sendFilieresStats,
   sendStats,
   sendImageOnError,
-} from "../utils/responseUtils.js";
-import BCNRepository from "../../common/repositories/bcn.js";
-import { getLastMillesimes, transformDisplayStat } from "../../common/stats.js";
-import { getStatsAsColumns } from "../../common/utils/csvUtils.js";
-import CertificationsRepository from "../../common/repositories/certifications.js";
-import { ErrorNoDataForMillesime, ErrorCertificationNotFound } from "../errors.js";
+} from "#src/http/utils/responseUtils.js";
+import BCNRepository from "#src/common/repositories/bcn.js";
+import { getLastMillesimes, transformDisplayStat } from "#src/common/stats.js";
+import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
+import CertificationsRepository from "#src/common/repositories/certifications.js";
+import { ErrorNoDataForMillesime, ErrorCertificationNotFound } from "#src/http/errors.js";
 
 export default () => {
   const router = express.Router();

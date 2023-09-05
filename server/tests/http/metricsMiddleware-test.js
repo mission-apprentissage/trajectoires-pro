@@ -1,13 +1,13 @@
 import { assert } from "chai";
-import { startServer } from "../utils/testUtils.js";
+import { startServer } from "#tests/utils/testUtils.js";
 import {
   insertFormationsStats,
   insertCertificationsStats,
   insertCFD,
   insertRegionalesStats,
-} from "../utils/fakeData.js";
-import { metrics } from "../../src/common/db/collections/collections.js";
-import config from "../../src/config.js";
+} from "#tests/utils/fakeData.js";
+import { metrics } from "#src/common/db/collections/collections.js";
+import config from "#src/config.js";
 
 describe("metricsMiddleware", () => {
   function getAuthHeaders() {

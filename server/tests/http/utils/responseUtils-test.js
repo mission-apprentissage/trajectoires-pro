@@ -3,7 +3,7 @@ import chaiAsPromised from "chai-as-promised";
 import fs from "fs";
 import sinon, { stub } from "sinon";
 import Boom from "boom";
-import { sendFilieresStats } from "../../../src/http/utils/responseUtils.js";
+import { sendFilieresStats } from "#src/http/utils/responseUtils.js";
 
 chai.use(chaiAsPromised);
 

@@ -3,9 +3,9 @@ import chai from "chai";
 import streamToArray from "stream-to-array";
 import { omit } from "lodash-es";
 import MockDate from "mockdate";
-import BCNRepository from "../../../src/common/repositories/bcn.js";
+import BCNRepository from "#src/common/repositories/bcn.js";
 
-import { insertCFD, insertMEF } from "../../utils/fakeData.js";
+import { insertCFD, insertMEF } from "#tests/utils/fakeData.js";
 
 chai.use(deepEqualInAnyOrder);
 const { assert } = chai;

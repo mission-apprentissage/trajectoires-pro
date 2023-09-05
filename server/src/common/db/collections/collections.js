@@ -5,7 +5,11 @@ import * as certificationsStatsDescriptor from "./certificationsStats.js";
 import * as metricsDescriptor from "./metrics.js";
 import * as bcnDescriptor from "./bcn.js";
 import * as bcnMefDescriptor from "./bcn_mef.js";
-import { dbCollection } from "../mongodb.js";
+import * as cfdRomesDescriptor from "./cfdRomes.js";
+import * as romeDescriptor from "./rome.js";
+import * as romeMetierDescriptor from "./romeMetier.js";
+import * as cfdMetiersDescriptor from "./cfdMetiers.js";
+import { dbCollection } from "#src/common/db/mongodb.js";
 
 export function getCollectionDescriptors() {
   return [
@@ -16,6 +20,10 @@ export function getCollectionDescriptors() {
     metricsDescriptor,
     bcnDescriptor,
     bcnMefDescriptor,
+    cfdRomesDescriptor,
+    romeDescriptor,
+    romeMetierDescriptor,
+    cfdMetiersDescriptor,
   ];
 }
 
@@ -45,4 +53,20 @@ export function bcn() {
 
 export function bcnMef() {
   return dbCollection(bcnMefDescriptor.name);
+}
+
+export function cfdRomes() {
+  return dbCollection(cfdRomesDescriptor.name);
+}
+
+export function rome() {
+  return dbCollection(romeDescriptor.name);
+}
+
+export function romeMetier() {
+  return dbCollection(romeMetierDescriptor.name);
+}
+
+export function cfdMetiers() {
+  return dbCollection(cfdMetiersDescriptor.name);
 }

@@ -1,4 +1,4 @@
-import config from "../../config.js";
+import config from "#src/config.js";
 import passport from "passport";
 import { HeaderAPIKeyStrategy } from "passport-headerapikey";
 import { compose } from "compose-middleware";

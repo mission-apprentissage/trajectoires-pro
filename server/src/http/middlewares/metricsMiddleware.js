@@ -1,7 +1,7 @@
 import { isEmpty } from "lodash-es";
-import { metrics } from "../../common/db/collections/collections.js";
-import { logger } from "../../common/logger.js";
-import { formatArrayParameters } from "../utils/formatters.js";
+import { metrics } from "#src/common/db/collections/collections.js";
+import { logger } from "#src/common/logger.js";
+import { formatArrayParameters } from "#src/http/utils/formatters.js";
 
 export function buildMetrics(req) {
   const referer = req.headers["referer"] && req.headers["referer"].split("/")[2];

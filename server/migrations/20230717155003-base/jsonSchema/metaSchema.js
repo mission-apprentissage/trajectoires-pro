@@ -1,7 +1,7 @@
 import { merge } from "lodash-es";
 import { date, integer, object } from "./jsonSchemaTypes.js";
 
-export function metaBCNSchema() {
+export function metaImportSchema() {
   return object(
     {
       date_import: date(),

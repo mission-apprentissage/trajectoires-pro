@@ -3,13 +3,13 @@ import { omitBy, pickBy, isEmpty, pick, isNil, isArray } from "lodash-es";
 import Url from "url";
 import express from "express";
 
-import { metrics as metricsCollection } from "../common/db/collections/collections.js";
-import { getLoggerWithContext } from "../common/logger.js";
-import certificationsRoutes from "../http/routes/certificationsRoutes.js";
-import regionalesRoutes from "../http/routes/regionalesRoutes.js";
-import formationsRoutes from "../http/routes/formationsRoutes.js";
+import { metrics as metricsCollection } from "#src/common/db/collections/collections.js";
+import { getLoggerWithContext } from "#src/common/logger.js";
+import certificationsRoutes from "#src/http/routes/certificationsRoutes.js";
+import regionalesRoutes from "#src/http/routes/regionalesRoutes.js";
+import formationsRoutes from "#src/http/routes/formationsRoutes.js";
 
-import { buildMetrics } from "../http/middlewares/metricsMiddleware.js";
+import { buildMetrics } from "#src/http/middlewares/metricsMiddleware.js";
 
 const logger = getLoggerWithContext("import");
 

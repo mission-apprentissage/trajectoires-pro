@@ -5,7 +5,7 @@ import {
   getStatsCompute,
   filterStatsNames,
   transformDisplayStat,
-} from "../../src/common/stats.js";
+} from "#src/common/stats.js";
 
 describe("statsNames", () => {
   it("Permet de lister le nom de stats", () => {

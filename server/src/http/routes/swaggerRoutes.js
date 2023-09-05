@@ -3,7 +3,7 @@ import YAML from "yamljs";
 import path from "path";
 import swagger from "swagger-ui-express";
 import { watch } from "fs";
-import { getDirname } from "../../common/utils/esmUtils.js";
+import { getDirname } from "#src/common/utils/esmUtils.js";
 
 const yaml = path.join(getDirname(import.meta.url), "./swagger.yml");
 

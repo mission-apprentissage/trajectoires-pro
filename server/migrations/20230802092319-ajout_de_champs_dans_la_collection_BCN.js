@@ -1,6 +1,6 @@
 import { omit, without } from "lodash-es";
-import { arrayOf, date, string } from "../src/common/db/collections/jsonSchema/jsonSchemaTypes.js";
-import * as MongoDB from "../src/common/db/mongodb.js";
+import { arrayOf, date, string } from "#src/common/db/collections/jsonSchema/jsonSchemaTypes.js";
+import * as MongoDB from "#src/common/db/mongodb.js";
 
 const schema = {
   properties: {

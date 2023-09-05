@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublished-import
 import { merge } from "lodash-es";
-import { createUAI } from "../../src/common/utils/validationUtils.js";
+import { createUAI } from "#src/common/utils/validationUtils.js";
 import { generateCodeCertification, generateStatValue } from "./testUtils.js";
 import {
   bcn,
@@ -9,11 +9,19 @@ import {
   regionalesStats,
   metrics,
   bcnMef,
-} from "../../src/common/db/collections/collections.js";
-import { ALL, getStatsCompute } from "../../src/common/stats.js";
+  cfdMetiers,
+  cfdRomes,
+  romeMetier,
+  rome,
+} from "#src/common/db/collections/collections.js";
+import { ALL, getStatsCompute } from "#src/common/stats.js";
 
-function createCodeFormationDiplome() {
+export function createCodeFormationDiplome() {
   return faker.helpers.replaceSymbols("4#######");
+}
+
+export function createCodeRome() {
+  return faker.helpers.replaceSymbols("A####");
 }
 
 export function insertCertificationsStats(custom = {}, withStat = true) {
@@ -190,6 +198,72 @@ export function insertMetrics(custom = {}) {
         time: new Date(),
         consumer: "localhost",
         url: "/api/",
+      },
+      custom
+    )
+  );
+}
+
+export function insertRome(custom = {}) {
+  return rome().insertOne(
+    merge(
+      {},
+      {
+        code_rome: createCodeRome(),
+        code_ogr: 30,
+        libelle: "Polyculture, élevage",
+        _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
+      },
+      custom
+    )
+  );
+}
+
+export function insertRomeMetier(custom = {}) {
+  return romeMetier().insertOne(
+    merge(
+      {},
+      {
+        code_rome: createCodeRome(),
+        title: "Céréalier / Céréalière",
+        isMetierAvenir: true,
+        _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
+      },
+      custom
+    )
+  );
+}
+
+export function insertCfdRomes(custom = {}) {
+  return cfdRomes().insertOne(
+    merge(
+      {},
+      {
+        code_formation_diplome: createCodeFormationDiplome(),
+        code_romes: [createCodeRome()],
+        _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
+      },
+      custom
+    )
+  );
+}
+
+export function insertCfdMetiers(custom = {}) {
+  const code_romes = custom?.code_romes || [createCodeRome()];
+  return cfdMetiers().insertOne(
+    merge(
+      {},
+      {
+        code_formation_diplome: createCodeFormationDiplome(),
+        code_romes,
+        metiers: [
+          {
+            code_rome: code_romes[0],
+            title: "Céréalier / Céréalière",
+            isMetierAvenir: true,
+          },
+        ],
+        _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
       },
       custom
     )

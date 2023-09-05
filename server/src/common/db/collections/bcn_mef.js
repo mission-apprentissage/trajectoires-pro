@@ -1,5 +1,5 @@
 import { date, object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
-import { metaSchema, metaBCNSchema } from "./jsonSchema/metaSchema.js";
+import { metaSchema, metaImportSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "bcn_mef";
 
@@ -38,7 +38,7 @@ export function schema() {
       libelle_edition: string(),
       commentaire: string(),
 
-      _meta: metaSchema([metaBCNSchema()]),
+      _meta: metaSchema([metaImportSchema()]),
     },
     {
       required: [

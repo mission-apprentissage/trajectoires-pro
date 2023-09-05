@@ -1,0 +1,71 @@
+import { compose, transformData, writeData, oleoduc } from "oleoduc";
+import { fetchStream } from "#src/common/utils/httpUtils.js";
+import iconv from "iconv-lite";
+import { parseCsv } from "#src/common/utils/csvUtils.js";
+
+const ANCIENS_NIVEAUX_MAPPER = {
+  5: "3", // CAP
+  4: "4", // BAC
+  3: "5", // BTS
+  2: "6", // LIC
+  1: "7", // MASTER
+  0: "0", //Mention complémentaire
+};
+
+export function getDiplome(codeFormation, niveauxDiplome) {
+  if (!codeFormation) {
+    return null;
+  }
+
+  const niveau = codeFormation.substring(0, 3);
+  const code = ANCIENS_NIVEAUX_MAPPER[niveau[0]];
+  const libelle = niveauxDiplome?.find(({ niveau: n }) => n === niveau)?.libelle_court;
+
+  if (!code || !libelle) {
+    return null;
+  }
+
+  return {
+    code: code,
+    libelle: libelle,
+  };
+}
+
+export async function getNiveauxDiplome(options) {
+  const niveauxDiplome = [];
+
+  await oleoduc(
+    await getBCNTable("N_NIVEAU_FORMATION_DIPLOME", options),
+    writeData((data) => {
+      niveauxDiplome.push({
+        niveau: data["NIVEAU_FORMATION_DIPLOME"],
+        libelle_court: data["LIBELLE_COURT"],
+        libelle: data["LIBELLE_100"],
+      });
+    })
+  );
+
+  return niveauxDiplome;
+}
+
+export async function getBCNTable(tableName, options = {}) {
+  let stream =
+    options[tableName] ||
+    compose(
+      await fetchStream(
+        `https://infocentre.pleiade.education.fr/bcn/index.php/export/CSV?n=${tableName}&separator=%7C`
+      ),
+      iconv.decodeStream("iso-8859-1")
+    );
+
+  return compose(
+    stream,
+    transformData(
+      (data) => {
+        return data.toString().replace(/"/g, "'");
+      },
+      { objectMode: false }
+    ),
+    parseCsv({ delimiter: "|" })
+  );
+}

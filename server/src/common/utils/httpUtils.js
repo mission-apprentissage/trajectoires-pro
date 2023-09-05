@@ -1,6 +1,6 @@
 import axios from "axios";
 import asyncRetry from "async-retry";
-import { getLoggerWithContext } from "../logger.js";
+import { getLoggerWithContext } from "#src/common/logger.js";
 const logger = getLoggerWithContext("http");
 
 async function _fetch(url, options = {}) {
@@ -38,4 +38,18 @@ async function fetchJsonWithRetry(url, options = {}, retryOptions = { retries: 3
   );
 }
 
-export { fetchJson, fetchJsonWithRetry, fetchStream };
+async function fetchStreamWithRetry(url, options = {}, retryOptions = { retries: 3 }) {
+  return asyncRetry(
+    () => {
+      return fetchStream(url, options);
+    },
+    {
+      ...(retryOptions || {}),
+      onRetry: (err) => {
+        logger.error({ err: err, request: err.request, response: err.response }, `Retrying ${url}...`);
+      },
+    }
+  );
+}
+
+export { fetchJson, fetchJsonWithRetry, fetchStream, fetchStreamWithRetry };
