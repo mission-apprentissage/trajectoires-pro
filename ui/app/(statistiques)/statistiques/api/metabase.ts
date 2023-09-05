@@ -1,6 +1,6 @@
 import "server-only";
 import jwt from "jsonwebtoken";
-import { MetabaseQueryParams } from "#/app/types/metabase";
+import { MetabaseQueryParams } from "#/types/metabase";
 
 const { METABASE_SECRET_KEY = "", METABASE_SITE_URL = "" } = process.env;
 

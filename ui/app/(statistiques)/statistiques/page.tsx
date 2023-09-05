@@ -2,8 +2,8 @@ import "server-only";
 import { headers } from "next/headers";
 import * as Metabase from "#/app/(statistiques)/statistiques/api/metabase";
 import MetabaseIframe from "#/app/components/MetabaseIframe";
-import { MetabaseConfig } from "#/app/types/metabase";
-import Config from "#/app/config";
+import { MetabaseConfig } from "#/types/metabase";
+import Config from "#/app/(statistiques)/statistiques/config";
 
 export const revalidate = 0;
 
