@@ -42,4 +42,29 @@ async function certifications(
   return await res.json();
 }
 
-export { bcn, certifications };
+async function regionales(
+  code_certifications: string[],
+  millesimes: string[],
+  regions: string[],
+  page: number,
+  items_par_page: number
+): Promise<Paginations<"regionales", Certification>> {
+  const urlParams = new URLSearchParams({
+    code_certifications: code_certifications.join(","),
+    millesimes: millesimes.join(","),
+    regions: regions.join(","),
+    page: page.toString(),
+    items_par_page: items_par_page.toString(),
+  });
+
+  const res = await fetch(EXPOSITION_API_BASE_URL + `/regionales?${urlParams}`, {
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": EXPOSITION_API_KEY || "",
+    },
+  });
+
+  return await res.json();
+}
+
+export { bcn, certifications, regionales };

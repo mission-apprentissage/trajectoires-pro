@@ -10,21 +10,24 @@ import { useQuery } from "@tanstack/react-query";
 import { chunk, flatten } from "lodash-es";
 import { AutoSizer } from "react-virtualized";
 import { Typograhpy, Grid, Box } from "../../components/MaterialUINext";
-import { BCN } from "#/types/bcn";
+import { BCNResearch } from "#/types/bcn";
 import { Certification } from "#/types/certification";
+import { findRegionByCode } from "#/common/regions";
 export const revalidate = 0;
 
 const MILLESIMES = ["2019", "2020", "2021"];
+const MILLESIME_DOUBLE = ["2018_2019", "2019_2020", "2020_2021"];
 
 async function certifications(
   code_certifications: string[],
   millesimes: string[],
+  regions: string[],
   { signal }: { signal: AbortSignal | undefined }
 ): Promise<Certification[]> {
   const ITEM_PER_PAGE = 50;
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  const url = new URL(API_BASE_URL + "/exposition/certifications");
+  const hasRegion = regions.length > 0;
+  const url = hasRegion ? API_BASE_URL + "/exposition/regionales" : API_BASE_URL + "/exposition/certifications";
 
   if (code_certifications.length === 0) {
     return [];
@@ -34,9 +37,10 @@ async function certifications(
   let results = [];
   for (const codes of chunk(code_certifications, ITEM_PER_PAGE)) {
     const params = {
-      items_par_page: ITEM_PER_PAGE,
+      items_par_page: ITEM_PER_PAGE * (hasRegion ? regions.length : 1),
       millesimes: millesimes,
       code_certifications: codes,
+      ...(hasRegion ? { regions } : {}),
     };
     const paginatedResult = await fetch(url, {
       method: "POST",
@@ -44,13 +48,13 @@ async function certifications(
       signal,
     });
     const json = await paginatedResult.json();
-    results.push(...json.certifications);
+    results.push(...(hasRegion ? json.regionales : json.certifications));
   }
 
   return flatten(results) as Certification[];
 }
 
-function Metrics({ metrics }: { metrics: Certification }) {
+function Metrics({ metrics, millesimes }: { metrics: Certification; millesimes: string[] }) {
   const keys = [
     "nb_annee_term",
     "nb_en_emploi_6_mois",
@@ -73,7 +77,6 @@ function Metrics({ metrics }: { metrics: Certification }) {
     return <></>;
   }
 
-  const millesimes = MILLESIMES;
   return (
     <Grid container spacing={2}>
       {millesimes.map((millesime) => {
@@ -114,23 +117,27 @@ function Metrics({ metrics }: { metrics: Certification }) {
 export default function ResearchFormationsResult({
   formations,
   labels,
+  regions,
 }: {
-  formations: BCN[];
+  formations: BCNResearch[];
   labels: { part: string; matched: boolean }[][];
+  regions: string[];
 }) {
-  // Fetch metrics nationale
+  // Fetch metrics nationale or régionale
+  const hasRegion = regions.length > 0;
   const code_certifications: string[] = formations.map((f) => f.code_certification);
-  const millesimes: string[] = MILLESIMES;
+  const millesimes: string[] = regions.length > 0 ? MILLESIME_DOUBLE : MILLESIMES;
   const { isLoading: isLoadingMetrics, data: dataMetrics } = useQuery({
     staleTime: Infinity,
     cacheTime: Infinity,
     //keepPreviousData: true,
-    queryKey: ["certifications", code_certifications],
-    queryFn: ({ signal }) => certifications(code_certifications, millesimes, { signal }),
+    queryKey: ["certifications", code_certifications, regions],
+    queryFn: ({ signal }) => certifications(code_certifications, millesimes, regions, { signal }),
   });
 
-  const columns = useMemo<MRT_ColumnDef<BCN>[]>(
+  const columns = useMemo<MRT_ColumnDef<BCNResearch>[]>(
     () => [
+      ...(hasRegion ? [{ accessorKey: "region.nom", header: "Région", size: 150 } as MRT_ColumnDef<BCNResearch>] : []),
       {
         accessorKey: "libelle_full",
         header: "Nom",
@@ -138,7 +145,7 @@ export default function ResearchFormationsResult({
         Cell: ({ row }) => {
           return (
             <div>
-              {labels[row.index]?.map((v, indexLabel) =>
+              {row.original.label?.map((v: { matched: any; part: string }, indexLabel: number) =>
                 v.matched ? (
                   <b style={{ whiteSpace: "pre-wrap" }} key={row.index + "_" + indexLabel}>
                     {v.part}
@@ -181,7 +188,7 @@ export default function ResearchFormationsResult({
         header: "Fermé",
         size: 100,
         accessorFn: (row) => {
-          return row.date_fermeture < new Date().toISOString() ? "Oui" : "Non";
+          return row.date_fermeture && row.date_fermeture < new Date().toISOString() ? "Oui" : "Non";
         },
       },
       {
@@ -196,35 +203,43 @@ export default function ResearchFormationsResult({
         },
       },
     ],
-    [labels]
+    [regions, labels, hasRegion]
   );
 
   const rowVirtualizerInstanceRef = useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null);
 
-  const [data, setData] = useState<BCN[]>([]);
+  const [data, setData] = useState<BCNResearch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       setData(
-        formations.map((f) => ({
-          ...f,
-          metricsIsLoading: isLoadingMetrics,
-          metricsData: dataMetrics?.filter((d) => d.code_certification === f.code_certification),
-        }))
+        flatten(
+          formations.map((f, index) => {
+            return (regions.length > 0 ? regions : [""]).map((region) => ({
+              ...f,
+              label: labels[index],
+              region: findRegionByCode(region),
+              metricsIsLoading: isLoadingMetrics,
+              metricsData: dataMetrics?.filter((d) => {
+                return region
+                  ? region === d.region.code && d.code_certification === f.code_certification
+                  : d.code_certification === f.code_certification;
+              }),
+            }));
+          })
+        )
       );
       setIsLoading(false);
     }
-  }, [formations, isLoadingMetrics, dataMetrics]);
+  }, [formations, isLoadingMetrics, dataMetrics, regions]);
 
   useEffect(() => {
     //scroll to the top of the table when the sorting changes
     try {
       data.length > 0 && rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   }, [data, sorting]);
 
   return (
@@ -235,6 +250,7 @@ export default function ResearchFormationsResult({
             <MaterialReactTable
               columns={columns}
               data={data}
+              key={"table_" + (hasRegion && "region")}
               defaultDisplayColumn={{ enableResizing: true }}
               enableBottomToolbar
               enableColumnResizing
@@ -251,7 +267,7 @@ export default function ResearchFormationsResult({
               columnVirtualizerProps={{ overscan: 10 }} //optionally customize the column virtualizer
               renderDetailPanel={({ row }) => (
                 <Box>
-                  <Metrics metrics={row.original.metricsData} />
+                  <Metrics millesimes={millesimes} metrics={row.original.metricsData} />
                 </Box>
               )}
             />
