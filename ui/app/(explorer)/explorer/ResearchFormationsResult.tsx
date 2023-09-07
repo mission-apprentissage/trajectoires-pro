@@ -203,7 +203,7 @@ export default function ResearchFormationsResult({
         },
       },
     ],
-    [regions, labels, hasRegion]
+    [hasRegion]
   );
 
   const rowVirtualizerInstanceRef = useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null);
@@ -233,7 +233,7 @@ export default function ResearchFormationsResult({
       );
       setIsLoading(false);
     }
-  }, [formations, isLoadingMetrics, dataMetrics, regions]);
+  }, [formations, isLoadingMetrics, dataMetrics, regions, labels]);
 
   useEffect(() => {
     //scroll to the top of the table when the sorting changes

@@ -1,4 +1,10 @@
-import { Paginations, PaginationsRequest, CertificationsRequest, FormationsRequest } from "#/services/exposition/types";
+import {
+  Paginations,
+  PaginationsRequest,
+  CertificationsRequest,
+  FormationsRequest,
+  RegionaleRequest,
+} from "#/services/exposition/types";
 import { BCN, Certification, Formation } from "#/services/exposition/types";
 
 const { EXPOSITION_API_BASE_URL, EXPOSITION_API_KEY } = process.env;
@@ -61,18 +67,14 @@ async function formations(
 }
 
 async function regionales(
-  code_certifications: string[],
-  millesimes: string[],
-  regions: string[],
-  page: number,
-  items_par_page: number
+  params: RegionaleRequest & PaginationsRequest
 ): Promise<Paginations<"regionales", Certification>> {
   const urlParams = new URLSearchParams({
-    code_certifications: code_certifications.join(","),
-    millesimes: millesimes.join(","),
-    regions: regions.join(","),
-    page: page.toString(),
-    items_par_page: items_par_page.toString(),
+    code_certifications: params.code_certifications.join(","),
+    millesimes: params.millesimes.join(","),
+    regions: params.regions.join(","),
+    page: params.page.toString(),
+    items_par_page: params.items_par_page.toString(),
   });
 
   const res = await fetch(EXPOSITION_API_BASE_URL + `/regionales?${urlParams}`, {

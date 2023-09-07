@@ -1,19 +1,4 @@
-export type BCN = {
-  code_certification: string;
-  ancien_diplome: string[];
-  code_formation_diplome: string;
-  date_ouverture: string;
-  diplome: {
-    code: string;
-    libelle: string;
-  };
-  libelle: string;
-  libelle_long: string;
-  nouveau_diplome: string[];
-  type: string;
-  date_premiere_session: string;
-  date_fermeture?: string;
-};
+import { BCN } from "#/services/exposition/types";
 
 export type BCNResearch = BCN & {
   libelle_full: string;
