@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.6.0...v1.7.0) (2023-09-27)
+
+
+### Features
+
+* site interne - ajout des régions ([#210](https://github.com/mission-apprentissage/trajectoires-pro/issues/210)) ([cae9a8e](https://github.com/mission-apprentissage/trajectoires-pro/commit/cae9a8e215231c451874bc06cf1fedae301bc47c))
+
 # [1.6.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.5.1...v1.6.0) (2023-09-05)
 
 
