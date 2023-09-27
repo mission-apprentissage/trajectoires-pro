@@ -9,6 +9,7 @@ import * as cfdRomesDescriptor from "./cfdRomes.js";
 import * as romeDescriptor from "./rome.js";
 import * as romeMetierDescriptor from "./romeMetier.js";
 import * as cfdMetiersDescriptor from "./cfdMetiers.js";
+import * as tmpInserSupDescriptor from "./tmpInsersup.js";
 import { dbCollection } from "#src/common/db/mongodb.js";
 
 export function getCollectionDescriptors() {
@@ -24,6 +25,7 @@ export function getCollectionDescriptors() {
     romeDescriptor,
     romeMetierDescriptor,
     cfdMetiersDescriptor,
+    tmpInserSupDescriptor,
   ];
 }
 
@@ -69,4 +71,8 @@ export function romeMetier() {
 
 export function cfdMetiers() {
   return dbCollection(cfdMetiersDescriptor.name);
+}
+
+export function tmpInserSup() {
+  return dbCollection(tmpInserSupDescriptor.name);
 }

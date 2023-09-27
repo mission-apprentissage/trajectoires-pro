@@ -48,6 +48,12 @@ const config = {
       rome: "1c893376-8476-4262-9a0e-8df519883e1e",
     },
   },
+  omogenApi: {
+    api: {
+      basePath: env.get("OMOGEN_API_BASE_PATH").default("https://omogen-api-tst-pr.phm.education.gouv.fr").asString(),
+      key: env.get("OMOGEN_API_KEY").required().asString(),
+    },
+  },
   millesimes: {
     default: env.get("TRAJECTOIRES_PRO_MILLESIMES").default("2019,2020,2021").asArray(),
     formations: env.get("TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS").default("2018_2019,2019_2020,2020_2021").asArray(),

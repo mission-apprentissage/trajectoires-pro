@@ -7,3 +7,5 @@ process.env.TRAJECTOIRES_PRO_MILLESIMES = "2018,2019,2020";
 process.env.TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS = "2017_2018,2018_2019";
 process.env.DIAGORIENTE_CLIENT_ID = "id";
 process.env.DIAGORIENTE_CLIENT_SECRET = "secret";
+process.env.OMOGEN_API_BASE_PATH = "https://omogen-api-tst-pr.phm.education.gouv.fr";
+process.env.OMOGEN_API_KEY = "key";

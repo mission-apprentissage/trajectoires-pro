@@ -9,6 +9,7 @@ import { importBCNMEF } from "./jobs/bcn/importBCNMEF.js";
 import { importBCNContinuum } from "./jobs/bcn/importBCNContinuum.js";
 import { computeBCNMEFContinuum } from "./jobs/bcn/computeBCNMEFContinuum.js";
 import { importStats } from "./jobs/stats/importStats.js";
+import { importStatsInserSup } from "./jobs/stats/importStatsInserSup.js";
 import { importCfdRomes } from "./jobs/romes/importCfdRomes.js";
 import { importRomes } from "./jobs/romes/importRomes.js";
 import { importCfdMetiers } from "./jobs/romes/importCfdMetiers.js";
@@ -62,6 +63,15 @@ cli
   .action((stats) => {
     runScript(() => {
       return importStats({ stats });
+    });
+  });
+
+cli
+  .command("importStatsInserSup")
+  .description("Importe les données statistiques de l'API InserSup")
+  .action(() => {
+    runScript(() => {
+      return importStatsInserSup();
     });
   });
 
