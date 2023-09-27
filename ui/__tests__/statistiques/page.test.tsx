@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
-import Page from "#/app/statistiques/page";
-import config from "#/app/config";
+import Page from "#/app/(statistiques)/statistiques/page";
+import config from "#/app/(statistiques)/statistiques/config";
 
 describe("Page", () => {
   it("renders a page", async () => {

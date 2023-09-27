@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { iframe } from "#/app/api/metabase";
+import { iframe } from "#/app/(statistiques)/statistiques/api/metabase";
 import jwt from "jsonwebtoken";
 
 describe("Metabase", () => {
