@@ -36,7 +36,7 @@ export async function importStatsInserSup(options = {}) {
 
       const computeAnneeUniversitaire = (obj) => {
         const part = obj.sortants.split(" ");
-        const nbrYears = part[1] ? part[1].split("").length + 1 : 1;
+        const nbrYears = part[1] === "*" ? 2 : 1;
 
         const years = obj.annee_universitaire;
         const yearPart = years.split("-").map((v) => parseInt(v));
