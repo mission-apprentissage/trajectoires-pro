@@ -1,6 +1,19 @@
 import { omitBy } from "lodash-es";
 import { logger } from "#src/common/logger.js";
 
+function errorLevel(req, res, error) {
+  const statusCode = res.statusCode;
+
+  if (statusCode === 404) {
+    return "warn";
+  }
+
+  if (error || (statusCode >= 400 && statusCode < 600)) {
+    return "error";
+  }
+  return "info";
+}
+
 export function logMiddleware() {
   return (req, res, next) => {
     const relativeUrl = (req.baseUrl || "") + (req.url || "");
@@ -33,7 +46,7 @@ export function logMiddleware() {
             body: withoutSensibleFields(req.body),
           },
           response: {
-            statusCode,
+            status: statusCode,
             headers: res.getHeaders(),
           },
           ...(!error
@@ -47,9 +60,8 @@ export function logMiddleware() {
               }),
         };
 
-        const level = error || (statusCode >= 400 && statusCode < 600) ? "error" : "info";
-
-        logger[level](data, `Http Request ${level === "error" ? "KO" : "OK"}`);
+        const level = errorLevel(req, res, error);
+        logger[level](data, `Http Request ${level !== "info" ? "KO" : "OK"}`);
       } finally {
         res.removeListener("finish", log);
         res.removeListener("close", log);

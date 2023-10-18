@@ -79,7 +79,7 @@ function sendLogsToSlack() {
         if (record.type === "http") {
           record = {
             url: record.request.url.relative,
-            statusCode: record.response.statusCode,
+            statusCode: record.response.status,
             ...(record.error ? { message: record.error.message } : {}),
           };
         }
