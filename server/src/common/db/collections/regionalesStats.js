@@ -1,9 +1,9 @@
 import { object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
-import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 import { regionSchema } from "./jsonSchema/regionSchema.js";
-import { statsSchema } from "./jsonSchema/statsSchema.js";
+import * as Stats from "./jsonSchema/statsSchema.js";
 import { metaSchema, metaIJSchema } from "./jsonSchema/metaSchema.js";
-import { continuumSchema } from "./jsonSchema/continuumSchema.js";
+import * as Continuum from "./jsonSchema/continuumSchema.js";
+import * as Certification from "./jsonSchema/certificationSchema.js";
 
 export const name = "regionalesStats";
 
@@ -12,7 +12,7 @@ export function indexes() {
     [{ "region.code": 1, code_certification: 1, millesime: 1 }, { unique: true }],
     [{ "region.code": 1 }],
     [{ millesime: 1 }],
-    [{ code_certification: 1 }],
+    ...Certification.indexes(),
   ];
 }
 
@@ -22,24 +22,13 @@ export function schema() {
       _id: objectId(),
       region: regionSchema(),
       millesime: string(),
-      code_certification: string(),
-      code_formation_diplome: string(),
-      filiere: string({ enum: ["apprentissage", "pro"] }),
-      diplome: diplomeSchema(),
-      ...statsSchema(),
-      ...continuumSchema(),
+      ...Certification.fields(),
+      ...Stats.fields(),
+      ...Continuum.fields(),
       _meta: metaSchema([metaIJSchema()]),
     },
     {
-      required: [
-        "region",
-        "millesime",
-        "code_certification",
-        "code_formation_diplome",
-        "filiere",
-        "diplome",
-        "donnee_source",
-      ],
+      required: ["region", "millesime", ...Certification.required(), ...Continuum.required()],
       additionalProperties: false,
     }
   );

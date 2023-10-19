@@ -50,6 +50,7 @@ async function updateDiplomeList(data) {
 }
 
 export async function importBCNContinuum(options = {}) {
+  logger.info(`Création du continuum des formations depuis la BCN`);
   const stats = { total: 0, updated: 0, failed: 0 };
 
   await oleoduc(

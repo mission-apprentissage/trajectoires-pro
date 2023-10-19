@@ -7,11 +7,12 @@ import path from "path";
 import { parseCsv } from "#src/common/utils/csvUtils.js";
 import { isUAIValid } from "#src/common/utils/validationUtils.js";
 import { InserJeunes } from "#src/services/inserjeunes/InserJeunes.js";
-import { bcn, formationsStats } from "#src/common/db/collections/collections.js";
+import { formationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { findRegionByNom } from "#src/services/regions.js";
 import { computeCustomStats, getMillesimesFormations, INSERJEUNES_IGNORED_STATS_NAMES } from "#src/common/stats.js";
+import { getCertificationInfo } from "#src/common/certification.js";
 import { getDirname } from "#src/common/utils/esmUtils.js";
 
 const __dirname = getDirname(import.meta.url);
@@ -119,7 +120,7 @@ export async function importFormationsStats(options = {}) {
         };
 
         try {
-          const certification = await bcn().findOne({ code_certification: formationStats.code_certification });
+          const certification = await getCertificationInfo(formationStats.code_certification);
           const stats = omit(formationStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(formationStats);
 
@@ -138,9 +139,8 @@ export async function importFormationsStats(options = {}) {
             $set: omitNil({
               ...stats,
               ...customStats,
+              ...certification,
               region: pick(params.region, ["code", "nom"]),
-              code_formation_diplome: certification?.code_formation_diplome,
-              diplome: certification?.diplome,
               donnee_source: {
                 code_certification: formationStats.code_certification,
                 type: "self",

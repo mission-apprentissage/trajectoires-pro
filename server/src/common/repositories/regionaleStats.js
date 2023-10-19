@@ -2,7 +2,7 @@ import { StatsRepository } from "./base.js";
 import { dbCollection } from "#src/common/db/mongodb.js";
 import { name } from "#src/common/db/collections/regionalesStats.js";
 
-export class RegionalesRepository extends StatsRepository {
+export class RegionaleStatsRepository extends StatsRepository {
   constructor() {
     super(name);
   }
@@ -40,4 +40,4 @@ export class RegionalesRepository extends StatsRepository {
   }
 }
 
-export default new RegionalesRepository();
+export default new RegionaleStatsRepository();

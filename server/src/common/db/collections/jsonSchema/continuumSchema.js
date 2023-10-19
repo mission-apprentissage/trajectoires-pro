@@ -1,6 +1,6 @@
 import { object, string, enumOf } from "./jsonSchemaTypes.js";
 
-export function continuumSchema() {
+export function fields() {
   return {
     donnee_source: object(
       {
@@ -10,4 +10,8 @@ export function continuumSchema() {
       { required: ["code_certification", "type"] }
     ),
   };
+}
+
+export function required() {
+  return ["donnee_source"];
 }

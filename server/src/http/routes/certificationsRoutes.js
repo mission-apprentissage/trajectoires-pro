@@ -17,7 +17,7 @@ import {
 import BCNRepository from "#src/common/repositories/bcn.js";
 import { getLastMillesimes, transformDisplayStat } from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
-import CertificationsRepository from "#src/common/repositories/certifications.js";
+import CertificationsRepository from "#src/common/repositories/certificationStats.js";
 import { ErrorNoDataForMillesime, ErrorCertificationNotFound } from "#src/http/errors.js";
 
 export default () => {

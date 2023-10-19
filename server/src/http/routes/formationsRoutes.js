@@ -10,7 +10,7 @@ import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import { getLastMillesimesFormations, transformDisplayStat } from "#src/common/stats.js";
 
-import FormationsRepository from "#src/common/repositories/formations.js";
+import FormationStatsRepository from "#src/common/repositories/formationStats.js";
 import { ErrorFormationNotFound, ErrorNoDataForMillesime } from "#src/http/errors.js";
 
 export default () => {
@@ -33,7 +33,7 @@ export default () => {
         }
       );
 
-      let { find, pagination } = await FormationsRepository.findAndPaginate(
+      let { find, pagination } = await FormationStatsRepository.findAndPaginate(
         {
           uai: uais,
           region: regions,
@@ -90,19 +90,19 @@ export default () => {
 
       return sendImageOnError(
         async () => {
-          const exist = await FormationsRepository.exist({ uai, code_certification });
+          const exist = await FormationStatsRepository.exist({ uai, code_certification });
           if (!exist) {
             throw new ErrorFormationNotFound();
           }
 
-          const result = await FormationsRepository.first({
+          const result = await FormationStatsRepository.first({
             uai,
             code_certification,
             millesime: formatMillesime(millesime),
           });
 
           if (!result) {
-            const millesimesAvailable = await FormationsRepository.findMillesime({ uai, code_certification });
+            const millesimesAvailable = await FormationStatsRepository.findMillesime({ uai, code_certification });
             throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
           }
 

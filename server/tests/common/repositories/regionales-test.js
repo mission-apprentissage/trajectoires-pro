@@ -1,7 +1,7 @@
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import chai from "chai";
 
-import RegionalesRepository from "#src/common/repositories/regionales.js";
+import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 
 import { insertRegionalesStats } from "#tests/utils/fakeData.js";
 
@@ -42,7 +42,7 @@ describe("repositories", () => {
             nb_en_emploi_6_mois: 45,
           });
 
-          const result = await RegionalesRepository.getFilieresStats({
+          const result = await RegionaleStatsRepository.getFilieresStats({
             code_formation_diplome: "12345678",
             millesime: "2020",
             region: "11",
@@ -53,6 +53,7 @@ describe("repositories", () => {
               code_formation_diplome: "12345678",
               codes_formation_diplome: ["12345678"],
               filiere: "pro",
+              libelle: "LIBELLE",
               millesime: "2020",
               diplome: { code: "4", libelle: "BAC" },
               nb_annee_term: 50,
@@ -81,6 +82,7 @@ describe("repositories", () => {
               code_formation_diplome: "12345678",
               codes_formation_diplome: ["12345678"],
               filiere: "apprentissage",
+              libelle: "LIBELLE",
               millesime: "2020",
               diplome: { code: "4", libelle: "BAC" },
               nb_annee_term: 50,
@@ -167,7 +169,7 @@ describe("repositories", () => {
             nb_en_emploi_6_mois: 45,
           });
 
-          const result = await RegionalesRepository.getFilieresStats({
+          const result = await RegionaleStatsRepository.getFilieresStats({
             code_formation_diplome: ["12345678", "87654321"],
             millesime: "2020",
             region: "11",
@@ -263,7 +265,7 @@ describe("repositories", () => {
             diplome: { code: "4", libelle: "BTS" },
           });
 
-          const result = await RegionalesRepository.getFilieresStats({
+          const result = await RegionaleStatsRepository.getFilieresStats({
             code_formation_diplome: ["12345678", "87654321"],
             millesime: "2020",
             region: "11",
@@ -329,7 +331,7 @@ describe("repositories", () => {
           false
         );
 
-        const result = await RegionalesRepository.getFilieresStats({
+        const result = await RegionaleStatsRepository.getFilieresStats({
           code_formation_diplome: "12345678",
           millesime: "2020",
           region: "11",
@@ -341,6 +343,7 @@ describe("repositories", () => {
             code_formation_diplome: "12345678",
             codes_formation_diplome: ["12345678"],
             filiere: "pro",
+            libelle: "LIBELLE",
             millesime: "2020",
             diplome: { code: "4", libelle: "BAC" },
             region: {
@@ -369,6 +372,7 @@ describe("repositories", () => {
             code_formation_diplome: "12345678",
             codes_formation_diplome: ["12345678"],
             filiere: "apprentissage",
+            libelle: "LIBELLE",
             millesime: "2020",
             diplome: { code: "4", libelle: "BAC" },
             region: {

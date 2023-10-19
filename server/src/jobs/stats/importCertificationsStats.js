@@ -2,10 +2,11 @@ import { Readable } from "stream";
 import { InserJeunes } from "#src/services/inserjeunes/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { upsert } from "#src/common/db/mongodb.js";
-import { bcn, certificationsStats } from "#src/common/db/collections/collections.js";
+import { certificationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { computeCustomStats, getMillesimes, INSERJEUNES_IGNORED_STATS_NAMES } from "#src/common/stats.js";
+import { getCertificationInfo } from "#src/common/certification.js";
 import { omit, pick, merge } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
@@ -45,7 +46,7 @@ export async function importCertificationsStats(options = {}) {
         };
 
         try {
-          const certification = await bcn().findOne({ code_certification: certificationStats.code_certification });
+          const certification = await getCertificationInfo(certificationStats.code_certification);
           const stats = omit(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(certificationStats);
 
@@ -64,8 +65,7 @@ export async function importCertificationsStats(options = {}) {
             $set: omitNil({
               ...stats,
               ...customStats,
-              code_formation_diplome: certification?.code_formation_diplome,
-              diplome: certification?.diplome,
+              ...certification,
               donnee_source: {
                 code_certification: certificationStats.code_certification,
                 type: "self",

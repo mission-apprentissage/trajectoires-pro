@@ -3,10 +3,11 @@ import { omit, pick, merge } from "lodash-es";
 import { upsert } from "#src/common/db/mongodb.js";
 import { InserJeunes } from "#src/services/inserjeunes/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData, filterData } from "oleoduc";
-import { bcn, regionalesStats } from "#src/common/db/collections/collections.js";
+import { regionalesStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { computeCustomStats, getMillesimesRegionales, INSERJEUNES_IGNORED_STATS_NAMES } from "#src/common/stats.js";
+import { getCertificationInfo } from "#src/common/certification.js";
 import { getRegions, findRegionByCodeRegionAcademique } from "#src/services/regions.js";
 
 const logger = getLoggerWithContext("import");
@@ -69,7 +70,7 @@ export async function importRegionalesStats(options = {}) {
         };
 
         try {
-          const certification = await bcn().findOne({ code_certification: regionaleStats.code_certification });
+          const certification = await getCertificationInfo(regionaleStats.code_certification);
           const stats = omit(regionaleStats, INSERJEUNES_IGNORED_STATS_NAMES);
           const customStats = computeCustomStats(regionaleStats);
 
@@ -88,9 +89,8 @@ export async function importRegionalesStats(options = {}) {
             $set: omitNil({
               ...stats,
               ...customStats,
+              ...certification,
               region: pick(region, ["code", "nom", "code_region_academique"]),
-              code_formation_diplome: certification?.code_formation_diplome,
-              diplome: certification?.diplome,
               donnee_source: {
                 code_certification: regionaleStats.code_certification,
                 type: "self",

@@ -667,6 +667,7 @@ components:
         - millesime
         - code_certification
         - filiere
+        - libelle
         - _meta
       properties:
         millesime:
@@ -676,6 +677,12 @@ components:
         filiere:
           type: string
           enum: [ "apprentissage", "pro" ]
+        libelle:
+          description: "Libellé de la certification"
+          type: string
+        libelle_ancien:
+          description: "Ancien libellé de la certification (disponible en cas de changement de nom)"
+          type: string
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
         diplome:
@@ -741,6 +748,7 @@ components:
         - millesime
         - code_certification
         - filiere
+        - libelle
         - region
         - _meta
       properties:
@@ -751,6 +759,12 @@ components:
         filiere:
           type: string
           enum: [ "apprentissage", "pro" ]
+        libelle:
+          description: "Libellé de la certification"
+          type: string
+        libelle_ancien:
+          description: "Ancien libellé de la certification (disponible en cas de changement de nom)"
+          type: string
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
         nb_sortant:
@@ -812,6 +826,7 @@ components:
         - millesime
         - code_certification
         - filiere
+        - libelle
         - region
         - _meta
       properties:
@@ -824,6 +839,12 @@ components:
         filiere:
           type: string
           enum: [ "apprentissage", "pro" ]
+        libelle:
+          description: "Libellé de la certification"
+          type: string
+        libelle_ancien:
+          description: "Ancien libellé de la certification (disponible en cas de changement de nom)"
+          type: string
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
         nb_sortant:
@@ -900,6 +921,12 @@ components:
         code_formation_diplome:
           type: string
           description: "CFD (lorsqu'un seul CFD est retourné)"
+        libelle:
+          description: "Libellé de la certification(lorsqu'un seul CFD est retourné)"
+          type: string
+        libelle_ancien:
+          description: "Ancien libellé de la certification (lorsqu'un seul CFD est retourné, disponible en cas de changement de nom)"
+          type: string
         filiere:
           type: string
           enum: [ "apprentissage", "pro" ]

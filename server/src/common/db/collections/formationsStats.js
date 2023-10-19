@@ -1,9 +1,9 @@
 import { object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
-import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
-import { statsSchema } from "./jsonSchema/statsSchema.js";
+import * as Stats from "./jsonSchema/statsSchema.js";
 import { regionSchema } from "./jsonSchema/regionSchema.js";
-import { continuumSchema } from "./jsonSchema/continuumSchema.js";
+import * as Continuum from "./jsonSchema/continuumSchema.js";
 import { metaSchema, metaIJSchema } from "./jsonSchema/metaSchema.js";
+import * as Certification from "./jsonSchema/certificationSchema.js";
 
 export const name = "formationsStats";
 
@@ -12,7 +12,7 @@ export function indexes() {
     [{ uai: 1, code_certification: 1, millesime: 1 }, { unique: true }],
     [{ uai: 1 }],
     [{ millesime: 1 }],
-    [{ code_certification: 1 }],
+    ...Certification.indexes(),
   ];
 }
 
@@ -22,26 +22,14 @@ export function schema() {
       _id: objectId(),
       uai: string(),
       millesime: string(),
-      code_certification: string(),
-      code_formation_diplome: string(),
-      filiere: string({ enum: ["apprentissage", "pro"] }),
-      diplome: diplomeSchema(),
       region: regionSchema(),
-      ...statsSchema(),
-      ...continuumSchema(),
+      ...Certification.fields(),
+      ...Stats.fields(),
+      ...Continuum.fields(),
       _meta: metaSchema([metaIJSchema()]),
     },
     {
-      required: [
-        "uai",
-        "millesime",
-        "code_certification",
-        "code_formation_diplome",
-        "filiere",
-        "diplome",
-        "region",
-        "donnee_source",
-      ],
+      required: ["uai", "millesime", "region", ...Certification.required(), ...Continuum.required()],
       additionalProperties: false,
     }
   );

@@ -1,18 +1,13 @@
 import { object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
-import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
 import { metaSchema, metaIJSchema } from "./jsonSchema/metaSchema.js";
-import { statsSchema } from "./jsonSchema/statsSchema.js";
-import { continuumSchema } from "./jsonSchema/continuumSchema.js";
+import * as Stats from "./jsonSchema/statsSchema.js";
+import * as Continuum from "./jsonSchema/continuumSchema.js";
+import * as Certification from "./jsonSchema/certificationSchema.js";
 
 export const name = "certificationsStats";
 
 export function indexes() {
-  return [
-    [{ millesime: 1, code_certification: 1 }, { unique: true }],
-    [{ millesime: 1 }],
-    [{ code_certification: 1 }],
-    [{ code_formation_diplome: 1 }],
-  ];
+  return [[{ millesime: 1, code_certification: 1 }, { unique: true }], [{ millesime: 1 }], ...Certification.indexes()];
 }
 
 export function schema() {
@@ -20,16 +15,13 @@ export function schema() {
     {
       _id: objectId(),
       millesime: string(),
-      code_certification: string(),
-      code_formation_diplome: string(),
-      filiere: string({ enum: ["apprentissage", "pro"] }),
-      diplome: diplomeSchema(),
-      ...statsSchema(),
-      ...continuumSchema(),
+      ...Certification.fields(),
+      ...Stats.fields(),
+      ...Continuum.fields(),
       _meta: metaSchema([metaIJSchema()]),
     },
     {
-      required: ["millesime", "code_certification", "code_formation_diplome", "filiere", "diplome", "donnee_source"],
+      required: ["millesime", ...Certification.required(), ...Continuum.required()],
       additionalProperties: false,
     }
   );

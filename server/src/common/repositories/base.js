@@ -102,6 +102,8 @@ export class StatsRepository extends MongoRepository {
             codes_certifications: { $addToSet: "$code_certification" },
             codes_formation_diplome: { $addToSet: "$code_formation_diplome" },
             code_formation_diplome: { $first: "$code_formation_diplome" },
+            libelle: { $first: "$libelle" },
+            libelle_ancien: { $first: "$libelle_ancien" },
             filiere: { $first: "$filiere" },
             millesime: { $first: "$millesime" },
             diplome: { $first: "$diplome" },
@@ -135,6 +137,18 @@ export class StatsRepository extends MongoRepository {
             diplomes: "$$REMOVE",
             code_formation_diplome: {
               $cond: [{ $eq: [{ $size: "$codes_formation_diplome" }, 1] }, "$code_formation_diplome", "$$REMOVE"],
+            },
+            libelle: {
+              $cond: [{ $eq: [{ $size: "$codes_formation_diplome" }, 1] }, "$libelle", "$$REMOVE"],
+            },
+            libelle_ancien: {
+              $cond: [
+                {
+                  $and: [{ $eq: [{ $size: "$codes_formation_diplome" }, 1] }, { $ne: ["$libelle_ancien", null] }],
+                },
+                "$libelle_ancien",
+                "$$REMOVE",
+              ],
             },
           },
         },

@@ -33,6 +33,7 @@ export function insertCertificationsStats(custom = {}, withStat = true) {
         millesime: "2020",
         code_certification: code_certification,
         code_formation_diplome: createCodeFormationDiplome(),
+        libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },
         filiere: "apprentissage",
         ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
@@ -62,6 +63,7 @@ export function insertRegionalesStats(custom = {}, withStat = true) {
         filiere: "apprentissage",
         code_certification,
         code_formation_diplome: createCodeFormationDiplome(),
+        libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },
         ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
         donnee_source: {
@@ -90,6 +92,7 @@ export function insertFormationsStats(custom = {}, withStat = true) {
         filiere: "apprentissage",
         code_certification,
         code_formation_diplome: createCodeFormationDiplome(),
+        libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },
         ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
         region: { code: "11", nom: "Île-de-France" },

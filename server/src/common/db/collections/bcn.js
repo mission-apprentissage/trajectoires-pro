@@ -18,6 +18,7 @@ export function schema() {
       date_fermeture: date(),
       libelle: string(),
       libelle_long: string(),
+      libelle_long_ancien: string(),
       diplome: diplomeSchema(),
       _meta: metaSchema([metaImportSchema()]),
       date_ouverture: date(),

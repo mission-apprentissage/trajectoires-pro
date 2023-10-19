@@ -5,26 +5,27 @@ import { upsert } from "#src/common/db/mongodb.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { certificationsStats, regionalesStats, formationsStats } from "#src/common/db/collections/collections.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import CertificationRepository from "#src/common/repositories/certifications.js";
-import RegionalesRepository from "#src/common/repositories/regionales.js";
-import FormationsRepository from "#src/common/repositories/formations.js";
+import CertificationStatsRepository from "#src/common/repositories/certificationStats.js";
+import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
+import FormationStatsRepository from "#src/common/repositories/formationStats.js";
+import { getCertificationInfo } from "#src/common/certification.js";
 
 const logger = getLoggerWithContext("import");
 
 const statCollections = {
   formations: {
     collection: () => formationsStats(),
-    repository: () => FormationsRepository,
+    repository: () => FormationStatsRepository,
     keys: ["code_certification", "uai"],
   },
   certifications: {
     collection: () => certificationsStats(),
-    repository: () => CertificationRepository,
+    repository: () => CertificationStatsRepository,
     keys: ["code_certification"],
   },
   regionales: {
     collection: () => regionalesStats(),
-    repository: () => RegionalesRepository,
+    repository: () => RegionaleStatsRepository,
     keys: ["code_certification", "region.code"],
   },
 };
@@ -78,7 +79,9 @@ async function getMostRecentStatsFromDiplomeGraph({ childrenGraph, initData, que
   return prevStats;
 }
 
-function buildDataContinuum({ type, code_certification, oldData, oldQuery, statName, diplomeBCN }) {
+async function buildDataContinuum({ type, code_certification, oldData, oldQuery, statName, diplomeBCN }) {
+  const certification = await getCertificationInfo(code_certification);
+
   return {
     diplomeBCN: diplomeBCN,
     statName,
@@ -87,10 +90,17 @@ function buildDataContinuum({ type, code_certification, oldData, oldQuery, statN
       code_certification: code_certification,
     },
     data: {
-      ...omit(oldData, ["_id", "_meta", "code_certification", "code_formation_diplome", "diplome", "donnee_source"]),
-      code_certification: code_certification,
-      code_formation_diplome: diplomeBCN?.code_formation_diplome,
-      diplome: diplomeBCN?.diplome,
+      ...omit(oldData, [
+        "_id",
+        "_meta",
+        "code_certification",
+        "code_formation_diplome",
+        "diplome",
+        "libelle",
+        "libelle_ancien",
+        "donnee_source",
+      ]),
+      ...certification,
       donnee_source: {
         code_certification: oldData.code_certification,
         type,
@@ -129,7 +139,7 @@ async function computeParents({ diplomeBCN, data, query, statName }) {
     return [];
   }
 
-  const dataParent = buildDataContinuum({
+  const dataParent = await buildDataContinuum({
     type: "nouvelle",
     code_certification: parent_code_certification,
     oldData: mostRecentData,
@@ -170,7 +180,7 @@ async function computeChildren({ diplomeBCN, data, query, statName }) {
     return [];
   }
 
-  const dataChildren = buildDataContinuum({
+  const dataChildren = await buildDataContinuum({
     type: "ancienne",
     code_certification: child_code_certification,
     oldData: data,

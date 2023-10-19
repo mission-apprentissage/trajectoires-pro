@@ -2,7 +2,7 @@ import { StatsRepository } from "./base.js";
 import { dbCollection } from "#src/common/db/mongodb.js";
 import { name } from "#src/common/db/collections/formationsStats.js";
 
-export class FormationsRepository extends StatsRepository {
+export class FormationStatsRepository extends StatsRepository {
   constructor() {
     super(name);
   }
@@ -35,4 +35,4 @@ export class FormationsRepository extends StatsRepository {
   }
 }
 
-export default new FormationsRepository();
+export default new FormationStatsRepository();
