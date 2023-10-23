@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.7.0...v1.7.1) (2023-10-23)
+
+
+### Bug Fixes
+
+* code formation diplome dans le continuum ([#216](https://github.com/mission-apprentissage/trajectoires-pro/issues/216)) ([acfa568](https://github.com/mission-apprentissage/trajectoires-pro/commit/acfa568fd97ff2e4aedd6f6c034672cea9bf7d33))
+
 # [1.7.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.6.0...v1.7.0) (2023-09-27)
 
 
