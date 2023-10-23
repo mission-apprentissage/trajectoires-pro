@@ -89,7 +89,7 @@ function buildDataContinuum({ type, code_certification, oldData, oldQuery, statN
     data: {
       ...omit(oldData, ["_id", "_meta", "code_certification", "code_formation_diplome", "diplome", "donnee_source"]),
       code_certification: code_certification,
-      code_formation_diplome: code_certification,
+      code_formation_diplome: diplomeBCN?.code_formation_diplome,
       diplome: diplomeBCN?.diplome,
       donnee_source: {
         code_certification: oldData.code_certification,
