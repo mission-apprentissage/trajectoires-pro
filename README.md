@@ -51,7 +51,7 @@ yarn cli importRomes
     - [N_FORMATION_DIPLOME](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/N_FORMATION_DIPLOME)
     - [V_FORMATION_DIPLOME](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/V_FORMATION_DIPLOME)
     - [N_MEF](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/N_MEF)
-  - Création des liens de continuités ([continuum](#continuum)) entre les formations
+  - Création des liens de continuités ([cf](<#Continuité des données (dans le cadre de la renovation des formations)>)) entre les formations
 - `importRomes` :
   - Importation des codes ROMEs depuis l'API [api.data.gouv] (Voir [dataset](https://www.data.gouv.fr/fr/datasets/repertoire-operationnel-des-metiers-et-des-emplois-rome/))
   - Importation depuis l'API [Diagoriente](https://odyssey-docs.vercel.app/docs/intro) des :
@@ -64,7 +64,7 @@ yarn cli importRomes
       - Utilise les listes d'établissements contenues dans `server/data`
     - `importStats certifications` : Importation des données de formation au niveau nationale
     - `importStats regionale` : Importation des données au niveau régionale
-- `computeContinuumStats` : Calcul des données du [continuum](#continuum) des formations
+- `computeContinuumStats` : Calcul des données de continuités des formations ([cf](<#Continuité des données (dans le cadre de la renovation des formations)>)) 
 
 ### Outils
 
@@ -107,13 +107,13 @@ Ce projet utilise `mongodb` version 5.
 
 Voir documentation de l'API : https://exposition.inserjeunes.beta.gouv.fr/api/doc/
 
-### Continuum
+### Continuité des données (dans le cadre de la renovation des formations)
 
 Afin d'assurer la continuité des données en cas de rénovation des formations, nous associons les données d'une formation renovée avec les données de la formation historique lorsque :
 - La formation rénovée ne fait pas l'objet d'une modification profonde de ses modules
 - La formation renovée n'a pas de données pour le millésime concerné
 
-Nous associons également les données de la formation rénovée avec les formations historiques lorsque celles ci ne possèdent pas de données pour le millésime concerné.
+Nous associons également, dans le sens inverse, les données de la formation rénovée avec les formations historiques lorsque celles ci ne possèdent pas de données pour le millésime concerné.
 
 #### Exemple d'une formation rénovée
 
