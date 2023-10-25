@@ -51,7 +51,7 @@ yarn cli importRomes
     - [N_FORMATION_DIPLOME](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/N_FORMATION_DIPLOME)
     - [V_FORMATION_DIPLOME](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/V_FORMATION_DIPLOME)
     - [N_MEF](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/N_MEF)
-  - Création des liens de continuités ([cf](<#Continuité des données (dans le cadre de la renovation des formations)>)) entre les formations
+  - Création des liens de continuités ([cf](<#continuit%C3%A9-des-donn%C3%A9es-dans-le-cadre-de-la-renovation-des-formations>)) entre les formations
 - `importRomes` :
   - Importation des codes ROMEs depuis l'API [api.data.gouv] (Voir [dataset](https://www.data.gouv.fr/fr/datasets/repertoire-operationnel-des-metiers-et-des-emplois-rome/))
   - Importation depuis l'API [Diagoriente](https://odyssey-docs.vercel.app/docs/intro) des :
@@ -64,7 +64,7 @@ yarn cli importRomes
       - Utilise les listes d'établissements contenues dans `server/data`
     - `importStats certifications` : Importation des données de formation au niveau nationale
     - `importStats regionale` : Importation des données au niveau régionale
-- `computeContinuumStats` : Calcul des données de continuités des formations ([cf](<#Continuité des données (dans le cadre de la renovation des formations)>)) 
+- `computeContinuumStats` : Calcul des données de continuités des formations ([cf](<#continuit%C3%A9-des-donn%C3%A9es-dans-le-cadre-de-la-renovation-des-formations>)) 
 
 ### Outils
 
