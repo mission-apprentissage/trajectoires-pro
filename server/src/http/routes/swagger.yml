@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Trajectoires pro
-  description: Documentation de l'API  Trajectoires Pro
+  title: API Exposition InserJeunes
+  description: Documentation de l'API Exposition InserJeunes
   license:
     name: MIT License
     url: https://raw.githubusercontent.com/mission-apprentissage/trajectoires-pro/main/LICENSE
