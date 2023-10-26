@@ -107,11 +107,11 @@ Ce projet utilise `mongodb` version 5.
 
 Voir documentation de l'API : https://exposition.inserjeunes.beta.gouv.fr/api/doc/
 
-### Continuité des données dans le cadre de la renovation des formations
+### Continuité des données dans le cadre de la rénovation des formations
 
 Afin d'assurer la continuité des données en cas de rénovation des formations, nous associons les données d'une formation renovée avec les données de la formation historique lorsque :
 - La formation rénovée ne fait pas l'objet d'une modification profonde de ses modules
-- La formation renovée n'a pas de données pour le millésime concerné
+- La formation rénovée n'a pas de données pour le millésime concerné
 
 Nous associons également, dans le sens inverse, les données de la formation rénovée avec les formations historiques lorsque celles ci ne possèdent pas de données pour le millésime concerné.
 

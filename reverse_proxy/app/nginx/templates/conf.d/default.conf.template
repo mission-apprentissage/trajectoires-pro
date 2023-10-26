@@ -35,7 +35,7 @@ server {
     include includes/server.conf;
     
     location / {
-        return 307 https://sunrise-waitress-5d6.notion.site/La-continuit-des-donn-es-InserJeunes-dans-le-cadre-de-la-reforme-de-l-offre-de-formation-eb8fc2c14348440cb934eef4c7ee0b4e;
+        return 307 https://sunrise-waitress-5d6.notion.site/Centre-de-documentation-sur-les-donn-es-InserJeunes-eb8fc2c14348440cb934eef4c7ee0b4e;
     }
 }
 
