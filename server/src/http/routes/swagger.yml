@@ -293,6 +293,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/uais"
         - $ref: "#/components/parameters/regions"
+        - $ref: "#/components/parameters/academies"
         - $ref: "#/components/parameters/millesimes"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
@@ -315,6 +316,8 @@ paths:
       parameters:
         - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/uais"
+        - $ref: "#/components/parameters/regions"
+        - $ref: "#/components/parameters/academies"
         - $ref: "#/components/parameters/millesimes"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
@@ -430,6 +433,37 @@ components:
          93 Provence-Alpes-Côte d'Azur
          11 Île-de-France
          ```
+    
+    academies:
+      name: academies
+      in: query
+      schema:
+        type: string
+      description: |
+        Permet de filtrer la recherche avec un ou plusieurs codes d'académie séparés par des virgules.
+        
+        Valeurs possibles :
+        ```
+        01 Paris                       02 Aix-Marseille
+        03 Besançon                    04 Bordeaux
+        06 Clermont-Ferrand            07 Dijon
+        08 Grenoble                    09 Lille
+        10 Lyon                        11 Montpellier
+        12 Nancy-Metz                  13 Poitiers
+        14 Rennes                      15 Strasbourg
+        16 Toulouse                    17 Nantes
+        18 Orléans-Tours               19 Reims
+        20 Amiens                      22 Limoges
+        23 Nice                        24 Créteil
+        25 Versailles                  27 Corse
+        28 La Réunion                  31 Martinique
+        32 Guadeloupe                  33 Guyane
+        40 Nouvelle-Calédonie          41 Polynésie Française
+        42 Wallis et Futuna            43 Mayotte
+        44 Saint-Pierre-et-Miquelon    70 Normandie
+        77 Saint-Barthélemy            78 Saint-Martin
+        ```
+    
     page:
       name: page
       in: query

@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { getRegions, findRegionByCodePostal } from "#src/services/regions.js";
+import { getRegions, findRegionByCodePostal, getAcademies } from "#src/services/regions.js";
 import { formatArrayParameters } from "./formatters.js";
 
 const customJoi = Joi.extend(
@@ -37,6 +37,16 @@ export function arrayOf(itemSchema = Joi.string()) {
 export function regions() {
   return {
     regions: arrayOf(customJoi.postalCodeToRegion().valid(...getRegions().map((r) => r.code))).default([]),
+  };
+}
+
+export function academies() {
+  return {
+    academies: arrayOf(Joi.valid(...getAcademies().map((a) => a.code)))
+      .default([])
+      .messages({
+        "any.only": "{{#label}} must be a valid academie code",
+      }),
   };
 }
 

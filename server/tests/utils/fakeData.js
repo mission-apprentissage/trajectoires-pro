@@ -13,6 +13,7 @@ import {
   cfdRomes,
   romeMetier,
   rome,
+  acceEtablissements,
 } from "#src/common/db/collections/collections.js";
 import { ALL, getStatsCompute } from "#src/common/stats.js";
 
@@ -96,6 +97,10 @@ export function insertFormationsStats(custom = {}, withStat = true) {
         diplome: { code: "4", libelle: "BAC" },
         ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
         region: { code: "11", nom: "Île-de-France" },
+        academie: {
+          code: "01",
+          nom: "Paris",
+        },
         donnee_source: {
           code_certification,
           type: "self",
@@ -147,6 +152,71 @@ export function insertMEF(custom = {}) {
         date_ouverture: new Date(),
         ancien_diplome: [],
         nouveau_diplome: [],
+        _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
+      },
+      custom
+    )
+  );
+}
+
+export function insertAcceEtablissement(custom = {}) {
+  return acceEtablissements().insertOne(
+    merge(
+      {},
+      {
+        numero_uai: faker.helpers.replaceSymbols("########"),
+        academie: "10",
+        academie_libe: "Lyon",
+        adresse_uai: "15 AVENUE SAINT EXUPERY",
+        appariement: "SIMILAIRE",
+        appellation_officielle: "Lycée professionnel",
+        boite_postale_uai: "BP",
+        categorie_financiere: "4",
+        categorie_financiere_libe: "4",
+        categorie_juridique: "200",
+        categorie_juridique_libe: "Etablissement public local d'enseignement (EPLE)",
+        code_postal_uai: "69001",
+        commune: "69001",
+        commune_libe: "Lyon",
+        contrat_etablissement: "99",
+        contrat_etablissement_libe: "Sans objet",
+        coordonnee_x: "1.1",
+        coordonnee_y: "1.1",
+        denomination_principale: "LYCEE PROFESSIONNEL",
+        departement_insee_3: "069",
+        departement_insee_3_libe: "Rhône",
+        etat_etablissement: "1",
+        etat_etablissement_libe: "Ouvert",
+        etat_sirad_uai: "1",
+        hebergement_etablissement: "22",
+        hebergement_etablissement_libe: "Avec internat et demi-pension",
+        localisation: "LOCALISATION",
+        localite_acheminement_uai: "LOCALITE UAI",
+        mel_uai: "email@email.fr",
+        ministere_tutelle: "06",
+        ministere_tutelle_libe: "ministère de l'éducation nationale",
+        nature_uai: "320",
+        nature_uai_libe: "Lycée professionnel",
+        niveau_uai: "1",
+        niveau_uai_libe: "UAI célibataire",
+        numero_siren_siret_uai: "19000000000000",
+        numero_telecopieur_uai: "01 02 03 04 05",
+        numero_telephone_uai: "01 02 03 04 05",
+        patronyme_uai: "PATRONYME",
+        pays: "100",
+        pays_libe: "France",
+        secteur_public_prive: "PU",
+        secteur_public_prive_libe: "Public",
+        sigle_uai: "LP",
+        situation_comptable: "3",
+        situation_comptable_libe: "Rattaché à une agence comptable",
+        source: "IGN",
+        type_uai: "LP",
+        type_uai_libe: "Lycées professionnels",
+        date_derniere_mise_a_jour: new Date(),
+        date_fermeture: new Date(),
+        date_geolocalisation: new Date(),
+        date_ouverture: new Date(),
         _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
       },
       custom

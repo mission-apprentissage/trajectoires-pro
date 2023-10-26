@@ -1261,6 +1261,10 @@ describe("computeContinuumStats", () => {
             libelle: "BAC",
           },
           region: { code: "11", nom: "Île-de-France" },
+          academie: {
+            code: "01",
+            nom: "Paris",
+          },
           donnee_source: {
             code_certification: "10000001",
             type: "ancienne",
@@ -1353,6 +1357,10 @@ describe("computeContinuumStats", () => {
             code: "11",
             nom: "Île-de-France",
           },
+          academie: {
+            code: "01",
+            nom: "Paris",
+          },
           donnee_source: {
             code_certification: "10000002",
             type: "self",
@@ -1442,6 +1450,10 @@ describe("computeContinuumStats", () => {
           region: {
             code: "11",
             nom: "Île-de-France",
+          },
+          academie: {
+            code: "01",
+            nom: "Paris",
           },
           donnee_source: {
             code_certification: "10000002",
@@ -1535,6 +1547,10 @@ describe("computeContinuumStats", () => {
             code: "11",
             nom: "Île-de-France",
           },
+          academie: {
+            code: "01",
+            nom: "Paris",
+          },
           donnee_source: {
             code_certification: "10000003",
             type: "nouvelle",
@@ -1626,6 +1642,10 @@ describe("computeContinuumStats", () => {
           region: {
             code: "11",
             nom: "Île-de-France",
+          },
+          academie: {
+            code: "01",
+            nom: "Paris",
           },
           donnee_source: {
             code_certification: "10000001",
@@ -1729,6 +1749,10 @@ describe("computeContinuumStats", () => {
             code: "11",
             nom: "Île-de-France",
           },
+          academie: {
+            code: "01",
+            nom: "Paris",
+          },
           donnee_source: {
             code_certification: "10000003",
             type: "nouvelle",
@@ -1801,6 +1825,10 @@ describe("computeContinuumStats", () => {
           libelle: "BAC",
         },
         region: { code: "11", nom: "Île-de-France" },
+        academie: {
+          code: "01",
+          nom: "Paris",
+        },
         donnee_source: {
           code_certification: "10000002",
           type: "nouvelle",
@@ -1826,6 +1854,10 @@ describe("computeContinuumStats", () => {
           libelle: "BAC",
         },
         region: { code: "11", nom: "Île-de-France" },
+        academie: {
+          code: "01",
+          nom: "Paris",
+        },
         donnee_source: {
           code_certification: "10000002",
           type: "ancienne",
@@ -1854,6 +1886,10 @@ describe("computeContinuumStats", () => {
           libelle: "BAC",
         },
         region: { code: "11", nom: "Île-de-France" },
+        academie: {
+          code: "01",
+          nom: "Paris",
+        },
         donnee_source: {
           code_certification: "10000001",
           type: "self",
@@ -1882,6 +1918,10 @@ describe("computeContinuumStats", () => {
           libelle: "BAC",
         },
         region: { code: "11", nom: "Île-de-France" },
+        academie: {
+          code: "01",
+          nom: "Paris",
+        },
         donnee_source: {
           code_certification: "10000003",
           type: "self",

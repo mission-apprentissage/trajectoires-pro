@@ -1,4 +1,6 @@
 import env from "env-var";
+import path from "path";
+import { getDirname } from "#src/common/utils/esmUtils.js";
 
 const config = {
   env: env.get("TRAJECTOIRES_PRO_ENV").default("local").asString(),
@@ -46,6 +48,11 @@ const config = {
     },
     datasets: {
       rome: "1c893376-8476-4262-9a0e-8df519883e1e",
+    },
+  },
+  acce: {
+    files: {
+      etablissements: path.join(getDirname(import.meta.url), "../data/", "acce_etablissements.csv"),
     },
   },
   millesimes: {
