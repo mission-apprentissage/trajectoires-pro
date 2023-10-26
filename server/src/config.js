@@ -50,6 +50,26 @@ const config = {
       rome: "1c893376-8476-4262-9a0e-8df519883e1e",
     },
   },
+  dataeducation: {
+    api: {
+      baseUrl: env
+        .get("DATAEDUCATION_BASE_URL")
+        .default("https://data.education.gouv.fr/api/explore/v2.1/catalog")
+        .asString(),
+    },
+    datasets: {
+      etablissements: "fr-en-annuaire-education",
+    },
+  },
+  onisep: {
+    api: {
+      baseUrl: env.get("ONISEP_BASE_URL").default("https://api.opendata.onisep.fr").asString(),
+    },
+    datasets: {
+      etablissementSuperieur: "5fa586da5c4b6",
+      etablissementSecondaire: "5fa5816ac6a6e",
+    },
+  },
   acce: {
     files: {
       etablissements: path.join(getDirname(import.meta.url), "../data/", "acce_etablissements.csv"),

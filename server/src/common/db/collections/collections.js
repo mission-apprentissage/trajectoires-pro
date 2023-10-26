@@ -9,6 +9,7 @@ import * as cfdRomesDescriptor from "./cfdRomes.js";
 import * as romeDescriptor from "./rome.js";
 import * as romeMetierDescriptor from "./romeMetier.js";
 import * as cfdMetiersDescriptor from "./cfdMetiers.js";
+import * as onisepEtablissementsDescriptor from "./onisepEtablissements.js";
 import * as acceEtablissementsDescriptor from "./acceEtablissements.js";
 import { dbCollection } from "#src/common/db/mongodb.js";
 
@@ -26,6 +27,7 @@ export function getCollectionDescriptors() {
     romeMetierDescriptor,
     cfdMetiersDescriptor,
     acceEtablissementsDescriptor,
+    onisepEtablissementsDescriptor,
   ];
 }
 
@@ -71,6 +73,10 @@ export function romeMetier() {
 
 export function cfdMetiers() {
   return dbCollection(cfdMetiersDescriptor.name);
+}
+
+export function onisepEtablissements() {
+  return dbCollection(onisepEtablissementsDescriptor.name);
 }
 
 export function acceEtablissements() {
