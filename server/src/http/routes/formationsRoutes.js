@@ -20,7 +20,7 @@ export default () => {
     "/api/inserjeunes/formations.:ext?",
     checkApiKey(),
     tryCatch(async (req, res) => {
-      const { uais, regions, millesimes, code_certifications, page, items_par_page, ext } = await validate(
+      const { uais, regions, academies, millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
         {
           uais: arrayOf(
@@ -29,6 +29,7 @@ export default () => {
               .required()
           ).default([]),
           ...validators.regions(),
+          ...validators.academies(),
           ...validators.statsList(),
         }
       );
@@ -37,6 +38,7 @@ export default () => {
         {
           uai: uais,
           region: regions,
+          "academie.code": academies,
           millesime: millesimes,
           code_certification: code_certifications,
         },

@@ -76,6 +76,10 @@ describe("formationsRoutes", () => {
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
             region: { code: "11", nom: "Île-de-France" },
+            academie: {
+              code: "01",
+              nom: "Paris",
+            },
             donnee_source: {
               code_certification: "12345678",
               type: "self",
@@ -168,6 +172,22 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.status, 200);
       assert.strictEqual(response.data.pagination.total, 1);
       assert.strictEqual(response.data.formations[0].region.code, "76");
+    });
+
+    it("Vérifie qu'on peut obtenir les stats de formations pour une académie", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({ academie: { code: "01", nom: "Paris" } });
+      await insertFormationsStats({ academie: { code: "08", nom: "Grenoble" } });
+
+      const response = await httpClient.get(`/api/inserjeunes/formations?academies=08`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.pagination.total, 1);
+      assert.strictEqual(response.data.formations[0].academie.code, "08");
     });
 
     it("Vérifie qu'on peut obtenir les stats de formations pour code formation", async () => {
@@ -319,7 +339,74 @@ describe("formationsRoutes", () => {
       );
     });
 
-    it("Vérifie qu'on retourne une 404 si les paramètres sont invalides", async () => {
+    it("Vérifie qu'on retourne une 400 si le code d'académie n'est pas valide", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get(`/api/inserjeunes/formations?academies=99`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 400);
+      assert.deepStrictEqual(response.data, {
+        details: [
+          {
+            context: {
+              key: 0,
+              label: "academies[0]",
+              value: "99",
+              valids: [
+                "40",
+                "42",
+                "44",
+                "41",
+                "77",
+                "78",
+                "32",
+                "31",
+                "33",
+                "28",
+                "43",
+                "01",
+                "24",
+                "25",
+                "18",
+                "07",
+                "03",
+                "70",
+                "20",
+                "09",
+                "19",
+                "12",
+                "15",
+                "17",
+                "14",
+                "13",
+                "22",
+                "04",
+                "16",
+                "11",
+                "10",
+                "06",
+                "08",
+                "02",
+                "23",
+                "27",
+              ],
+            },
+            message: '"academies[0]" must be a valid academie code',
+            path: ["academies", 0],
+            type: "any.only",
+          },
+        ],
+        error: "Bad Request",
+        message: "Erreur de validation",
+        statusCode: 400,
+      });
+    });
+
+    it("Vérifie qu'on retourne une 400 si les paramètres sont invalides", async () => {
       const { httpClient } = await startServer();
 
       const response = await httpClient.get(`/api/inserjeunes/formations?invalid=true`, {
@@ -428,6 +515,10 @@ describe("formationsRoutes", () => {
         taux_autres_18_mois: 15,
         taux_autres_24_mois: 16,
         region: { code: "11", nom: "Île-de-France" },
+        academie: {
+          code: "01",
+          nom: "Paris",
+        },
         donnee_source: {
           code_certification: "12345678",
           type: "self",

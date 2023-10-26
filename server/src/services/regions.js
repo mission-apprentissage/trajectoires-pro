@@ -1,3 +1,5 @@
+import { flatMap } from "lodash-es";
+
 const REGIONS = [
   {
     code: "00",
@@ -338,7 +340,41 @@ export function getRegions() {
   return REGIONS;
 }
 
+export function getAcademies() {
+  return flatMap(REGIONS.map((region) => region.academies));
+}
+
 export function findRegionByCodePostal(code) {
   const departement = code.match(/^(97|98)/) ? code.substring(0, 3) : code.substring(0, 2);
   return REGIONS.find((region) => region.departements.find((d) => d.code == departement)) || null;
+}
+
+export function findAcademieByNom(nom) {
+  if (!nom) {
+    return null;
+  }
+
+  for (const region of REGIONS) {
+    for (const academie of region.academies) {
+      if (sanitize(academie.nom).toUpperCase() === sanitize(nom).toUpperCase()) {
+        return academie;
+      }
+    }
+  }
+  return null;
+}
+
+export function findAcademieByCode(code) {
+  if (!code) {
+    return null;
+  }
+
+  for (const region of REGIONS) {
+    for (const academie of region.academies) {
+      if (sanitize(academie.code).toUpperCase() === sanitize(code).toUpperCase()) {
+        return academie;
+      }
+    }
+  }
+  return null;
 }
