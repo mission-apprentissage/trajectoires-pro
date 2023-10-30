@@ -5,6 +5,8 @@
 
 * ajout des libellés et anciens libellés de certifications dans l'API ([#215](https://github.com/mission-apprentissage/trajectoires-pro/issues/215)) ([86d6c2b](https://github.com/mission-apprentissage/trajectoires-pro/commit/86d6c2b5e139732f1ea594d6fe600c2b54b590fa))
 
+* page de documentation ([#219](https://github.com/mission-apprentissage/trajectoires-pro/pull/219)) ([2935c5e](https://github.com/mission-apprentissage/trajectoires-pro/commit/2935c5e4fe2dc244fb42ccb86febdfc48ff2dc99))
+
 ## [1.7.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.7.0...v1.7.1) (2023-10-23)
 
 
