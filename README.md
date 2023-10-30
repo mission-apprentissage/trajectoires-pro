@@ -25,6 +25,22 @@ Cette commande démarre les containers définis dans le fichier `docker-compose.
 
 L'application est ensuite accessible à l'url [http://localhost](http://localhost)
 
+### Mise à jour des données
+
+#### Nouveau millésime
+
+Mettre à jour les variables d'environnements avec le millesime a ajouté:
+- `TRAJECTOIRES_PRO_MILLESIMES`
+- `TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS`
+- `TRAJECTOIRES_PRO_MILLESIMES_REGIONALES`
+
+Ajoutés les fichiers suivant (MILLESIME sur deux années):
+- `depp-2022-etablissements-MILLESIME-apprentissage.csv`
+- `depp-2022-etablissements-MILLESIME-pro.csv`
+
+Mettre à jour le fichier suivant :
+- `data/acce_etablissements.csv`
+
 ### Jobs
 
 Pour hydrater la base de données, il existe dans le package `server` plusieurs jobs différents.

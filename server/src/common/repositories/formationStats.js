@@ -7,8 +7,8 @@ export class FormationStatsRepository extends StatsRepository {
     super(name);
   }
 
-  async exist({ uai, region, code_certification }) {
-    return (await this.first({ uai, "region.code": region, code_certification })) ? true : false;
+  async exist({ uai, region, code_certification, ...rest }) {
+    return (await this.first({ uai, "region.code": region, code_certification, ...rest })) ? true : false;
   }
 
   async first({ uai, region, code_certification, millesime, ...rest }) {
@@ -16,15 +16,15 @@ export class FormationStatsRepository extends StatsRepository {
     return dbCollection(this.getCollection()).find(query).sort({ millesime: -1 }).limit(1).next();
   }
 
-  async findAndPaginate({ uai, region, millesime, code_certification }, options = { page: 1, limit: 10 }) {
-    const query = this.prepare({ uai, "region.code": region, millesime, code_certification });
+  async findAndPaginate({ uai, region, millesime, code_certification, ...rest }, options = { page: 1, limit: 10 }) {
+    const query = this.prepare({ uai, "region.code": region, millesime, code_certification, ...rest });
     return await this._findAndPaginate(query, {
       ...options,
     });
   }
 
-  async findMillesime({ uai, region, code_certification }) {
-    const query = this.prepare({ uai, "region.code": region, code_certification });
+  async findMillesime({ uai, region, code_certification, ...rest }) {
+    const query = this.prepare({ uai, "region.code": region, code_certification, ...rest });
     const result = await dbCollection(this.getCollection())
       .find(query)
       .project({ _id: 0, millesime: 1 })

@@ -14,6 +14,7 @@ import { importCfdRomes } from "./jobs/romes/importCfdRomes.js";
 import { importRomes } from "./jobs/romes/importRomes.js";
 import { importCfdMetiers } from "./jobs/romes/importCfdMetiers.js";
 import { importRomeMetiers } from "./jobs/romes/importRomeMetiers.js";
+import { importEtablissements } from "./jobs/etablissements/importEtablissements.js";
 import { backfillMetrics } from "./jobs/backfillMetrics.js";
 import { asArray } from "./common/utils/stringUtils.js";
 import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
@@ -54,6 +55,19 @@ cli
         statsCfdRomes,
         statsRomeMetiers,
         statsCfdMetiers,
+      };
+    });
+  });
+
+cli
+  .command("importEtablissements")
+  .description("Importe les données d'établissements")
+  .action(() => {
+    runScript(async () => {
+      const statsEtablissements = await importEtablissements();
+
+      return {
+        statsEtablissements,
       };
     });
   });

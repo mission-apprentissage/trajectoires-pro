@@ -3,7 +3,7 @@ import { pickBy } from "lodash-es";
 import MockDate from "mockdate";
 import { importFormationsStats } from "#src/jobs/stats/importFormationsStats.js";
 import { mockInserJeunesApi } from "#tests/utils/apiMocks.js";
-import { insertCFD, insertFormationsStats, insertMEF } from "#tests/utils/fakeData.js";
+import { insertCFD, insertFormationsStats, insertMEF, insertAcceEtablissement } from "#tests/utils/fakeData.js";
 import { formationsStats } from "#src/common/db/collections/collections.js";
 
 describe("importFormationsStats", () => {
@@ -62,6 +62,12 @@ describe("importFormationsStats", () => {
       },
     });
 
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+    });
+
     const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
     });
@@ -83,6 +89,7 @@ describe("importFormationsStats", () => {
         code: "76",
         nom: "Occitanie",
       },
+      academie: { code: "16", nom: "Toulouse" },
       donnee_source: {
         code_certification: "12345678",
         type: "self",
@@ -119,6 +126,11 @@ describe("importFormationsStats", () => {
       code_formation_diplome: "12345678",
       diplome: { code: "4", libelle: "BAC" },
     });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+    });
 
     const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
@@ -140,6 +152,10 @@ describe("importFormationsStats", () => {
       region: {
         code: "76",
         nom: "Occitanie",
+      },
+      academie: {
+        code: "16",
+        nom: "Toulouse",
       },
       donnee_source: {
         code_certification: "12345678900",
@@ -184,6 +200,11 @@ describe("importFormationsStats", () => {
         code_formation_diplome: "12345678",
         diplome: { code: "4", libelle: "BAC" },
       });
+      await insertAcceEtablissement({
+        numero_uai: "0751234J",
+        academie: "16",
+        academie_libe: "Toulouse",
+      });
 
       await importFormationsStats({
         parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
@@ -221,6 +242,11 @@ describe("importFormationsStats", () => {
         code_certification: "12345678900",
         code_formation_diplome: "12345678",
         diplome: { code: "4", libelle: "BAC" },
+      });
+      await insertAcceEtablissement({
+        numero_uai: "0751234J",
+        academie: "16",
+        academie_libe: "Toulouse",
       });
 
       await importFormationsStats({
@@ -260,6 +286,11 @@ describe("importFormationsStats", () => {
         code_certification: "12345678900",
         code_formation_diplome: "12345678",
         diplome: { code: "4", libelle: "BAC" },
+      });
+      await insertAcceEtablissement({
+        numero_uai: "0751234J",
+        academie: "16",
+        academie_libe: "Toulouse",
       });
 
       await importFormationsStats({
@@ -307,6 +338,11 @@ describe("importFormationsStats", () => {
       code_certification: "12345678900",
       code_formation_diplome: "12345678",
       diplome: { code: "4", libelle: "BAC" },
+    });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
     });
 
     await importFormationsStats({
@@ -359,6 +395,11 @@ describe("importFormationsStats", () => {
       code_formation_diplome: "12345678",
       diplome: { code: "4", libelle: "BAC" },
     });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+    });
 
     await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
@@ -398,6 +439,11 @@ describe("importFormationsStats", () => {
       ],
     });
     await insertCFD({ code_certification: "12345678" });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+    });
 
     const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
@@ -435,6 +481,11 @@ describe("importFormationsStats", () => {
     });
     await insertCFD({ code_certification: "12345678" });
     await insertCFD({ code_certification: "87456123" });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+    });
 
     const stats = await importFormationsStats({
       parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
@@ -475,6 +526,11 @@ describe("importFormationsStats", () => {
       ],
     });
     await insertCFD({ code_certification: "12345678" });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+    });
 
     const stats = await importFormationsStats({
       parameters: [
@@ -504,6 +560,11 @@ describe("importFormationsStats", () => {
         },
       ],
     });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+    });
     await insertFormationsStats({
       uai: "0751234J",
       code_certification: "12345678",
@@ -520,6 +581,24 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 1 });
   });
 
+  it("Vérifie qu'on peut gérer les établissements inconnus", async () => {
+    await insertAcceEtablissement({
+      numero_uai: "00000000",
+      academie: "16",
+      academie_libe: "Toulouse",
+    });
+
+    // Disable retry on InserJeunes API
+    const stats = await importFormationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { retries: 0 } } },
+      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+    });
+
+    const count = await formationsStats().countDocuments({});
+    assert.strictEqual(count, 0);
+    assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
+  });
+
   it("Vérifie qu'on peut gèrer les erreurs 400 de l'api", async () => {
     mockInserJeunesApi((client, responses) => {
       client
@@ -531,6 +610,11 @@ describe("importFormationsStats", () => {
         .get(`/UAI/0751234J/millesime/2018_2019`)
         .query(() => true)
         .reply(400, { msg: "UAI incorrect ou agricole" });
+    });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
     });
 
     // Disable retry on InserJeunes API
@@ -555,6 +639,11 @@ describe("importFormationsStats", () => {
         .get(`/UAI/0751234J/millesime/2018_2019`)
         .query(() => true)
         .reply(200, "{json:");
+    });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
     });
 
     const stats = await importFormationsStats({
@@ -602,6 +691,12 @@ describe("importFormationsStats", () => {
       },
       { stack: true }
     );
+
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+    });
 
     await insertFormationsStats({
       uai: "0751234J",

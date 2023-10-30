@@ -1,4 +1,4 @@
-import { compose, flattenArray, mergeStreams, oleoduc, transformData, writeData } from "oleoduc";
+import { compose, flattenArray, mergeStreams, oleoduc, transformData, writeData, filterData } from "oleoduc";
 import { createReadStream } from "fs";
 import { Readable } from "stream";
 import { omit, pick, merge } from "lodash-es";
@@ -10,10 +10,11 @@ import { InserJeunes } from "#src/services/inserjeunes/InserJeunes.js";
 import { formationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
-import { findRegionByNom } from "#src/services/regions.js";
+import { findRegionByNom, findAcademieByCode } from "#src/services/regions.js";
 import { computeCustomStats, getMillesimesFormations, INSERJEUNES_IGNORED_STATS_NAMES } from "#src/common/stats.js";
 import { getCertificationInfo } from "#src/common/certification.js";
 import { getDirname } from "#src/common/utils/esmUtils.js";
+import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
 
 const __dirname = getDirname(import.meta.url);
 const logger = getLoggerWithContext("import");
@@ -57,7 +58,7 @@ async function loadParameters(parameters) {
 
   await oleoduc(
     stream,
-    writeData((data) => {
+    writeData(async (data) => {
       const { uai, millesime } = data;
 
       if (!isUAIValid(uai)) {
@@ -65,9 +66,16 @@ async function loadParameters(parameters) {
         return;
       }
 
+      const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
+
       const index = results.findIndex((e) => e.uai === uai && e.millesime === millesime);
       if (index === -1) {
-        results.push({ uai, millesime, region: findRegionByNom(data.region) });
+        results.push({
+          uai,
+          millesime,
+          region: findRegionByNom(data.region),
+          academie: findAcademieByCode(etablissement?.academie),
+        });
       }
     })
   );
@@ -94,6 +102,13 @@ export async function importFormationsStats(options = {}) {
 
   await oleoduc(
     Readable.from(parameters),
+    filterData((parameters) => {
+      if (!parameters.academie) {
+        handleError(new Error(`Académie inconnue pour l'établissement ${parameters.uai}`));
+        return false;
+      }
+      return true;
+    }),
     transformData(
       (params) => {
         return ij
@@ -141,6 +156,7 @@ export async function importFormationsStats(options = {}) {
               ...customStats,
               ...certification,
               region: pick(params.region, ["code", "nom"]),
+              academie: pick(params.academie, ["code", "nom"]),
               donnee_source: {
                 code_certification: formationStats.code_certification,
                 type: "self",

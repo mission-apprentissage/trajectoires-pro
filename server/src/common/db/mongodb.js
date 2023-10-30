@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { merge, mergeWith, isArray, uniq } from "lodash-es";
+import { merge, mergeWith, isArray, uniq, omit, without } from "lodash-es";
 import config from "#src/config.js";
 import { writeData } from "oleoduc";
 import { logger } from "#src/common/logger.js";
@@ -104,6 +104,32 @@ export async function mergeSchema(collectionName, newSchema) {
     validationAction: "error",
     validator: {
       $jsonSchema: mergeWith(oldSchema, newSchema, mergeCustomizer),
+    },
+  });
+}
+
+export async function removeFromSchema(collectionName, schemaToRemove) {
+  const db = getDatabase();
+  const collectionInfos = await db.listCollections({ name: collectionName }).toArray();
+  const validator = collectionInfos[0].options.validator;
+
+  if (!validator) {
+    return;
+  }
+
+  const oldSchema = validator.$jsonSchema;
+  const newSchema = {
+    ...oldSchema,
+    properties: omit(oldSchema.properties, Object.keys(schemaToRemove.properties)),
+    required: without(oldSchema.required || [], ...schemaToRemove.required),
+  };
+
+  return db.command({
+    collMod: collectionName,
+    validationLevel: "strict",
+    validationAction: "error",
+    validator: {
+      $jsonSchema: newSchema,
     },
   });
 }
