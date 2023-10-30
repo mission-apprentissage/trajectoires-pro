@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.9.0...v1.10.0) (2023-10-30)
+
+
+### Features
+
+* lien entre les pages notions ([#220](https://github.com/mission-apprentissage/trajectoires-pro/issues/220)) ([e15c0ca](https://github.com/mission-apprentissage/trajectoires-pro/commit/e15c0ca63b696ad2ea029fc874398396acdc3cc1))
+
 # [1.9.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.8.0...v1.9.0) (2023-10-30)
 
 
