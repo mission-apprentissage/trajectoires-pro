@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.7.1...v1.8.0) (2023-10-30)
+
+
+### Features
+
+* ajout des libellés et anciens libellés de certifications dans l'API ([#215](https://github.com/mission-apprentissage/trajectoires-pro/issues/215)) ([86d6c2b](https://github.com/mission-apprentissage/trajectoires-pro/commit/86d6c2b5e139732f1ea594d6fe600c2b54b590fa))
+
 ## [1.7.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.7.0...v1.7.1) (2023-10-23)
 
 
