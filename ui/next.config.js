@@ -31,6 +31,17 @@ const nextConfig = {
               ],
               destination: "/statistiques/:path*",
             },
+
+            {
+              source: "/:path*",
+              has: [
+                {
+                  type: "host",
+                  value: process.env.DOCUMENTATION_SITE_HOST, //"documentation.*.inserjeunes.beta.gouv.fr",
+                },
+              ],
+              destination: "/documentation/:path*",
+            },
           ]
         : []),
     ];

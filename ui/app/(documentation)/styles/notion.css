@@ -1,0 +1,13 @@
+.notion-page {
+  width: 100%;
+  margin-top: 0 !important;
+  padding-top: 0;
+}
+
+.notion-page a {
+  background-image: none;
+}
+
+.notion-page-icon-span {
+  display: none;
+}
