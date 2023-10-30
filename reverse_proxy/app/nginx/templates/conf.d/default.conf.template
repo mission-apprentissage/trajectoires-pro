@@ -24,19 +24,9 @@ server {
 
 server {
     listen ${SSL_PORT} ssl;
-    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME};
+    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME} documentation.${SERVER_NAME};
     include includes/server.conf;
     include includes/statistiques/location_*.conf;
-}
-
-server {
-    listen ${SSL_PORT} ssl;
-    server_name documentation.${SERVER_NAME};
-    include includes/server.conf;
-    
-    location / {
-        return 307 https://sunrise-waitress-5d6.notion.site/Centre-de-documentation-sur-les-donn-es-InserJeunes-eb8fc2c14348440cb934eef4c7ee0b4e;
-    }
 }
 
 server {
