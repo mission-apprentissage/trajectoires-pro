@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.8.0...v1.9.0) (2023-10-30)
+
+
+### Features
+
+* Filtre par académie dans la route formations ([#217](https://github.com/mission-apprentissage/trajectoires-pro/issues/217)) ([8f2aba4](https://github.com/mission-apprentissage/trajectoires-pro/commit/8f2aba4561e4dd41fc858edff33c94f1fa502bc5))
+
 # [1.8.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.7.1...v1.8.0) (2023-10-30)
 
 
