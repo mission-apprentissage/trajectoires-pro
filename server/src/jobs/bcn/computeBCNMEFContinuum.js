@@ -65,6 +65,7 @@ async function getMefFromCfd(cfd, parentMef) {
 }
 
 export async function computeBCNMEFContinuum() {
+  logger.info(`Création du continuum pour la voie scolaire (MEFSTAT11)`);
   const stats = { total: 0, updated: 0, failed: 0 };
 
   await oleoduc(

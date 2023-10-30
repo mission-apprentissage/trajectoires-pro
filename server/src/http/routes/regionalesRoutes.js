@@ -17,7 +17,7 @@ import {
 import BCNRepository from "#src/common/repositories/bcn.js";
 import { getLastMillesimesFormations, transformDisplayStat } from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
-import RegionalesRepository from "#src/common/repositories/regionales.js";
+import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import { ErrorRegionaleNotFound, ErrorNoDataForMillesime } from "#src/http/errors.js";
 
 export default () => {
@@ -62,7 +62,7 @@ export default () => {
         }
       );
 
-      const paginable = await RegionalesRepository.findAndPaginate(
+      const paginable = await RegionaleStatsRepository.findAndPaginate(
         { region: regions, millesime: millesimes, code_certification: code_certifications },
         {
           limit: items_par_page,
@@ -86,7 +86,7 @@ export default () => {
         }
       );
 
-      const paginable = await RegionalesRepository.findAndPaginate(
+      const paginable = await RegionaleStatsRepository.findAndPaginate(
         { region: region, millesime: millesimes, code_certification: code_certifications },
         {
           limit: items_par_page,
@@ -117,7 +117,7 @@ export default () => {
         const filieresStats =
           cfds && cfds.length > 0
             ? mapValues(
-                await RegionalesRepository.getFilieresStats({
+                await RegionaleStatsRepository.getFilieresStats({
                   code_formation_diplome: cfds,
                   millesime,
                   region,
@@ -137,14 +137,14 @@ export default () => {
       return sendImageOnError(
         async () => {
           const code_certification = codes_certifications[0];
-          const exist = await RegionalesRepository.exist({ region, code_certification });
+          const exist = await RegionaleStatsRepository.exist({ region, code_certification });
           if (!exist) {
             throw new ErrorRegionaleNotFound();
           }
 
-          const result = await RegionalesRepository.first({ region, code_certification, millesime });
+          const result = await RegionaleStatsRepository.first({ region, code_certification, millesime });
           if (!result) {
-            const millesimesAvailable = await RegionalesRepository.findMillesime({ region, code_certification });
+            const millesimesAvailable = await RegionaleStatsRepository.findMillesime({ region, code_certification });
             throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
           }
 

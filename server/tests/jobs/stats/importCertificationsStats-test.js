@@ -71,6 +71,7 @@ describe("importCertificationsStats", () => {
       nb_en_emploi_6_mois: 6,
       code_certification: "12345678",
       code_formation_diplome: "12345678",
+      libelle: "BAC PRO BATIMENT",
       diplome: {
         code: "4",
         libelle: "BAC",
@@ -119,6 +120,7 @@ describe("importCertificationsStats", () => {
       millesime: "2020",
       code_certification: "12345678900",
       code_formation_diplome: "12345678",
+      libelle: "BAC PRO BATIMENT",
       nb_en_emploi_6_mois: 6,
       diplome: {
         code: "4",

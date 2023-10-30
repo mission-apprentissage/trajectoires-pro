@@ -1,7 +1,7 @@
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import chai from "chai";
 
-import CertificationRepository from "#src/common/repositories/certifications.js";
+import CertificationStatsRepository from "#src/common/repositories/certificationStats.js";
 
 import { insertCFD, insertMEF, insertCertificationsStats } from "#tests/utils/fakeData.js";
 
@@ -42,7 +42,7 @@ describe("repositories", () => {
             nb_en_emploi_6_mois: 45,
           });
 
-          const result = await CertificationRepository.getFilieresStats({
+          const result = await CertificationStatsRepository.getFilieresStats({
             code_formation_diplome: "12345678",
             millesime: "2020",
           });
@@ -52,6 +52,7 @@ describe("repositories", () => {
               code_formation_diplome: "12345678",
               codes_formation_diplome: ["12345678"],
               filiere: "pro",
+              libelle: "LIBELLE",
               millesime: "2020",
               diplome: { code: "4", libelle: "BAC" },
               nb_annee_term: 50,
@@ -76,6 +77,7 @@ describe("repositories", () => {
               code_formation_diplome: "12345678",
               codes_formation_diplome: ["12345678"],
               filiere: "apprentissage",
+              libelle: "LIBELLE",
               millesime: "2020",
               diplome: { code: "4", libelle: "BAC" },
               nb_annee_term: 50,
@@ -154,7 +156,7 @@ describe("repositories", () => {
             nb_en_emploi_6_mois: 45,
           });
 
-          const result = await CertificationRepository.getFilieresStats({
+          const result = await CertificationStatsRepository.getFilieresStats({
             code_formation_diplome: ["12345678", "87654321"],
             millesime: "2020",
           });
@@ -240,7 +242,7 @@ describe("repositories", () => {
             nb_en_emploi_6_mois: 45,
           });
 
-          const result = await CertificationRepository.getFilieresStats({
+          const result = await CertificationStatsRepository.getFilieresStats({
             code_formation_diplome: ["12345678", "87654321"],
             millesime: "2020",
           });
@@ -250,6 +252,7 @@ describe("repositories", () => {
               code_formation_diplome: "87654321",
               codes_formation_diplome: ["87654321"],
               filiere: "pro",
+              libelle: "LIBELLE",
               millesime: "2020",
               nb_annee_term: 100,
               nb_en_emploi_12_mois: 50,
@@ -296,7 +299,7 @@ describe("repositories", () => {
           false
         );
 
-        const result = await CertificationRepository.getFilieresStats({
+        const result = await CertificationStatsRepository.getFilieresStats({
           code_formation_diplome: "12345678",
           millesime: "2020",
         });
@@ -307,6 +310,7 @@ describe("repositories", () => {
             code_formation_diplome: "12345678",
             codes_formation_diplome: ["12345678"],
             filiere: "pro",
+            libelle: "LIBELLE",
             millesime: "2020",
             diplome: { code: "4", libelle: "BAC" },
             nb_annee_term: 10,
@@ -331,6 +335,7 @@ describe("repositories", () => {
             code_formation_diplome: "12345678",
             codes_formation_diplome: ["12345678"],
             filiere: "apprentissage",
+            libelle: "LIBELLE",
             millesime: "2020",
             diplome: { code: "4", libelle: "BAC" },
             nb_annee_term: 10,

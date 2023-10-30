@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { merge, mergeWith, isArray } from "lodash-es";
+import { merge, mergeWith, isArray, uniq } from "lodash-es";
 import config from "#src/config.js";
 import { writeData } from "oleoduc";
 import { logger } from "#src/common/logger.js";
@@ -94,7 +94,7 @@ export async function mergeSchema(collectionName, newSchema) {
 
   const mergeCustomizer = (objValue, srcValue) => {
     if (isArray(objValue)) {
-      return objValue.concat(srcValue);
+      return uniq(objValue.concat(srcValue));
     }
   };
 

@@ -76,6 +76,7 @@ describe("importRegionalesStats", () => {
       nb_en_emploi_6_mois: 6,
       code_certification: "12345678",
       code_formation_diplome: "12345678",
+      libelle: "BAC PRO BATIMENT",
       diplome: {
         code: "4",
         libelle: "BAC",
@@ -130,6 +131,7 @@ describe("importRegionalesStats", () => {
       millesime: "2020_2021",
       code_certification: "12345678900",
       code_formation_diplome: "12345678",
+      libelle: "BAC PRO BATIMENT",
       nb_en_emploi_6_mois: 6,
       diplome: {
         code: "4",
@@ -464,6 +466,7 @@ describe("importRegionalesStats", () => {
     assert.deepStrictEqual(found, {
       code_certification: "12345678",
       code_formation_diplome: "48286940",
+      libelle: "BAC PRO BATIMENT",
       diplome: {
         code: "4",
         libelle: "BAC",
@@ -495,6 +498,7 @@ describe("importRegionalesStats", () => {
     assert.deepStrictEqual(found, {
       code_certification: "12345678",
       code_formation_diplome: "48286940",
+      libelle: "BAC PRO BATIMENT",
       diplome: {
         code: "4",
         libelle: "BAC",

@@ -8,6 +8,7 @@ import { importBCN } from "./jobs/bcn/importBCN.js";
 import { importBCNMEF } from "./jobs/bcn/importBCNMEF.js";
 import { importBCNContinuum } from "./jobs/bcn/importBCNContinuum.js";
 import { computeBCNMEFContinuum } from "./jobs/bcn/computeBCNMEFContinuum.js";
+import { importLibelle } from "./jobs/bcn/importLibelle.js";
 import { importStats } from "./jobs/stats/importStats.js";
 import { importCfdRomes } from "./jobs/romes/importCfdRomes.js";
 import { importRomes } from "./jobs/romes/importRomes.js";
@@ -26,12 +27,14 @@ cli
       const statsMef = await importBCNMEF();
       const statsContinuum = await importBCNContinuum();
       const statsMefContinuum = await computeBCNMEFContinuum();
+      const statsBCNLibelle = await importLibelle();
 
       return {
         statsBCN,
         statsMef,
         statsContinuum,
         statsMefContinuum,
+        statsBCNLibelle,
       };
     });
   });
