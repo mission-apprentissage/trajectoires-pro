@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.10.0...v1.10.1) (2023-10-31)
+
+
+### Bug Fixes
+
+* source des données dans l'export csv ([#222](https://github.com/mission-apprentissage/trajectoires-pro/issues/222)) ([8a70796](https://github.com/mission-apprentissage/trajectoires-pro/commit/8a707965a0cace5f6d6780ee68ad00e0ec2acb56))
+
 # [1.10.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.9.0...v1.10.0) (2023-10-30)
 
 
