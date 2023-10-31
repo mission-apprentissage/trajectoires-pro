@@ -5,5 +5,5 @@ import NotionPage from "./NotionPage";
 export const revalidate = 0;
 
 export default function Page() {
-  return <NotionPage pageId="eb8fc2c14348440cb934eef4c7ee0b4e" />;
+  return <NotionPage disableHeader={true} pageId="eb8fc2c14348440cb934eef4c7ee0b4e" />;
 }

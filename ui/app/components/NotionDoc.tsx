@@ -7,10 +7,12 @@ const NotionDoc = ({
   urlBasePath,
   pageTitle,
   recordMap,
+  disableHeader,
 }: {
   urlBasePath?: string;
   pageTitle: string;
   recordMap: ExtendedRecordMap;
+  disableHeader?: boolean;
 }) => {
   return (
     <Suspense>
@@ -23,7 +25,7 @@ const NotionDoc = ({
             : undefined
         }
         pageTitle={pageTitle}
-        disableHeader={true}
+        disableHeader={disableHeader}
         recordMap={recordMap}
         fullPage={true}
         darkMode={false}
