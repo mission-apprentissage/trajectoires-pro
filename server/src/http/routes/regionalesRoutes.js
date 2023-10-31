@@ -33,6 +33,8 @@ export default () => {
           code_certification: (f) => f.code_certification,
           filiere: (f) => f.filiere,
           millesime: (f) => f.millesime,
+          donnee_source_type: (f) => f.donnee_source.type,
+          donnee_source_code_certification: (f) => f.donnee_source.code_certification,
           ...getStatsAsColumns(),
         },
         mapper: (v) => (v === null ? "null" : v),
