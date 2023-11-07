@@ -1,3 +1,10 @@
+## [1.10.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.10.1...v1.10.2) (2023-11-07)
+
+
+### Bug Fixes
+
+* augmente l'usage de la mémoire pour l'ui ([#223](https://github.com/mission-apprentissage/trajectoires-pro/issues/223)) ([1e8c319](https://github.com/mission-apprentissage/trajectoires-pro/commit/1e8c3196be357de569cecb5286c3b2e955d34dd6))
+
 ## [1.10.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.10.0...v1.10.1) (2023-10-31)
 
 
