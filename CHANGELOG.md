@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.10.2...v1.11.0) (2023-11-08)
+
+
+### Features
+
+* ajout de plausible ([#224](https://github.com/mission-apprentissage/trajectoires-pro/issues/224)) ([c4c89ea](https://github.com/mission-apprentissage/trajectoires-pro/commit/c4c89ea848bc4aa0690a624412128300177d4828))
+
 ## [1.10.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.10.1...v1.10.2) (2023-11-07)
 
 
