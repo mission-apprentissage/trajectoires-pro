@@ -121,7 +121,7 @@ export async function removeFromSchema(collectionName, schemaToRemove) {
   const newSchema = {
     ...oldSchema,
     properties: omit(oldSchema.properties, Object.keys(schemaToRemove.properties)),
-    required: without(oldSchema.required || [], ...schemaToRemove.required),
+    required: without(oldSchema.required || [], ...(schemaToRemove.required || [])),
   };
 
   return db.command({

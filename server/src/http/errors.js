@@ -27,3 +27,9 @@ ErrorRegionaleNotFound.prototype = Boom.notFound("Pas de données disponibles");
 
 export function ErrorNoDataAvailable() {}
 ErrorNoDataAvailable.prototype = Boom.notFound("Données non disponibles");
+
+export function ErrorNotAuthorized() {}
+ErrorNotAuthorized.prototype = Boom.unauthorized("Not authorized");
+
+export function ErrorWrongCredentials() {}
+ErrorWrongCredentials.prototype = Boom.unauthorized("Votre nom d'utilisateur ou votre mot de passe est invalide");

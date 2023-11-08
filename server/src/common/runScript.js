@@ -46,16 +46,22 @@ const exit = async (scriptError) => {
   }, 250);
 };
 
-async function runScript(job) {
+const wrapTimer = async (cb) => {
+  const timer = createTimer();
+  timer.start();
+  const results = await cb();
+  timer.stop(results);
+};
+
+async function runScript(job, options = { withTimer: true }) {
+  const withTimer = options.withTimer ?? true;
   try {
-    const timer = createTimer();
-    timer.start();
+    const cb = async () => {
+      await connectToMongodb();
+      return await job();
+    };
 
-    await connectToMongodb();
-
-    const results = await job();
-
-    timer.stop(results);
+    withTimer ? await wrapTimer(cb) : await cb();
     await exit();
   } catch (e) {
     await exit(e);

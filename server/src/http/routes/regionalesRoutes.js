@@ -2,11 +2,10 @@ import express from "express";
 import Joi from "joi";
 import { mapValues } from "lodash-es";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
-
+import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
-import { checkApiKey } from "#src/http/middlewares/authMiddleware.js";
 import {
   addCsvHeaders,
   addJsonHeaders,
@@ -54,7 +53,7 @@ export default () => {
 
   router.get(
     "/api/inserjeunes/regionales.:ext?",
-    checkApiKey(),
+    authMiddleware("private"),
     tryCatch(async (req, res) => {
       const { millesimes, code_certifications, regions, page, items_par_page, ...rest } = await validate(
         { ...req.query, ...req.params },
@@ -78,7 +77,7 @@ export default () => {
 
   router.get(
     "/api/inserjeunes/regionales/:region.:ext?",
-    checkApiKey(),
+    authMiddleware("private"),
     tryCatch(async (req, res) => {
       const { region, millesimes, code_certifications, page, items_par_page, ...rest } = await validate(
         { ...req.query, ...req.params },
@@ -102,6 +101,7 @@ export default () => {
 
   router.get(
     "/api/inserjeunes/regionales/:region/certifications/:codes_certifications.:ext?",
+    authMiddleware("public"),
     tryCatch(async (req, res) => {
       const { region, codes_certifications, millesime, vue, ...options } = await validate(
         { ...req.params, ...req.query },

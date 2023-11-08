@@ -1,9 +1,9 @@
 import express from "express";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
+import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import Joi from "joi";
 import * as validators from "#src/http/utils/validators.js";
 import { arrayOf, validate } from "#src/http/utils/validators.js";
-import { checkApiKey } from "#src/http/middlewares/authMiddleware.js";
 import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src/http/utils/responseUtils.js";
 import { formatMillesime } from "#src/http/utils/formatters.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
@@ -18,7 +18,7 @@ export default () => {
 
   router.get(
     "/api/inserjeunes/formations.:ext?",
-    checkApiKey(),
+    authMiddleware("private"),
     tryCatch(async (req, res) => {
       const { uais, regions, academies, millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
@@ -79,6 +79,7 @@ export default () => {
 
   router.get(
     "/api/inserjeunes/formations/:uai-:code_certification.:ext?",
+    authMiddleware("public"),
     tryCatch(async (req, res) => {
       const { uai, code_certification, millesime, ...options } = await validate(
         { ...req.params, ...req.query },

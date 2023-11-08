@@ -32,6 +32,7 @@ export function logMiddleware() {
         const data = {
           type: "http",
           elapsedTime: new Date().getTime() - startTime,
+          user: req.user ? req.user.username : null,
           request: {
             requestId: req.requestId,
             method: req.method,
