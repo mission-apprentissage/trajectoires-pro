@@ -1,4 +1,5 @@
 import { NextAppDirEmotionCacheProvider } from "tss-react/next";
+import PlausibleProvider from "next-plausible";
 import { DsfrHead } from "@codegouvfr/react-dsfr/next-appdir/DsfrHead";
 import { DsfrProvider } from "@codegouvfr/react-dsfr/next-appdir/DsfrProvider";
 import { getHtmlAttributes } from "@codegouvfr/react-dsfr/next-appdir/getHtmlAttributes";
@@ -16,35 +17,37 @@ export function Layout({ children }: { children: JSX.Element }) {
     <DsfrProvider>
       <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
         <MuiDsfrThemeProvider>
-          <Header
-            brandTop={<>Exposition - Statistique</>}
-            serviceTitle="Exposition - Statistique"
-            homeLinkProps={{
-              href: "/",
-              title: "Exposition - Statistique",
-            }}
-            quickAccessItems={[]}
-          />
-          <div
-            style={{
-              flex: 1,
-              width: "100%",
-              margin: "auto",
-              maxWidth: 1200,
-              ...fr.spacing("padding", {
-                topBottom: "10v",
-              }),
-            }}
-          >
-            <Container variant="content" maxWidth={false}>
-              <Typograhpy variant="h3">{"Statistiques du projet Exposition d'InserJeunes"}</Typograhpy>
-              <Typograhpy variant="body1">{""}</Typograhpy>
+          <PlausibleProvider domain={process.env.STATISTIQUES_SITE_HOST || ""}>
+            <Header
+              brandTop={<>Exposition - Statistique</>}
+              serviceTitle="Exposition - Statistique"
+              homeLinkProps={{
+                href: "/",
+                title: "Exposition - Statistique",
+              }}
+              quickAccessItems={[]}
+            />
+            <div
+              style={{
+                flex: 1,
+                width: "100%",
+                margin: "auto",
+                maxWidth: 1200,
+                ...fr.spacing("padding", {
+                  topBottom: "10v",
+                }),
+              }}
+            >
+              <Container variant="content" maxWidth={false}>
+                <Typograhpy variant="h3">{"Statistiques du projet Exposition d'InserJeunes"}</Typograhpy>
+                <Typograhpy variant="body1">{""}</Typograhpy>
 
-              <Container variant="subContent" maxWidth={false}>
-                {children}
+                <Container variant="subContent" maxWidth={false}>
+                  {children}
+                </Container>
               </Container>
-            </Container>
-          </div>
+            </div>
+          </PlausibleProvider>
         </MuiDsfrThemeProvider>
       </NextAppDirEmotionCacheProvider>
     </DsfrProvider>
