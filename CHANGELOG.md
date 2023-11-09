@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.11.0...v1.12.0) (2023-11-09)
+
+
+### Features
+
+* ajout des autorisations par utilisateur ([#225](https://github.com/mission-apprentissage/trajectoires-pro/issues/225)) ([e6b8947](https://github.com/mission-apprentissage/trajectoires-pro/commit/e6b89472ad15bf546b8cd316d0ba8db366b10b4b))
+
 # [1.11.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.10.2...v1.11.0) (2023-11-08)
 
 
