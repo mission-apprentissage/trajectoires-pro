@@ -7,6 +7,7 @@ export function indexes() {
     [{ time: 1, consumer: 1, url: 1 }, { unique: true }],
     [{ time: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 365 }], // expires after 1y
     [{ consumer: 1 }],
+    [{ user: 1 }],
     [{ url: 1 }],
     [{ extension: 1 }],
     [{ uai: 1 }],
@@ -22,6 +23,7 @@ export function schema() {
       _id: objectId(),
       time: date(),
       consumer: string(),
+      user: string(),
       url: string(),
       extension: string(),
       uai: string(),

@@ -28,17 +28,20 @@ export function buildMetrics(req) {
     ...(req.params?.region ? [req.params?.region] : []),
   ];
 
-  return { time, consumer, url, extension, uai, code_certification, codes_certifications, regions };
+  const user = req.user ? req.user.username : null;
+
+  return { time, consumer, url, extension, uai, code_certification, codes_certifications, regions, user };
 }
 
 export const metricsMiddleware = async (req) => {
   try {
-    const { time, consumer, url, extension, uai, code_certification, codes_certifications, regions } =
+    const { time, consumer, url, extension, uai, code_certification, codes_certifications, regions, user } =
       buildMetrics(req);
     await metrics().insertOne({
       time,
       consumer,
       url,
+      ...(user ? { user } : {}),
       ...(extension ? { extension } : {}),
       ...(uai ? { uai } : {}),
       ...(code_certification ? { code_certification } : {}),

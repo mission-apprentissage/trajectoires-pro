@@ -1,5 +1,6 @@
+import { merge } from "lodash-es";
 import { omitNil } from "#src/common/utils/objectUtils.js";
-import { dbCollection } from "#src/common/db/mongodb.js";
+import { dbCollection, upsert } from "#src/common/db/mongodb.js";
 import { $field, $sumOfArray } from "#src/common/utils/mongodbUtils.js";
 import * as Stats from "#src/common/stats.js";
 
@@ -32,6 +33,26 @@ export class MongoRepository extends Repository {
 
       return { ...query, [parameterName]: parameters[parameterName] };
     }, {});
+  }
+
+  async create(data) {
+    return await dbCollection(this.getCollection()).insertOne({
+      ...data,
+      _meta: merge({}, { created_on: new Date(), updated_on: new Date() }, data._meta),
+    });
+  }
+
+  async deleteOne(query) {
+    const queryPrepared = this.prepare(query);
+    return await dbCollection(this.getCollection()).deleteOne(queryPrepared);
+  }
+
+  async upsert(query, data, onInsertData = null) {
+    const queryPrepared = this.prepare(query);
+    return await upsert(dbCollection(this.getCollection()), queryPrepared, {
+      ...(onInsertData ? { $setOnInsert: onInsertData } : {}),
+      $set: data,
+    });
   }
 
   async findAll() {

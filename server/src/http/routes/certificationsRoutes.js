@@ -3,9 +3,9 @@ import { mapValues } from "lodash-es";
 import Joi from "joi";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
+import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import * as validators from "#src/http/utils/validators.js";
 import { arrayOf, validate } from "#src/http/utils/validators.js";
-import { checkApiKey } from "#src/http/middlewares/authMiddleware.js";
 import { formatMillesime } from "#src/http/utils/formatters.js";
 import {
   addCsvHeaders,
@@ -25,7 +25,7 @@ export default () => {
 
   router.get(
     "/api/inserjeunes/certifications.:ext?",
-    checkApiKey(),
+    authMiddleware("private"),
     tryCatch(async (req, res) => {
       const { millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
@@ -72,6 +72,7 @@ export default () => {
 
   router.get(
     "/api/inserjeunes/certifications/:codes_certifications.:ext?",
+    authMiddleware("public"),
     tryCatch(async (req, res) => {
       const { codes_certifications, millesime, vue, ...options } = await validate(
         { ...req.params, ...req.query },

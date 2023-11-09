@@ -4,6 +4,7 @@ import path from "path";
 import swagger from "swagger-ui-express";
 import { watch } from "fs";
 import { getDirname } from "#src/common/utils/esmUtils.js";
+import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 
 const yaml = path.join(getDirname(import.meta.url), "./swagger.yml");
 
@@ -26,7 +27,7 @@ export default () => {
   // eslint-disable-next-line new-cap
   const router = express.Router();
 
-  router.use("/api/doc", swagger.serve, async (req, res) => {
+  router.use("/api/doc", authMiddleware("public"), swagger.serve, async (req, res) => {
     res.send(await asyncHtml);
   });
 

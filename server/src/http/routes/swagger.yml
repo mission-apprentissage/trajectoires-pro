@@ -8,10 +8,31 @@ info:
   version: 1.0.0
 
 paths:
+  /api/inserjeunes/auth/login:
+    post:
+      description: |
+        Permet de s'authentifier afin de récupérer un JSON Web Token qui permet l'accès aux routes demandant une autorisation.
+        
+        Le token expire après 1 jour.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        200:
+          $ref: "#/components/responses/LoginResponse"
+        401:
+          $ref: "#/components/responses/401"
   /api/inserjeunes/certifications:
     get:
       description: Rechercher des statistiques de certifications
       security:
+        - BearerAuth: [ ]
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/millesimes"
@@ -32,6 +53,7 @@ paths:
     get:
       description: Exporter des statistiques de certifications
       security:
+        - BearerAuth: [ ]
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/millesimes"
@@ -127,6 +149,7 @@ paths:
     get:
       description: Rechercher des statistiques régionales
       security:
+        - BearerAuth: [ ]
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/regions"
@@ -148,6 +171,7 @@ paths:
     get:
       description: Exporter des statistiques régionales
       security:
+        - BearerAuth: [ ]
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/regions"
@@ -170,6 +194,7 @@ paths:
     get:
       description: Rechercher des statistiques d'une région
       security:
+        - BearerAuth: [ ]
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/code_region"
@@ -191,6 +216,7 @@ paths:
     get:
       description: Exporter des statistiques d'une région
       security:
+        - BearerAuth: [ ]
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/code_region"
@@ -289,6 +315,7 @@ paths:
     get:
       description: Rechercher des statistiques de formations
       security:
+        - BearerAuth: [ ]
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/uais"
@@ -312,6 +339,7 @@ paths:
     get:
       description: Exporter des statistiques de formations
       security:
+        - BearerAuth: [ ]
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/ext"
@@ -1015,6 +1043,17 @@ components:
           nullable: true
         _meta:
           $ref: "#/components/schemas/Meta"
+    Login:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
 
   responses:
     '400':
@@ -1210,6 +1249,16 @@ components:
             type: string
             format: xml
 
+    LoginResponse:
+      description: Un json content un Token
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+
   examples:
     MillesimeNotFoundExample:
       value: |
@@ -1230,3 +1279,6 @@ components:
       type: apiKey
       in: query
       name: apiKey
+    BearerAuth:
+      type: http
+      scheme: bearer

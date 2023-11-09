@@ -5,6 +5,7 @@ import {
   insertCertificationsStats,
   insertCFD,
   insertRegionalesStats,
+  insertUser,
 } from "#tests/utils/fakeData.js";
 import { metrics } from "#src/common/db/collections/collections.js";
 import config from "#src/config.js";
@@ -233,6 +234,46 @@ describe("metricsMiddleware", () => {
       code_certification: "1022105",
       codes_certifications: ["1022105"],
       uai: "0751234J",
+    });
+  });
+
+  it("vérifie que l'on remonte le username", async () => {
+    const { httpClient } = await startServer();
+
+    await insertUser();
+    const token = await httpClient.post(`/api/inserjeunes/auth/login`, "username=test&password=Password1234!");
+
+    await httpClient.get("/api/inserjeunes/formations", {
+      headers: {
+        Authorization: `Bearer ${token.data.token}`,
+      },
+    });
+
+    await httpClient.get("/api/inserjeunes/formations/0751234J-1022105.svg", {
+      headers: {
+        Authorization: `Bearer ${token.data.token}`,
+      },
+    });
+
+    const results = await metrics().find({}).sort({ time: 1 }).toArray();
+    assert.strictEqual(results.length, 3);
+    assert.deepInclude(results[0], {
+      consumer: "127.0.0.1",
+      url: "/api/inserjeunes/auth/login",
+    });
+    assert.deepInclude(results[1], {
+      consumer: "127.0.0.1",
+      url: "/api/inserjeunes/formations",
+      user: "test",
+    });
+    assert.deepInclude(results[2], {
+      consumer: "127.0.0.1",
+      extension: "svg",
+      url: "/api/inserjeunes/formations/0751234J-1022105.svg",
+      code_certification: "1022105",
+      codes_certifications: ["1022105"],
+      uai: "0751234J",
+      user: "test",
     });
   });
 });

@@ -1,10 +1,10 @@
 import express from "express";
 import { omit } from "lodash-es";
 import { compose, transformIntoCSV, transformIntoJSON, transformData } from "oleoduc";
+import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
-import { checkApiKey } from "#src/http/middlewares/authMiddleware.js";
 import { addCsvHeaders, addJsonHeaders } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
 import moment from "moment-timezone";
@@ -14,7 +14,7 @@ export default () => {
 
   router.get(
     "/api/inserjeunes/bcn.:ext?",
-    checkApiKey(),
+    authMiddleware("private"),
     tryCatch(async (req, res) => {
       const { page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },

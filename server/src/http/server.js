@@ -12,6 +12,7 @@ import certificationsRoutes from "./routes/certificationsRoutes.js";
 import regionalesRoutes from "./routes/regionalesRoutes.js";
 import formationsRoutes from "./routes/formationsRoutes.js";
 import bcnRoutes from "./routes/bcnRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import swaggerRoutes from "./routes/swaggerRoutes.js";
 import { packageJson } from "#src/common/utils/esmUtils.js";
 
@@ -19,6 +20,7 @@ export default async () => {
   const app = express();
 
   app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(mongoSanitize({ replaceWith: "_" }));
   app.use(corsMiddleware());
   app.use(logMiddleware());
@@ -27,6 +29,7 @@ export default async () => {
   app.use(formationsRoutes());
   app.use(bcnRoutes());
   app.use(swaggerRoutes());
+  app.use(authRoutes());
 
   app.get(
     "/api",
