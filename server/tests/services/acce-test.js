@@ -7,7 +7,7 @@ import * as ACCE from "#src/services/acce.js";
 
 describe("acce", () => {
   it("Retourne un stream d'établissements", async () => {
-    config.acce.files.etablissements = path.join(
+    config.data.files.acceEtablissements = path.join(
       getDirname(import.meta.url),
       "../fixtures/files/acce/acce_etablissements.csv"
     );

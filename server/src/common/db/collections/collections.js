@@ -9,8 +9,10 @@ import * as cfdRomesDescriptor from "./cfdRomes.js";
 import * as romeDescriptor from "./rome.js";
 import * as romeMetierDescriptor from "./romeMetier.js";
 import * as cfdMetiersDescriptor from "./cfdMetiers.js";
+import * as metierDepartementalesDescriptor from "./metierDepartementales.js";
 import * as acceEtablissementsDescriptor from "./acceEtablissements.js";
 import * as usersDescriptor from "./users.js";
+import * as nafsDescriptor from "./nafs.js";
 import { dbCollection } from "#src/common/db/mongodb.js";
 
 export function getCollectionDescriptors() {
@@ -26,8 +28,10 @@ export function getCollectionDescriptors() {
     romeDescriptor,
     romeMetierDescriptor,
     cfdMetiersDescriptor,
+    metierDepartementalesDescriptor,
     acceEtablissementsDescriptor,
     usersDescriptor,
+    nafsDescriptor,
   ];
 }
 
@@ -81,4 +85,12 @@ export function acceEtablissements() {
 
 export function users() {
   return dbCollection(usersDescriptor.name);
+}
+
+export function nafs() {
+  return dbCollection(nafsDescriptor.name);
+}
+
+export function metierDepartementales() {
+  return dbCollection(metierDepartementalesDescriptor.name);
 }

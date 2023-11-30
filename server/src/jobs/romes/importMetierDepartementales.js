@@ -1,11 +1,13 @@
-import { oleoduc, flattenArray, transformData, writeData } from "oleoduc";
+import { oleoduc, flattenArray, transformData, writeData, filterData } from "oleoduc";
 import { upsert } from "#src/common/db/mongodb.js";
-import { romeMetier } from "#src/common/db/collections/collections.js";
+import { metierDepartementales } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { merge } from "lodash-es";
 import { MetierAvenirApi } from "#src/services/diagoriente/MetierAvenirApi.js";
 import { Readable } from "stream";
 import { omitNil } from "#src/common/utils/objectUtils.js";
+import { getDepartements } from "#src/services/regions.js";
+import RomeMetierRepository from "#src/common/repositories/romeMetier.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -37,7 +39,7 @@ function normalizeAppelations(data) {
   };
 }
 
-export async function importRomeMetiers(options = {}) {
+export async function importMetierDepartementales(options = {}) {
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
 
   const sizeByPage = 50;
@@ -51,19 +53,50 @@ export async function importRomeMetiers(options = {}) {
     return null; //ignore chunk
   }
 
-  const getPages = async () => {
-    const result = await diagoriente.appellations({ page: 1, size: 1 });
+  const getPages = async (departement, code_ogr) => {
+    const result = await diagoriente.appellationsOgr({ departement, code_ogr, page: 1, size: 1 });
     const nbPages = Math.ceil(result.resultats / sizeByPage);
     return new Array(nbPages).fill(0).map((v, i) => i + 1);
   };
 
+  const getCodesOgr = async () => {
+    let codesOgr = [];
+    await oleoduc(
+      await RomeMetierRepository.findAll({ sort: { code_ogr: 1 } }),
+      writeData((metier) => {
+        metier.code_ogr && codesOgr.push(metier.code_ogr);
+      })
+    );
+    return codesOgr;
+  };
+  const codesOgr = await getCodesOgr();
+
   await oleoduc(
-    Readable.from(await getPages()),
+    Readable.from(codesOgr.slice(0, 10)),
+    transformData((codeOgr) => {
+      return getDepartements().map((departement) => {
+        const code = departement.code.substring(0, 2);
+        return {
+          departement: code,
+          code_ogr: codeOgr,
+        };
+      });
+    }),
+    flattenArray(),
+    transformData(async (data) => {
+      const pages = await getPages(data.departement, data.code_ogr).catch((e) => handleError(e, { data }));
+      if (!pages) {
+        return [];
+      }
+      return pages.map((page) => ({ ...data, page }));
+    }),
+    flattenArray(),
+    filterData((data) => data.page),
     transformData(
-      async (page) => {
+      async ({ departement, code_ogr, page }) => {
         const result = await diagoriente
-          .appellations({ page: page, size: sizeByPage })
-          .catch((e) => handleError(e, { page }));
+          .appellationsOgr({ departement: departement, code_ogr, page: page, size: sizeByPage })
+          .catch((e) => handleError(e, { page, departement, code_ogr }));
         return result.data;
       },
       { parallel: 5 }
@@ -76,8 +109,8 @@ export async function importRomeMetiers(options = {}) {
 
         try {
           const res = await upsert(
-            romeMetier(),
-            { code_rome: data.code_rome, title: data.libelle_appellation },
+            metierDepartementales(),
+            { code_ogr: `${data.code_ogr_appellation}`, code_naf: `${data.code_naf}`, departement: data.departement },
             {
               $setOnInsert: {
                 "_meta.date_import": new Date(),
@@ -95,7 +128,10 @@ export async function importRomeMetiers(options = {}) {
                 isTransitionNumerique: data.transition_numerique,
                 isTransitionDemographiqu: data.transition_demographique,
                 isMetierArt: data.metier_art,
-                code_ogr: `${data.code_ogr_appellation || ""}`,
+                code_ogr: `${data.code_ogr_appellation}`,
+                code_naf: `${data.code_naf}`,
+                departement: data.departement,
+                indiceTensionRecrutement: data.indice_tension_recrutement,
               }),
             }
           );

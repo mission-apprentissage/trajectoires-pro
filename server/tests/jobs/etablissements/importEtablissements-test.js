@@ -17,7 +17,7 @@ describe("importEtablissements", () => {
     MockDate.set("2023-01-01");
 
     // Use the fixture by default
-    config.acce.files.etablissements = path.join(
+    config.data.files.acceEtablissements = path.join(
       getDirname(import.meta.url),
       "../../fixtures/files/acce/acce_etablissements.csv"
     );

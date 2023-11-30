@@ -55,8 +55,9 @@ export class MongoRepository extends Repository {
     });
   }
 
-  async findAll() {
-    return dbCollection(this.getCollection()).find({}).stream();
+  async findAll(options = {}) {
+    const sort = options.sort || {};
+    return dbCollection(this.getCollection()).find({}).sort(sort).stream();
   }
 
   // eslint-disable-next-line no-unused-vars

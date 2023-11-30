@@ -46,6 +46,12 @@ const config = {
       clientSecret: env.get("DIAGORIENTE_CLIENT_SECRET").required().asString(),
       grandType: env.get("DIAGORIENTE_GRANT_TYPE").default("client_credentials").asString(),
     },
+    metierAvenir: {
+      baseUrl: env
+        .get("DIAGORIENTE_BASE_URL")
+        .default("https://metier-avenir.staging.analytics.diagotech.dev")
+        .asString(),
+    },
   },
   datagouv: {
     api: {
@@ -55,9 +61,10 @@ const config = {
       rome: "1c893376-8476-4262-9a0e-8df519883e1e",
     },
   },
-  acce: {
+  data: {
     files: {
-      etablissements: path.join(getDirname(import.meta.url), "../data/", "acce_etablissements.csv"),
+      acceEtablissements: path.join(getDirname(import.meta.url), "../data/", "acce_etablissements.csv"),
+      nafs: path.join(getDirname(import.meta.url), "../data/", "nafs.json"),
     },
   },
   millesimes: {

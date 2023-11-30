@@ -1,7 +1,7 @@
 import { dbCollection } from "#src/common/db/mongodb.js";
 import * as CfdRomes from "#src/common/db/collections/cfdRomes.js";
 import { compose, transformData, filterData } from "oleoduc";
-import { pick } from "lodash-es";
+import { pick, omit } from "lodash-es";
 
 export async function getCfdMetiers() {
   const request = await dbCollection(CfdRomes.name)
@@ -31,7 +31,7 @@ export async function getCfdMetiers() {
     transformData((data) => {
       return {
         ...data,
-        metiers: data.metiers.map((metier) => pick(metier, "code_rome", "title", "isMetierAvenir")),
+        metiers: data.metiers.map((metier) => omit(metier, ["_id", "_meta"])),
       };
     })
   );

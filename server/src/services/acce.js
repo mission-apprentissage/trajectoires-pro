@@ -6,7 +6,7 @@ import config from "#src/config.js";
 
 export function etablissements(filePath = null) {
   const stream = compose(
-    createReadStream(filePath || config.acce.files.etablissements),
+    createReadStream(filePath || config.data.files.acceEtablissements),
     iconv.decodeStream("iso-8859-1")
   );
   return compose(stream, parseCsv({ delimiter: ";" }));

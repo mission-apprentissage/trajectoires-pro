@@ -20,6 +20,8 @@ import { backfillMetrics } from "./jobs/backfillMetrics.js";
 import { asArray } from "./common/utils/stringUtils.js";
 import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
 import * as UserJob from "./jobs/user/user.js";
+import { importNafs } from "./jobs/romes/importNafs.js";
+import { importMetierDepartementales } from "./jobs/romes/importMetierDepartementales.js";
 
 cli
   .command("importBCN")
@@ -47,16 +49,20 @@ cli
   .description("Import les codes ROME depuis Data.gouv et Diagoriente")
   .action(() => {
     runScript(async () => {
+      const statsNafs = await importNafs();
       const statsRomes = await importRomes();
       const statsCfdRomes = await importCfdRomes();
       const statsRomeMetiers = await importRomeMetiers();
       const statsCfdMetiers = await importCfdMetiers();
+      const statsMetierDepartementales = await importMetierDepartementales();
 
       return {
+        statsNafs,
         statsRomes,
         statsCfdRomes,
         statsRomeMetiers,
         statsCfdMetiers,
+        statsMetierDepartementales,
       };
     });
   });

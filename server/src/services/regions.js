@@ -344,6 +344,10 @@ export function getAcademies() {
   return flatMap(REGIONS.map((region) => region.academies));
 }
 
+export function getDepartements() {
+  return flatMap(REGIONS.map((region) => region.departements));
+}
+
 export function findRegionByCodePostal(code) {
   const departement = code.match(/^(97|98)/) ? code.substring(0, 3) : code.substring(0, 2);
   return REGIONS.find((region) => region.departements.find((d) => d.code == departement)) || null;
