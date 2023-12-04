@@ -72,7 +72,7 @@ export async function importMetierDepartementales(options = {}) {
   const codesOgr = await getCodesOgr();
 
   await oleoduc(
-    Readable.from(codesOgr.slice(0, 10)),
+    Readable.from(codesOgr),
     transformData((codeOgr) => {
       return getDepartements().map((departement) => {
         const code = departement.code.substring(0, 2);
@@ -126,7 +126,7 @@ export async function importMetierDepartementales(options = {}) {
                 isMetierEnTension: data.metier_en_tension,
                 isTransitionEcologique: data.transition_ecologique,
                 isTransitionNumerique: data.transition_numerique,
-                isTransitionDemographiqu: data.transition_demographique,
+                isTransitionDemographique: data.transition_demographique,
                 isMetierArt: data.metier_art,
                 code_ogr: `${data.code_ogr_appellation}`,
                 code_naf: `${data.code_naf}`,
