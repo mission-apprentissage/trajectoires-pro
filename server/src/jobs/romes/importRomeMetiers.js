@@ -93,7 +93,7 @@ export async function importRomeMetiers(options = {}) {
                 isMetierEnTension: data.metier_en_tension,
                 isTransitionEcologique: data.transition_ecologique,
                 isTransitionNumerique: data.transition_numerique,
-                isTransitionDemographiqu: data.transition_demographique,
+                isTransitionDemographique: data.transition_demographique,
                 isMetierArt: data.metier_art,
                 code_ogr: `${data.code_ogr_appellation || ""}`,
               }),

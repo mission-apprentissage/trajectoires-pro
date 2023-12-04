@@ -8,7 +8,7 @@ const schema = {
     isMetierEnTension: boolean(),
     isTransitionEcologique: boolean(),
     isTransitionNumerique: boolean(),
-    isTransitionDemographiqu: boolean(),
+    isTransitionDemographique: boolean(),
     isMetierArt: boolean(),
     code_ogr: string(),
   },
