@@ -108,8 +108,8 @@ describe("importBCN", () => {
     let stats = await importBCN(
       getBcnTables({
         V_FORMATION_DIPLOME:
-          createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|LIBELLE_COURT|LIBELLE_STAT_33|LIBELLE_LONG_200|DATE_FERMETURE|DATE_OUVERTURE
-40023203|403|BAC PRO|BATIMENT|BAC PRO BATIMENT|31/08/2022|31/07/2022`),
+          createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|GROUPE_SPECIALITE|LETTRE_SPECIALITE|LIBELLE_COURT|LIBELLE_STAT_33|LIBELLE_LONG_200|DATE_FERMETURE|DATE_OUVERTURE
+40023203|403|4|T|BAC PRO|BATIMENT|BAC PRO BATIMENT|31/08/2022|31/07/2022`),
       })
     );
 
@@ -128,6 +128,9 @@ describe("importBCN", () => {
       },
       ancien_diplome: [],
       nouveau_diplome: [],
+      niveauFormationDiplome: "403",
+      groupeSpecialite: "4",
+      lettreSpecialite: "T",
       _meta: {
         created_on: new Date("2023-01-01T00:00:00.000Z"),
         updated_on: new Date("2023-01-01T00:00:00.000Z"),

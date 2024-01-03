@@ -20,7 +20,11 @@ export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "taux_emploi_18_mois",
   "taux_emploi_12_mois",
   "taux_emploi_6_mois",
+  "DEVENIR_part_autre_situation_6_mois",
+  "DEVENIR_part_en_emploi_6_mois",
+  "DEVENIR_part_poursuite_etudes",
 ];
+
 export const CUSTOM_STATS_NAMES = [
   "taux_en_formation",
   "taux_en_emploi_24_mois",
