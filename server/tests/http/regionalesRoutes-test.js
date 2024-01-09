@@ -23,7 +23,7 @@ describe("regionalesRoutes", () => {
       const { httpClient } = await startServer();
       await insertRegionalesStats({
         region: { code: "11", nom: "Île-de-France" },
-        millesime: "2020",
+        millesime: "2018_2019",
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         filiere: "apprentissage",
@@ -57,7 +57,7 @@ describe("regionalesRoutes", () => {
         regionales: [
           {
             region: { code: "11", nom: "Île-de-France" },
-            millesime: "2020",
+            millesime: "2018_2019",
             code_certification: "12345678",
             code_formation_diplome: "12345678",
             libelle: "LIBELLE",
@@ -128,8 +128,8 @@ describe("regionalesRoutes", () => {
 
     it("Vérifie qu'on peut obtenir les stats régionales pour une région", async () => {
       const { httpClient } = await startServer();
-      await insertRegionalesStats({ millesime: "2018" });
-      await insertRegionalesStats({ millesime: "2020", region: { code: "24", nom: "Centre-Val de Loire" } });
+      await insertRegionalesStats({ millesime: "2018_2019" });
+      await insertRegionalesStats({ millesime: "2018_2019", region: { code: "24", nom: "Centre-Val de Loire" } });
 
       const response = await httpClient.get(`/api/inserjeunes/regionales?regions=11`, {
         headers: {
@@ -139,7 +139,7 @@ describe("regionalesRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.strictEqual(response.data.pagination.total, 1);
-      assert.strictEqual(response.data.regionales[0].millesime, "2018");
+      assert.strictEqual(response.data.regionales[0].millesime, "2018_2019");
     });
 
     it("Vérifie qu'on peut obtenir les stats régionales pour un millesime", async () => {
@@ -228,7 +228,7 @@ describe("regionalesRoutes", () => {
       const { httpClient } = await startServer();
       await insertRegionalesStats({
         region: { code: "11", nom: "Île-de-France" },
-        millesime: "2020",
+        millesime: "2018_2019",
         code_certification: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 19,
@@ -261,7 +261,7 @@ describe("regionalesRoutes", () => {
       assert.deepStrictEqual(
         response.data,
         `region;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-Île-de-France;12345678;apprentissage;2020;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
+Île-de-France;12345678;apprentissage;2018_2019;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
 `
       );
     });
@@ -270,7 +270,7 @@ describe("regionalesRoutes", () => {
       const { httpClient } = await startServer();
       await insertRegionalesStats({
         region: { code: "11", nom: "Île-de-France" },
-        millesime: "2020",
+        millesime: "2018_2019",
         code_certification: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 100,
@@ -303,7 +303,7 @@ describe("regionalesRoutes", () => {
       assert.deepStrictEqual(
         response.data,
         `region;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-Île-de-France;12345678;apprentissage;2020;self;12345678;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
+Île-de-France;12345678;apprentissage;2018_2019;self;12345678;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
 `
       );
     });
@@ -411,7 +411,7 @@ describe("regionalesRoutes", () => {
       const { httpClient } = await startServer();
       await insertRegionalesStats({
         region: { code: "11", nom: "Île-de-France" },
-        millesime: "2020",
+        millesime: "2018_2019",
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         filiere: "apprentissage",
@@ -445,7 +445,7 @@ describe("regionalesRoutes", () => {
         regionales: [
           {
             region: { code: "11", nom: "Île-de-France" },
-            millesime: "2020",
+            millesime: "2018_2019",
             code_certification: "12345678",
             code_formation_diplome: "12345678",
             libelle: "LIBELLE",
@@ -487,7 +487,7 @@ describe("regionalesRoutes", () => {
       const { httpClient } = await startServer();
       await insertRegionalesStats({
         region: { code: "11", nom: "Île-de-France" },
-        millesime: "2020",
+        millesime: "2018_2019",
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         filiere: "apprentissage",
@@ -521,7 +521,7 @@ describe("regionalesRoutes", () => {
         regionales: [
           {
             region: { code: "11", nom: "Île-de-France" },
-            millesime: "2020",
+            millesime: "2018_2019",
             code_certification: "12345678",
             code_formation_diplome: "12345678",
             libelle: "LIBELLE",

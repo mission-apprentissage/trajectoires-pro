@@ -113,15 +113,26 @@ describe("certificationsRoutes", () => {
       await insertCertificationsStats({ filiere: "apprentissage" });
       await insertCertificationsStats({ filiere: "pro" });
 
-      const response = await httpClient.get(`/api/inserjeunes/certifications?items_par_page=1&page=2`, {
+      const responsePage1 = await httpClient.get(`/api/inserjeunes/certifications?items_par_page=1&page=1`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+      const responsePage2 = await httpClient.get(`/api/inserjeunes/certifications?items_par_page=1&page=2`, {
         headers: {
           ...getAuthHeaders(),
         },
       });
 
-      assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.data.certifications.length, 1);
-      assert.strictEqual(response.data.certifications[0].filiere, "pro");
+      assert.strictEqual(responsePage1.status, 200);
+      assert.strictEqual(responsePage1.data.certifications.length, 1);
+      assert.strictEqual(responsePage2.status, 200);
+      assert.strictEqual(responsePage2.data.certifications.length, 1);
+
+      assert.deepStrictEqual(
+        [responsePage1.data.certifications[0].filiere, responsePage2.data.certifications[0].filiere].sort(),
+        ["apprentissage", "pro"]
+      );
     });
 
     it("Vérifie qu'on peut obtenir les stats de formations pour un millesime", async () => {

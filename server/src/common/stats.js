@@ -53,12 +53,16 @@ export function getMillesimesFormations() {
   return config.millesimes.formations;
 }
 
+export function getLastMillesimesFormations() {
+  return config.millesimes.formations[config.millesimes.formations.length - 1];
+}
+
 export function getMillesimesRegionales() {
   return config.millesimes.regionales;
 }
 
-export function getLastMillesimesFormations() {
-  return config.millesimes.formations[config.millesimes.formations.length - 1];
+export function getLastMillesimesRegionales() {
+  return config.millesimes.regionales[config.millesimes.regionales.length - 1];
 }
 
 function divide({ dividend, divisor }) {

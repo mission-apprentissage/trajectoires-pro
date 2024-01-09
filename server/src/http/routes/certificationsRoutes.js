@@ -30,7 +30,7 @@ export default () => {
       const { millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
         {
-          ...validators.statsList(),
+          ...validators.statsList([getLastMillesimes()]),
         }
       );
 

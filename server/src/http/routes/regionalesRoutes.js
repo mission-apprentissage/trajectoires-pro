@@ -14,7 +14,7 @@ import {
   sendImageOnError,
 } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import { getLastMillesimesFormations, transformDisplayStat } from "#src/common/stats.js";
+import { getLastMillesimesRegionales, transformDisplayStat } from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import { ErrorRegionaleNotFound, ErrorNoDataForMillesime } from "#src/http/errors.js";
@@ -59,7 +59,7 @@ export default () => {
         { ...req.query, ...req.params },
         {
           ...validators.regions(),
-          ...validators.statsList(),
+          ...validators.statsList([getLastMillesimesRegionales()]),
         }
       );
 
@@ -83,7 +83,7 @@ export default () => {
         { ...req.query, ...req.params },
         {
           ...validators.region(),
-          ...validators.statsList(),
+          ...validators.statsList([getLastMillesimesRegionales()]),
         }
       );
 
@@ -108,7 +108,7 @@ export default () => {
         {
           ...validators.region(),
           codes_certifications: validators.arrayOf(Joi.string().required()).default([]).min(1),
-          millesime: Joi.string().default(getLastMillesimesFormations()),
+          millesime: Joi.string().default(getLastMillesimesRegionales()),
           ...validators.vues(),
           ...validators.svg(),
         }
