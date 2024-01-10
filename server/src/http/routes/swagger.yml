@@ -166,7 +166,7 @@ paths:
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/regions"
-        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/millesimesRegional"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
@@ -188,7 +188,7 @@ paths:
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/regions"
-        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/millesimesRegional"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
@@ -211,7 +211,7 @@ paths:
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/code_region"
-        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/millesimesRegional"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
@@ -233,7 +233,7 @@ paths:
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/code_region"
-        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/millesimesRegional"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
@@ -254,7 +254,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/code_region"
         - $ref: "#/components/parameters/code_certification"
-        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/millesimePeriode"
         - $ref: "#/components/parameters/vue"
       responses:
         200:
@@ -272,7 +272,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/code_region"
         - $ref: "#/components/parameters/multiple_codes_certifications"
-        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/millesimePeriode"
       responses:
         200:
           $ref: "#/components/responses/FilieresRegionaleResponse"
@@ -289,7 +289,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/code_region"
         - $ref: "#/components/parameters/code_certification"
-        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/millesimePeriode"
         - $ref: "#/components/parameters/vue"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
@@ -310,7 +310,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/code_region"
         - $ref: "#/components/parameters/multiple_codes_certifications"
-        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/millesimePeriode"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
         - $ref: "#/components/parameters/imageOnError"
@@ -334,7 +334,7 @@ paths:
         - $ref: "#/components/parameters/uais"
         - $ref: "#/components/parameters/regions"
         - $ref: "#/components/parameters/academies"
-        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/millesimesFormation"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
@@ -359,7 +359,7 @@ paths:
         - $ref: "#/components/parameters/uais"
         - $ref: "#/components/parameters/regions"
         - $ref: "#/components/parameters/academies"
-        - $ref: "#/components/parameters/millesimes"
+        - $ref: "#/components/parameters/millesimesFormation"
         - $ref: "#/components/parameters/code_certifications"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
@@ -379,7 +379,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/uai"
         - $ref: "#/components/parameters/code_certification"
-        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/millesimePeriode"
       responses:
         200:
           $ref: "#/components/responses/FormationResponse"
@@ -396,7 +396,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/uai"
         - $ref: "#/components/parameters/code_certification"
-        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/millesimePeriode"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
         - $ref: "#/components/parameters/imageOnError"
@@ -420,7 +420,27 @@ components:
         Permet de filtrer la recherche avec un ou plusieurs millesimes séparés par des virgules.
 
         * Les millesimes des certifications sont des années (ex: 2020)
+        * Retourne les données du dernier millésime si le champ est vide
+      schema:
+        type: string
+
+    millesimesRegional:
+      name: millesimes
+      in: query
+      description: |
+        Permet de filtrer la recherche avec un ou plusieurs millesimes séparés par des virgules.
+        * Les millesimes au niveau régional sont des périodes (ex: 2020_2021)
+        * Retourne les données du dernier millésime si le champ est vide
+      schema:
+        type: string
+
+    millesimesFormation:
+      name: millesimes
+      in: query
+      description: |
+        Permet de filtrer la recherche avec un ou plusieurs millesimes séparés par des virgules.
         * Les millesimes des formations sont des périodes (ex: 2020_2021)
+        * Retourne les données du dernier millésime si le champ est vide
       schema:
         type: string
 
@@ -523,6 +543,21 @@ components:
     millesime:
       name: millesime
       in: query
+      description: |
+        Les millesimes des certifications sont des années (ex: 2020).
+
+        Retourne les données du dernier millésime si le champ est vide.
+      required: false
+      schema:
+        type: string
+
+    millesimePeriode:
+      name: millesime
+      in: query
+      description: |
+        Les millesimes au niveau régional sont des périodes (ex: 2020_2021).
+
+        Retourne les données du dernier millésime si le champ est vide.
       required: false
       schema:
         type: string

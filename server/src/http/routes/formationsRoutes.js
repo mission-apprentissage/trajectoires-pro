@@ -30,7 +30,7 @@ export default () => {
           ).default([]),
           ...validators.regions(),
           ...validators.academies(),
-          ...validators.statsList(),
+          ...validators.statsList([getLastMillesimesFormations()]),
         }
       );
 

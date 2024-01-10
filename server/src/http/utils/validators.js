@@ -83,9 +83,9 @@ export function vues() {
   };
 }
 
-export function statsList() {
+export function statsList(defaultMillesimes = []) {
   return {
-    millesimes: arrayOf(Joi.string().required()).default([]),
+    millesimes: arrayOf(Joi.string().required()).default(defaultMillesimes),
     code_certifications: arrayOf(Joi.string().required()).default([]),
     ...exports(),
     ...pagination(),
