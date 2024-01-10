@@ -1,7 +1,20 @@
 openapi: 3.0.1
 info:
   title: API Exposition InserJeunes
-  description: Documentation de l'API Exposition InserJeunes
+  description: |
+    L’API Exposition InserJeunes permet **la récupération des [données InserJeunes](https://documentation.exposition.inserjeunes.beta.gouv.fr/)** (dont la “part en emploi à 6 mois” et le “taux en formation”).
+
+    Les diverses routes permettent de récupérer ces données : 
+
+    - pour une **formation / certification,** à partir d’un code MEFSTAT11, pour la voie scolaire, ou d’un code formation diplôme (CFD), pour la voie apprentissage.
+    - pour une **formation / certification au sein d’un établissement,** à partir d’un code MEFSTAT11 ou CFD et d’un code UAI (Unité Administrative Immatriculée).
+
+    L’API permet en outre de récupérer plusieurs de ces éléments à la fois, et propose divers filtres, par exemple pour récupérer les données à la maille régionale ou académique.
+
+    Certaines routes, mentionnées par un cadenas, nécessitent une authentification. Pour obtenir une clef API, nous vous invitons à [contacter nos équipes](mailto:contact@inserjeunes.beta.gouv.fr).
+
+    Le code source de l’API est public et disponible [sur Github](https://github.com/mission-apprentissage/trajectoires-pro/).
+
   license:
     name: MIT License
     url: https://raw.githubusercontent.com/mission-apprentissage/trajectoires-pro/main/LICENSE

@@ -20,6 +20,9 @@ export function metaIJSchema() {
         taux_emploi_18_mois: integer(),
         taux_emploi_12_mois: integer(),
         taux_emploi_6_mois: integer(),
+        DEVENIR_part_autre_situation_6_mois: integer(),
+        DEVENIR_part_en_emploi_6_mois: integer(),
+        DEVENIR_part_poursuite_etudes: integer(),
       }),
     },
     { required: ["date_import"] }

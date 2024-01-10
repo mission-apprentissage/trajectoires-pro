@@ -44,17 +44,15 @@ async function convertEtablissementsIntoParameters(millesime) {
   );
 }
 
-async function streamDefaultParameters() {
-  const streams = await Promise.all(
-    getMillesimesFormations().map((millesime) => convertEtablissementsIntoParameters(millesime))
-  );
+async function streamDefaultParameters(millesimes) {
+  const streams = await Promise.all(millesimes.map((millesime) => convertEtablissementsIntoParameters(millesime)));
 
   return mergeStreams(streams);
 }
 
-async function loadParameters(parameters) {
+async function loadParameters(parameters, millesimes) {
   const results = [];
-  const stream = parameters ? Readable.from(parameters) : await streamDefaultParameters();
+  const stream = parameters ? Readable.from(parameters) : await streamDefaultParameters(millesimes);
 
   await oleoduc(
     stream,
@@ -89,6 +87,7 @@ export async function importFormationsStats(options = {}) {
   // Set a default retry for the InserJeunes API
   const inserjeunesOptions = merge({ apiOptions: { retry: { retries: 5 } } }, options.inserjeunesOptions || {});
   const ij = options.inserjeunes || new InserJeunes(inserjeunesOptions);
+  const millesimes = options.millesimes || getMillesimesFormations();
 
   function handleError(e, context) {
     logger.error({ err: e, ...context }, `Impossible d'importer les stats`);
@@ -96,7 +95,7 @@ export async function importFormationsStats(options = {}) {
     return null; //ignore chunk
   }
 
-  const parameters = await loadParameters(options.parameters);
+  const parameters = await loadParameters(options.parameters, millesimes);
 
   logger.info(`Import des stats pour ${parameters.length} UAI/millesime...`);
 

@@ -78,9 +78,14 @@ cli
   .command("importStats")
   .description("Importe les données statistiques de l'API InserJeunes")
   .argument("[stats]", "Le nom des stats à importer (formations,certifications,regionales)", asArray)
-  .action((stats) => {
+  .option(
+    "--millesime [millesime]",
+    "Spécifie un millésime à importer (attention les millésimes nationales et formations/regionales sont différents"
+  )
+  .action((stats, options) => {
     runScript(() => {
-      return importStats({ stats });
+      const millesimes = options.millesime ? [options.millesime] : null;
+      return importStats({ stats, millesimes });
     });
   });
 

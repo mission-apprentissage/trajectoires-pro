@@ -26,6 +26,9 @@ export function schema() {
       date_derniere_session: string(),
       nouveau_diplome: arrayOf(string()),
       ancien_diplome: arrayOf(string()),
+      niveauFormationDiplome: string(),
+      groupeSpecialite: string(),
+      lettreSpecialite: string(),
     },
     {
       required: ["type", "code_certification", "code_formation_diplome", "libelle", "libelle_long", "_meta"],

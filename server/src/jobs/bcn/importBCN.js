@@ -36,6 +36,9 @@ export async function streamCfds(options = {}) {
         type: "cfd",
         libelle: `${data["LIBELLE_COURT"]} ${data["LIBELLE_STAT_33"]}`,
         libelle_long: data["LIBELLE_LONG_200"],
+        niveauFormationDiplome: data["NIVEAU_FORMATION_DIPLOME"],
+        groupeSpecialite: data["GROUPE_SPECIALITE"],
+        lettreSpecialite: data["LETTRE_SPECIALITE"],
       };
     })
   );
@@ -60,12 +63,9 @@ export async function streamMefs(options = {}) {
   );
 }
 
-export async function importBCN(options = {}) {
-  logger.info(`Importation des formations depuis la BCN`);
-  const stats = { total: 0, created: 0, updated: 0, failed: 0 };
-
+async function importFromStream(stream, stats = { total: 0, created: 0, updated: 0, failed: 0 }) {
   await oleoduc(
-    mergeStreams(await streamCfds(options), await streamMefs(options)),
+    stream,
     writeData(
       async (data) => {
         stats.total++;
@@ -107,6 +107,15 @@ export async function importBCN(options = {}) {
       { parallel: 10 }
     )
   );
+
+  return stats;
+}
+
+export async function importBCN(options = {}) {
+  logger.info(`Importation des formations depuis la BCN`);
+  const stats = { total: 0, created: 0, updated: 0, failed: 0 };
+  await importFromStream(await streamCfds(options), stats);
+  await importFromStream(await streamMefs(options), stats);
 
   return stats;
 }
