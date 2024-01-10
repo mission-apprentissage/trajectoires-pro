@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.12.0...v1.13.0) (2024-01-10)
+
+
+### Features
+
+* ajout du millesime 2022 ([#226](https://github.com/mission-apprentissage/trajectoires-pro/issues/226)) ([e33f653](https://github.com/mission-apprentissage/trajectoires-pro/commit/e33f65348eec87cf9756591a3a4f64bf2261e1a3))
+
 # [1.12.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.11.0...v1.12.0) (2023-11-09)
 
 
