@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.13.0...v1.14.0) (2024-01-10)
+
+
+### Features
+
+* dernier millesime par défaut pour les requêtes bulk ([#227](https://github.com/mission-apprentissage/trajectoires-pro/issues/227)) ([7f325a7](https://github.com/mission-apprentissage/trajectoires-pro/commit/7f325a7ff7c4bf6e418775d3a8abaefc96f7a5f4))
+
 # [1.13.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.12.0...v1.13.0) (2024-01-10)
 
 
