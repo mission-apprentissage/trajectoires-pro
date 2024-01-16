@@ -5,8 +5,11 @@ description_en_emploi_6_mois_split=[
     description_en_emploi_6_mois.substr(31)
 ];
 
-details_autres_6_mois_split=[
-    details_autres_6_mois.substr(0, 37),
-    details_autres_6_mois.substr(38)
+details_autres_6_mois_split=millesimeLastYear > 2021 ? [
+    details_autres_6_mois.substr(0, 35),
+    details_autres_6_mois.substr(35)
+] : [
+details_autres_6_mois.substr(0, 37),
+details_autres_6_mois.substr(38)
 ];
 -%>

@@ -897,6 +897,33 @@ describe("regionalesRoutes", () => {
           expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
         });
 
+        it("Vérifie la description pour l'emploi public pour les millésimes supérieur à 2021_2022", async () => {
+          const { httpClient } = await startServer();
+          await insertRegionalesStats({
+            region: { code: "11", nom: "Île-de-France" },
+            code_certification: "23830024203",
+            filiere: "apprentissage",
+            millesime: "2021_2022",
+            nb_annee_term: 20,
+            taux_en_formation: 5,
+            taux_autres_6_mois: 5,
+            taux_en_emploi_6_mois: 8,
+          });
+
+          const response = await httpClient.get(
+            "/api/inserjeunes/regionales/11/certifications/23830024203.svg?millesime=2021_2022&theme=" + theme
+          );
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/regionales/2022_23830024203.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+
         it("Vérifie qu'on peut obtenir le widget avec une vue CFD", async () => {
           const { httpClient } = await startServer();
           await Promise.all([

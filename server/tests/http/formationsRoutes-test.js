@@ -681,6 +681,32 @@ describe("formationsRoutes", () => {
           expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
         });
 
+        it("Vérifie la description pour l'emploi public pour les millésimes supérieur à 2021_2022", async () => {
+          const { httpClient } = await startServer();
+          await insertFormationsStats({
+            uai: "0751234J",
+            code_certification: "1022105",
+            millesime: "2021_2022",
+            taux_en_emploi_6_mois: 50,
+            taux_en_formation: 25,
+            taux_autres_6_mois: 12,
+            nb_annee_term: 20,
+          });
+
+          const response = await httpClient.get(
+            "/api/inserjeunes/formations/0751234J-1022105.svg?direction=vertical&millesime=2021_2022&theme=" + theme
+          );
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/formations/2021_2022_0751234J-1022105.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+
         it("Vérifie qu'on peut obtenir une image SVG avec une seule donnée disponible (vertical)", async () => {
           const { httpClient } = await startServer();
           await insertFormationsStats(
