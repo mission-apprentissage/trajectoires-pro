@@ -15,7 +15,10 @@ detailVueNationale="Les chiffres au niveau national";
 
 regionDesc=[`Les chiffres pour la région`,`${region ? region.nom : ''}`];
 
-millesimeText = millesime && millesime.length == 9 ? millesime.split('_').join(' à ') : millesime;
+isMillesimePeriode = millesime && millesime.length == 9 ? true : false;
+millesimePart = millesime ? millesime.split('_') : [""];
+millesimeLastYear = isMillesimePeriode ? parseInt(millesimePart[1]) : parseInt(millesimePart[0]);
+millesimeText = isMillesimePeriode ? millesimePart.join(' à ') : millesime;
 about=`*Données issues du dispositif InserJeunes${millesime ? ' promotion ' + millesimeText : ''}`;
 about_short=[`*Données issues du dispositif InserJeunes`, `${millesime ? ' promotion ' + millesimeText : ''}`];
 
@@ -29,11 +32,13 @@ description_en_formation="sont inscrits en formation";
 details_en_formation=["(Formation supérieure,redoublants,","changement de filière)"] ;
 unavailable_en_formation="Nous sommes désolés mais le taux des inscrits en formation n’est pas disponible pour le moment.";
 
-details_en_emploi_6_mois="(tout type d'emploi salarié du privé)";
+// L'emploi prend en compte les salariés du public à partir de 2022
+details_en_emploi_6_mois=millesimeLastYear > 2021 ? "(tout type d'emploi salarié)" : "(tout type d'emploi salarié du privé)";
 description_en_emploi_6_mois="sont en emploi 6 mois après la fin de la formation";
 unavailable_en_emploi_6_mois="Nous sommes désolés mais le taux d’emploi au bout de 6 mois n’est pas disponible pour le moment.";
 
 description_autres_6_mois="sont dans d’autres situations";
-details_autres_6_mois="(recherche d’emploi, service civique, à l’étranger, indépendant, etc.)";
+// Le service civique est pris en compte dans l'emploi public
+details_autres_6_mois=millesimeLastYear > 2021 ? "(recherche d’emploi, à l’étranger, indépendant, etc.)" : "(recherche d’emploi, service civique, à l’étranger, indépendant, etc.)";
 unavailable_autres_6_mois="Nous sommes désolés mais le taux concernant les autres cas n’est pas disponible pour le moment.";
 -%>

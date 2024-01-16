@@ -644,6 +644,32 @@ describe("certificationsRoutes", () => {
           expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
         });
 
+        it("Vérifie la description pour l'emploi public pour les millésimes supérieur à 2021", async () => {
+          const { httpClient } = await startServer();
+          await insertCertificationsStats({
+            millesime: "2022",
+            code_certification: "23830024203",
+            filiere: "apprentissage",
+            taux_en_formation: 5,
+            taux_en_emploi_6_mois: 6,
+            taux_autres_6_mois: 7,
+            nb_annee_term: 20,
+          });
+
+          const response = await httpClient.get(
+            "/api/inserjeunes/certifications/23830024203.svg?millesime=2022&theme=" + theme
+          );
+
+          assert.strictEqual(response.status, 200);
+          assert.ok(response.headers["content-type"].includes("image/svg+xml"));
+
+          const svgFixture = await fs.promises.readFile(
+            `tests/fixtures/widgets/${theme}/certifications/2022_23830024203.svg`,
+            "utf8"
+          );
+          expect(svgFixture).not.differentFrom(response.data, { relaxedSpace: true });
+        });
+
         it("Vérifie qu'on peut obtenir le widget avec une vue CFD", async () => {
           const { httpClient } = await startServer();
           await Promise.all([

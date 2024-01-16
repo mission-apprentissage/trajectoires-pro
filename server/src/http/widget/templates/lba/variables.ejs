@@ -16,8 +16,11 @@ unavailable_en_emploi_6_mois_split=[
 ];
 
 description_autres_6_mois_override="sont dans d’autres cas" 
-details_autres_6_mois_override="(Recherche d’emploi, service civique, à l’étranger, statut indépendant, etc.)"
-details_autres_6_mois_split=[
+details_autres_6_mois_override=millesimeLastYear > 2021 ? "(Recherche d’emploi, à l’étranger, statut indépendant, etc.)" : "(Recherche d’emploi, service civique, à l’étranger, statut indépendant, etc.)"
+details_autres_6_mois_split=millesimeLastYear > 2021 ? [
+details_autres_6_mois_override.substr(0, 35),
+details_autres_6_mois_override.substr(35),
+] : [
     details_autres_6_mois_override.substr(0, 28),
     details_autres_6_mois_override.substr(29, 29),
     details_autres_6_mois_override.substr(59),
