@@ -224,6 +224,25 @@ function transformDisplayStatRules() {
           },
         }),
     },
+    {
+      // Ajoute un message de précision dans le cas ou l'UAI établissements est différents de celui de provenance des données
+      cond: (data) => data?.uai && data.uai_type !== data.uai_donnee_type,
+      transformation: (data) => data,
+      message: (data) => {
+        const messageByType = {
+          gestionnaire: `Les données pour cette formation proviennent de l'organisme gestionnaire de la formation.`,
+          formateur: `Les données pour cette formation proviennent de l'organisme formateur de la formation.`,
+          lieu_formation: `Les données pour cette formation proviennent du lieu de formation de la formation.`,
+          inconnu: `Nous ne pouvons pas déterminer si les données pour cette formation proviennent de l'organisme gestionnaire, de l'organisme formateur ou du lieu de formation`,
+        };
+
+        return merge(data, {
+          _meta: {
+            messages: [messageByType[data.uai_donnee_type]],
+          },
+        });
+      },
+    },
   ];
 
   return rules;

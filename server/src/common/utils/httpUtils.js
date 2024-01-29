@@ -52,4 +52,9 @@ async function fetchStreamWithRetry(url, options = {}, retryOptions = { retries:
   );
 }
 
-export { fetchJson, fetchJsonWithRetry, fetchStream, fetchStreamWithRetry };
+async function fetch(url, options = {}) {
+  let response = await _fetch(url, { ...options });
+  return response;
+}
+
+export { fetch, fetchJson, fetchJsonWithRetry, fetchStream, fetchStreamWithRetry };

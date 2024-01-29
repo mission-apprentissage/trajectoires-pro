@@ -15,9 +15,11 @@ import {
   rome,
   acceEtablissements,
   users,
+  CAFormations,
 } from "#src/common/db/collections/collections.js";
 import { ALL, getStatsCompute } from "#src/common/stats.js";
 import { hashPassword } from "#src/services/auth/auth.js";
+import { ObjectId } from "mongodb";
 
 export function createCodeFormationDiplome() {
   return faker.helpers.replaceSymbols("4#######");
@@ -338,6 +340,23 @@ export function insertCfdMetiers(custom = {}) {
             isMetierAvenir: true,
           },
         ],
+        _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
+      },
+      custom
+    )
+  );
+}
+
+export function insertCAFormation(custom = {}) {
+  return CAFormations().insertOne(
+    merge(
+      {},
+      {
+        id: new ObjectId(),
+        cfd: createCodeFormationDiplome(),
+        uai_formation: faker.helpers.replaceSymbols("########"),
+        etablissement_formateur_uai: faker.helpers.replaceSymbols("########"),
+        etablissement_gestionnaire_uai: faker.helpers.replaceSymbols("########"),
         _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
       },
       custom

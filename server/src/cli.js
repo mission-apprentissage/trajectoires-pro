@@ -16,62 +16,69 @@ import { importRomes } from "./jobs/romes/importRomes.js";
 import { importCfdMetiers } from "./jobs/romes/importCfdMetiers.js";
 import { importRomeMetiers } from "./jobs/romes/importRomeMetiers.js";
 import { importEtablissements } from "./jobs/etablissements/importEtablissements.js";
+import { importFormations as importCAFormations } from "./jobs/catalogueApprentissage/importFormations.js";
 import { backfillMetrics } from "./jobs/backfillMetrics.js";
 import { asArray } from "./common/utils/stringUtils.js";
 import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
+import { computeUAI } from "./jobs/stats/computeUAI.js";
 import * as UserJob from "./jobs/user/user.js";
+
+async function importBCNCommand() {
+  const statsBCN = await importBCN();
+  const statsMef = await importBCNMEF();
+  const statsContinuum = await importBCNContinuum();
+  const statsMefContinuum = await computeBCNMEFContinuum();
+  const statsBCNLibelle = await importLibelle();
+
+  return {
+    statsBCN,
+    statsMef,
+    statsContinuum,
+    statsMefContinuum,
+    statsBCNLibelle,
+  };
+}
+
+async function importRomesCommand() {
+  const statsRomes = await importRomes();
+  const statsCfdRomes = await importCfdRomes();
+  const statsRomeMetiers = await importRomeMetiers();
+  const statsCfdMetiers = await importCfdMetiers();
+
+  return {
+    statsRomes,
+    statsCfdRomes,
+    statsRomeMetiers,
+    statsCfdMetiers,
+  };
+}
 
 cli
   .command("importBCN")
   .description("Import les CFD et MEF depuis la BCN")
   .action(() => {
-    runScript(async () => {
-      const statsBCN = await importBCN();
-      const statsMef = await importBCNMEF();
-      const statsContinuum = await importBCNContinuum();
-      const statsMefContinuum = await computeBCNMEFContinuum();
-      const statsBCNLibelle = await importLibelle();
-
-      return {
-        statsBCN,
-        statsMef,
-        statsContinuum,
-        statsMefContinuum,
-        statsBCNLibelle,
-      };
-    });
+    runScript(importBCNCommand);
   });
 
 cli
   .command("importRomes")
   .description("Import les codes ROME depuis Data.gouv et Diagoriente")
   .action(() => {
-    runScript(async () => {
-      const statsRomes = await importRomes();
-      const statsCfdRomes = await importCfdRomes();
-      const statsRomeMetiers = await importRomeMetiers();
-      const statsCfdMetiers = await importCfdMetiers();
-
-      return {
-        statsRomes,
-        statsCfdRomes,
-        statsRomeMetiers,
-        statsCfdMetiers,
-      };
-    });
+    runScript(importRomesCommand);
   });
 
 cli
   .command("importEtablissements")
   .description("Importe les données d'établissements")
   .action(() => {
-    runScript(async () => {
-      const statsEtablissements = await importEtablissements();
+    runScript(importEtablissements);
+  });
 
-      return {
-        statsEtablissements,
-      };
-    });
+cli
+  .command("importCatalogueApprentissage")
+  .description("Importe les données du catalogue de l'apprentissage")
+  .action(() => {
+    runScript(importCAFormations());
   });
 
 cli
@@ -94,8 +101,31 @@ cli
   .description("Calcule les données statistiques manquantes pour les anciens/nouveaux diplomes")
   .argument("[stats]", "Le nom des stats à importer (formations,certifications,regionales)", asArray)
   .action((stats) => {
-    runScript(() => {
-      return computeContinuumStats({ stats });
+    runScript(() => computeContinuumStats({ stats }));
+  });
+
+cli
+  .command("computeUAI")
+  .description("Associe les UAIs gestionnaires, formateurs et lieux de formation aux stats de formations")
+  .option("--millesime [millesime]", "Spécifie un millésime à importer")
+  .action((options) => {
+    runScript(() => computeUAI({ millesime: options.millesime }));
+  });
+
+cli
+  .command("importAll")
+  .description("Effectue toute les taches d'importations et de calculs des données")
+  .action(() => {
+    runScript(async () => {
+      return {
+        importBCN: await importBCNCommand(),
+        importEtablissements: await importEtablissements(),
+        importStats: await importStats(),
+        computeContinuumStats: await computeContinuumStats(),
+        importCatalogueApprentissage: await importCAFormations(),
+        computeUAI: await computeUAI(),
+        importRomes: await importRomesCommand(),
+      };
     });
   });
 

@@ -54,6 +54,9 @@ export default () => {
         extensionTransformer = transformIntoCSV({
           columns: {
             uai: (f) => f.uai,
+            uai_type: (f) => f.uai_type,
+            uai_donnee: (f) => f.uai_donnee,
+            uai_donnee_type: (f) => f.uai_donnee_type,
             code_certification: (f) => f.code_certification,
             filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,

@@ -1,4 +1,4 @@
-import { object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { object, objectId, string, arrayOf, enumOf } from "./jsonSchema/jsonSchemaTypes.js";
 import * as Stats from "./jsonSchema/statsSchema.js";
 import { regionSchema } from "./jsonSchema/regionSchema.js";
 import { academieSchema } from "./jsonSchema/academieSchema.js";
@@ -7,6 +7,8 @@ import { metaSchema, metaIJSchema } from "./jsonSchema/metaSchema.js";
 import * as Certification from "./jsonSchema/certificationSchema.js";
 
 export const name = "formationsStats";
+
+export const UAI_TYPE = ["lieu_formation", "formateur", "gestionnaire", "inconnu"];
 
 export function indexes() {
   return [
@@ -22,6 +24,12 @@ export function schema() {
     {
       _id: objectId(),
       uai: string(),
+      uai_type: enumOf(UAI_TYPE),
+      uai_lieu_formation: arrayOf(string()), // Dans le cas ou uai_type est formateur ou gestionnaire
+      uai_formateur: arrayOf(string()), // Dans le cas ou uai_type est lieu_formation ou gestionnaire
+      uai_gestionnaire: arrayOf(string()), // Dans le cas ou uai_type est lieu_formation ou formateur
+      uai_donnee: string(),
+      uai_donnee_type: enumOf(UAI_TYPE),
       millesime: string(),
       region: regionSchema(),
       academie: academieSchema(),

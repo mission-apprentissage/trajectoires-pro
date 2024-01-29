@@ -63,6 +63,35 @@ export class BCNRepository extends MongoRepository {
 
     return graph;
   }
+
+  async cfdsParentAndChildren(cfd) {
+    const cfds = [cfd];
+
+    let diplomeBCNBase = await this.first({ code_certification: cfd });
+    if (!diplomeBCNBase) {
+      return cfds;
+    }
+
+    let diplomeBCN = diplomeBCNBase;
+    let parents = diplomeBCN.ancien_diplome;
+    // Support only 1 to 1 case
+    while (parents && parents.length == 1) {
+      cfds.push(parents[0]);
+      diplomeBCN = await this.first({ code_certification: parents[0] });
+      parents = diplomeBCN?.ancien_diplome;
+    }
+
+    diplomeBCN = diplomeBCNBase;
+    let children = diplomeBCN.nouveau_diplome;
+    // Support only 1 to 1 case
+    while (children && children.length == 1) {
+      cfds.push(children[0]);
+      diplomeBCN = await this.first({ code_certification: children[0] });
+      children = diplomeBCN?.nouveau_diplome;
+    }
+
+    return cfds;
+  }
 }
 
 export default new BCNRepository();

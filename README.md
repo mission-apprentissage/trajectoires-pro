@@ -30,31 +30,56 @@ L'application est ensuite accessible à l'url [http://localhost](http://localhos
 #### Nouveau millésime
 
 Mettre à jour les variables d'environnements avec le millesime a ajouté:
+
 - `TRAJECTOIRES_PRO_MILLESIMES`
 - `TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS`
 - `TRAJECTOIRES_PRO_MILLESIMES_REGIONALES`
 
 Ajoutés les fichiers suivant (MILLESIME sur deux années):
+
 - `depp-2022-etablissements-MILLESIME-apprentissage.csv`
 - `depp-2022-etablissements-MILLESIME-pro.csv`
 
 Mettre à jour le fichier suivant :
+
 - `data/acce_etablissements.csv`
 
 ### Jobs
 
 Pour hydrater la base de données, il existe dans le package `server` plusieurs jobs différents.
+
 ```
 cd server
 yarn cli NOM_DU_JOB
 ```
 
 L'ordre d'exécution des jobs est important afin de pouvoir hydrater correctement la base de données.
+
+##### Importation de toute les données
+
+```
+yarn cli importAll
+```
+
+##### Importation des données InserJeunes
+
 ```
 yarn cli importBCN
+yarn cli importEtablissements
 yarn cli importStats
 yarn cli computeContinuumStats
 ```
+
+##### Importation des données du catalogue de l'apprentissage et association des UAIs
+
+/!\ L'importation des données de formation au niveau établissement doit être déjà effectuée
+
+```
+yarn cli importCatalogueApprentissage
+yarn cli computeUAI
+```
+
+##### Importation des codes Romes, des métiers d'avenir et création des liens Formations <> Romes <> Métiers
 
 ```
 yarn cli importBCN (S'il n'a pas déjà été effectué)
@@ -62,12 +87,14 @@ yarn cli importRomes
 ```
 
 #### Détails des principaux Jobs
+
+- `importAll` : Effectue toute les taches d'importations et de calculs des données.
 - `importBCN` : Importation des formations depuis la BCN.
   - Importation des fichiers de la BCN
     - [N_FORMATION_DIPLOME](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/N_FORMATION_DIPLOME)
     - [V_FORMATION_DIPLOME](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/V_FORMATION_DIPLOME)
     - [N_MEF](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/N_MEF)
-  - Création des liens de continuités ([cf](<#continuit%C3%A9-des-donn%C3%A9es-dans-le-cadre-de-la-renovation-des-formations>)) entre les formations
+  - Création des liens de continuités ([cf](#continuit%C3%A9-des-donn%C3%A9es-dans-le-cadre-de-la-renovation-des-formations)) entre les formations
 - `importRomes` :
   - Importation des codes ROMEs depuis l'API [api.data.gouv] (Voir [dataset](https://www.data.gouv.fr/fr/datasets/repertoire-operationnel-des-metiers-et-des-emplois-rome/))
   - Importation depuis l'API [Diagoriente](https://odyssey-docs.vercel.app/docs/intro) des :
@@ -80,7 +107,17 @@ yarn cli importRomes
       - Utilise les listes d'établissements contenues dans `server/data`
     - `importStats certifications` : Importation des données de formation au niveau nationale
     - `importStats regionale` : Importation des données au niveau régionale
-- `computeContinuumStats` : Calcul des données de continuités des formations ([cf](<#continuit%C3%A9-des-donn%C3%A9es-dans-le-cadre-de-la-renovation-des-formations>)) 
+- `computeContinuumStats` : Calcul des données de continuités des formations ([cf](#continuit%C3%A9-des-donn%C3%A9es-dans-le-cadre-de-la-renovation-des-formations))
+- `importEtablissements` :
+  - Importation des établissements depuis le fichier établissements de l'ACCE
+- `importCatalogueApprentissage` :
+  - Importation des formations depuis le catalogue de l'apprentissage des ministères éducatifs.
+- `computeUAI` :
+  - Utilise le catalogue de l'apprentissage pour identifier les UAIs des données de formation au niveau établissement.
+  - Associe les données aux lieux de formations lorsque cela est possible.
+- `user` :
+  - `create` : Ajoute un utilisateur à l'API
+  - `remove` : Supprime un utilisateur à l'API
 
 ### Outils
 
@@ -89,11 +126,13 @@ Nous utilisons [Commit-lint](https://commitlint.js.org/#/) avec [conventional-co
 ### Tests
 
 1. Linter
+
 ```
 make lint
 ```
 
 2. Tests unitaires
+
 ```
 make test
 ```
@@ -109,13 +148,13 @@ Ce package contient le code de l'API.
 #### Ui
 
 Ce package contient le front-end qui est divisé en différentes applications :
+
 - **explorer** : Site interne de consultation des données de l'API
 - **statistiques** : [Page des statistiques](https://statistiques.exposition.inserjeunes.beta.gouv.fr/) du projet Exposition
 
 #### Base de données
 
 Ce projet utilise `mongodb` version 5.
-
 
 ## Fonctionnement
 
@@ -126,6 +165,7 @@ Voir documentation de l'API : https://exposition.inserjeunes.beta.gouv.fr/api/do
 ### Continuité des données dans le cadre de la rénovation des formations
 
 Afin d'assurer la continuité des données en cas de rénovation des formations, nous associons les données d'une formation renovée avec les données de la formation historique lorsque :
+
 - La formation rénovée ne fait pas l'objet d'une modification profonde de ses modules
 - La formation rénovée n'a pas de données pour le millésime concerné
 
@@ -137,10 +177,11 @@ Le Bac Pro GA (Gestion Administration, CFD 40030001) a été remplacé par le Ba
 
 Pour le millésime 2021, nous n'avons pas de données pour le Bac Pro AGORA nous associons donc les données 2021 du Bac Pro GA au Bac Pro AGORA.
 
-[Donnée 2021 Bac Pro AGORA](https://exposition-recette.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/40030004?millesime=2021) : 
+[Donnée 2021 Bac Pro AGORA](https://exposition-recette.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/40030004?millesime=2021) :
 Ces données correspondent donc aux [données 2021 du Bac Pro GA](https://exposition-recette.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/40030001?millesime=2021)
 
 Il est possible de savoir si les données proviennent d'une formation historique via l'attribut `donnee_source` de la réponse.
+
 ```
 "donnee_source": {
     "code_certification": "40030001", // Code de la formation d'ou proviennent les données
@@ -152,18 +193,16 @@ Il est possible de savoir si les données proviennent d'une formation historique
 
 Le CAP Sérrurier Métallier (CFD 50025431) a remplacé le CAP Métallerie (CFD 50025420). Pour le millésime 2021, nous n'avons pas de données pour le CAP Métallerie. Nous associons donc les données 2021 du CAP Sérrurier Métallier au CAP Métallerie.
 
-[Donnée 2021 CAP Métallerie](https://exposition-recette.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/50025420?millesime=2021) : 
+[Donnée 2021 CAP Métallerie](https://exposition-recette.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/50025420?millesime=2021) :
 Ces données correspondent donc aux [données 2021 du CAP Sérrurier Métallier](https://exposition-recette.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/50025431?millesime=2021)
 
 Il est possible de savoir si les données proviennent d'une formation plus récente via l'attribut `donnee_source` de la réponse.
+
 ```
 "donnee_source": {
     "code_certification": "50025431", // Code de la formation d'ou proviennent les données
     "type": "nouvelle" // nouvelle : indique que les données proviennent de la formation rénovée
 },
 ```
-
- 
-
 
 ![](https://avatars1.githubusercontent.com/u/63645182?s=200&v=4)

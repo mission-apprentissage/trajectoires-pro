@@ -292,8 +292,8 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `uai;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-0751234J;12345678;apprentissage;2018_2019;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
+        `uai;uai_type;uai_donnee;uai_donnee_type;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+0751234J;;;;12345678;apprentissage;2018_2019;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
 `
       );
     });
@@ -334,8 +334,8 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `uai;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-0751234J;12345678;apprentissage;2018_2019;self;12345678;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
+        `uai;uai_type;uai_donnee;uai_donnee_type;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+0751234J;;;;12345678;apprentissage;2018_2019;self;12345678;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
 `
       );
     });

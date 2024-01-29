@@ -3,6 +3,8 @@ import { InserJeunesApi } from "#src/services/inserjeunes/InserJeunesApi.js";
 import { DiagorienteApi } from "#src/services/diagoriente/DiagorienteApi.js";
 import { generateCodeCertification } from "./testUtils.js";
 import { DataGouvApi } from "#src/services/dataGouv/DataGouvApi.js";
+import { CatalogueApprentissageApi } from "#src/services/catalogueApprentissage/CatalogueApprentissageApi.js";
+import * as Fixtures from "#tests/utils/fixtures.js";
 
 function createNock(baseUrl, options = {}) {
   let client = nock(baseUrl);
@@ -19,6 +21,28 @@ export function mockBCN(callback, options) {
 export function mockDataGouv(callback, options) {
   let client = createNock(DataGouvApi.baseApiUrl, options);
   callback(client);
+
+  return client;
+}
+
+export async function mockCatalogueApprentissageApi(callback, options) {
+  let client = createNock(CatalogueApprentissageApi.baseApiUrl, options);
+
+  const formationCatalogue = await Fixtures.FormationsCatalogue();
+  const etablissementsCatalogue = await Fixtures.EtablissementsCatalogue();
+  const etablissementCatalogue = await Fixtures.EtablissementCatalogue();
+
+  callback(client, {
+    formations(custom = {}) {
+      return Object.assign({}, formationCatalogue, custom);
+    },
+    etablissements(custom = {}) {
+      return Object.assign({}, etablissementsCatalogue, custom);
+    },
+    etablissement(custom = {}) {
+      return Object.assign({}, etablissementCatalogue, custom);
+    },
+  });
 
   return client;
 }

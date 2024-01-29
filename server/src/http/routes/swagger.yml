@@ -1000,6 +1000,30 @@ components:
           nullable: true
         region:
           $ref: "#/components/schemas/Region"
+        uai_type:
+          type: string
+          description: Typologie de l'UAI (lieu de formation, formateur, gestionnaire ou inconnu)
+        uai_donnee:
+          type: string
+          description: UAI de provenance de la donnée
+        uai_donnee_type:
+          type: string
+          description: Typologie de l'UAI (lieu de formation, formateur, gestionnaire ou inconnu)
+        uai_lieu_formation:
+          type: array
+          description: Tableau des UAIs des lieux de formations associés à la formation dans le cas ou le type de l'UAI est formateur ou gestionnaire
+          items:
+            type: string
+        uai_formateur:
+          type: array
+          description: Tableau des UAIs formateurs associés à la formation dans le cas ou le type de l'UAI est lieu de formation ou gestionnaire
+          items:
+            type: string
+        uai_gestionnaire:
+          type: array
+          description: Tableau des UAIs gestionnaires associés à la formation dans le cas ou le type de l'UAI est lieu de formation ou formateur
+          items:
+            type: string
         _meta:
           $ref: "#/components/schemas/Meta"
 

@@ -52,7 +52,6 @@ describe("importRomeMetiers", () => {
 
     let stats = await importRomeMetiers();
     const found = await streamToArray(await RomeMetierRepository.find({}));
-    console.log(found);
     assert.deepEqualInAnyOrder(
       found.map((f) => omit(f, "_id")),
       [
