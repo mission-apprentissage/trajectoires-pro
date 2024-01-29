@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.14.0...v1.15.0) (2024-01-29)
+
+
+### Features
+
+* ajout des types d'UAIs ([#230](https://github.com/mission-apprentissage/trajectoires-pro/issues/230)) ([970b96d](https://github.com/mission-apprentissage/trajectoires-pro/commit/970b96d86915374d42f1f2bd8e03f41565aa7644))
+
 # [1.14.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.13.0...v1.14.0) (2024-01-10)
 
 
