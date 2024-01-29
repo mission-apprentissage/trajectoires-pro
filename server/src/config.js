@@ -71,11 +71,8 @@ const config = {
     },
   },
   millesimes: {
-    default: env.get("TRAJECTOIRES_PRO_MILLESIMES").default("2019,2020,2021,2022").asArray(),
-    formations: env
-      .get("TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS")
-      .default("2018_2019,2019_2020,2020_2021,2021_2022")
-      .asArray(),
+    default: env.get("TRAJECTOIRES_PRO_MILLESIMES").default("2020,2021,2022").asArray(),
+    formations: env.get("TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS").default("2019_2020,2020_2021,2021_2022").asArray(),
     regionales: env.get("TRAJECTOIRES_PRO_MILLESIMES_REGIONALES").default("2019_2020,2020_2021,2021_2022").asArray(),
   },
 };
