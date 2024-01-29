@@ -84,5 +84,62 @@ describe("repositories", () => {
         assert.deepEqualInAnyOrder(result, ["12345678", "12345679"]);
       });
     });
+
+    describe("cfdsParentAndChildren", () => {
+      it("Retourne un tableau de CFDs avec les CFDs parents et enfants (continuum)", async () => {
+        await insertCFD({
+          code_certification: "10000001",
+          code_formation_diplome: "10000001",
+          ancien_diplome: ["10000002"],
+          nouveau_diplome: ["10000003"],
+        });
+        await insertCFD({
+          code_certification: "10000002",
+          code_formation_diplome: "10000002",
+          nouveau_diplome: ["10000001"],
+        });
+        await insertCFD({
+          code_certification: "10000003",
+          code_formation_diplome: "10000003",
+          ancien_diplome: ["10000001"],
+        });
+
+        const cfds = await BCNRepository.cfdsParentAndChildren("10000001");
+        assert.deepEqual(cfds, ["10000001", "10000002", "10000003"]);
+      });
+
+      it("Ne retourne pas les anciens et nouveaux CFDs lorsqu'il y a plusieurs anciens ou nouveaux CFDs", async () => {
+        await insertCFD({
+          code_certification: "10000001",
+          code_formation_diplome: "10000001",
+          ancien_diplome: ["10000002", "10000003"],
+          nouveau_diplome: ["10000004", "10000005"],
+        });
+        await insertCFD({
+          code_certification: "10000002",
+          code_formation_diplome: "10000002",
+          nouveau_diplome: ["10000001"],
+        });
+        await insertCFD({
+          code_certification: "10000003",
+          code_formation_diplome: "10000003",
+          nouveau_diplome: ["10000001"],
+        });
+
+        await insertCFD({
+          code_certification: "10000004",
+          code_formation_diplome: "10000004",
+          ancien_diplome: ["10000001"],
+        });
+        await insertCFD({
+          code_certification: "10000005",
+          code_formation_diplome: "10000005",
+          ancien_diplome: ["10000001"],
+        });
+
+        const cfds = await BCNRepository.cfdsParentAndChildren("10000001");
+        assert.deepEqual(cfds, ["10000001"]);
+      });
+    });
   });
 });

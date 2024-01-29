@@ -1,0 +1,640 @@
+{
+    "formations": [
+        {
+            "_id": "5fc616c5712d48a988133fa7",
+            "etablissement_gestionnaire_id": "60403396d5e868001c9347ae",
+            "etablissement_gestionnaire_siret": "13002792300163",
+            "etablissement_gestionnaire_enseigne": "CMA DE LA GIRONDE",
+            "etablissement_gestionnaire_uai": null,
+            "etablissement_gestionnaire_published": false,
+            "etablissement_gestionnaire_adresse": "46 RUE GENERAL DE LARMINAT",
+            "etablissement_gestionnaire_code_postal": "33000",
+            "etablissement_gestionnaire_code_commune_insee": "33063",
+            "etablissement_gestionnaire_localite": "BORDEAUX",
+            "etablissement_gestionnaire_complement_adresse": null,
+            "etablissement_gestionnaire_cedex": "33074",
+            "etablissement_gestionnaire_entreprise_raison_sociale": "CHAMBRE DE METIERS ET DE L'ARTISANAT DE REGION NOUVELLE AQUITAINE",
+            "etablissement_gestionnaire_region": "Nouvelle-Aquitaine",
+            "etablissement_gestionnaire_num_departement": "33",
+            "etablissement_gestionnaire_nom_departement": "Gironde",
+            "etablissement_gestionnaire_nom_academie": "Bordeaux",
+            "etablissement_gestionnaire_num_academie": "4",
+            "etablissement_gestionnaire_siren": "130027923",
+            "etablissement_gestionnaire_date_creation": "2020-12-30T00:00:00.000Z",
+            "etablissement_formateur_id": "60403399d5e868001c9347b6",
+            "etablissement_formateur_siret": "13002792300171",
+            "etablissement_formateur_enseigne": "INSTITUT METIERS ARTISANAT 33",
+            "etablissement_formateur_uai": "0331707B",
+            "etablissement_formateur_published": true,
+            "etablissement_formateur_adresse": "25 RUE CARDINAL RICHAUD",
+            "etablissement_formateur_code_postal": "33300",
+            "etablissement_formateur_code_commune_insee": "33063",
+            "etablissement_formateur_localite": "BORDEAUX",
+            "etablissement_formateur_complement_adresse": null,
+            "etablissement_formateur_cedex": null,
+            "etablissement_formateur_entreprise_raison_sociale": "CHAMBRE DE METIERS ET DE L'ARTISANAT DE REGION NOUVELLE AQUITAINE",
+            "etablissement_formateur_region": "Nouvelle-Aquitaine",
+            "etablissement_formateur_num_departement": "33",
+            "etablissement_formateur_nom_departement": "Gironde",
+            "etablissement_formateur_nom_academie": "Bordeaux",
+            "etablissement_formateur_num_academie": "4",
+            "etablissement_formateur_siren": "130027923",
+            "etablissement_formateur_date_creation": "2020-12-30T00:00:00.000Z",
+            "etablissement_reference": "gestionnaire",
+            "etablissement_reference_published": true,
+            "etablissement_reference_date_creation": null,
+            "cfd": "46X25201",
+            "cfd_specialite": null,
+            "cfd_outdated": false,
+            "cfd_date_fermeture": "2027-08-31T00:00:00.000Z",
+            "nom_academie": "Bordeaux",
+            "num_academie": "4",
+            "code_postal": "33300",
+            "code_commune_insee": "33063",
+            "num_departement": "33",
+            "nom_departement": "Gironde",
+            "region": "Nouvelle-Aquitaine",
+            "localite": "Bordeaux",
+            "uai_formation": "0331707B",
+            "nom": null,
+            "intitule_long": "CONSEILLER TECHNIQUE CYCLES (ANFA)",
+            "intitule_court": "CONSEILLER TECH CYCLES",
+            "diplome": "TH DE NIV 4 ORGANISMES GESTIONNAIRES DIVERS",
+            "niveau": "4 (BAC...)",
+            "onisep_url": null,
+            "onisep_intitule": null,
+            "onisep_libelle_poursuite": null,
+            "onisep_lien_site_onisepfr": null,
+            "onisep_discipline": null,
+            "onisep_domaine_sousdomaine": null,
+            "rncp_code": "RNCP36721",
+            "rncp_intitule": "Conseiller technique cycles",
+            "rncp_eligible_apprentissage": true,
+            "rncp_details": {
+                "date_fin_validite_enregistrement": "2027-07-19T23:00:00.000Z",
+                "active_inactive": "ACTIVE",
+                "etat_fiche_rncp": "Publiée",
+                "niveau_europe": "niveau4",
+                "code_type_certif": "TP",
+                "type_certif": null,
+                "ancienne_fiche": [
+                    "RNCP18119",
+                    "RNCP34197"
+                ],
+                "nouvelle_fiche": null,
+                "demande": 0,
+                "certificateurs": [
+                    {
+                        "certificateur": "ASS NATIONALE FORMATION AUTOMOBILE",
+                        "siret_certificateur": "78467149700385"
+                    },
+                    {
+                        "certificateur": "CPNE des services de l’automobile",
+                        "siret_certificateur": null
+                    }
+                ],
+                "nsf_code": "252r",
+                "nsf_libelle": "Entretien et réparation des automobiles, cycles et motocycles, véhicules industriels, engins agricoles et de chantiers; Entretien, maintenance, réparation de moteurs thermiques et de machineries de navire",
+                "romes": [
+                    {
+                        "rome": "D1211",
+                        "libelle": "Vente en articles de sport et loisirs"
+                    },
+                    {
+                        "rome": "I1607",
+                        "libelle": "Réparation de cycles, motocycles et motoculteurs de loisirs"
+                    }
+                ],
+                "blocs_competences": [
+                    {
+                        "numero_bloc": "",
+                        "intitule": "Montage de vélos personnalisés ",
+                        "liste_competences": "<p>Réaliser une étude posturale afin de monter un vélo personnalisé adapté à la morphologie et à la pratique du client</p>  <p>Reporter les mesures de la fiche de cotes sur le cycle à l’aide des outils nécessaires pour adapter le vélo à la morphologie du client</p>  <p>Choisir le cadre et la fourche, afin d’adapter le cycle aux attentes et à la pratique du client, en le questionnant sur ses besoins</p>  <p>Choisir les éléments du groupe de la transmission et les éléments périphériques, afin d’adapter le cycle aux attentes et à la pratique du client en le questionnant sur ses besoins</p> ",
+                        "modalites_evaluation": "<p style=\"text-align: justify;\">Mise en situation portant sur la réalisation d’une étude posturale avec proposition des éléments adaptés à la demande du client</p> "
+                    },
+                    {
+                        "numero_bloc": "",
+                        "intitule": "Préparation et assemblage cycles ",
+                        "liste_competences": "<ul>  <li style=\"text-align: justify;\">Contrôler à la réception des cycles, les éventuelles anomalies dues à la livraison (chocs sur le cadre, nombre de produits réceptionnés, nombre de pièces…), afin de pouvoir les assembler dans le respect de la réglementation et des procédures qualité en vigueur et en agençant son poste de travail</li>  <li style=\"text-align: justify;\">Informer sa hiérarchie des anomalies de réception observées sur les cycles ou les bons de commandes, afin de réajuster les commandes auprès des fournisseurs en respectant les procédures qualité en vigueur dans l’entreprise</li>  <li style=\"text-align: justify;\">Assembler les différents éléments du cycle, à l’aide des outils adaptés, en préparant le cadre dans le respect de la réglementation, des règles d’hygiène, sécurité, environnement en vigueur et en s’appuyant sur la documentation et les préconisations constructeur</li>  <li style=\"text-align: justify;\">Assembler le jeu de direction et la fourche, à l’aide des outils adaptés, afin de garantir le fonctionnement, le confort et la sécurité du cycle, en effectuant des opérations de réglage dans le respect de la réglementation des règles d’hygiène sécurité, environnement en vigueur, et en s’appuyant sur la documentation et les préconisations constructeur</li>  <li style=\"text-align: justify;\">Assembler les éléments de la transmission (pédalier, chaine, systèmes de vitesse, cassette), à l’aide des outils adaptés, afin de garantir le fonctionnement et la sécurité du cycle, en effectuant des opérations de réglage dans le respect de la réglementation des règles d’hygiène sécurité, environnement en vigueur, et en s’appuyant sur la documentation et les préconisations constructeur</li>  <li style=\"text-align: justify;\">Assembler les éléments du système de freinage à l’aide des outils adaptés, afin de garantir le fonctionnement et la sécurité du cycle, en effectuant des opérations de réglage dans le respect de la réglementation des règles d’hygiène sécurité, environnement en vigueur, et en s’appuyant sur la documentation et les préconisations constructeur</li>  <li style=\"text-align: justify;\">Assembler les éléments de la roue à l’aide des outils adaptés, afin de garantir le fonctionnement et la sécurité du cycle, en effectuant des opérations de réglage dans le respect de la réglementation des règles d’hygiène sécurité, environnement en vigueur et en s’appuyant sur la documentation et les préconisations constructeur</li>  <li style=\"text-align: justify;\">Contrôler les roues afin de garantir le fonctionnement et la sécurité du cycle, en effectuant des opérations de réglage dans le respect de la réglementation des règles d’hygiène sécurité, environnement en vigueur et en s’appuyant sur la documentation et les préconisations constructeur</li>  <li style=\"text-align: justify;\">Assembler à l’aide des outils adaptés, les éléments de la périphérie afin de garantir le confort et la sécurité du cycle, en effectuant des opérations de réglage dans le respect de la réglementation des règles d’hygiène sécurité, environnement en vigueur et en s’appuyant sur la documentation et les préconisations constructeur</li> </ul> ",
+                        "modalites_evaluation": "<p style=\"text-align: justify;\">Mise en situation portant sur le montage et le réglage d’un cycle à partir d’un cadre nu</p> "
+                    },
+                    {
+                        "numero_bloc": "",
+                        "intitule": "Vente de cycles et produits du cycle",
+                        "liste_competences": "<p style=\"text-align: justify;\">Accueillir le client de façon positive, sur site et à distance, afin de créer un climat favorable à la vente</p>  <p style=\"text-align: justify;\">Ecouter activement les informations communiquées par le client, au téléphone ou dans l’espace de vente, pour identifier son besoin en appliquant les techniques de questionnement et de reformulation</p>  <p style=\"text-align: justify;\">Argumenter sur les cycles ou les vélos à assistance électrique afin d’apporter une réponse adaptée au client, en utilisant les techniques d’argumentation commerciale et en s’appuyant sur la connaissance technique des cycles et des produits associés</p>  <p style=\"text-align: justify;\">Faire émerger les besoins recensés précédemment pour compléter la vente principale en proposant des équipements et accessoires au client, en le conseillant sur les éléments de sécurité et de confort et en respectant la règlementation en vigueur</p>  <p style=\"text-align: justify;\">Conclure la vente du cycle ou du vélo à assistance électrique et facturer en vue de procéder à l'enregistrement comptable de la transaction, dans le respect des process et de la règlementation</p>  <p style=\"text-align: justify;\">Rédiger une fiche produit afin d’animer et mettre à jour le site internet du magasin de cycle, en respectant la législation en matière de vente à distance</p>  <p style=\"text-align: justify;\">Traiter les réclamations des clients afin de maintenir leur satisfaction et de contribuer à leur fidélisation, en respectant le process de l’entreprise et la réglementation en vigueur</p>  <p style=\"text-align: justify;\">Aménager l’espace de vente, afin de mettre en valeur les cycles et les produits du cycle, en appliquant le règles de marchandisage et en respectant les législations relatives à la signalétique et l’étiquetage</p>  <p style=\"text-align: justify;\">Contribuer à la gestion des stocks du magasin cycle, afin d'anticiper les besoins et assurer les commandes en actualisant l'outil informatique dédié en établissant un inventaire.</p> ",
+                        "modalites_evaluation": "<p style=\"text-align: justify;\">Mise en situation portant sur la vente d’un vélo ou d’un VAE en magasin suivi d’un entretien oral portant sur le véhicule non vu lors de la mise en situation</p>  <p style=\"text-align: justify;\">Etude de cas portant sur la promotion des ventes et la gestion administrative des activités de commercialisation</p> "
+                    },
+                    {
+                        "numero_bloc": "",
+                        "intitule": "Organisation et Intervention après-vente cycles ",
+                        "liste_competences": "<ul>  <li>Recueillir les informations utiles auprès du client, afin d’identifier les dysfonctionnements du cycle en s’appuyant sur la documentation et les préconisations constructeur</li>  <li>Contrôler le cycle, afin de repérer d’éventuels dysfonctionnements non identifiés par le client, en s’appuyant sur la documentation constructeur, en utilisant le outils adaptés et en agençant son poste de travail</li>  <li>Effectuer le remplacement des pièces usées ou qui dysfonctionnent, pour remettre le cycle en sécurité, en respectant la réglementation en vigueur, en s’appuyant sur la documentation et les préconisations constructeur</li>  <li>Contrôler l’usure des pièces (freins, suspension, transmission, pneus, câblages…) et les réglages, en utilisant les outils adaptés,afin d’ apprécier leur état de fonctionnement et garantir la sécurité d’utilisation du cycle dans le respect de la réglementation en vigueur</li>  <li>Réaliser les opérations d’entretien courant du cycle, en utilisant les outils adaptés, pour en garantir sa sécurité d’utilisation, en respectant la réglementation en vigueur</li>  <li>Adopter une démarche de diagnostic adaptée, afin d’identifier les dysfonctionnements du cycle, en émettant des hypothèses et en s’appuyant sur les informations utiles recueillies auprès du client et sur la documentation et les préconisations constructeur</li>  <li>Vérifier les hypothèses émises, afin de mettre en œuvre les contrôles et la remise en conformité des éléments défaillants du cycle en les hiérarchisant et en s’appuyant sur la documentation et les préconisations constructeur</li>  <li>  <p>Contrôler le vélo à assistance électrique (VAE) afin de repérer d’éventuels dysfonctionnements identifiés par le client, en s’appuyant sur un diagnostic établi et sur la documentation et les préconisations constructeur, en respectant le règles d’hygiène et de sécurité en vigueur</p>  </li>  <li>  <p>Remplacer les éléments défectueux selon les préconisations et spécificités constructeur (moteur, connecteurs, fusibles, batterie, capteurs.) afin de garantir le bon fonctionnement du VAE et en respectant le règles d’hygiène et de sécurité en vigueur</p>  </li>  <li>  <p style=\"text-align:justify\">Etablir  un ordre de réparation ou un devis énumérant les travaux à réaliser  pour la prise en charge du cycle à l’atelier, à l’aide de supports informatiques,   suite à l’identification de la demande du client, à l’examen de l’état du cycle et en respectant la réglementation en vigueur</p>  </li>  <li>  <p style=\"text-align:justify\">Réaliser une restitution personnalisée du cycle, afin de valoriser la prestation réalisée en apportant des conseils d’entretien au client, en s’appuyant sur ses connaissances techniques et en respectant la réglementation en vigueur</p>  </li>  <li>  <p>Planifier une intervention et sa faisabilité en agençant son poste de travail, en respectant la réglementation en vigueur et en actualisant la documentation technique, afin d’améliorer sa productivité.</p>   <p style=\"text-align:justify\"></p>  </li> </ul> ",
+                        "modalites_evaluation": "<p style=\"text-align: justify;\">Mise en situation portant sur le diagnostic et la remise en état d’un cycle présentant un ou plusieurs dysfonctionnements</p>  <p style=\"text-align: justify;\">Entretienoral portant sur le diagnostic d’un VAE</p>  <p></p>  <p style=\"text-align: justify;\">Mise en situation portant sur la planification de 3 ou 4 rdv d’interventions sur un support (agenda ou logiciel d’atelier)</p> "
+                    }
+                ],
+                "voix_acces": null,
+                "partenaires": [
+                    {
+                        "Nom_Partenaire": "INSTITUT NATIONAL DU CYCLE ET MOTOCYCLE",
+                        "Siret_Partenaire": "78471393500038",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "INSTITUT NATIONAL DU CYCLE ET MOTOCYCLE",
+                        "Siret_Partenaire": "78471393500038",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CHAMB COMMERC INDUSTRIE NICE COTE D'AZUR",
+                        "Siret_Partenaire": "18060001700016",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "INSTITUT NATIONAL DU CYCLE ET MOTOCYCLE",
+                        "Siret_Partenaire": "78471393500053",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "LP PRIVE DE LA S E P R",
+                        "Siret_Partenaire": "77990334300027",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CFA SAINT-MALO",
+                        "Siret_Partenaire": "13002794900168",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CFA ACADEMIQUE DE L'ACADEMIE DE STRASBOURG",
+                        "Siret_Partenaire": "18671553800044",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "PURPLE CAMPUS",
+                        "Siret_Partenaire": "89079142900040",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "PURPLE CAMPUS",
+                        "Siret_Partenaire": "89079142900040",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CFA ACADEMIQUE DE L'ACADEMIE DE STRASBOURG",
+                        "Siret_Partenaire": "18671553800044",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CAMPUS DES METIERS 37",
+                        "Siret_Partenaire": "13002798000080",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CENTRE DE FORMATION DE L'ARTISANAT DE MULHOUSE",
+                        "Siret_Partenaire": "18670223900101",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "LP PRIVE DE LA S E P R",
+                        "Siret_Partenaire": "77990334300027",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "INSTITUT NATIONAL DU CYCLE ET MOTOCYCLE",
+                        "Siret_Partenaire": "78471393500053",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CAMPUS DES METIERS 37",
+                        "Siret_Partenaire": "13002798000080",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CFA SAINT-MALO",
+                        "Siret_Partenaire": "13002794900168",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CENTRE DE FORMATION DE L'ARTISANAT DE MULHOUSE",
+                        "Siret_Partenaire": "18670223900101",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CHAMB COMMERC INDUSTRIE NICE COTE D'AZUR",
+                        "Siret_Partenaire": "18060001700016",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    },
+                    {
+                        "Nom_Partenaire": "CMAR NOUVELLE AQUITAINE",
+                        "Siret_Partenaire": "13002792300015",
+                        "Habilitation_Partenaire": "HABILITATION_ORGA_FORM"
+                    }
+                ],
+                "rncp_outdated": false
+            },
+            "rome_codes": [
+                "D1211",
+                "I1607"
+            ],
+            "periode": [
+                "2021-09-01T00:00:00.000Z"
+            ],
+            "capacite": null,
+            "duree": "2",
+            "annee": "X",
+            "parcoursup_statut": "non publiable en l'état",
+            "parcoursup_error": null,
+            "affelnet_statut": "non publiable en l'état",
+            "published": false,
+            "updates_history": [],
+            "last_update_who": null,
+            "lieu_formation_adresse": "Institut des Métiers de l'Artisanat Interdépartementale Section Gironde ISFORA 5 ter rue du Cardinal Richaud",
+            "lieu_formation_siret": null,
+            "id_rco_formation": "02_201907067202|02_00208943|82581",
+            "id_formation": "02_201907067202",
+            "id_action": "02_00208943",
+            "ids_action": [
+                "02_00208943"
+            ],
+            "id_certifinfo": "82581",
+            "tags": [
+                "2021"
+            ],
+            "libelle_court": "TH4-X",
+            "niveau_formation_diplome": "46X",
+            "affelnet_infos_offre": null,
+            "affelnet_code_nature": null,
+            "affelnet_secteur": null,
+            "affelnet_raison_depublication": null,
+            "bcn_mefs_10": [],
+            "editedFields": null,
+            "parcoursup_raison_depublication": null,
+            "lieu_formation_geo_coordonnees": "44.841225,-0.5800364",
+            "geo_coordonnees_etablissement_gestionnaire": "44.833082,-0.597784",
+            "geo_coordonnees_etablissement_formateur": "-0.564629,44.886959",
+            "created_at": "2021-08-07T23:54:35.122Z",
+            "last_update_at": "2022-11-07T06:13:25.649Z",
+            "distance_lieu_formation_etablissement_formateur": null,
+            "etablissement_formateur_nda": null,
+            "etablissement_gestionnaire_nda": null,
+            "lieu_formation_adresse_computed": "7 Place Gambetta, 33000 Bordeaux",
+            "cfd_entree": "46X25201",
+            "cle_ministere_educatif": "082581P012X1300279230016313002792300171-33063#L01",
+            "entierement_a_distance": false,
+            "etablissement_formateur_courriel": "eao@cm-bordeaux.fr",
+            "etablissement_gestionnaire_courriel": null,
+            "niveau_entree_obligatoire": null,
+            "affelnet_mefs_10": null,
+            "parcoursup_mefs_10": null,
+            "uai_formation_valide": true,
+            "affelnet_published_date": null,
+            "parcoursup_published_date": null,
+            "distance": 5280,
+            "france_competence_infos": null,
+            "lieu_formation_geo_coordonnees_computed": "44.85952,-0.565202",
+            "last_statut_update_date": "2023-11-11T08:41:57.847Z",
+            "intitule_rco": "Titre Conseiller technique cycles",
+            "last_status": {
+                "affelnet_statut": "non publiable en l'état",
+                "date": "2024-01-23T07:15:51.351Z"
+            },
+            "annee_incoherente": false,
+            "duree_incoherente": false,
+            "catalogue_published": false,
+            "etablissement_gestionnaire_certifie_qualite": true,
+            "etablissement_formateur_certifie_qualite": true,
+            "etablissement_reference_certifie_qualite": true,
+            "etablissement_gestionnaire_habilite_rncp": false,
+            "etablissement_formateur_habilite_rncp": false,
+            "etablissement_reference_habilite_rncp": false,
+            "affelnet_perimetre": false,
+            "parcoursup_perimetre": false,
+            "affelnet_id": null,
+            "affelnet_modalites_offre": null,
+            "affelnet_url_infos_offre": null,
+            "affelnet_url_modalites_offre": null,
+            "forced_published": false,
+            "rejection": null,
+            "date_debut": [
+                "2021-09-02T00:00:00.000Z"
+            ],
+            "date_fin": [
+                "2023-12-30T00:00:00.000Z"
+            ],
+            "id_RCO": "02_00208943_02_201907067202_2_00208943",
+            "parcoursup_id": null,
+            "modalites_entrees_sorties": [
+                false
+            ],
+            "parcoursup_export_date": null,
+            "updated_at": "2024-01-24T07:31:17.962Z",
+            "updatedAt": "2024-01-24T07:29:49.544Z",
+            "parcoursup_session": false,
+            "parcoursup_previous_session": false,
+            "affelnet_session": false,
+            "affelnet_previous_session": false,
+            "parcoursup_previous_statut": "non publiable en l'état",
+            "affelnet_previous_statut": "non publiable en l'état",
+            "id": "5fc616c5712d48a988133fa7"
+        },
+        {
+            "_id": "5fc61896712d48a988137bf9",
+            "etablissement_gestionnaire_id": "5e8df8cb20ff3b2161267ff2",
+            "etablissement_gestionnaire_siret": "19470015900016",
+            "etablissement_gestionnaire_enseigne": "",
+            "etablissement_gestionnaire_uai": "0470015L",
+            "etablissement_gestionnaire_published": true,
+            "etablissement_gestionnaire_adresse": null,
+            "etablissement_gestionnaire_code_postal": "47320",
+            "etablissement_gestionnaire_code_commune_insee": "47065",
+            "etablissement_gestionnaire_localite": "CLAIRAC",
+            "etablissement_gestionnaire_complement_adresse": null,
+            "etablissement_gestionnaire_cedex": null,
+            "etablissement_gestionnaire_entreprise_raison_sociale": "LYCEE PROFESSIONNEL PORTE DU LOT - LYCEE DES METIERS DE LA MAINTENANCE ET DES TRAVAUX PUBLICS",
+            "etablissement_gestionnaire_region": "Nouvelle-Aquitaine",
+            "etablissement_gestionnaire_num_departement": "47",
+            "etablissement_gestionnaire_nom_departement": "Lot-et-Garonne",
+            "etablissement_gestionnaire_nom_academie": "Bordeaux",
+            "etablissement_gestionnaire_num_academie": "4",
+            "etablissement_gestionnaire_siren": "194700159",
+            "etablissement_gestionnaire_date_creation": "1983-02-28T00:00:00.000Z",
+            "etablissement_formateur_id": "5e8df8cb20ff3b2161267ff2",
+            "etablissement_formateur_siret": "19470015900016",
+            "etablissement_formateur_enseigne": "",
+            "etablissement_formateur_uai": "0470015L",
+            "etablissement_formateur_published": true,
+            "etablissement_formateur_adresse": null,
+            "etablissement_formateur_code_postal": "47320",
+            "etablissement_formateur_code_commune_insee": "47065",
+            "etablissement_formateur_localite": "CLAIRAC",
+            "etablissement_formateur_complement_adresse": "",
+            "etablissement_formateur_cedex": null,
+            "etablissement_formateur_entreprise_raison_sociale": "LYCEE PROFESSIONNEL PORTE DU LOT - LYCEE DES METIERS DE LA MAINTENANCE ET DES TRAVAUX PUBLICS",
+            "etablissement_formateur_region": "Nouvelle-Aquitaine",
+            "etablissement_formateur_num_departement": "47",
+            "etablissement_formateur_nom_departement": "Lot-et-Garonne",
+            "etablissement_formateur_nom_academie": "Bordeaux",
+            "etablissement_formateur_num_academie": "4",
+            "etablissement_formateur_siren": "194700159",
+            "etablissement_formateur_date_creation": "1983-02-28T00:00:00.000Z",
+            "etablissement_reference": "gestionnaire",
+            "etablissement_reference_published": true,
+            "etablissement_reference_date_creation": null,
+            "cfd": "32023107",
+            "cfd_specialite": null,
+            "cfd_outdated": false,
+            "cfd_date_fermeture": "2024-08-31T00:00:00.000Z",
+            "nom_academie": "Bordeaux",
+            "num_academie": "4",
+            "code_postal": "47320",
+            "code_commune_insee": "47065",
+            "num_departement": "47",
+            "nom_departement": "Lot-et-Garonne",
+            "region": "Nouvelle-Aquitaine",
+            "localite": "Clairac",
+            "uai_formation": "0470015L",
+            "nom": null,
+            "intitule_long": "TRAVAUX PUBLICS (BTS)",
+            "intitule_court": "TRAVAUX PUBLICS",
+            "diplome": "BREVET DE TECHNICIEN SUPERIEUR",
+            "niveau": "5 (BTS, DEUST...)",
+            "onisep_url": null,
+            "onisep_intitule": null,
+            "onisep_libelle_poursuite": null,
+            "onisep_lien_site_onisepfr": null,
+            "onisep_discipline": null,
+            "onisep_domaine_sousdomaine": null,
+            "rncp_code": "RNCP37199",
+            "rncp_intitule": "Travaux publics",
+            "rncp_eligible_apprentissage": true,
+            "rncp_details": {
+                "date_fin_validite_enregistrement": "2028-08-30T23:00:00.000Z",
+                "active_inactive": "ACTIVE",
+                "etat_fiche_rncp": "Publiée",
+                "niveau_europe": "niveau5",
+                "code_type_certif": "BTS",
+                "type_certif": "Brevet de technicien supérieur",
+                "ancienne_fiche": [
+                    "RNCP1109"
+                ],
+                "nouvelle_fiche": null,
+                "demande": 0,
+                "certificateurs": [
+                    {
+                        "certificateur": "MINISTERE DE L'ENSEIGNEMENT SUPERIEUR ET DE LA RECHERCHE",
+                        "siret_certificateur": "11004401300040"
+                    }
+                ],
+                "nsf_code": "232",
+                "nsf_libelle": "Bâtiment",
+                "romes": [
+                    {
+                        "rome": "F1201",
+                        "libelle": "Conduite de travaux du BTP et de travaux paysagers"
+                    },
+                    {
+                        "rome": "F1106",
+                        "libelle": "Ingénierie et études du BTP"
+                    },
+                    {
+                        "rome": "F1108",
+                        "libelle": "Métré de la construction"
+                    },
+                    {
+                        "rome": "F1202",
+                        "libelle": "Direction de chantier du BTP"
+                    }
+                ],
+                "blocs_competences": [
+                    {
+                        "numero_bloc": "",
+                        "intitule": "Préparation de chantier",
+                        "liste_competences": "<p style=\"text-align:justify\">Concevoir les méthodes et les moyens en intégrant la sécurité, l'environnement et la qualité</p>  <p style=\"text-align:justify\">Produire les pièces administratives et techniques du projet</p>  <p style=\"text-align:justify\">Planifier les travaux</p>  <p style=\"text-align:justify\">Établir le budget prévisionnel de chantier</p> ",
+                        "modalites_evaluation": "<p style=\"text-align:justify\">Scolaires (établissements publics ou privés sous contrat),Apprentis (CFA ou sections d'apprentissage habilités),Formation professionnelle continue (établissements publics habilités).</p>  <p style=\"text-align:justify\">Ponctuelle orale</p>  <p style=\"text-align:justify\"></p>  <p style=\"text-align:justify\">Formation professionnellecontinue (établissements publics habilités à pratiquer le CCF pour ce BTS).</p>  <p style=\"text-align:justify\">Ponctuelle orale</p>  <p style=\"text-align:justify\"></p>  <p style=\"text-align:justify\">Scolaires (établissements privés hors contrat),Apprentis (CFA ou sections d'apprentissage non habilités),Formation professionnelle continue (établissements non habilités) au titre de leur expérience professionnelle,Enseignement à distance.</p>  <p style=\"text-align:justify\">Ponctuelle orale</p> "
+                    },
+                    {
+                        "numero_bloc": "",
+                        "intitule": "Implantation et contrôle des travaux",
+                        "liste_competences": "<p style=\"text-align:justify\">Implanter et relever des ouvrages</p>  <p style=\"text-align:justify\">Analyser et contrôler des ouvrages</p> ",
+                        "modalites_evaluation": "<p style=\"text-align:justify\">Scolaires (établissements publics ou privés sous contrat),Apprentis (CFA ou sections d'apprentissage habilités),Formation professionnelle continue (établissements publics habilités).</p>  <p style=\"text-align:justify\">CCF</p>  <p style=\"text-align:justify\"></p>  <p style=\"text-align:justify\">Formation professionnellecontinue (établissements publics habilités à pratiquer le CCF pour ce BTS).</p>  <p style=\"text-align:justify\">CCF</p>  <p style=\"text-align:justify\"></p>  <p style=\"text-align:justify\">Scolaires (établissements privés hors contrat),Apprentis (CFA ou sections d'apprentissage non habilités),Formation professionnelle continue (établissements non habilités) au titre de leur expérience professionnelle,Enseignement à distance.</p>  <p style=\"text-align:justify\">Ponctuelle pratique</p> "
+                    },
+                    {
+                        "numero_bloc": "",
+                        "intitule": "Management de projet",
+                        "liste_competences": "<p style=\"text-align:justify\">Communiquer à l'écrit et à l'oral</p>  <p style=\"text-align:justify\">Collaborer et encadrer la réalisation des travaux</p>  <p style=\"text-align:justify\">Analyser, prévenir et gérer les risques pour la santé et la sécurité</p>  <p style=\"text-align:justify\">Analyser les enjeux et les processus liés au développement durable</p>  <p style=\"text-align:justify\">Analyser les enjeux et les procédures de la qualité</p>  <p style=\"text-align:justify\">Analyser la gestion du planning et du budget de chantier</p>  <p style=\"text-align:justify\">Analyser la livraison des ouvrages</p> ",
+                        "modalites_evaluation": "<p style=\"text-align:justify\">Scolaires (établissements publics ou privés sous contrat),Apprentis (CFA ou sections d'apprentissage habilités),Formation professionnelle continue (établissements publics habilités).</p>  <p style=\"text-align:justify\">CCF</p>  <p style=\"text-align:justify\"></p>  <p style=\"text-align:justify\">Formation professionnellecontinue (établissements publics habilités à pratiquer le CCF pour ce BTS).</p>  <p style=\"text-align:justify\">CCF</p>  <p style=\"text-align:justify\"></p>  <p style=\"text-align:justify\">Scolaires (établissements privés hors contrat), Apprentis (CFA ou sections d'apprentissage non habilités),Formation professionnelle continue (établissements non habilités) au titre de leur expérience professionnelle,Enseignement à distance.</p>  <p style=\"text-align:justify\">Ponctuelle orale</p> "
+                    },
+                    {
+                        "numero_bloc": "",
+                        "intitule": "Conception d’un ouvrage",
+                        "liste_competences": "<p style=\"text-align:justify\">Analyser un ouvrage et sa réalisation</p>  <p style=\"text-align:justify\">Concevoir un ouvrage simple</p> ",
+                        "modalites_evaluation": "<p style=\"text-align:justify\">Scolaires (établissements publics ou privés sous contrat),Apprentis (CFA ou sections d'apprentissage habilités),Formation professionnelle continue (établissements publics habilités).</p>  <p style=\"text-align:justify\">Ponctuelle écrite</p>  <p style=\"text-align:justify\"></p>  <p style=\"text-align:justify\">Formation professionnellecontinue (établissements publics habilités à pratiquer le CCF pour ce BTS).</p>  <p style=\"text-align:justify\">Ponctuelle écrite</p>  <p style=\"text-align:justify\"></p>  <p style=\"text-align:justify\">Scolaires (établissements privés hors contrat),Apprentis (CFA ou sections d'apprentissage non habilités),Formation professionnelle continue (établissements non habilités) au titre de leur expérience professionnelle,Enseignement à distance.</p>  <p style=\"text-align:justify\">Ponctuelle écrite</p> "
+                    }
+                ],
+                "voix_acces": null,
+                "partenaires": null,
+                "rncp_outdated": false
+            },
+            "rome_codes": [
+                "F1106",
+                "F1108",
+                "F1201",
+                "F1202"
+            ],
+            "periode": [
+                "2021-09-01T00:00:00.000Z"
+            ],
+            "capacite": null,
+            "duree": "2",
+            "annee": "X",
+            "parcoursup_statut": "non publiable en l'état",
+            "parcoursup_error": null,
+            "affelnet_statut": "non publiable en l'état",
+            "published": false,
+            "updates_history": [
+                {
+                    "from": {
+                        "parcoursup_statut": "non publiable en l'état",
+                        "parcoursup_raison_depublication": null
+                    },
+                    "to": {
+                        "parcoursup_id": "29994",
+                        "parcoursup_statut": "publié",
+                        "parcoursup_raison_depublication": null,
+                        "last_update_who": "annick.miquel@ac-bordeaux.fr"
+                    },
+                    "updated_at": "2021-12-01T10:27:57.567Z"
+                },
+                {
+                    "from": {
+                        "parcoursup_raison_depublication": null,
+                        "parcoursup_statut": "publié"
+                    },
+                    "to": {
+                        "parcoursup_raison_depublication": "L'établissement de rattachement n'est pas le bon. Cette formation (avec le même UAI de lieu de formation) rattachée au bon établissement gestionnaire est en attente de publication.",
+                        "parcoursup_statut": "non publié",
+                        "last_update_who": "regis.colin@ac-bordeaux.fr"
+                    },
+                    "updated_at": "2022-02-17T09:10:12.832Z"
+                }
+            ],
+            "last_update_who": "regis.colin@ac-bordeaux.fr",
+            "lieu_formation_adresse": "Lycée Porte du Lot Route d'Aiguillon",
+            "lieu_formation_siret": null,
+            "id_rco_formation": "02_202010085182|02_00207815|75787",
+            "id_formation": "02_202010085182",
+            "id_action": "02_00207815",
+            "ids_action": [
+                "02_00207815"
+            ],
+            "id_certifinfo": "75787",
+            "tags": [
+                "2021"
+            ],
+            "libelle_court": "BTS",
+            "niveau_formation_diplome": "320",
+            "affelnet_infos_offre": null,
+            "affelnet_code_nature": null,
+            "affelnet_secteur": null,
+            "affelnet_raison_depublication": null,
+            "bcn_mefs_10": [
+                {
+                    "mef10": "3112310721",
+                    "modalite": {
+                        "duree": "2",
+                        "annee": "1"
+                    }
+                },
+                {
+                    "mef10": "3112310722",
+                    "modalite": {
+                        "duree": "2",
+                        "annee": "2"
+                    }
+                }
+            ],
+            "editedFields": null,
+            "parcoursup_raison_depublication": "L'établissement de rattachement n'est pas le bon. Cette formation (avec le même UAI de lieu de formation) rattachée au bon établissement gestionnaire est en attente de publication.",
+            "lieu_formation_geo_coordonnees": "44.3601017,0.375571",
+            "geo_coordonnees_etablissement_gestionnaire": "44.361935,0.38978",
+            "geo_coordonnees_etablissement_formateur": "0.406364,44.360182",
+            "created_at": "2021-08-07T23:56:11.232Z",
+            "last_update_at": "2022-11-07T06:13:25.606Z",
+            "distance_lieu_formation_etablissement_formateur": null,
+            "etablissement_formateur_nda": null,
+            "etablissement_gestionnaire_nda": null,
+            "lieu_formation_adresse_computed": "2 Place de l’Hôtel de Ville 47320 Clairac",
+            "cfd_entree": "32023107",
+            "cle_ministere_educatif": "075787P012X1947001590001619470015900016-47065#L01",
+            "entierement_a_distance": false,
+            "etablissement_formateur_courriel": "soph.dal-molin@ac-bordeaux.fr",
+            "etablissement_gestionnaire_courriel": "ce.0470015l@ac-bordeaux.fr",
+            "niveau_entree_obligatoire": null,
+            "affelnet_mefs_10": [],
+            "parcoursup_mefs_10": [
+                {
+                    "mef10": "3112310721",
+                    "modalite": {
+                        "duree": "2",
+                        "annee": "1"
+                    }
+                }
+            ],
+            "uai_formation_valide": true,
+            "parcoursup_published_date": null,
+            "affelnet_published_date": null,
+            "distance": 1045,
+            "france_competence_infos": null,
+            "lieu_formation_geo_coordonnees_computed": "44.354698,0.364818",
+            "last_statut_update_date": "2023-11-11T08:41:57.847Z",
+            "intitule_rco": "BTS Travaux Publics (Apprentissage possible)",
+            "last_status": {
+                "affelnet_statut": "non publiable en l'état",
+                "date": "2024-01-23T07:15:51.351Z"
+            },
+            "annee_incoherente": false,
+            "duree_incoherente": false,
+            "catalogue_published": false,
+            "etablissement_gestionnaire_certifie_qualite": false,
+            "etablissement_formateur_certifie_qualite": false,
+            "etablissement_reference_certifie_qualite": false,
+            "etablissement_gestionnaire_habilite_rncp": null,
+            "etablissement_formateur_habilite_rncp": null,
+            "etablissement_reference_habilite_rncp": null,
+            "affelnet_perimetre": false,
+            "parcoursup_perimetre": false,
+            "affelnet_id": null,
+            "affelnet_modalites_offre": null,
+            "affelnet_url_infos_offre": null,
+            "affelnet_url_modalites_offre": null,
+            "forced_published": false,
+            "rejection": null,
+            "date_debut": [
+                "2021-09-01T00:00:00.000Z"
+            ],
+            "date_fin": [
+                "2023-08-31T00:00:00.000Z"
+            ],
+            "id_RCO": "02_00207815_02_202010085182_2_00207815",
+            "parcoursup_id": null,
+            "modalites_entrees_sorties": [
+                false
+            ],
+            "parcoursup_export_date": null,
+            "updated_at": "2024-01-24T07:31:17.962Z",
+            "updatedAt": "2024-01-24T07:29:49.544Z",
+            "parcoursup_session": false,
+            "parcoursup_previous_session": false,
+            "affelnet_session": false,
+            "affelnet_previous_session": false,
+            "parcoursup_previous_statut": "non publiable en l'état",
+            "affelnet_previous_statut": "non publiable en l'état",
+            "id": "5fc61896712d48a988137bf9"
+        }
+    ],
+    "pagination": {
+        "page": "1",
+        "resultats_par_page": 10,
+        "nombre_de_page": 1,
+        "total": 2
+    }
+}

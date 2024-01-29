@@ -55,6 +55,16 @@ const config = {
       rome: "1c893376-8476-4262-9a0e-8df519883e1e",
     },
   },
+  catalogueApprentissage: {
+    api: {
+      baseUrl: env
+        .get("CATALOGUE_APPRENTISSAGE_BASE_URL")
+        .default("https://catalogue.apprentissage.education.gouv.fr/api/v1")
+        .asString(),
+      username: env.get("CATALOGUE_APPRENTISSAGE_USERNAME").required().asString(),
+      password: env.get("CATALOGUE_APPRENTISSAGE_PASSWORD").required().asString(),
+    },
+  },
   acce: {
     files: {
       etablissements: path.join(getDirname(import.meta.url), "../data/", "acce_etablissements.csv"),
