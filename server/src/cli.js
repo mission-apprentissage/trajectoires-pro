@@ -78,7 +78,7 @@ cli
   .command("importCatalogueApprentissage")
   .description("Importe les données du catalogue de l'apprentissage")
   .action(() => {
-    runScript(importCAFormations());
+    runScript(importCAFormations);
   });
 
 cli
