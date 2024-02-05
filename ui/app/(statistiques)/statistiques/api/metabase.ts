@@ -11,7 +11,7 @@ type Params = {
 export async function iframe(
   dashboard: number,
   params: Params,
-  queryParams: Params,
+  queryParams: Params = {},
   hideParams: string[] = [],
   style = { bordered: false, title: false }
 ) {
@@ -44,4 +44,9 @@ export async function iframe(
       style.bordered ? "true" : false
     }&titled=${style.title ? "true" : "false"}`
   );
+}
+
+export async function json(id: string) {
+  const request = await fetch(METABASE_SITE_URL + `/public/question/${id}.json`);
+  return await request.json();
 }

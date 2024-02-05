@@ -11,11 +11,6 @@ describe("Layout", () => {
         </Layout>
       )
     );
-
-    const heading = screen.getByRole("heading", {
-      name: /Statistiques du projet Exposition d'InserJeunes/i,
-    });
-    expect(heading).toBeInTheDocument();
   });
 
   it("render the children", async () => {

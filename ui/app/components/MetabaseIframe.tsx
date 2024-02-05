@@ -2,6 +2,14 @@
 
 import React from "react";
 
-export default function MetabaseIframe({ url }: { url: string }) {
-  return <iframe title={"Metabase iframe"} src={url} frameBorder="0" width="100%" height="600"></iframe>;
+export default function MetabaseIframe({
+  title = "Metabase iframe",
+  url,
+  height = "600",
+}: {
+  title?: string;
+  url: string;
+  height?: string;
+}) {
+  return <iframe title={title} src={url} frameBorder="0" width="100%" height={height}></iframe>;
 }

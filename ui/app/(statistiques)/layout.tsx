@@ -11,6 +11,7 @@ import { Typograhpy } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
 import { Header } from "@codegouvfr/react-dsfr/Header";
 import { fr } from "@codegouvfr/react-dsfr";
+import "#/app/(statistiques)/styles/main.css";
 
 export function Layout({ children }: { children: JSX.Element }) {
   return (
@@ -38,14 +39,7 @@ export function Layout({ children }: { children: JSX.Element }) {
                 }),
               }}
             >
-              <Container variant="content" maxWidth={false}>
-                <Typograhpy variant="h3">{"Statistiques du projet Exposition d'InserJeunes"}</Typograhpy>
-                <Typograhpy variant="body1">{""}</Typograhpy>
-
-                <Container variant="subContent" maxWidth={false}>
-                  {children}
-                </Container>
-              </Container>
+              {children}
             </div>
           </PlausibleProvider>
         </MuiDsfrThemeProvider>
