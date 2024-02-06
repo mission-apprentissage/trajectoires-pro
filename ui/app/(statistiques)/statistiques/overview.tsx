@@ -1,9 +1,8 @@
-import { Typograhpy, Stack, Box } from "#/app/components/MaterialUINext";
+import { Typograhpy, Stack } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
 import Item from "#/app/components/Item";
 import { fr } from "@codegouvfr/react-dsfr";
-import { plateformesInfo, statsInfo, couverturesInfo } from "#/app/(statistiques)/statistiques/stats";
-
+import { couverturesInfo } from "#/app/(statistiques)/statistiques/stats";
 function BlockCouverture({ couvertures, nom, type }: { couvertures: any; nom: string; type: string }) {
   return (
     <>
@@ -25,7 +24,7 @@ function BlockCouverture({ couvertures, nom, type }: { couvertures: any; nom: st
         <Item>
           <Typograhpy variant="h2">{couvertures?.couverteVoiePro[type].toLocaleString("fr")}</Typograhpy>
           <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
-            Formations en voie professionnel
+            Formations en voie scolaire
           </Typograhpy>
         </Item>
         <Item>
@@ -35,9 +34,9 @@ function BlockCouverture({ couvertures, nom, type }: { couvertures: any; nom: st
           </Typograhpy>
         </Item>
         <Item>
-          <Typograhpy variant="h2">{couvertures?.couverteBetween.count[type]}</Typograhpy>
+          <Typograhpy variant="h2">{Math.round(couvertures?.couverteBetween.count[type] * 100)}%</Typograhpy>
           <Typograhpy variant="body1" sx={{ fontWeight: "bold", textAlign: "center" }}>
-            Formations couvertes en plus depuis {couvertures?.couverteBetween.date}
+            Augmentation de la couverture depuis {couvertures?.couverteBetween.date}
           </Typograhpy>
         </Item>
       </Stack>
@@ -46,48 +45,15 @@ function BlockCouverture({ couvertures, nom, type }: { couvertures: any; nom: st
 }
 
 export default async function Overview() {
-  const plateformes = await plateformesInfo();
   const couvertures = await couverturesInfo();
-  const stats = await statsInfo();
 
   return (
     <>
-      <Typograhpy variant="h2">{"Vue d'ensemble"}</Typograhpy>
-      <Typograhpy variant="body1">{""}</Typograhpy>
-
-      <Container variant="subContent" maxWidth={false}>
-        <Typograhpy variant="h6" sx={{ marginBottom: fr.spacing("2v") }}>
-          Nos partenaires
-        </Typograhpy>
-
-        <Stack
-          sx={{ backgroundColor: "var(--background-alt-grey-active)", padding: "1px" }}
-          direction={{ sm: "column", md: "row" }}
-          spacing={"1px"}
-        >
-          <Item>
-            <Typograhpy variant="h2">{plateformes?.production.length}</Typograhpy>
-            <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
-              Plateformes en ligne
-            </Typograhpy>
-          </Item>
-          <Item>
-            <Typograhpy variant="h2">{plateformes?.waiting.length}</Typograhpy>
-            <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
-              Plateformes en étude
-            </Typograhpy>
-          </Item>
-          <Item>
-            <Typograhpy variant="h2">{stats.views.toLocaleString("fr")}</Typograhpy>
-            <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
-              Consultations
-            </Typograhpy>
-          </Item>
-          <Item variant="empty"></Item>
-        </Stack>
-      </Container>
-
-      <Container variant="subContent" maxWidth={false} sx={{ marginTop: fr.spacing("5v") }}>
+      <Container
+        variant="subContent"
+        maxWidth={false}
+        sx={{ marginBottom: fr.spacing("5v"), marginTop: fr.spacing("5v") }}
+      >
         <Typograhpy variant="h6" sx={{ marginBottom: fr.spacing("2v") }}>
           Nos données
         </Typograhpy>

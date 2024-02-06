@@ -14,17 +14,18 @@ import { fr } from "@codegouvfr/react-dsfr";
 import "#/app/(statistiques)/styles/main.css";
 
 export function Layout({ children }: { children: JSX.Element }) {
+  const title = "Exposition des données InserJeunes - Statistiques";
   return (
     <DsfrProvider>
       <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
         <MuiDsfrThemeProvider>
           <PlausibleProvider domain={process.env.STATISTIQUES_SITE_HOST || ""}>
             <Header
-              brandTop={<>Exposition - Statistique</>}
-              serviceTitle="Exposition - Statistique"
+              brandTop={<>{title}</>}
+              serviceTitle={title}
               homeLinkProps={{
                 href: "/",
-                title: "Exposition - Statistique",
+                title: title,
               }}
               quickAccessItems={[]}
             />

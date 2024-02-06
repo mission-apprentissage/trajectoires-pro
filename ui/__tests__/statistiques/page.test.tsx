@@ -4,6 +4,7 @@ import Page from "#/app/(statistiques)/statistiques/page";
 import config from "#/app/(statistiques)/statistiques/config";
 import * as Stats from "#/app/(statistiques)/statistiques/stats";
 import * as Overview from "#/app/(statistiques)/statistiques/overview";
+import * as Plateformes from "#/app/(statistiques)/statistiques/plateformes";
 
 describe("Page", () => {
   beforeEach(async () => {
@@ -54,10 +55,13 @@ describe("Page", () => {
       )
     );
 
-    const originalOverview = Overview.default;
     // React testing library does not support async component
+    const originalOverview = Overview.default;
     // @ts-ignore
     jest.spyOn(Overview, "default").mockReturnValue(await originalOverview());
+    const originalPlateformes = Plateformes.default;
+    // @ts-ignore
+    jest.spyOn(Plateformes, "default").mockReturnValue(await originalPlateformes());
   });
 
   it("renders a page", async () => {
@@ -72,11 +76,6 @@ describe("Page", () => {
       name: /Nos données/i,
     });
     expect(headingData).toBeInTheDocument();
-
-    const headingStats = screen.getByRole("heading", {
-      name: /Statistiques détaillées du projet Exposition d'InserJeunes/i,
-    });
-    expect(headingStats).toBeInTheDocument();
 
     expect(screen.getByTitle("Vue metabase des appels d'API")).toBeInTheDocument();
     expect(screen.getByTitle("Vue metabase des appels d'API")).toHaveAttribute(

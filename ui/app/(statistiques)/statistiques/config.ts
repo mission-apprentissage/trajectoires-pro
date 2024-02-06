@@ -4,8 +4,8 @@ const Config = {
       stats: {
         id: parseInt(process.env.METABASE_DASHBOARD_STATS_ID || "53"), //53,
         defaultQueryParams: {
-          adresse_ip: ["213.91.3.170", "213.91.3.180", "195.83.117.34"],
-          consommateur: "ONISEP",
+          adresse_ip: [],
+          consommateur: "Toutes",
         },
         hideParams: ["adresse_ip", "consommateur"],
       },
