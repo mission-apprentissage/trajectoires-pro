@@ -21,7 +21,13 @@ export function Layout({ children }: { children: JSX.Element }) {
         <MuiDsfrThemeProvider>
           <PlausibleProvider domain={process.env.STATISTIQUES_SITE_HOST || ""}>
             <Header
-              brandTop={<>{title}</>}
+              brandTop={
+                <>
+                  RÉPUBLIQUE
+                  <br />
+                  FRANÇAISE
+                </>
+              }
               serviceTitle={title}
               homeLinkProps={{
                 href: "/",
