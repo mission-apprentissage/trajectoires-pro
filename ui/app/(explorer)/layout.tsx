@@ -16,7 +16,13 @@ function Layout({ children }: { children: JSX.Element }) {
         <MuiDsfrThemeProvider>
           <Providers>
             <Header
-              brandTop={<>Exposition - Explorer</>}
+              brandTop={
+                <>
+                  RÉPUBLIQUE
+                  <br />
+                  FRANÇAISE
+                </>
+              }
               serviceTitle="Exposition - Explorer"
               homeLinkProps={{
                 href: "/",

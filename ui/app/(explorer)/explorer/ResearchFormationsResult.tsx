@@ -15,8 +15,8 @@ import { Certification } from "#/types/certification";
 import { findRegionByCode } from "#/common/regions";
 export const revalidate = 0;
 
-const MILLESIMES = ["2019", "2020", "2021"];
-const MILLESIME_DOUBLE = ["2018_2019", "2019_2020", "2020_2021"];
+const MILLESIMES = ["2020", "2021", "2022"];
+const MILLESIME_DOUBLE = ["2019_2020", "2020_2021", "2021_2022"];
 
 async function certifications(
   code_certifications: string[],

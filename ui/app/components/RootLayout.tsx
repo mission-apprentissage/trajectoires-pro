@@ -52,7 +52,13 @@ export default function RootLayout({ title, children }: { title: string; childre
           <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
             <MuiDsfrThemeProvider>
               <Header
-                brandTop={<>{title}</>}
+                brandTop={
+                  <>
+                    RÉPUBLIQUE
+                    <br />
+                    FRANÇAISE
+                  </>
+                }
                 serviceTitle={title}
                 homeLinkProps={{
                   href: "/",
