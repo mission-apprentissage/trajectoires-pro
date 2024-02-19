@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.15.1...v1.16.0) (2024-02-19)
+
+
+### Features
+
+* amelioration page stats ([#232](https://github.com/mission-apprentissage/trajectoires-pro/issues/232)) ([15e8ad0](https://github.com/mission-apprentissage/trajectoires-pro/commit/15e8ad0f674bc4c80388d2aa3dcfa8cf603fea9a))
+
 ## [1.15.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.15.0...v1.15.1) (2024-01-30)
 
 
