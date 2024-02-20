@@ -5403,6 +5403,11 @@ rimraf@~2.4.0:
   dependencies:
     glob "^6.0.1"
 
+round-half-even@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/round-half-even/-/round-half-even-1.3.0.tgz#d763b5101686d884288fd8d92351dea483b1862f"
+  integrity sha512-IOE+LJ93PHUPDwqhOdCEIIwFlKwOLYISsR51CUHH0Nn9gitUHd9b9dmEpH0QkD+9RekXJ0UtgH4nVF77d/NnOg==
+
 run-async@^2.4.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-2.4.1.tgz#8440eccf99ea3e70bd409d49aab88e10c189a455"
