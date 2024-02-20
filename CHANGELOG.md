@@ -1,3 +1,10 @@
+## [1.16.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.16.0...v1.16.1) (2024-02-20)
+
+
+### Bug Fixes
+
+* arrondi les pourcentage en utilisant le banker's rounding ([#233](https://github.com/mission-apprentissage/trajectoires-pro/issues/233)) ([af0d4ae](https://github.com/mission-apprentissage/trajectoires-pro/commit/af0d4ae389f4339b953799d4ef335271bfc0a597))
+
 # [1.16.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.15.1...v1.16.0) (2024-02-19)
 
 
