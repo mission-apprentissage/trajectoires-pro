@@ -10,7 +10,7 @@
 
   <%- await include('../common/header'); %>
   <script>
-    var types = ["emploi", "formation", "autre"];
+    var types = ["emploi", "formation", "autres"];
 
     function showModal(type) {
       types.forEach(type => {
@@ -50,8 +50,6 @@
     }
 
     .card-modal .title {
-      font-size: 18px;
-      font-weight: 500;
       margin-bottom: 10px;
     }
 
@@ -331,7 +329,7 @@
           <div class="description-formation">
             Cet indicateur comptabilise le nombre d’étudiants inscrits dans une formation, qu’il s’agisse d’un autre niveau d’étude, d’un redoublement, d’une réorientation vers une nouvelle formation… L’indicateur ne tient pas compte de la continuité dans un parcours de formation pour le moment.
           </div>
-          <div class="description-autre">
+          <div class="description-autres">
             Il s’agit du nombre d’étudiant n’appartenant ni au taux en emploi, ni au taux en poursuite de formation. C’est-à-dire qu’il s’agit des étudiants qui n’ont pas pu être catégorisé sur une base liée à la scolarité ou une base emploi. Ils peuvent être au chômage, en inactivité, en indépendant, parties à l’étranger, en formation privée hors contrat.
           </div>
         </div>

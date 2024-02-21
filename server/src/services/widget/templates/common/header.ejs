@@ -2,8 +2,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <script>
   setInterval(() => {
-    parent.postMessage(document.body.offsetHeight, '*');
-  }, 500);
+    document.body && parent.postMessage(document.body.offsetHeight, '*');
+  }, 50);
 
   function collapse(id, btnExpandId, btnCollapseId) {
     document.querySelector(id).classList.toggle("collapse-show");
