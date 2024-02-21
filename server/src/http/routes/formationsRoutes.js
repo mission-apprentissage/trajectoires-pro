@@ -144,8 +144,6 @@ export default () => {
         const description = buildDescription(stats);
         const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
 
-        console.log("TOTO", stats, stats.taux_en_formation, stats.taux_en_emploi_6_mois, stats.taux_autres_6_mois);
-
         const widget = await getUserWidget({
           hash,
           type: "stats",

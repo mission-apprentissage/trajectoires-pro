@@ -13,7 +13,7 @@ const WIDGET_DEFAULT_TYPE = "error";
 export const WIDGETS = {
   stats: {
     default: {
-      currentVersion: 2,
+      currentVersion: 1,
       versions: [
         {
           version: 1,
