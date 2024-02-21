@@ -13,7 +13,7 @@ services:
       - trajectoires_pro_network
     depends_on:
       - server
-      - ui
+        - ui
     environment:
       - PARANOIA=1
       - ANOMALY_INBOUND=5
@@ -63,7 +63,7 @@ services:
       - trajectoires_pro_network
 
   metabase:
-    image: metabase/metabase:v0.48.2
+    image: metabase/metabase:v0.48.6
     container_name: trajectoires_pro_metabase
     mem_limit: 2g
     depends_on:

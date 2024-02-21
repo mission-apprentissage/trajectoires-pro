@@ -6,6 +6,7 @@ import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
+import { formatMillesime } from "#src/http/utils/formatters.js";
 import {
   addCsvHeaders,
   addJsonHeaders,
@@ -14,10 +15,28 @@ import {
   sendImageOnError,
 } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import { getLastMillesimesRegionales, transformDisplayStat } from "#src/common/stats.js";
+import { getLastMillesimesRegionales, transformDisplayStat, buildDescription } from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import { ErrorRegionaleNotFound, ErrorNoDataForMillesime } from "#src/http/errors.js";
+import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
+
+async function regionaleStats({ codes_certifications, region, millesime }) {
+  const code_certification = codes_certifications[0];
+  const exist = await RegionaleStatsRepository.exist({ region, code_certification });
+  if (!exist) {
+    throw new ErrorRegionaleNotFound();
+  }
+
+  const result = await RegionaleStatsRepository.first({ region, code_certification, millesime });
+  if (!result) {
+    const millesimesAvailable = await RegionaleStatsRepository.findMillesime({ region, code_certification });
+    throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
+  }
+
+  const stats = transformDisplayStat()(result);
+  return stats;
+}
 
 export default () => {
   const router = express.Router();
@@ -138,25 +157,89 @@ export default () => {
 
       return sendImageOnError(
         async () => {
-          const code_certification = codes_certifications[0];
-          const exist = await RegionaleStatsRepository.exist({ region, code_certification });
-          if (!exist) {
-            throw new ErrorRegionaleNotFound();
-          }
-
-          const result = await RegionaleStatsRepository.first({ region, code_certification, millesime });
-          if (!result) {
-            const millesimesAvailable = await RegionaleStatsRepository.findMillesime({ region, code_certification });
-            throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
-          }
-
-          const stats = transformDisplayStat()(result);
+          const stats = await regionaleStats({ codes_certifications, region, millesime });
           return sendStats("certification", stats, res, options);
         },
         res,
         { type: "regionales", regionCode: region },
         options
       );
+    })
+  );
+
+  router.get(
+    "/api/inserjeunes/regionales/:region/certifications/:codes_certifications/widget/:hash",
+    authMiddleware("public"),
+    tryCatch(async (req, res) => {
+      const { hash, theme, region, codes_certifications, millesime } = await validate(
+        { ...req.params, ...req.query },
+        {
+          hash: Joi.string(),
+          ...validators.region(),
+          codes_certifications: validators.arrayOf(Joi.string().required()).default([]).min(1),
+          millesime: Joi.string().default(getLastMillesimesRegionales()),
+          ...validators.vues(),
+          ...validators.widget("stats"),
+        }
+      );
+
+      try {
+        const stats = await regionaleStats({ codes_certifications, region, millesime });
+        const description = buildDescription(stats);
+
+        const widget = await getUserWidget({
+          hash,
+          type: "stats",
+          theme,
+          data: {
+            taux: [
+              { name: "formation", value: stats.taux_en_formation },
+              { name: "emploi", value: stats.taux_en_emploi_6_mois },
+              { name: "autres", value: stats.taux_autres_6_mois },
+            ],
+            millesimes: formatMillesime(millesime).split("_"),
+            description,
+            // TODO: fix libelle BCN
+            formationLibelle: stats.libelle,
+            region: stats.region,
+          },
+        });
+
+        res.setHeader("content-type", "text/html");
+        return res.status(200).send(widget);
+      } catch (err) {
+        // TODO: gestion des erreurs
+        const widget = await getUserWidget({ hash, type: "error", theme });
+
+        res.setHeader("content-type", "text/html");
+        return res.status(200).send(widget);
+      }
+    })
+  );
+
+  router.get(
+    "/api/inserjeunes/regionales/:region/certifications/:codes_certifications/widget",
+    authMiddleware("private"),
+    tryCatch(async (req, res) => {
+      const { theme, millesime } = await validate(
+        { ...req.params, ...req.query },
+        {
+          ...validators.region(),
+          codes_certifications: validators.arrayOf(Joi.string().required()).default([]).min(1),
+          millesime: Joi.string().default(null),
+          ...validators.vues(),
+          ...validators.widget("stats"),
+        }
+      );
+
+      const widget = await getIframe({
+        user: req.user,
+        parameters: { theme, millesime },
+        path: req.path,
+      });
+
+      res.setHeader("content-type", "text/html");
+      return res.status(200).send(widget);
     })
   );
 

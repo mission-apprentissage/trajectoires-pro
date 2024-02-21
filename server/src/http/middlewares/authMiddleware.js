@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { HeaderAPIKeyStrategy } from "passport-headerapikey";
 import { compose } from "compose-middleware";
 import * as Auth from "#src/services/auth/index.js";
+import * as User from "#src/services/user/user.js";
 import { ErrorNotAuthorized } from "../errors.js";
 
 // Legacy api key authentication
@@ -31,7 +32,7 @@ passport.use(
     },
     async function (req, jwtPayload, done) {
       try {
-        const user = await Auth.User.getUser(jwtPayload.username);
+        const user = await User.getUser(jwtPayload.username);
 
         if (!user) {
           return done(null, false);

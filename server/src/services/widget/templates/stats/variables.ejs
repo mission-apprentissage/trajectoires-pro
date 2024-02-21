@@ -1,0 +1,46 @@
+<%_
+//sort((a, b) => a.value - b.value)
+taux = data.taux.reduce((acc, taux, index) => {
+    const rounded = taux.value > 0 && taux.value < 5 ? 1 : Math.round(taux.value / 10);
+    let eleves = acc.prev + rounded > 10 ? 10 - acc.prev : rounded;
+    // Use the last taux to round
+    if (index === 2) {
+        eleves = eleves + acc.prev < 10 ? 10 - acc.prev : eleves;
+    }
+
+    const lessOne = taux.value > 0 && taux.value < 5 && eleves === 1;
+
+    let description=lessOne ? "Moins d'un élève sur 10" : eleves + " élèves sur 10";
+    description=eleves== 0 ? "Aucun élève" : description;
+
+
+    acc.taux[taux.name] = {
+        ...taux,
+        rounded,
+        eleves,
+        lessOne,
+        description
+    };
+    acc.prev = acc.prev + acc.taux[taux.name].eleves;
+    return acc;
+}, {taux: {}, prev: 0}).taux;
+
+taux["emploi"].colorIcon = "green-variant";
+taux["emploi"].colorText = "green";
+taux["emploi"].title = "EN EMPLOI";
+taux["emploi"].icon = "#icon-briefcase";
+
+taux["formation"].colorIcon = "orange-variant";
+taux["formation"].colorText = "orange";
+taux["formation"].title = "EN FORMATION";
+taux["formation"].icon = "#icon-student";
+
+taux["autres"].colorIcon = "blue-variant";
+taux["autres"].colorText = "blue";
+taux["autres"].title = "AUTRES PARCOURS";
+taux["autres"].icon = "#icon-route";
+
+millesimes=data.millesimes;
+millesimesDouble=millesimes.length === 2;
+
+-%>

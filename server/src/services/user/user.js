@@ -1,6 +1,7 @@
 import UserRepository from "#src/common/repositories/user.js";
 import { ErrorUserAlreadyExist, ErrorPasswordNotSafe, ErrorPasswordNotMatch, ErrorUserDoesNotExist } from "./error.js";
-import { passwordRegex, hashPassword } from "./auth.js";
+import { passwordRegex, hashPassword } from "#src/services/auth/auth.js";
+import uniqid from "uniqid";
 
 export async function createUser({ username, password, passwordRepeat }) {
   const exists = await UserRepository.exist({ username });
@@ -21,6 +22,10 @@ export async function createUser({ username, password, passwordRepeat }) {
   await UserRepository.create({
     username,
     password: hashedPassword,
+    widget: {
+      hash: uniqid(),
+      version: [],
+    },
   });
 
   return await UserRepository.first({ username });

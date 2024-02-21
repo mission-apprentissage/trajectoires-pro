@@ -410,6 +410,19 @@ paths:
         404:
           $ref: "#/components/responses/404-Code-Formation"
 
+  /api/inserjeunes/formations/{uai}-{code_certification}/widget:
+    get:
+      description: Retourne le code à utiliser pour intégrer le widget
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/uai"
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesimePeriode"
+      responses:
+        200:
+          $ref: "#/components/responses/FormationWidgetResponse"
+
 components:
   parameters:
     # Query parameters
@@ -1321,6 +1334,42 @@ components:
             type: string
             format: xml
 
+    CertificationWidgetResponse:
+      description: Une iframe qui permet d'intégrer le widget
+      content:
+        "text/html":
+          schema:
+            type: string
+          examples:
+            html:
+              summary: Une iframe permettant d'intégrer le widget
+              value: |
+                <iframe onLoad="JS_CODE" style="width: 100%; height: 0;" src="/api/inserjeunes/certifications/[CODE_CERTIFICATION]/widget/[HASH]?" scrolling="no" frameBorder="0" />
+
+
+    RegionaleWidgetResponse:
+      description: Une iframe qui permet d'intégrer le widget
+      content:
+        "text/html":
+          schema:
+            type: string
+          examples:
+            html:
+              summary: Une iframe permettant d'intégrer le widget
+              value: |
+                <iframe onLoad="JS_CODE" style="width: 100%; height: 0;" src="/api/inserjeunes/regionales/[CODE_REGION]/certifications/[CODE_CERTIFICATION]/widget/[HASH]?" scrolling="no" frameBorder="0" />
+
+    FormationWidgetResponse:
+      description: Une iframe qui permet d'intégrer le widget
+      content:
+        "text/html":
+          schema:
+            type: string
+          examples:
+            html:
+              summary: Une iframe permettant d'intégrer le widget
+              value: |
+                <iframe onLoad="JS_CODE" style="width: 100%; height: 0;" src="/api/inserjeunes/formations/[UAI]-[CODE_CERTIFICATION]/widget/[HASH]?" scrolling="no" frameBorder="0" />
     LoginResponse:
       description: Un json content un Token
       content:

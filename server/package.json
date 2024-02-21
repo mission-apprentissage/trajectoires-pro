@@ -65,6 +65,8 @@
     "stream-json": "1.7.4",
     "stream-to-array": "2.3.0",
     "swagger-ui-express": "5.0.0",
+    "uglify-js": "3.17.4",
+    "uniqid": "5.4.0",
     "unzipper": "0.10.14",
     "uuid": "8.3.2",
     "yamljs": "0.3.0"

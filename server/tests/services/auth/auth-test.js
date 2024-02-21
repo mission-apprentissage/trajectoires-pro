@@ -3,6 +3,7 @@ import chaiAsPromised from "chai-as-promised";
 import jwt from "jsonwebtoken";
 import MockDate from "mockdate";
 import * as Auth from "#src/services/auth/index.js";
+import * as User from "#src/services/user/user.js";
 import config from "#src/config.js";
 
 const { assert } = chai;
@@ -40,7 +41,7 @@ describe("auth/auth", () => {
 
   describe("login", () => {
     it("Retourne un token lorsque l'utilisateur et le mot de passe sont valide", async () => {
-      await Auth.User.createUser({
+      await User.createUser({
         username: "test",
         password: "Password1234!",
         passwordRepeat: "Password1234!",
@@ -60,7 +61,7 @@ describe("auth/auth", () => {
     });
 
     it("Retourne une erreur lorsque le mot ne passe n'est pas valide", async () => {
-      await Auth.User.createUser({
+      await User.createUser({
         username: "test",
         password: "Password1234!",
         passwordRepeat: "Password1234!",

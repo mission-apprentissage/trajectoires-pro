@@ -1,6 +1,9 @@
 import Joi from "joi";
 import { getRegions, findRegionByCodePostal, getAcademies } from "#src/services/regions.js";
 import { formatArrayParameters } from "./formatters.js";
+import { WIDGETS } from "#src/services/widget/widget.js";
+
+const UAI_PATTERN = /^[0-9]{7}[A-Z]{1}$/;
 
 const customJoi = Joi.extend(
   (joi) => ({
@@ -32,6 +35,18 @@ const customJoi = Joi.extend(
 
 export function arrayOf(itemSchema = Joi.string()) {
   return customJoi.arrayOf().items(itemSchema).single();
+}
+
+export function uai() {
+  return {
+    uai: Joi.string().pattern(UAI_PATTERN).required(),
+  };
+}
+
+export function uais() {
+  return {
+    uais: arrayOf(Joi.string().pattern(UAI_PATTERN).required()).default([]),
+  };
 }
 
 export function regions() {
@@ -77,6 +92,21 @@ export function svg() {
     imageOnError: Joi.string().empty(["", null]).valid("true", "false", "empty").default("false"),
   };
 }
+
+export function widget(type) {
+  return {
+    theme: Joi.string()
+      .empty(["", null])
+      .custom((value, helper) => {
+        if (!WIDGETS[type][value]) {
+          return helper.message(`Le theme ${value} n'existe pas.`);
+        }
+
+        return value;
+      }),
+  };
+}
+
 export function vues() {
   return {
     vue: Joi.string().valid("filieres"),

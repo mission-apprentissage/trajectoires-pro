@@ -65,8 +65,8 @@ export async function createCollectionIfNeeded(name) {
   }
 }
 
-export async function upsert(collection, query, fields, onModified = {}) {
-  const res = await collection.updateOne(query, fields, { upsert: true });
+export async function updateOne(collection, query, fields, onModified = {}, options = { upsert: false }) {
+  const res = await collection.updateOne(query, fields, { upsert: options.upsert });
 
   if (res.modifiedCount) {
     await collection.updateOne(
@@ -82,6 +82,11 @@ export async function upsert(collection, query, fields, onModified = {}) {
     );
   }
 
+  return res;
+}
+
+export async function upsert(collection, query, fields, onModified = {}) {
+  const res = await updateOne(collection, query, fields, onModified, { upsert: true });
   return res;
 }
 

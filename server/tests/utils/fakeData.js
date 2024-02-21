@@ -372,6 +372,10 @@ export function insertUser(custom = {}) {
       {
         username: "test",
         password: custom.password,
+        widget: {
+          hash: "test",
+          version: [],
+        },
         _meta: { created_on: new Date(), updated_on: new Date() },
       },
       custom

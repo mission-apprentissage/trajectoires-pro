@@ -2,13 +2,13 @@ import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { omit } from "lodash-es";
 import MockDate from "mockdate";
-import { User } from "#src/services/auth/index.js";
+import * as User from "#src/services/user/user.js";
 import UserRepository from "#src/common/repositories/user.js";
 
 const { assert } = chai;
 chai.use(chaiAsPromised);
 
-describe("auth/user", () => {
+describe("user/user", () => {
   before(() => {
     MockDate.set("2023-01-01");
   });
@@ -24,24 +24,32 @@ describe("auth/user", () => {
         password: "Password1234!",
         passwordRepeat: "Password1234!",
       });
-      assert.deepEqual(omit(userCreated, ["_id", "password"]), {
+      assert.deepEqual(omit(userCreated, ["_id", "password", "widget.hash"]), {
         _meta: {
           created_on: new Date(),
           updated_on: new Date(),
         },
         username: "test",
+        widget: {
+          version: [],
+        },
       });
       assert.isString(userCreated.password);
+      assert.isString(userCreated.widget.hash);
 
       const userDb = await UserRepository.first({ username: "test" });
-      assert.deepEqual(omit(userDb, ["_id", "password"]), {
+      assert.deepEqual(omit(userDb, ["_id", "password", "widget.hash"]), {
         _meta: {
           created_on: new Date(),
           updated_on: new Date(),
         },
         username: "test",
+        widget: {
+          version: [],
+        },
       });
       assert.equal(userCreated.password, userDb.password);
+      assert.equal(userCreated.widget.hash, userDb.widget.hash);
     });
 
     it("Retourne une erreur lorsque l'utilisateur existe déjà", async () => {

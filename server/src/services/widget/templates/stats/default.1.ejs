@@ -1,0 +1,408 @@
+<%- await include('../common/variables'); %>
+<%- await include('./variables'); %>
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta name="description" content="<%= data.description.details %>">
+
+  <%- await include('../common/header'); %>
+  <script>
+    var types = ["emploi", "formation", "autre"];
+
+    function showModal(type) {
+      types.forEach(type => {
+        document.querySelector('.description-' + type).style.display = "none";
+        document.querySelector('.body-' + type + '-enable').style.display = "none";
+        document.querySelector('.body-' + type + '-disable').style.display = "flex";
+      })
+
+      document.querySelector('.body-' + type + '-disable').style.display = "none";
+      document.querySelector('.body-' + type + '-enable').style.display = "flex";
+      document.querySelector('.description-' + type).style.display = "block";
+      document.querySelector('.modal').style.display = "block";
+      document.querySelector('.container').style.display = "none";
+    }
+
+    function closeModal() {
+      document.querySelector('.modal').style.display = "none";
+      document.querySelector('.container').style.display = "block";
+    }
+  </script>
+
+  <style type="text/css">
+    :root {
+      --body-width: calc(var(--widget-width) * 0.075);
+      --body-height: calc(var(--body-width) * 1.8125);
+      --body-icon-width: calc(var(--widget-width) * 0.03);
+      --body-icon-left: calc(var(--widget-width) * 0.021);
+      --body-icon-top: calc(var(--widget-width) * 0.04);
+    }
+
+    .container {
+      padding: 10px;
+    }
+
+    .modal {
+      padding: 10px;
+    }
+
+    .card-modal .title {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      align-items: center;
+      background-color: #e8edff;
+      border-radius: 4px;
+      padding: 0px 6px;
+      width: fit-content;
+    }
+
+    .badge .label {
+      color: #0063cb;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 20px;
+    }
+
+    .card {
+      border: 1px solid #e3e3fd;
+      border-radius: 6px;
+      margin-top: 10px;
+      padding: 10px;
+      padding-top: 30px;
+    }
+
+    .card-footer {
+      color: #666666;
+      font-size: 12px;
+      margin-top: 30px;
+    }
+
+    .blocks {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .block-title {
+      display: flex;
+      align-items: center;
+    }
+
+    .block-title .icon {
+      margin-right: 4px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .body-description {
+      margin-bottom: 10px;
+    }
+
+    .body-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .body {
+      position: relative;
+    }
+
+    .body svg {
+      width: var(--body-width);
+      height: var(--body-height)
+    }
+
+    .body .icon {
+      position: absolute;
+      left: var(--body-icon-left);
+      top: var(--body-icon-top);
+      width: var(--body-icon-width);
+      height: var(--body-icon-width);
+    }
+
+    .modal-link:hover {
+      cursor: pointer;
+    }
+
+    .button {
+      margin-top: 15px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .button a {
+      background-color: #000091;
+      padding: 8px;
+      padding-left: 16px;
+      padding-right: 16px;
+      color: #f5f5fe;
+    }
+
+    .description {
+      text-align: justify;
+      font-size: 14px;
+    }
+
+    .icon-link {
+      width: 16px;
+      height: 16px;
+    }
+
+
+    .card-modal .close {
+      color: #000091;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .card-modal .close:hover {
+      cursor: pointer;
+    }
+
+    .modal .card {
+      padding-top: 15px;
+    }
+
+    .modal {
+      display: none;
+    }
+
+    @media screen and (min-width: 40em) {
+      .bodies {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        margin-bottom: 10px;
+        ;
+      }
+
+      .body-description {
+        display: none;
+      }
+
+      .card-modal .bodies {
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+    }
+
+    @media screen and (max-width: 40em) {
+      .bodies {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        gap: 2px;
+        margin-bottom: 10px;
+        margin-left: 10px;
+        ;
+      }
+
+      .blocks {
+        display: none;
+      }
+
+      .body-grey {
+        display: none;
+      }
+
+      .card-modal .body-grey .body {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body style="margin: 0; padding: 0;">
+  <svg display="none">
+    <%- await include('../assets/icon-briefcase.svg'); %>
+    <%- await include('../assets/icon-route.svg'); %>
+    <%- await include('../assets/icon-student.svg'); %>
+    <%- await include('../assets/icon-union.svg'); %>
+  </svg>
+
+  <div class="modal">
+    <div class="card">
+      <div class="card-modal">
+        <div class="close plausible-event-name=Modal+Close" onClick="closeModal()">Fermer X</div>
+        <div class="title">Nombre d’étudiants poursuivant leur formation</div>
+        <div class="bodies">
+          <div class="body-group body-grey body-emploi-disable">
+            <% for (var i=0; i<2;i++) { %>
+            <div class="body">
+              <svg class="grey">
+                <use xlink:href="#icon-union" />
+              </svg>
+              <svg class="icon white">
+                <use xlink:href="#icon-briefcase" />
+              </svg>
+            </div>
+            <% } %>
+          </div>
+          <div class="body-group body-emploi-enable">
+            <% for (var i=0; i<6;i++) { %>
+            <div class="body">
+              <svg class="green-variant">
+                <use xlink:href="#icon-union" />
+              </svg>
+              <svg class="icon white">
+                <use xlink:href="#icon-briefcase" />
+              </svg>
+            </div>
+            <% } %>
+          </div>
+
+          <div class="body-group body-grey body-formation-disable">
+            <% for (var i=0; i<2;i++) { %>
+            <div class="body">
+              <svg class="grey">
+                <use xlink:href="#icon-union" />
+              </svg>
+              <svg class="icon white">
+                <use xlink:href="#icon-student" />
+              </svg>
+            </div>
+            <% } %>
+          </div>
+          <div class="body-group body-formation-enable">
+            <% for (var i=0; i<6;i++) { %>
+            <div class="body">
+              <svg class="orange-variant">
+                <use xlink:href="#icon-union" />
+              </svg>
+              <svg class="icon white">
+                <use xlink:href="#icon-student" />
+              </svg>
+            </div>
+            <% } %>
+          </div>
+          <div class="body-group body-grey body-autres-disable">
+            <% for (var i=0; i<2;i++) { %>
+            <div class="body">
+              <svg class="grey">
+                <use xlink:href="#icon-union" />
+              </svg>
+              <svg class="icon white">
+                <use xlink:href="#icon-route" />
+              </svg>
+            </div>
+            <% } %>
+          </div>
+          <div class="body-group body-autres-enable">
+            <% for (var i=0; i<6;i++) { %>
+            <div class="body">
+              <svg class="blue-variant">
+                <use xlink:href="#icon-union" />
+              </svg>
+              <svg class="icon white">
+                <use xlink:href="#icon-route" />
+              </svg>
+            </div>
+            <% } %>
+          </div>
+        </div>
+        <div class="description">
+          <div class="description-emploi">
+            Il s’agit du nombre de jeunes ayant trouvé un emploi 6 mois après leur dernière année de formation ou d’apprentissage dans cette formation.<br /><br />
+            Ce chiffre comprend les emplois privés et publics mais uniquement salariés. Les auto-entreprises seront comptabilisées dans les “<span><svg class="icon icon-link">
+                <use xlink:href="#icon-route" />
+              </svg> autres parcours</span>”.</div>
+          <div class="description-formation">
+            Cet indicateur comptabilise le nombre d’étudiants inscrits dans une formation, qu’il s’agisse d’un autre niveau d’étude, d’un redoublement, d’une réorientation vers une nouvelle formation… L’indicateur ne tient pas compte de la continuité dans un parcours de formation pour le moment.
+          </div>
+          <div class="description-autre">
+            Il s’agit du nombre d’étudiant n’appartenant ni au taux en emploi, ni au taux en poursuite de formation. C’est-à-dire qu’il s’agit des étudiants qui n’ont pas pu être catégorisé sur une base liée à la scolarité ou une base emploi. Ils peuvent être au chômage, en inactivité, en indépendant, parties à l’étranger, en formation privée hors contrat.
+          </div>
+        </div>
+        <div class="button">
+          <a>En savoir plus sur les indicateurs</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="title">Que deviennent les étudiants après cette formation ?</div>
+    <% if (data.etablissementLibelle) { %>
+    <div class="subTitle">Les chiffres pour le <%= data.etablissementLibelle %></div>
+    <% } else if (data.region) { %>
+    <div class="subTitle">Les chiffres pour la région <%= data.region.nom %></div>
+    <% } else { %>
+    <!-- <div class="title"><%= data.formationLibelle %></div> -->
+    <% }  %>
+    <!-- <div class="badge">
+      <div class="label">CAP EN 2 ANS</div>
+    </div> -->
+
+
+    <div class="card">
+      <div class="card-data">
+        <div class="bodies">
+          <% for (const key of ["emploi", "formation", "autres"]) { %>
+          <div class="body-group">
+            <% for (var i=0; i<taux[key].eleves;i++) { %>
+            <div class="body">
+              <svg class="<%= taux[key].colorIcon %>">
+                <use xlink:href="#icon-union" />
+              </svg>
+              <svg class="icon white">
+                <use xlink:href="<%= taux[key].icon %>" />
+              </svg>
+            </div>
+            <% } %>
+          </div>
+          <div class="body-description">
+            <div class="block <%= taux[key].colorText %>">
+              <div class="block-title">
+                <div>
+                  <div><%= taux[key].description %></div>
+                  <div><%= taux[key].title %> <span onClick="showModal('<%= key %>')" class="modal-link plausible-event-name=Modal+Open+<%= key %>'">ⓘ</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+        <div class="blocks">
+          <% for (const key of ["emploi", "formation", "autres"]) { %>
+          <div class="block <%= taux[key].eleves == 0 ? "grey-variant" : taux[key].colorText %>">
+            <div class="block-title">
+              <svg class="icon">
+                <use xlink:href="<%= taux[key].icon %>" />
+              </svg>
+              <%= taux[key].title %>
+            </div>
+            <div><%= taux[key].description %> <span onClick="showModal('<%= key %>')" class="modal-link plausible-event-name=Modal+Open+<%= key %>">ⓘ</span></div>
+          </div>
+          <% } %>
+        </div>
+        <div class="card-footer">
+          Données issues du dispositif <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">InserJeunes</a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">D’où viennent ces données ?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

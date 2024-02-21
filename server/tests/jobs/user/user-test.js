@@ -22,24 +22,32 @@ describe("user", () => {
         password: "Password1234!",
         passwordRepeat: "Password1234!",
       });
-      assert.deepEqual(omit(userCreated, ["_id", "password"]), {
+      assert.deepEqual(omit(userCreated, ["_id", "password", "widget.hash"]), {
         _meta: {
           created_on: new Date(),
           updated_on: new Date(),
         },
         username: "test",
+        widget: {
+          version: [],
+        },
       });
       assert.isString(userCreated.password);
+      assert.isString(userCreated.widget.hash);
 
       const userDb = await UserRepository.first({ username: "test" });
-      assert.deepEqual(omit(userDb, ["_id", "password"]), {
+      assert.deepEqual(omit(userDb, ["_id", "password", "widget.hash"]), {
         _meta: {
           created_on: new Date(),
           updated_on: new Date(),
         },
         username: "test",
+        widget: {
+          version: [],
+        },
       });
       assert.equal(userCreated.password, userDb.password);
+      assert.equal(userCreated.widget.hash, userDb.widget.hash);
     });
   });
 

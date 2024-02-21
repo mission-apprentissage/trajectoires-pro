@@ -1,0 +1,104 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<script>
+  setInterval(() => {
+    parent.postMessage(document.body.offsetHeight, '*');
+  }, 500);
+
+  function collapse(id, btnExpandId, btnCollapseId) {
+    document.querySelector(id).classList.toggle("collapse-show");
+    document.querySelector(btnExpandId).classList.toggle("collapse-button-hide");
+    document.querySelector(btnCollapseId).classList.toggle("collapse-button-hide");
+  }
+
+  document.addEventListener("DOMContentLoaded", function(event) {
+    parent.postMessage(document.body.offsetHeight, '*');
+  });
+</script>
+<script defer data-domain="<%= plausibleDomain %>" src="https://plausible.io/js/script.local.outbound-links.tagged-events.js"></script>
+
+<style type="text/css">
+  @font-face {
+    font-family: "Marianne";
+    src: url("data:font/truetype;charset=utf-8;base64,<%= base64Font %>") format("woff");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  body {
+    font-family: "Marianne", Helvetica;
+    font-style: normal;
+    max-width: var(--widget-width);
+    width: 100%;
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :root {
+    --widget-width: min(100vw, 650px);
+  }
+
+  .white {
+    color: white;
+  }
+
+  .green {
+    color: #27a658;
+  }
+
+  .orange {
+    color: #fc5d00;
+  }
+
+  .blue {
+    color: #0063cb;
+  }
+
+  .grey {
+    color: #DDDDDD;
+  }
+
+  .grey-variant {
+    color: #929292;
+  }
+
+  .green-variant {
+    color: #72B77A;
+  }
+
+  .orange-variant {
+    color: #FA7A35;
+  }
+
+  .blue-variant {
+    color: #4A9DF7;
+  }
+
+  a {
+    color: #000091;
+    text-decoration: none;
+  }
+
+  a:hover {
+    cursor: pointer;
+  }
+
+  .title {
+    color: #000091;
+    font-weight: 700;
+    font-size: 20px;
+  }
+
+  .collapse-hide {
+    display: none;
+  }
+
+  .collapse-show {
+    display: block;
+  }
+
+  .collapse-button-hide {
+    display: none;
+  }
+</style>

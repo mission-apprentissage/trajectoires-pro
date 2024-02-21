@@ -54,7 +54,7 @@ export const templates = {
 };
 
 let base64Font = "";
-function loadBase64Font() {
+export function loadBase64Font() {
   if (!base64Font) {
     const buffer = fs.readFileSync(path.join(__dirname, `./assets/fonts/Marianne-Regular.woff`));
     base64Font = buffer.toString("base64");

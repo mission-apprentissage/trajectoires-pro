@@ -2,7 +2,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { ErrorWrongCredentials } from "./error.js";
 import config from "#src/config.js";
-import { getUser } from "./user.js";
+import { getUser } from "#src/services/user/user.js";
 
 const JWT_SECRET = config.auth.jwtSecret;
 const JWT_ISSUER = config.auth.jwtIssuer;
