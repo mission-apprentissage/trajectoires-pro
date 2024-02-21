@@ -1,4 +1,6 @@
 location /metabase/ {
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    
     proxy_pass              http://metabase:3000/;
     proxy_set_header        Host $host;
     proxy_set_header        X-Real-IP $remote_addr;
