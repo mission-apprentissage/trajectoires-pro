@@ -13,7 +13,7 @@ describe("repositories", () => {
     describe("getFilieresStats", () => {
       describe("Quand les CFDs sont les mêmes", async () => {
         it("Retourne les stats pour une filière", async () => {
-          insertRegionalesStats({
+          await insertRegionalesStats({
             region: { code: "11", nom: "Île-de-France" },
             code_certification: "12345678",
             code_formation_diplome: "12345678",
@@ -27,7 +27,7 @@ describe("repositories", () => {
             nb_en_emploi_12_mois: 25,
             nb_en_emploi_6_mois: 45,
           });
-          insertRegionalesStats({
+          await insertRegionalesStats({
             region: { code: "11", nom: "Île-de-France" },
             code_certification: "23830024202",
             code_formation_diplome: "12345678",
