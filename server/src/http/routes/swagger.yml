@@ -157,6 +157,17 @@ paths:
         404:
           $ref: "#/components/responses/404-Code-Certification"
 
+  /api/inserjeunes/certifications/{code_certification}/widget:
+    get:
+      description: Retourne le code à utiliser pour intégrer le widget
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesime"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationWidgetResponse"
 
   /api/inserjeunes/regionales:
     get:
@@ -323,6 +334,19 @@ paths:
           $ref: "#/components/responses/401"
         404:
           $ref: "#/components/responses/404-Code-Regionale"
+
+  /api/inserjeunes/regionales/{code_region}/certifications/{code_certification}/widget:
+    get:
+      description: Retourne le code à utiliser pour intégrer le widget
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesimePeriode"
+      responses:
+        200:
+          $ref: "#/components/responses/RegionaleWidgetResponse"
 
   /api/inserjeunes/formations:
     get:
