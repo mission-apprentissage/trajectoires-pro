@@ -3,7 +3,10 @@ import Container from "#/app/components/Container";
 import Item from "#/app/components/Item";
 import { fr } from "@codegouvfr/react-dsfr";
 import { couverturesInfo } from "#/app/(statistiques)/statistiques/stats";
+
 function BlockCouverture({ couvertures, nom, type }: { couvertures: any; nom: string; type: string }) {
+  const labelFormation = type === "national" ? "Certifications" : "Formations";
+
   return (
     <>
       <Typograhpy variant="body2" sx={{ marginBottom: fr.spacing("2v"), fontWeight: "bold" }}>
@@ -18,19 +21,19 @@ function BlockCouverture({ couvertures, nom, type }: { couvertures: any; nom: st
         <Item>
           <Typograhpy variant="h2">{couvertures?.couverte[type].toLocaleString("fr")}</Typograhpy>
           <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
-            Formations couvertes
+            {labelFormation} couvertes
           </Typograhpy>
         </Item>
         <Item>
           <Typograhpy variant="h2">{couvertures?.couverteVoiePro[type].toLocaleString("fr")}</Typograhpy>
           <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
-            Formations en voie scolaire
+            {labelFormation} en voie scolaire
           </Typograhpy>
         </Item>
         <Item>
           <Typograhpy variant="h2">{couvertures?.couverteApprentissage[type].toLocaleString("fr")}</Typograhpy>
           <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
-            Formations en apprentissage
+            {labelFormation} en apprentissage
           </Typograhpy>
         </Item>
         <Item>
