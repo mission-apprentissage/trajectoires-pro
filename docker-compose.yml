@@ -13,7 +13,7 @@ services:
       - trajectoires_pro_network
     depends_on:
       - server
-        - ui
+      - ui
     environment:
       - PARANOIA=1
       - ANOMALY_INBOUND=5
