@@ -98,7 +98,7 @@ export function widget(type) {
     theme: Joi.string()
       .empty(["", null])
       .custom((value, helper) => {
-        if (!WIDGETS[type][value]) {
+        if (!WIDGETS[type].variant[value]) {
           return helper.message(`Le theme ${value} n'existe pas.`);
         }
 
