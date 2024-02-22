@@ -57,5 +57,5 @@ export async function getUserWidget({ hash, type, theme = "default", data = {}, 
 export async function getIframe({ user, parameters, path }) {
   const searchParams = new URLSearchParams(omitNil(parameters));
   const url = `${config.publicUrl}${path}/${user.widget.hash}?${searchParams.toString()}`;
-  return `<iframe onLoad="${IFRAME_ON_LOAD_JS}" style="width: 100%; height: 0;" src="${url}" scrolling="no" frameBorder="0" />`;
+  return `<iframe onLoad="${IFRAME_ON_LOAD_JS}" style="width: 100%; height: 0;" src="${url}" scrolling="no" frameBorder="0"></iframe>`;
 }
