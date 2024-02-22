@@ -24,7 +24,7 @@ server {
 
 server {
     listen ${SSL_PORT} ssl;
-    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME} documentation.${SERVER_NAME} test.${SERVER_NAME};;
+    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME} documentation.${SERVER_NAME} test.${SERVER_NAME};
     include includes/server.conf;
     include includes/statistiques/location_*.conf;
 }
