@@ -14,20 +14,23 @@
 
     function showModal(type) {
       types.forEach(type => {
-        document.querySelector('.description-' + type).style.display = "none";
-        document.querySelector('.body-' + type + '-enable').style.display = "none";
-        document.querySelector('.body-' + type + '-disable').style.display = "flex";
+        document.querySelector('#modal-description .description-' + type).style.display = "none";
+        document.querySelector('#modal-description .title-' + type).style.display = "none";
+        document.querySelector('#modal-description .body-' + type + '-enable').style.display = "none";
+        document.querySelector('#modal-description .body-' + type + '-disable').style.display = "flex";
       })
 
-      document.querySelector('.body-' + type + '-disable').style.display = "none";
-      document.querySelector('.body-' + type + '-enable').style.display = "flex";
-      document.querySelector('.description-' + type).style.display = "block";
-      document.querySelector('.modal').style.display = "block";
+      document.querySelector('#modal-description .description-' + type).style.display = "block";
+      document.querySelector('#modal-description .title-' + type).style.display = "block";
+      document.querySelector('#modal-description .body-' + type + '-disable').style.display = "none";
+      document.querySelector('#modal-description .body-' + type + '-enable').style.display = "flex";
+
+      document.querySelector('#modal-description').style.display = "block";
       document.querySelector('.container').style.display = "none";
     }
 
     function closeModal() {
-      document.querySelector('.modal').style.display = "none";
+      document.querySelector('#modal-description').style.display = "none";
       document.querySelector('.container').style.display = "block";
     }
   </script>
@@ -39,14 +42,6 @@
       --body-icon-width: calc(var(--widget-width) * 0.03);
       --body-icon-left: calc(var(--widget-width) * 0.021);
       --body-icon-top: calc(var(--widget-width) * 0.04);
-    }
-
-    .container {
-      padding: 10px;
-    }
-
-    .modal {
-      padding: 10px;
     }
 
     .card-modal .title {
@@ -177,12 +172,12 @@
       cursor: pointer;
     }
 
-    .modal .card {
-      padding-top: 15px;
-    }
-
     .modal {
       display: none;
+    }
+
+    .modal .card {
+      margin-top: 0px;
     }
 
     @media screen and (min-width: 40em) {
@@ -240,11 +235,20 @@
     <%- await include('../assets/icon-union.svg'); %>
   </svg>
 
-  <div class="modal">
+  <div class="modal" id="modal-description">
     <div class="card">
       <div class="card-modal">
         <div class="close plausible-event-name=Modal+Close" onClick="closeModal()">Fermer X</div>
-        <div class="title">Nombre d’étudiants poursuivant leur formation</div>
+        <div class="title title-emploi">
+          Nombre d’élèves ayant un emploi
+        </div>
+        <div class="title title-formation">
+          Nombre d’étudiants poursuivant leur formation
+        </div>
+        <div class="title title-autres">
+          Nombre d’étudiants réalisant d’autres parcours
+        </div>
+
         <div class="bodies">
           <div class="body-group body-grey body-emploi-disable">
             <% for (var i=0; i<2;i++) { %>
@@ -334,7 +338,7 @@
           </div>
         </div>
         <div class="button">
-          <a>En savoir plus sur les indicateurs</a>
+          <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur les indicateurs</a>
         </div>
       </div>
     </div>
@@ -396,7 +400,7 @@
           <% } %>
         </div>
         <div class="card-footer">
-          Données issues du dispositif <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">InserJeunes</a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">D’où viennent ces données ?</a>
+          Données issues du dispositif <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">InserJeunes</a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur ces données.</a>
         </div>
       </div>
     </div>
