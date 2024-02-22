@@ -11,8 +11,7 @@ location / {
 location /ui {
     add_header X-Frame-Options "SAMEORIGIN" always;
 
-    set $upstream http://ui:3000;
-    include includes/proxy.conf;
+    return 301 https://$host/statistiques;
 }
 
 location /statistiques {
