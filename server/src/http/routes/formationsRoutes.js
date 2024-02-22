@@ -160,6 +160,12 @@ export default () => {
             formationLibelle: stats.libelle,
             etablissementLibelle: etablissement.appellation_officielle,
           },
+          plausibleCustomProperties: {
+            type: "formation",
+            uai,
+            code_certification,
+            millesime,
+          },
         });
 
         res.setHeader("content-type", "text/html");

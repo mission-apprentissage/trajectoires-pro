@@ -20,7 +20,7 @@ const IFRAME_ON_LOAD_JS = UglifyJs.minify(
   }
 ).code;
 
-export async function getUserWidget({ hash, type, theme = "default", data = {} }) {
+export async function getUserWidget({ hash, type, theme = "default", data = {}, plausibleCustomProperties = {} }) {
   const user = await UserRepository.first({ "widget.hash": hash });
   if (!user) {
     throw new ErrorWidgetDoesNotExist();
@@ -44,7 +44,14 @@ export async function getUserWidget({ hash, type, theme = "default", data = {} }
     );
   }
 
-  return renderWidget(widget.widget, widget.template, data);
+  return renderWidget({
+    widget: widget,
+    data,
+    plausibleCustomProperties: {
+      user: user.username,
+      ...plausibleCustomProperties,
+    },
+  });
 }
 
 export async function getIframe({ user, parameters, path }) {

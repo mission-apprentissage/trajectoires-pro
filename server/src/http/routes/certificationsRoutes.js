@@ -169,6 +169,11 @@ export default () => {
             // TODO: fix libelle BCN
             formationLibelle: stats.libelle,
           },
+          plausibleCustomProperties: {
+            type: "certification",
+            code_certification: codes_certifications[0],
+            millesime,
+          },
         });
 
         res.setHeader("content-type", "text/html");

@@ -203,6 +203,12 @@ export default () => {
             formationLibelle: stats.libelle,
             region: stats.region,
           },
+          plausibleCustomProperties: {
+            type: "regionale",
+            code_certification: codes_certifications[0],
+            millesime,
+            region,
+          },
         });
 
         res.setHeader("content-type", "text/html");

@@ -12,33 +12,37 @@ const WIDGET_DEFAULT_THEME = "default";
 const WIDGET_DEFAULT_TYPE = "error";
 export const WIDGETS = {
   stats: {
-    default: {
-      currentVersion: 1,
-      versions: [
-        {
-          version: 1,
-          template: path.join(__dirname, "templates", "stats", "default.1.ejs"),
-        },
-      ],
-      validator: (data) => {
-        if (data.taux.find(({ value }) => isNil(value))) {
-          return false;
-        }
-        return true;
+    variant: {
+      default: {
+        currentVersion: 1,
+        versions: [
+          {
+            version: 1,
+            template: path.join(__dirname, "templates", "stats", "default.1.ejs"),
+          },
+        ],
       },
+    },
+    validator: (data) => {
+      if (data.taux.find(({ value }) => isNil(value))) {
+        return false;
+      }
+      return true;
     },
   },
   error: {
-    default: {
-      currentVersion: 1,
-      versions: [
-        {
-          version: 1,
-          template: path.join(__dirname, "templates", "error", "error.1.ejs"),
-        },
-      ],
-      validator: () => true,
+    variant: {
+      default: {
+        currentVersion: 1,
+        versions: [
+          {
+            version: 1,
+            template: path.join(__dirname, "templates", "error", "error.1.ejs"),
+          },
+        ],
+      },
     },
+    validator: () => true,
   },
 };
 
@@ -50,13 +54,19 @@ function getVersion(widget, version = null) {
   return template;
 }
 
-function getBaseData(template) {
+function getBaseData({ widget, plausibleCustomProperties = {} }) {
   const base64Font = loadBase64Font();
 
   return {
     plausibleDomain: config.widget.plausibleDomain,
+    plausibleCustomProperties: {
+      name: widget.name,
+      theme: widget.theme,
+      version: widget.template.version,
+      ...plausibleCustomProperties,
+    },
     base64Font,
-    version: template.version,
+    version: widget.template.version,
   };
 }
 
@@ -68,20 +78,24 @@ export function getWidget(name, theme, { version = null }) {
   }
 
   const widgetTheme = theme || WIDGET_DEFAULT_THEME;
-  const widgetVariant = widget[theme];
+  const widgetVariant = widget.variant[widgetTheme];
   if (!widgetVariant) {
     throw new ErrorWidgetNotFound();
   }
 
   const template = getVersion(widgetVariant, version);
 
-  return { widget: widgetVariant, template, widgetName, widgetTheme };
+  return { widget, template, theme: widgetTheme, name: widgetName };
 }
 
-export async function renderWidget(widget, template, data) {
-  if (!widget.validator(data)) {
+export async function renderWidget({ widget, data, plausibleCustomProperties }) {
+  if (!widget.widget.validator(data)) {
     throw new ErrorWidgetInvalidData();
   }
 
-  return ejs.renderFile(template.template, { ...getBaseData(template), data }, { async: true });
+  return ejs.renderFile(
+    widget.template.template,
+    { ...getBaseData({ widget, plausibleCustomProperties }), data },
+    { async: true }
+  );
 }
