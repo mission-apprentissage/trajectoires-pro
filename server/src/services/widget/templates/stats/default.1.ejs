@@ -162,6 +162,10 @@
       margin-top: 5px;
     }
 
+    .description-more a:after {
+      display: none;
+    }
+
     .icon-link {
       width: 16px;
       height: 16px;
@@ -244,13 +248,13 @@
 
         <button onClick="closeModal()" class="plausible-event-name=Modal+Close fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="fr-modal-1">Fermer</button>
         <div class="title title-emploi">
-          Nombre d’élèves ayant obtenu un emploi
+          Nombre d'élèves ayant obtenu un emploi
         </div>
         <div class="title title-formation">
-          Nombre d’élèves poursuivant leur formation
+          Nombre d'élèves poursuivant leur formation
         </div>
         <div class="title title-autres">
-          Nombre d’élèves réalisant d’autres parcours
+          Nombre d'élèves réalisant d'autres parcours
         </div>
 
         <div class="bodies">
@@ -283,18 +287,18 @@
         </div>
         <div class="description">
           <div class="description-emploi">
-            Il s’agit du nombre d'élèves ayant trouvé un emploi 6 mois après leur dernière année de formation ou d’apprentissage dans cette formation.<br /><br />
-            Ce chiffre comprend les emplois privés et publics mais uniquement salariés. Les auto-entreprises seront comptabilisées dans les “<span>autres parcours</span>”.</div>
+            Il s'agit du nombre d'élèves ayant trouvé un emploi 6 mois après leur dernière année de formation ou d'apprentissage dans cette formation.<br /><br />
+            Ce chiffre comprend les emplois privés et publics mais uniquement salariés. Les auto-entrepreneurs sont comptabilisés dans les “<span>autres parcours</span>”.</div>
           <div class="description-formation">
-            Cet indicateur comptabilise le nombre d'élèves inscrits dans une formation, qu’il s’agisse d’un autre niveau d’étude, d’un redoublement, d’une réorientation vers une nouvelle formation...<br /><br />
-            L’indicateur ne tient pas compte de la continuité dans un parcours de formation pour le moment.
+            Cet indicateur comptabilise le nombre d'élèves inscrits dans une formation, qu'il s'agisse d'un autre niveau d'étude, d'un redoublement, d'une réorientation vers une nouvelle formation...<br /><br />
+            L'indicateur ne tient pas compte de la continuité dans un parcours de formation pour le moment.
           </div>
           <div class="description-autres">
-            Il s’agit du nombre d’élèves n’appartenant ni au taux en emploi, ni au taux en poursuite de formation. C’est-à-dire qu’il s’agit des élèves qui n’ont pas pu être catégorisé sur une base liée à la scolarité ou une base emploi. Ils peuvent être au chômage, en inactivité, en indépendant, parties à l’étranger, en formation privée hors contrat.
+            Il s'agit du nombre d'élèves qui ne sont ni en emploi, ni en formation. Ils peuvent être au chômage, en inactivité, indépendants, partis à l'étranger, en formation privée hors contrat.
           </div>
         </div>
         <div class="description-more">
-          <a href="https://documentation.exposition.inserjeunes.beta.gouv.fr/"><button class="fr-btn fr-btn--icon-right fr-icon-external-link-line">
+          <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/"><button class="fr-btn fr-btn--icon-right fr-icon-external-link-line">
               En savoir plus sur ces indicateurs
             </button>
           </a>
