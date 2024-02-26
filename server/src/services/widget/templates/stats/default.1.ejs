@@ -352,14 +352,14 @@
         </div>
         <div class="blocks">
           <% for (const key of ["emploi", "formation", "autres"]) { %>
-          <div class="block <%= taux[key].eleves == 0 ? "grey-variant" : taux[key].colorText %>">
+          <div onClick="showModal('<%= key %>')" class="block modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : taux[key].colorText %>">
             <div class="block-title">
               <svg class="remix icon">
                 <use xlink:href="<%= taux[key].icon %>" />
               </svg>
               <%= taux[key].title %>
             </div>
-            <div><span onClick="showModal('<%= key %>')" class="modal-link plausible-event-name=Modal+Open+<%= key %>"><%= taux[key].description %> ⓘ</span></div>
+            <div><%= taux[key].description %> ⓘ</div>
           </div>
           <% } %>
         </div>
