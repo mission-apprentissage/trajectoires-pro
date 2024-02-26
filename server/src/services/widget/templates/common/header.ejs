@@ -28,25 +28,14 @@
 
 <style type="text/css">
   /* Autres */
-  @font-face {
-    font-family: "Marianne";
-    src: url("data:font/truetype;charset=utf-8;base64,<%= base64Font %>") format("woff");
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
+  :root {
+    --widget-width: min(100vw, 650px);
   }
 
   body {
-    font-family: "Marianne", Helvetica;
-    font-style: normal;
     max-width: var(--widget-width);
     width: 100%;
     height: 100%;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  :root {
-    --widget-width: min(100vw, 650px);
   }
 
   .white {
