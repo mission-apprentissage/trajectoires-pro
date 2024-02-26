@@ -31,6 +31,8 @@ export default async () => {
   app.use(swaggerRoutes());
   app.use(authRoutes());
 
+  app.use("/static", express.static("public"));
+
   app.get(
     "/api",
     tryCatch(async (req, res) => {

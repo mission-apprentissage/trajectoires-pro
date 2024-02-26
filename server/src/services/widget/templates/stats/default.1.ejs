@@ -40,7 +40,7 @@
       --body-width: calc(var(--widget-width) * 0.075);
       --body-height: calc(var(--body-width) * 1.8125);
       --body-icon-width: calc(var(--widget-width) * 0.03);
-      --body-icon-left: calc(var(--widget-width) * 0.021);
+      --body-icon-left: calc(var(--widget-width) * 0.022);
       --body-icon-top: calc(var(--widget-width) * 0.04);
     }
 
@@ -90,12 +90,14 @@
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 12px;
     }
 
     .block-title {
       display: flex;
       align-items: center;
+      margin-bottom: 2px;
+      font-size: 14px;
     }
 
     .block-title .icon {
@@ -155,6 +157,12 @@
       font-size: 14px;
     }
 
+    .description-more {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 5px;
+    }
+
     .icon-link {
       width: 16px;
       height: 16px;
@@ -178,6 +186,7 @@
 
     .modal .card {
       margin-top: 0px;
+      padding-top: 5px;
     }
 
     @media screen and (min-width: 40em) {
@@ -238,114 +247,71 @@
   <div class="modal" id="modal-description">
     <div class="card">
       <div class="card-modal">
-        <div class="close plausible-event-name=Modal+Close" onClick="closeModal()">Fermer X</div>
+
+        <button onClick="closeModal()" class="plausible-event-name=Modal+Close fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="fr-modal-1">Fermer</button>
         <div class="title title-emploi">
-          Nombre d’élèves ayant un emploi
+          Nombre d’élèves ayant obtenu un emploi
         </div>
         <div class="title title-formation">
-          Nombre d’étudiants poursuivant leur formation
+          Nombre d’élèves poursuivant leur formation
         </div>
         <div class="title title-autres">
-          Nombre d’étudiants réalisant d’autres parcours
+          Nombre d’élèves réalisant d’autres parcours
         </div>
 
         <div class="bodies">
-          <div class="body-group body-grey body-emploi-disable">
+          <% for (const key of ["emploi", "formation", "autres"]) { %>
+          <div class="body-group body-grey body-<%= key %>-disable">
             <% for (var i=0; i<2;i++) { %>
             <div class="body">
               <svg class="grey">
                 <use xlink:href="#icon-union" />
               </svg>
-              <svg class="icon white">
-                <use xlink:href="#icon-briefcase" />
+              <svg class="remix icon white">
+                <use xlink:href="<%= taux[key].icon %>" />
               </svg>
             </div>
             <% } %>
           </div>
-          <div class="body-group body-emploi-enable">
+          <div class="body-group body-<%= key %>-enable">
             <% for (var i=0; i<6;i++) { %>
             <div class="body">
-              <svg class="green-variant">
+              <svg class="<%= taux[key].colorIcon %>">
                 <use xlink:href="#icon-union" />
               </svg>
-              <svg class="icon white">
-                <use xlink:href="#icon-briefcase" />
+              <svg class="remix icon white">
+                <use xlink:href="<%= taux[key].icon %>" />
               </svg>
             </div>
             <% } %>
           </div>
-
-          <div class="body-group body-grey body-formation-disable">
-            <% for (var i=0; i<2;i++) { %>
-            <div class="body">
-              <svg class="grey">
-                <use xlink:href="#icon-union" />
-              </svg>
-              <svg class="icon white">
-                <use xlink:href="#icon-student" />
-              </svg>
-            </div>
-            <% } %>
-          </div>
-          <div class="body-group body-formation-enable">
-            <% for (var i=0; i<6;i++) { %>
-            <div class="body">
-              <svg class="orange-variant">
-                <use xlink:href="#icon-union" />
-              </svg>
-              <svg class="icon white">
-                <use xlink:href="#icon-student" />
-              </svg>
-            </div>
-            <% } %>
-          </div>
-          <div class="body-group body-grey body-autres-disable">
-            <% for (var i=0; i<2;i++) { %>
-            <div class="body">
-              <svg class="grey">
-                <use xlink:href="#icon-union" />
-              </svg>
-              <svg class="icon white">
-                <use xlink:href="#icon-route" />
-              </svg>
-            </div>
-            <% } %>
-          </div>
-          <div class="body-group body-autres-enable">
-            <% for (var i=0; i<6;i++) { %>
-            <div class="body">
-              <svg class="blue-variant">
-                <use xlink:href="#icon-union" />
-              </svg>
-              <svg class="icon white">
-                <use xlink:href="#icon-route" />
-              </svg>
-            </div>
-            <% } %>
-          </div>
+          <% } %>
         </div>
         <div class="description">
           <div class="description-emploi">
-            Il s’agit du nombre de jeunes ayant trouvé un emploi 6 mois après leur dernière année de formation ou d’apprentissage dans cette formation.<br /><br />
-            Ce chiffre comprend les emplois privés et publics mais uniquement salariés. Les auto-entreprises seront comptabilisées dans les “<span><svg class="icon icon-link">
-                <use xlink:href="#icon-route" />
-              </svg> autres parcours</span>”.</div>
+            Il s’agit du nombre d'élèves ayant trouvé un emploi 6 mois après leur dernière année de formation ou d’apprentissage dans cette formation.<br /><br />
+            Ce chiffre comprend les emplois privés et publics mais uniquement salariés. Les auto-entreprises seront comptabilisées dans les “<span>autres parcours</span>”.</div>
           <div class="description-formation">
-            Cet indicateur comptabilise le nombre d’étudiants inscrits dans une formation, qu’il s’agisse d’un autre niveau d’étude, d’un redoublement, d’une réorientation vers une nouvelle formation… L’indicateur ne tient pas compte de la continuité dans un parcours de formation pour le moment.
+            Cet indicateur comptabilise le nombre d'élèves inscrits dans une formation, qu’il s’agisse d’un autre niveau d’étude, d’un redoublement, d’une réorientation vers une nouvelle formation...<br /><br />
+            L’indicateur ne tient pas compte de la continuité dans un parcours de formation pour le moment.
           </div>
           <div class="description-autres">
-            Il s’agit du nombre d’étudiant n’appartenant ni au taux en emploi, ni au taux en poursuite de formation. C’est-à-dire qu’il s’agit des étudiants qui n’ont pas pu être catégorisé sur une base liée à la scolarité ou une base emploi. Ils peuvent être au chômage, en inactivité, en indépendant, parties à l’étranger, en formation privée hors contrat.
+            Il s’agit du nombre d’élèves n’appartenant ni au taux en emploi, ni au taux en poursuite de formation. C’est-à-dire qu’il s’agit des élèves qui n’ont pas pu être catégorisé sur une base liée à la scolarité ou une base emploi. Ils peuvent être au chômage, en inactivité, en indépendant, parties à l’étranger, en formation privée hors contrat.
           </div>
         </div>
-        <div class="button">
-          <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur les indicateurs</a>
+        <div class="description-more">
+          <a href="https://documentation.exposition.inserjeunes.beta.gouv.fr/"><button class="fr-btn fr-btn--icon-right fr-icon-external-link-line">
+              En savoir plus sur ces indicateurs
+            </button>
+          </a>
+
         </div>
       </div>
     </div>
   </div>
 
   <div class="container">
-    <div class="title">Que deviennent les étudiants après cette formation ?</div>
+    <div class="title">Que deviennent les élèves après cette formation ?</div>
     <% if (data.etablissementLibelle) { %>
     <div class="subTitle">Les chiffres pour le <%= data.etablissementLibelle %></div>
     <% } else if (data.region) { %>
@@ -390,17 +356,17 @@
           <% for (const key of ["emploi", "formation", "autres"]) { %>
           <div class="block <%= taux[key].eleves == 0 ? "grey-variant" : taux[key].colorText %>">
             <div class="block-title">
-              <svg class="icon">
+              <svg class="remix icon">
                 <use xlink:href="<%= taux[key].icon %>" />
               </svg>
               <%= taux[key].title %>
             </div>
-            <div><%= taux[key].description %> <span onClick="showModal('<%= key %>')" class="modal-link plausible-event-name=Modal+Open+<%= key %>">ⓘ</span></div>
+            <div><span onClick="showModal('<%= key %>')" class="modal-link plausible-event-name=Modal+Open+<%= key %>"><%= taux[key].description %> ⓘ</span></div>
           </div>
           <% } %>
         </div>
         <div class="card-footer">
-          Données issues du dispositif <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">InserJeunes</a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur ces données.</a>
+          Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html">InserJeunes</a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur ces indicateurs.</a>
         </div>
       </div>
     </div>

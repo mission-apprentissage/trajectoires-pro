@@ -10,7 +10,8 @@ taux = data.taux.reduce((acc, taux, index) => {
 
     const lessOne = taux.value > 0 && taux.value < 5 && eleves === 1;
 
-    let description=lessOne ? "Moins d'un élève sur 10" : eleves + " élèves sur 10";
+    let elevePlural = lessOne || eleves === 1 ? "élève" : "élèves";
+    let description=lessOne ? "Moins d'un " + elevePlural + " sur 10" : eleves + " " + elevePlural + " sur 10";
     description=eleves== 0 ? "Aucun élève" : description;
 
 
@@ -28,17 +29,17 @@ taux = data.taux.reduce((acc, taux, index) => {
 taux["emploi"].colorIcon = "green-variant";
 taux["emploi"].colorText = "green";
 taux["emploi"].title = "EN EMPLOI";
-taux["emploi"].icon = "#icon-briefcase";
+taux["emploi"].icon = "/static/remixicon//remixicon.symbol.svg#ri-briefcase-4-line";
 
 taux["formation"].colorIcon = "orange-variant";
 taux["formation"].colorText = "orange";
 taux["formation"].title = "EN FORMATION";
-taux["formation"].icon = "#icon-student";
+taux["formation"].icon = "/static/remixicon//remixicon.symbol.svg#ri-graduation-cap-line";
 
 taux["autres"].colorIcon = "blue-variant";
 taux["autres"].colorText = "blue";
 taux["autres"].title = "AUTRES PARCOURS";
-taux["autres"].icon = "#icon-route";
+taux["autres"].icon = "/static/remixicon//remixicon.symbol.svg#ri-route-line";
 
 millesimes=data.millesimes;
 millesimesDouble=millesimes.length === 2;

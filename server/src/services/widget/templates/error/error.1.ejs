@@ -68,7 +68,7 @@
   </svg>
 
   <div class="container">
-    <div class="title">Que deviennent les étudiants après cette formation ?</div>
+    <div class="title">Que deviennent les élèves après cette formation ?</div>
     <% if (data.etablissementLibelle) { %>
     <div class="subTitle">Les chiffres pour le <%= data.etablissementLibelle %></div>
     <% } else if (data.region) { %>
@@ -80,7 +80,7 @@
     <div class="card">
       <div class="card-data">
         <div class="bodies">
-          <div>Oups nous n’avons pas plus d’information <a onclick="collapse('#no-data-description', '#no-data-description-expand', '#no-data-description-collapse')">
+          <div>Oups, nous n’avons pas cette information. <a onclick="collapse('#no-data-description', '#no-data-description-expand', '#no-data-description-collapse')">
               <svg id="no-data-description-expand" class="icon">
                 <use xlink:href="#icon-arrow-down" />
               </svg>
@@ -93,11 +93,14 @@
             <div class="details-title bold">3 cas sont possibles :</div>
             <div class="grid">
               <div class="grid-number bold">1.</div>
-              <div><span class="bold">NOUVELLE FORMATION : </span>Cette formation vient d’être créée ! Nous aurons donc les résultats dans quelques temps.</div>
+              <div><span class="bold">NOUVELLE FORMATION : </span>
+                Cette formation vient d’être créée. Nous aurons donc les résultats plus tard, lorsqu'une première promotion aura fini la formation.</div>
             </div>
             <div class="grid">
               <div class="grid-number bold">2.</div>
-              <div><span class="bold">PETITES CLASSES : </span>Il y a un petit nombre d’élèves dans cette spécialité et nous ne pouvons pas faire des statistiques sur juste quelques élèves, cela risquerait de fournir de mauvaises informations.</div>
+              <div><span class="bold">PETITES CLASSES : </span>
+                Il y a aujourd’hui un petit nombre d’élèves dans cette spécialité. Nous ne pouvons pas faire des statistiques fiables sur seulement quelques individus, cela risquerait de fournir de mauvaises informations.
+              </div>
             </div>
             <div class="grid">
               <div class="grid-number bold">3.</div>
