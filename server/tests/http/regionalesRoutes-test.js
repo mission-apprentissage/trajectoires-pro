@@ -1758,7 +1758,7 @@ describe("regionalesRoutes", () => {
       const dom = new JSDOM(response.data);
 
       const subTitle = dom.window.document.querySelector(".container .subTitle");
-      expect(subTitle).to.contain.text("En Île-de-France");
+      expect(subTitle).to.contain.text("Île-de-France");
 
       const emploiBlock = dom.window.document.querySelector(".block-emploi");
       expect(emploiBlock).to.contain.text("EN EMPLOI");

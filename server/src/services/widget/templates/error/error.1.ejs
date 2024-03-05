@@ -69,9 +69,9 @@
     <% if (data.etablissementLibelle) { %>
     <div class="subTitle"><span class="ri-xl ri-school-line" aria-hidden="true"></span><%= data.etablissementLibelle %></div>
     <% } else if (data.region) { %>
-    <div class="subTitle"><span class="fr-icon-map-pin-2-fill" aria-hidden="true"></span>En <%= data.region.nom %></div>
+    <div class="subTitle"><span class="fr-icon-map-pin-2-fill" aria-hidden="true"></span><%= data.region.nom %></div>
     <% } else { %>
-    <div class="subTitle"><span class="fr-icon-map-pin-2-fill" aria-hidden="true"></span>En France</div>
+    <div class="subTitle"><span class="fr-icon-map-pin-2-fill" aria-hidden="true"></span>France</div>
     <% }  %>
 
     <div class="card">
