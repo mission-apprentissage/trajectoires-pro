@@ -67,11 +67,11 @@
   <div class="container">
     <div class="title">Que deviennent les élèves après cette formation ?</div>
     <% if (data.etablissementLibelle) { %>
-    <div class="subTitle">Les chiffres pour le <%= data.etablissementLibelle %></div>
+    <div class="subTitle"><span class="ri-xl ri-school-line" aria-hidden="true"></span><%= data.etablissementLibelle %></div>
     <% } else if (data.region) { %>
-    <div class="subTitle">Les chiffres pour la région <%= data.region.nom %></div>
+    <div class="subTitle"><span class="fr-icon-map-pin-2-fill" aria-hidden="true"></span>En <%= data.region.nom %></div>
     <% } else { %>
-    <!-- <div class="title"><%= data.formationLibelle %></div> -->
+    <div class="subTitle"><span class="fr-icon-map-pin-2-fill" aria-hidden="true"></span>En France</div>
     <% }  %>
 
     <div class="card">
