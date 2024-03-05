@@ -6,6 +6,7 @@
 <html>
 
 <head>
+  <title><%= data?.description?.title %></title>
   <meta name="description" content="<%= data.description.details %>">
 
   <%- await include('../common/header'); %>
@@ -35,7 +36,7 @@
     }
   </script>
 
-  <style type="text/css">
+  <style>
     :root {
       --body-width: calc(var(--widget-width) * 0.075);
       --body-height: calc(var(--body-width) * 1.8125);
@@ -246,7 +247,7 @@
     <div class="card">
       <div class="card-modal">
 
-        <button onClick="closeModal()" class="plausible-event-name=Modal+Close fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="fr-modal-1">Fermer</button>
+        <button onClick="closeModal()" class="plausible-event-name=Modal+Close fr-btn--close fr-btn" title="Fermer la fenêtre modale">Fermer</button>
         <div class="title title-emploi">
           Nombre d'élèves ayant obtenu un emploi
         </div>
@@ -352,7 +353,7 @@
         </div>
         <div class="blocks">
           <% for (const key of ["emploi", "formation", "autres"]) { %>
-          <div onClick="showModal('<%= key %>')" class="block modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : taux[key].colorText %>">
+          <div onClick="showModal('<%= key %>')" class="block block-<%= key %> modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : taux[key].colorText %>">
             <div class="block-title">
               <svg class="remix icon">
                 <use xlink:href="<%= taux[key].icon %>" />

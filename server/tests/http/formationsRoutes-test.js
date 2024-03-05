@@ -1,12 +1,16 @@
 import chai, { assert, expect } from "chai";
 import chaiDiff from "chai-diff";
+import chaiDom from "chai-dom";
 import fs from "fs";
 import MockDate from "mockdate";
+import { JSDOM } from "jsdom";
 import config from "#src/config.js";
 import { startServer } from "#tests/utils/testUtils.js";
-import { insertFormationsStats, insertUser } from "#tests/utils/fakeData.js";
+import { insertFormationsStats, insertUser, insertAcceEtablissement } from "#tests/utils/fakeData.js";
 
 chai.use(chaiDiff);
+chai.use(chaiDom);
+
 describe("formationsRoutes", () => {
   describe("Recherche", () => {
     function getAuthHeaders() {
@@ -916,6 +920,108 @@ describe("formationsRoutes", () => {
 
       assert.strictEqual(response.status, 400);
       assert.strictEqual(response.data.message, "Erreur de validation");
+    });
+  });
+
+  describe("Widget v2", async () => {
+    async function createDefaultStats(data = {}, dataEtablissement = {}) {
+      await insertAcceEtablissement({ numero_uai: "0751234J", ...dataEtablissement });
+      return await insertFormationsStats({
+        uai: "0751234J",
+        code_certification: "1022105",
+        taux_en_emploi_6_mois: 50,
+        taux_en_formation: 30,
+        taux_autres_6_mois: 20,
+        nb_annee_term: 20,
+        ...data,
+      });
+    }
+
+    beforeEach(async () => {
+      await insertUser();
+    });
+
+    it("Vérifie qu'on obtient un widget", async () => {
+      const { httpClient } = await startServer();
+      await createDefaultStats();
+      const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105/widget/test");
+      assert.strictEqual(response.status, 200);
+
+      const dom = new JSDOM(response.data);
+
+      const subTitle = dom.window.document.querySelector(".container .subTitle");
+      expect(subTitle).to.contain.text("Les chiffres pour le Lycée professionnel");
+
+      const emploiBlock = dom.window.document.querySelector(".block-emploi");
+      expect(emploiBlock).to.contain.text("EN EMPLOI");
+      expect(emploiBlock).to.contain.text("5 élèves sur 10");
+
+      const formationBlock = dom.window.document.querySelector(".block-formation");
+      expect(formationBlock).to.contain.text("EN FORMATION");
+      expect(formationBlock).to.contain.text("3 élèves sur 10");
+
+      const autresBlock = dom.window.document.querySelector(".block-autres");
+      expect(autresBlock).to.contain.text("AUTRES PARCOURS");
+      expect(autresBlock).to.contain.text("2 élèves sur 10");
+    });
+
+    it("Vérifie qu'on obtient un widget d'erreur quand l'établissement n'existe pas", async () => {
+      const { httpClient } = await startServer();
+      await createDefaultStats();
+      const response = await httpClient.get("/api/inserjeunes/formations/0751234P-1022101/widget/test");
+
+      assert.strictEqual(response.status, 200);
+      assert.include(response.data, "Oups, nous n'avons pas cette information.");
+    });
+
+    it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({ uai: "0751234J", code_certification: "1022105" }, false);
+
+      const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105/widget/test");
+
+      assert.strictEqual(response.status, 200);
+      assert.include(response.data, "Oups, nous n'avons pas cette information.");
+    });
+
+    it("Vérifie qu'on obtient une erreur quand les effectifs sont trop faibles", async () => {
+      const { httpClient } = await startServer();
+      await createDefaultStats({ nb_annee_term: 10 });
+
+      const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105/widget/test");
+
+      assert.strictEqual(response.status, 200);
+      assert.include(response.data, "Oups, nous n'avons pas cette information.");
+    });
+
+    it("Vérifie qu'on obtient une erreur quand il n'y a pas de donnée pour le millésime", async () => {
+      const { httpClient } = await startServer();
+      await createDefaultStats();
+
+      const response = await httpClient.get(
+        "/api/inserjeunes/formations/0751234J-1022105/widget/test?millesime=2020_2021"
+      );
+
+      assert.strictEqual(response.status, 200);
+      assert.include(response.data, "Oups, nous n'avons pas cette information.");
+    });
+
+    it("Vérifie qu'on obtient une erreur quand le format de l'UAI est invalide", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get("/api/inserjeunes/formations/INVALIDE-23220023440/widget/test");
+
+      assert.strictEqual(response.status, 400);
+      assert.strictEqual(response.data.message, "Erreur de validation");
+    });
+
+    it("Vérifie qu'on obtient une erreur quand le hash de l'utilisateur n'existe pas", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get("/api/inserjeunes/formations/0751234J-23220023440/widget/test2");
+
+      assert.strictEqual(response.status, 404);
+      assert.strictEqual(response.data.message, "Ce widget n'existe pas");
     });
   });
 });

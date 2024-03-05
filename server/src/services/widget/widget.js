@@ -2,14 +2,14 @@ import path from "path";
 import { isNil } from "lodash-es";
 import { getDirname } from "#src/common/utils/esmUtils.js";
 import ejs from "ejs";
-import { ErrorWidgetNotFound, ErrorWidgetInvalidData } from "./errors.js";
+import { ErrorWidgetNotFound, ErrorWidgetInvalidData } from "./error.js";
 import config from "#src/config.js";
 import { loadBase64Font } from "#src/http/widget/templates/templates.js";
 
 const __dirname = getDirname(import.meta.url);
 
-const WIDGET_DEFAULT_THEME = "default";
-const WIDGET_DEFAULT_TYPE = "error";
+export const WIDGET_DEFAULT_THEME = "default";
+export const WIDGET_DEFAULT_NAME = "error";
 export const WIDGETS = {
   stats: {
     variant: {
@@ -24,7 +24,7 @@ export const WIDGETS = {
       },
     },
     validator: (data) => {
-      if (data.taux.find(({ value }) => isNil(value))) {
+      if (!data?.taux?.find || data.taux.find(({ value }) => isNil(value))) {
         return false;
       }
       return true;
@@ -70,9 +70,9 @@ function getBaseData({ widget, plausibleCustomProperties = {} }) {
   };
 }
 
-export function getWidget(name, theme, { version = null }) {
-  const widgetName = name || WIDGET_DEFAULT_TYPE;
-  const widget = WIDGETS[widgetName];
+export function getWidget({ widgets = WIDGETS, name = null, theme = null, version = null } = {}) {
+  const widgetName = name || WIDGET_DEFAULT_NAME;
+  const widget = widgets[widgetName];
   if (!widget) {
     throw new ErrorWidgetNotFound();
   }
@@ -88,7 +88,7 @@ export function getWidget(name, theme, { version = null }) {
   return { widget, template, theme: widgetTheme, name: widgetName };
 }
 
-export async function renderWidget({ widget, data, plausibleCustomProperties }) {
+export async function renderWidget({ widget, data = {}, plausibleCustomProperties = {} }) {
   if (!widget.widget.validator(data)) {
     throw new ErrorWidgetInvalidData();
   }

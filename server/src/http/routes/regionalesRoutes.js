@@ -189,7 +189,7 @@ export default () => {
 
         const widget = await getUserWidget({
           hash,
-          type: "stats",
+          name: "stats",
           theme,
           data: {
             taux: [
@@ -215,7 +215,7 @@ export default () => {
         return res.status(200).send(widget);
       } catch (err) {
         // TODO: gestion des erreurs
-        const widget = await getUserWidget({ hash, type: "error", theme });
+        const widget = await getUserWidget({ hash, name: "error", theme });
 
         res.setHeader("content-type", "text/html");
         return res.status(200).send(widget);
@@ -238,7 +238,7 @@ export default () => {
         }
       );
 
-      const widget = await getIframe({
+      const widget = getIframe({
         user: req.user,
         parameters: { theme, millesime },
         path: req.path,

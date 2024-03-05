@@ -1,9 +1,11 @@
 import UglifyJs from "uglify-js";
 import UserRepository from "#src/common/repositories/user.js";
 import { renderWidget, getWidget } from "./widget.js";
-import { ErrorWidgetDoesNotExist } from "./errors.js";
+import { ErrorWidgetDoesNotExist } from "./error.js";
+import { ErrorUserDoesNotExist } from "#src/services/user/error.js";
 import config from "#src/config.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
+import { WIDGETS } from "./widget.js";
 
 const IFRAME_ON_LOAD_JS = UglifyJs.minify(
   `(function load(f) {
@@ -20,14 +22,21 @@ const IFRAME_ON_LOAD_JS = UglifyJs.minify(
   }
 ).code;
 
-export async function getUserWidget({ hash, type, theme = "default", data = {}, plausibleCustomProperties = {} }) {
+export async function getUserWidget({
+  widgets = WIDGETS,
+  hash,
+  name,
+  theme = "default",
+  data = {},
+  plausibleCustomProperties = {},
+}) {
   const user = await UserRepository.first({ "widget.hash": hash });
   if (!user) {
     throw new ErrorWidgetDoesNotExist();
   }
 
-  const userVersion = user.widget.version.find((v) => v.type === type && v.theme === theme);
-  const widget = getWidget(type, theme, { version: userVersion?.version });
+  const userVersion = user.widget.version.find((v) => v.type === name && v.theme === theme);
+  const widget = getWidget({ widgets, name, theme, version: userVersion?.version });
   if (!userVersion) {
     await UserRepository.updateOne(
       { username: user.username },
@@ -35,7 +44,7 @@ export async function getUserWidget({ hash, type, theme = "default", data = {}, 
         "widget.version": [
           ...user.widget.version,
           {
-            type,
+            type: name,
             theme,
             version: widget.template.version,
           },
@@ -54,7 +63,11 @@ export async function getUserWidget({ hash, type, theme = "default", data = {}, 
   });
 }
 
-export async function getIframe({ user, parameters, path }) {
+export function getIframe({ user, parameters = {}, path }) {
+  if (!user?.widget?.hash) {
+    throw new ErrorUserDoesNotExist();
+  }
+
   const searchParams = new URLSearchParams(omitNil(parameters));
   const url = `${config.publicUrl}${path}/${user.widget.hash}?${searchParams.toString()}`;
   return `<iframe onLoad="${IFRAME_ON_LOAD_JS}" style="width: 100%; height: 0;" src="${url}" scrolling="no" frameBorder="0"></iframe>`;

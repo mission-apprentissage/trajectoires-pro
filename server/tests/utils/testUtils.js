@@ -26,7 +26,7 @@ export function createStream(content) {
 }
 
 export function generateStatValue() {
-  return parseInt(faker.random.numeric(2));
+  return parseInt(faker.string.numeric(2));
 }
 
 export function generateCodeCertification(prefix = "#") {
