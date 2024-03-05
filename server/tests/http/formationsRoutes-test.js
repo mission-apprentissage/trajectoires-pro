@@ -6,7 +6,7 @@ import MockDate from "mockdate";
 import { JSDOM } from "jsdom";
 import config from "#src/config.js";
 import { startServer } from "#tests/utils/testUtils.js";
-import { insertFormationsStats, insertUser, insertAcceEtablissement } from "#tests/utils/fakeData.js";
+import { insertFormationsStats, insertUser, insertAcceEtablissement, insertCFD } from "#tests/utils/fakeData.js";
 
 chai.use(chaiDiff);
 chai.use(chaiDom);
@@ -213,6 +213,9 @@ describe("formationsRoutes", () => {
 
     it("Vérifie que l'on met les taux à null pour les effectifs < 20", async () => {
       const { httpClient } = await startServer();
+      await insertCFD({ code_certification: "12345" });
+      await insertAcceEtablissement({ numero_uai: "0751234J" });
+
       await insertFormationsStats({
         uai: "0751234J",
         code_certification: "12345",
@@ -583,6 +586,9 @@ describe("formationsRoutes", () => {
 
     it("Ne retourne pas de stats par défaut si il n'y a pas de données pour le millésime le plus récent", async () => {
       const { httpClient } = await startServer();
+      await insertCFD({ code_certification: "12345678" });
+      await insertAcceEtablissement({ numero_uai: "0751234J" });
+
       await insertFormationsStats({
         uai: "0751234J",
         code_certification: "12345678",
@@ -924,7 +930,8 @@ describe("formationsRoutes", () => {
   });
 
   describe("Widget v2", async () => {
-    async function createDefaultStats(data = {}, dataEtablissement = {}) {
+    async function createDefaultStats(data = {}, dataEtablissement = {}, dataCfd = {}) {
+      await insertCFD({ code_certification: "1022105", ...dataCfd });
       await insertAcceEtablissement({ numero_uai: "0751234J", ...dataEtablissement });
       return await insertFormationsStats({
         uai: "0751234J",
@@ -950,7 +957,7 @@ describe("formationsRoutes", () => {
       const dom = new JSDOM(response.data);
 
       const subTitle = dom.window.document.querySelector(".container .subTitle");
-      expect(subTitle).to.contain.text("Les chiffres pour le Lycée professionnel");
+      expect(subTitle).to.contain.text("Lycée professionnel");
 
       const emploiBlock = dom.window.document.querySelector(".block-emploi");
       expect(emploiBlock).to.contain.text("EN EMPLOI");
@@ -965,23 +972,36 @@ describe("formationsRoutes", () => {
       expect(autresBlock).to.contain.text("2 élèves sur 10");
     });
 
-    it("Vérifie qu'on obtient un widget d'erreur quand l'établissement n'existe pas", async () => {
+    it("Vérifie qu'on obtient un widget d'erreur quand la formation n'existe pas", async () => {
       const { httpClient } = await startServer();
       await createDefaultStats();
-      const response = await httpClient.get("/api/inserjeunes/formations/0751234P-1022101/widget/test");
+      const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022101/widget/test");
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Nous ne disposons pas de données pour cette formation.");
+    });
+
+    it("Vérifie qu'on obtient un widget d'erreur quand l'établissement n'existe pas", async () => {
+      const { httpClient } = await startServer();
+      await createDefaultStats();
+      const response = await httpClient.get("/api/inserjeunes/formations/0751234P-1022105/widget/test");
+
+      assert.strictEqual(response.status, 200);
+      assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Nous ne disposons pas de données pour cet établissement.");
     });
 
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
       const { httpClient } = await startServer();
+      await insertAcceEtablissement({ numero_uai: "0751234J" });
       await insertFormationsStats({ uai: "0751234J", code_certification: "1022105" }, false);
 
       const response = await httpClient.get("/api/inserjeunes/formations/0751234J-1022105/widget/test");
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Il y a aujourd'hui un petit nombre d'élèves");
     });
 
     it("Vérifie qu'on obtient une erreur quand les effectifs sont trop faibles", async () => {
@@ -992,6 +1012,7 @@ describe("formationsRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Il y a aujourd'hui un petit nombre d'élèves dans cette spécialité.");
     });
 
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de donnée pour le millésime", async () => {
@@ -1004,6 +1025,7 @@ describe("formationsRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Nous ne disposons pas de données pour les promotions 2020 et 2021.");
     });
 
     it("Vérifie qu'on obtient une erreur quand le format de l'UAI est invalide", async () => {

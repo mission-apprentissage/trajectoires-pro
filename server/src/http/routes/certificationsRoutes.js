@@ -23,13 +23,15 @@ import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 
 async function certificationStats({ codes_certifications, millesime }) {
   const code_certification = codes_certifications[0];
-  const exist = await CertificationsRepository.exist({ code_certification });
-  if (!exist) {
-    throw new ErrorCertificationNotFound();
-  }
 
   const result = await CertificationsRepository.first({ code_certification, millesime });
+
   if (!result) {
+    const exist = await CertificationsRepository.exist({ code_certification });
+    if (!exist) {
+      throw new ErrorCertificationNotFound();
+    }
+
     const millesimesAvailable = await CertificationsRepository.findMillesime({ code_certification });
     throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
   }
@@ -179,7 +181,16 @@ export default () => {
         res.setHeader("content-type", "text/html");
         return res.status(200).send(widget);
       } catch (err) {
-        const widget = await getUserWidget({ hash, name: "error", theme });
+        const widget = await getUserWidget({
+          hash,
+          name: "error",
+          theme,
+          data: {
+            error: err.name,
+            millesimes: formatMillesime(millesime).split("_"),
+            code_certification: codes_certifications[0],
+          },
+        });
         res.setHeader("content-type", "text/html");
         return res.status(200).send(widget);
       }

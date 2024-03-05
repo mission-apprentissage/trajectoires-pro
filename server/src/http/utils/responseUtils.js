@@ -10,6 +10,8 @@ import {
   ErrorCertificationNotFound,
   ErrorNoDataAvailable,
   ErrorCertificationsNotFound,
+  ErrorEtablissementNotExist,
+  ErrorFormationNotExist,
 } from "#src/http/errors.js";
 
 export function addJsonHeaders(res) {
@@ -107,6 +109,8 @@ export async function sendImageOnError(cb, res, data = {}, options = { imageOnEr
   const errorsToRescue = [
     ErrorRegionaleNotFound,
     ErrorFormationNotFound,
+    ErrorFormationNotExist,
+    ErrorEtablissementNotExist,
     ErrorCertificationNotFound,
     ErrorCertificationsNotFound,
     ErrorNoDataForMillesime,

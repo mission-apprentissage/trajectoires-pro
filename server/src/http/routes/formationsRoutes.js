@@ -9,17 +9,18 @@ import { formatMillesime } from "#src/http/utils/formatters.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import { getLastMillesimesFormations, transformDisplayStat, buildDescription } from "#src/common/stats.js";
+import BCNRepository from "#src/common/repositories/bcn.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
 import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
-import { ErrorFormationNotFound, ErrorNoDataForMillesime } from "#src/http/errors.js";
+import {
+  ErrorFormationNotFound,
+  ErrorNoDataForMillesime,
+  ErrorFormationNotExist,
+  ErrorEtablissementNotExist,
+} from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 
 async function formationStats({ uai, code_certification, millesime }) {
-  const exist = await FormationStatsRepository.exist({ uai, code_certification });
-  if (!exist) {
-    throw new ErrorFormationNotFound();
-  }
-
   const result = await FormationStatsRepository.first({
     uai,
     code_certification,
@@ -27,6 +28,21 @@ async function formationStats({ uai, code_certification, millesime }) {
   });
 
   if (!result) {
+    const existFormation = await BCNRepository.exist({ code_certification });
+    if (!existFormation) {
+      throw new ErrorFormationNotExist();
+    }
+
+    const existEtablissement = await AcceEtablissementRepository.exist({ numero_uai: uai });
+    if (!existEtablissement) {
+      throw new ErrorEtablissementNotExist();
+    }
+
+    const exist = await FormationStatsRepository.exist({ uai, code_certification });
+    if (!exist) {
+      throw new ErrorFormationNotFound();
+    }
+
     const millesimesAvailable = await FormationStatsRepository.findMillesime({ uai, code_certification });
     throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
   }
@@ -171,8 +187,17 @@ export default () => {
         res.setHeader("content-type", "text/html");
         return res.status(200).send(widget);
       } catch (err) {
-        // TODO: gestion des erreurs
-        const widget = await getUserWidget({ hash, name: "error", theme, data: {} });
+        const widget = await getUserWidget({
+          hash,
+          name: "error",
+          theme,
+          data: {
+            error: err.name,
+            millesimes: formatMillesime(millesime).split("_"),
+            code_certification,
+            uai,
+          },
+        });
         res.setHeader("content-type", "text/html");
         return res.status(200).send(widget);
       }

@@ -1449,7 +1449,8 @@ describe("certificationsRoutes", () => {
   });
 
   describe("Widget v2", async () => {
-    async function createDefaultStats(data = {}) {
+    async function createDefaultStats(data = {}, dataCfd = {}) {
+      await insertCFD({ code_certification: "12345678", ...dataCfd });
       return await insertCertificationsStats({
         code_certification: "12345678",
         code_formation_diplome: "12345678",
@@ -1493,10 +1494,12 @@ describe("certificationsRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Nous ne disposons pas de données pour cette formation.");
     });
 
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
       const { httpClient } = await startServer();
+      await insertCFD({ code_certification: "12345678" });
       await insertCertificationsStats(
         {
           code_certification: "12345678",
@@ -1510,6 +1513,7 @@ describe("certificationsRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Il y a aujourd'hui un petit nombre d'élèves");
     });
 
     it("Vérifie qu'on obtient une erreur quand les effectifs sont trop faibles", async () => {
@@ -1520,16 +1524,18 @@ describe("certificationsRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Il y a aujourd'hui un petit nombre d'élèves");
     });
 
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de donnée pour le millésime", async () => {
       const { httpClient } = await startServer();
       await createDefaultStats();
 
-      const response = await httpClient.get("/api/inserjeunes/certifications/12345678/widget/test?millesime=2020_2021");
+      const response = await httpClient.get("/api/inserjeunes/certifications/12345678/widget/test?millesime=2021");
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Nous ne disposons pas de données pour les promotions 2021.");
     });
 
     it("Vérifie qu'on obtient une erreur quand le hash de l'utilisateur n'existe pas", async () => {

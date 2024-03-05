@@ -634,6 +634,7 @@ describe("regionalesRoutes", () => {
 
     it("Ne retourne pas de stats par défaut si il n'y a pas de données pour le millésime le plus récent", async () => {
       const { httpClient } = await startServer();
+      await insertCFD({ code_certification: "12345678" });
       await insertRegionalesStats({ code_certification: "12345678", millesime: "2017_2018" });
 
       const response = await httpClient.get(`/api/inserjeunes/regionales/11/certifications/12345678`);
@@ -780,6 +781,20 @@ describe("regionalesRoutes", () => {
       });
     });
 
+    it("Vérifie qu'on retourne une 404 si la certification n'a pas de donnée'", async () => {
+      const { httpClient } = await startServer();
+      await insertCFD({ code_certification: "12345" });
+
+      const response = await httpClient.get(`/api/inserjeunes/regionales/11/certifications/12345`);
+
+      assert.strictEqual(response.status, 404);
+      assert.deepStrictEqual(response.data, {
+        error: "Not Found",
+        message: "Pas de données disponibles",
+        statusCode: 404,
+      });
+    });
+
     it("Vérifie qu'on retourne une 404 si la certification est inconnue", async () => {
       const { httpClient } = await startServer();
 
@@ -788,7 +803,7 @@ describe("regionalesRoutes", () => {
       assert.strictEqual(response.status, 404);
       assert.deepStrictEqual(response.data, {
         error: "Not Found",
-        message: "Pas de données disponibles",
+        message: "Formation inconnue",
         statusCode: 404,
       });
     });
@@ -1132,7 +1147,7 @@ describe("regionalesRoutes", () => {
         const response = await httpClient.get("/api/inserjeunes/regionales/11/certifications/INCONNUE.svg");
 
         assert.strictEqual(response.status, 404);
-        assert.strictEqual(response.data.message, "Pas de données disponibles");
+        assert.strictEqual(response.data.message, "Formation inconnue");
       });
 
       it("Retourne une image vide quand imageOnError est empty", async () => {
@@ -1156,7 +1171,7 @@ describe("regionalesRoutes", () => {
         );
 
         assert.strictEqual(response.status, 404);
-        assert.strictEqual(response.data.message, "Pas de données disponibles");
+        assert.strictEqual(response.data.message, "Formation inconnue");
       });
     });
 
@@ -1714,7 +1729,8 @@ describe("regionalesRoutes", () => {
   });
 
   describe("Widget v2", async () => {
-    async function createDefaultStats(data = {}) {
+    async function createDefaultStats(data = {}, dataCfd = {}) {
+      await insertCFD({ code_certification: "12345678", ...dataCfd });
       return await insertRegionalesStats({
         region: { code: "11", nom: "Île-de-France" },
         millesime: "2018_2019",
@@ -1742,7 +1758,7 @@ describe("regionalesRoutes", () => {
       const dom = new JSDOM(response.data);
 
       const subTitle = dom.window.document.querySelector(".container .subTitle");
-      expect(subTitle).to.contain.text("Les chiffres pour la région Île-de-France");
+      expect(subTitle).to.contain.text("En Île-de-France");
 
       const emploiBlock = dom.window.document.querySelector(".block-emploi");
       expect(emploiBlock).to.contain.text("EN EMPLOI");
@@ -1763,10 +1779,22 @@ describe("regionalesRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Nous ne disposons pas de données pour cette formation.");
+    });
+
+    it("Vérifie qu'on obtient un widget d'erreur quand il n'y a pas de donnée pour la région", async () => {
+      const { httpClient } = await startServer();
+      await createDefaultStats();
+      const response = await httpClient.get("/api/inserjeunes/regionales/00/certifications/12345678/widget/test");
+
+      assert.strictEqual(response.status, 200);
+      assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Nous ne disposons pas de données pour cette région.");
     });
 
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
       const { httpClient } = await startServer();
+      await insertCFD({ code_certification: "12345678" });
       await insertRegionalesStats(
         {
           region: { code: "11", nom: "Île-de-France" },
@@ -1783,6 +1811,7 @@ describe("regionalesRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Il y a aujourd'hui un petit nombre d'élèves");
     });
 
     it("Vérifie qu'on obtient une erreur quand les effectifs sont trop faibles", async () => {
@@ -1793,6 +1822,7 @@ describe("regionalesRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Il y a aujourd'hui un petit nombre d'élèves");
     });
 
     it("Vérifie qu'on obtient une erreur quand il n'y a pas de donnée pour le millésime", async () => {
@@ -1805,6 +1835,7 @@ describe("regionalesRoutes", () => {
 
       assert.strictEqual(response.status, 200);
       assert.include(response.data, "Oups, nous n'avons pas cette information.");
+      assert.include(response.data, "Nous ne disposons pas de données pour les promotions 2020 et 2021.");
     });
 
     it("Vérifie qu'on obtient une erreur quand le hash de l'utilisateur n'existe pas", async () => {

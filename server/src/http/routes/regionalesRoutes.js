@@ -18,18 +18,25 @@ import BCNRepository from "#src/common/repositories/bcn.js";
 import { getLastMillesimesRegionales, transformDisplayStat, buildDescription } from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
-import { ErrorRegionaleNotFound, ErrorNoDataForMillesime } from "#src/http/errors.js";
+import { ErrorRegionaleNotFound, ErrorNoDataForMillesime, ErrorFormationNotExist } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
+import { findRegionByCode } from "#src/services/regions.js";
 
 async function regionaleStats({ codes_certifications, region, millesime }) {
   const code_certification = codes_certifications[0];
-  const exist = await RegionaleStatsRepository.exist({ region, code_certification });
-  if (!exist) {
-    throw new ErrorRegionaleNotFound();
-  }
 
   const result = await RegionaleStatsRepository.first({ region, code_certification, millesime });
   if (!result) {
+    const existFormation = await BCNRepository.exist({ code_certification });
+    if (!existFormation) {
+      throw new ErrorFormationNotExist();
+    }
+
+    const exist = await RegionaleStatsRepository.exist({ region, code_certification });
+    if (!exist) {
+      throw new ErrorRegionaleNotFound();
+    }
+
     const millesimesAvailable = await RegionaleStatsRepository.findMillesime({ region, code_certification });
     throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
   }
@@ -214,8 +221,17 @@ export default () => {
         res.setHeader("content-type", "text/html");
         return res.status(200).send(widget);
       } catch (err) {
-        // TODO: gestion des erreurs
-        const widget = await getUserWidget({ hash, name: "error", theme });
+        const widget = await getUserWidget({
+          hash,
+          name: "error",
+          theme,
+          data: {
+            error: err.name,
+            millesimes: formatMillesime(millesime).split("_"),
+            code_certification: codes_certifications[0],
+            region: findRegionByCode(region),
+          },
+        });
 
         res.setHeader("content-type", "text/html");
         return res.status(200).send(widget);
