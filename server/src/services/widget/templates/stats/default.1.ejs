@@ -344,7 +344,7 @@
             <% } %>
           </div>
           <div class="body-description">
-            <div class="block modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].colorText %>" onClick="showModal('<%= key %>')">
+            <div class="block modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : taux[key].colorText %>" onClick="showModal('<%= key %>')">
               <div class="block-title">
                 <div>
                   <div><%= taux[key].description %> ⓘ</div>
