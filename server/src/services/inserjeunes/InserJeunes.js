@@ -59,7 +59,15 @@ function groupByCertification(additionalData = {}) {
 
 function computeMissingStats() {
   return transformData((data) => {
-    const { nb_annee_term, nb_sortant, nb_poursuite_etudes } = data;
+    const {
+      nb_annee_term,
+      nb_sortant,
+      nb_poursuite_etudes,
+      nb_en_emploi_24_mois,
+      nb_en_emploi_18_mois,
+      nb_en_emploi_12_mois,
+      nb_en_emploi_6_mois,
+    } = data;
 
     if (nb_annee_term === undefined || (nb_sortant === undefined && nb_poursuite_etudes === undefined)) {
       return data;
@@ -69,6 +77,10 @@ function computeMissingStats() {
       ...data,
       // On ne calcul pas le nb_poursuite_etudes, il peut y avoir des sortant pas pris en compte dans nb_sortant
       //nb_poursuite_etudes: nb_poursuite_etudes === undefined ? nb_annee_term - nb_sortant : nb_poursuite_etudes,
+      nb_en_emploi_24_mois: !nb_en_emploi_24_mois && nb_poursuite_etudes === nb_annee_term ? 0 : nb_en_emploi_24_mois,
+      nb_en_emploi_18_mois: !nb_en_emploi_18_mois && nb_poursuite_etudes === nb_annee_term ? 0 : nb_en_emploi_18_mois,
+      nb_en_emploi_12_mois: !nb_en_emploi_12_mois && nb_poursuite_etudes === nb_annee_term ? 0 : nb_en_emploi_12_mois,
+      nb_en_emploi_6_mois: !nb_en_emploi_6_mois && nb_poursuite_etudes === nb_annee_term ? 0 : nb_en_emploi_6_mois,
       nb_sortant: nb_sortant === undefined ? nb_annee_term - nb_poursuite_etudes : nb_sortant,
     };
   });
