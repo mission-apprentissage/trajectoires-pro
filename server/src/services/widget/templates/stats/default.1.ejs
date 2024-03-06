@@ -340,11 +340,11 @@
             <% } %>
           </div>
           <div class="body-description">
-            <div class="block <%= taux[key].colorText %>">
+            <div class="block modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].colorText %>" onClick="showModal('<%= key %>')">
               <div class="block-title">
                 <div>
-                  <div><%= taux[key].description %></div>
-                  <div><%= taux[key].title %> <span onClick="showModal('<%= key %>')" class="modal-link plausible-event-name=Modal+Open+<%= key %>'">ⓘ</span></div>
+                  <div><%= taux[key].description %> ⓘ</div>
+                  <div><%= taux[key].title %></div>
                 </div>
               </div>
             </div>
@@ -358,9 +358,9 @@
               <svg class="remix icon">
                 <use xlink:href="<%= taux[key].icon %>" />
               </svg>
-              <%= taux[key].title %>
+              <%= taux[key].title %> ⓘ
             </div>
-            <div><%= taux[key].description %> ⓘ</div>
+            <div><%= taux[key].description %></div>
           </div>
           <% } %>
         </div>
