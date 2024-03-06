@@ -94,12 +94,14 @@
 
   .title {
     color: #000091;
-    font-weight: 700;
+    font-weight: 500;
     font-size: 20px;
+    line-height: 24px;
   }
 
   .subTitle {
     margin-top: 5px;
+    font-weight: 500;
   }
 
   .subTitle span {
@@ -116,5 +118,19 @@
 
   .collapse-button-hide {
     display: none;
+  }
+
+  @media screen and (min-width: 40em) {}
+
+  @media screen and (max-width: 40em) {
+    .title {
+      font-weight: 500;
+      line-height: 24px;
+      font-size: 18px;
+    }
+
+    .subTitle {
+      font-size: 16px;
+    }
   }
 </style>
