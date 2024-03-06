@@ -31,7 +31,7 @@ server {
 
 server {
     listen ${SSL_PORT} ssl;
-    server_name ${SERVER_NAME} ${SERVER_NAME_ALTERNATIVE};
+    server_name ${SERVER_NAME} site.${SERVER_NAME};
     include includes/server.conf;
     include includes/location_*.conf;
     include includes/env/location_*.conf;
