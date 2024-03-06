@@ -26,6 +26,8 @@ taux = data.taux.reduce((acc, taux, index) => {
     return acc;
 }, {taux: {}, prev: 0}).taux;
 
+maxEleves = Object.keys(taux).reduce((acc, key) => taux[key].eleves > acc ? taux[key].eleves : acc, 0);
+
 taux["emploi"].colorIcon = "green-variant";
 taux["emploi"].colorText = "green";
 taux["emploi"].title = "EN EMPLOI";

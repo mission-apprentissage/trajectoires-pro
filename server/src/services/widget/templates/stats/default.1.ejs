@@ -40,10 +40,13 @@
     :root {
       --body-width: calc(var(--widget-width) * 0.075);
       --body-height: calc(var(--body-width) * 1.8125);
+
       --body-icon-width: calc(var(--widget-width) * 0.03);
       --body-icon-left: calc(var(--widget-width) * 0.022);
       --body-icon-top: calc(var(--widget-width) * 0.04);
     }
+
+
 
     .card-modal .title {
       margin-bottom: 10px;
@@ -75,7 +78,7 @@
     .card-footer {
       color: #666666;
       font-size: 12px;
-      margin-top: 30px;
+      margin-top: 15px;
     }
 
     .blocks {
@@ -214,6 +217,15 @@
     }
 
     @media screen and (max-width: 40em) {
+      :root {
+        --body-width: min(calc(var(--widget-width) * 0.8 / <%=maxEleves %>), 30px);
+        --body-height: calc(var(--body-width) * 1.8125);
+
+        --body-icon-width: calc(var(--body-width) * 0.4);
+        --body-icon-left: calc(var(--body-width) * 0.29);
+        --body-icon-top: calc(var(--body-width) * 0.5);
+      }
+
       .bodies {
         display: flex;
         align-items: flex-start;
@@ -310,18 +322,10 @@
   </div>
 
   <div class="container">
-    <div class="title">Que deviennent les élèves après cette formation ?</div>
-    <% if (data.etablissementLibelle) { %>
-    <div class="subTitle"><span class="ri-xl ri-school-line" aria-hidden="true"></span><%= data.etablissementLibelle %></div>
-    <% } else if (data.region) { %>
-    <div class="subTitle"><span class="fr-icon-map-pin-2-line" aria-hidden="true"></span><%= data.region.nom %></div>
-    <% } else { %>
-    <div class="subTitle"><span class="fr-icon-map-pin-2-line" aria-hidden="true"></span>France</div>
-    <% }  %>
+    <%- await include('../common/title.ejs'); %>
     <!-- <div class="badge">
       <div class="label">CAP EN 2 ANS</div>
     </div> -->
-
 
     <div class="card">
       <div class="card-data">
@@ -364,10 +368,10 @@
           </div>
           <% } %>
         </div>
-        <div class="card-footer">
-          Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html">InserJeunes</a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur ces indicateurs.</a>
-        </div>
       </div>
+    </div>
+    <div class="card-footer">
+      Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html">InserJeunes</a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur ces indicateurs.</a>
     </div>
   </div>
 </body>
