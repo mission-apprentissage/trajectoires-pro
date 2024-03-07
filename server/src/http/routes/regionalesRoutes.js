@@ -264,7 +264,7 @@ export default () => {
     "/api/inserjeunes/regionales/:region/certifications/:codes_certifications/widget",
     authMiddleware("private"),
     tryCatch(async (req, res) => {
-      const { theme, millesime } = await validate(
+      const { theme, millesime, vue } = await validate(
         { ...req.params, ...req.query },
         {
           ...validators.region(),
@@ -277,7 +277,7 @@ export default () => {
 
       const widget = getIframe({
         user: req.user,
-        parameters: { theme, millesime },
+        parameters: { theme, millesime, vue },
         path: req.path,
       });
 
