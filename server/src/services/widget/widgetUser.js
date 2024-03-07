@@ -1,11 +1,10 @@
 import UglifyJs from "uglify-js";
 import UserRepository from "#src/common/repositories/user.js";
-import { renderWidget, getWidget } from "./widget.js";
+import { WIDGETS, renderWidget, getWidget } from "./widget.js";
 import { ErrorWidgetDoesNotExist } from "./error.js";
 import { ErrorUserDoesNotExist } from "#src/services/user/error.js";
 import config from "#src/config.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
-import { WIDGETS } from "./widget.js";
 
 const IFRAME_ON_LOAD_JS = UglifyJs.minify(
   `(function load(f) {

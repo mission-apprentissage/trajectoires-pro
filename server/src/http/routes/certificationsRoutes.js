@@ -1,5 +1,5 @@
 import express from "express";
-import { mapValues } from "lodash-es";
+import { mapValues, isEmpty } from "lodash-es";
 import Joi from "joi";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
@@ -15,11 +15,12 @@ import {
   sendImageOnError,
 } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import { getLastMillesimes, transformDisplayStat, buildDescription } from "#src/common/stats.js";
+import { getLastMillesimes, transformDisplayStat } from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import CertificationsRepository from "#src/common/repositories/certificationStats.js";
-import { ErrorNoDataForMillesime, ErrorCertificationNotFound } from "#src/http/errors.js";
+import { ErrorNoDataForMillesime, ErrorCertificationNotFound, ErrorCertificationsNotFound } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
+import { formatDataFilieresWidget, formatDataWidget } from "#src/http/utils/widgetUtils.js";
 
 async function certificationStats({ codes_certifications, millesime }) {
   const code_certification = codes_certifications[0];
@@ -38,6 +39,27 @@ async function certificationStats({ codes_certifications, millesime }) {
 
   const stats = transformDisplayStat()(result);
   return stats;
+}
+
+async function certificationsFilieresStats({ codes_certifications, millesime }) {
+  const cfds = await BCNRepository.findCodesFormationDiplome(codes_certifications);
+  if (!cfds || cfds.length === 0) {
+    throw new ErrorCertificationsNotFound();
+  }
+
+  const filieresStats = mapValues(
+    await CertificationsRepository.getFilieresStats({
+      code_formation_diplome: cfds,
+      millesime,
+    }),
+    transformDisplayStat()
+  );
+
+  if (isEmpty(filieresStats)) {
+    throw new ErrorCertificationsNotFound();
+  }
+
+  return filieresStats;
 }
 
 export default () => {
@@ -105,20 +127,11 @@ export default () => {
       );
 
       if (vue === "filieres" || codes_certifications.length > 1) {
-        const cfds = await BCNRepository.findCodesFormationDiplome(codes_certifications);
-        const filieresStats =
-          cfds && cfds.length > 0
-            ? mapValues(
-                await CertificationsRepository.getFilieresStats({
-                  code_formation_diplome: cfds,
-                  millesime,
-                }),
-                transformDisplayStat()
-              )
-            : {};
-
         return sendImageOnError(
-          async () => await sendFilieresStats(filieresStats, res, options),
+          async () => {
+            const filieresStats = await certificationsFilieresStats({ codes_certifications, millesime });
+            await sendFilieresStats(filieresStats, res, options);
+          },
           res,
           { type: "certifications" },
           options
@@ -141,7 +154,7 @@ export default () => {
     "/api/inserjeunes/certifications/:codes_certifications/widget/:hash",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { hash, theme, codes_certifications, millesime } = await validate(
+      const { hash, theme, codes_certifications, millesime, vue } = await validate(
         { ...req.params, ...req.query },
         {
           hash: Joi.string(),
@@ -153,24 +166,32 @@ export default () => {
       );
 
       try {
-        const stats = await certificationStats({ codes_certifications, millesime });
-        const description = buildDescription(stats);
+        if (vue === "filieres" || codes_certifications.length > 1) {
+          const filieresStats = await certificationsFilieresStats({ codes_certifications, millesime });
+          const data = await formatDataFilieresWidget({ filieresStats, millesime });
+          const widget = await getUserWidget({
+            hash,
+            name: "stats",
+            theme,
+            data,
+            plausibleCustomProperties: {
+              type: "certifications",
+              code_certification: codes_certifications.join(";"),
+              millesime,
+            },
+          });
 
+          res.setHeader("content-type", "text/html");
+          return res.status(200).send(widget);
+        }
+
+        const stats = await certificationStats({ codes_certifications, millesime });
+        const data = await formatDataWidget({ stats, millesime });
         const widget = await getUserWidget({
           hash,
           name: "stats",
           theme,
-          data: {
-            taux: [
-              { name: "formation", value: stats.taux_en_formation },
-              { name: "emploi", value: stats.taux_en_emploi_6_mois },
-              { name: "autres", value: stats.taux_autres_6_mois },
-            ],
-            millesimes: formatMillesime(millesime).split("_"),
-            description,
-            // TODO: fix libelle BCN
-            formationLibelle: stats.libelle,
-          },
+          data,
           plausibleCustomProperties: {
             type: "certification",
             code_certification: codes_certifications[0],

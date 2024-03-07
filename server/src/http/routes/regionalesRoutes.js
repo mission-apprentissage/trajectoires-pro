@@ -1,6 +1,6 @@
 import express from "express";
 import Joi from "joi";
-import { mapValues } from "lodash-es";
+import { mapValues, isEmpty } from "lodash-es";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
@@ -15,12 +15,13 @@ import {
   sendImageOnError,
 } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import { getLastMillesimesRegionales, transformDisplayStat, buildDescription } from "#src/common/stats.js";
+import { getLastMillesimesRegionales, transformDisplayStat } from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import { ErrorRegionaleNotFound, ErrorNoDataForMillesime, ErrorFormationNotExist } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { findRegionByCode } from "#src/services/regions.js";
+import { formatDataFilieresWidget, formatDataWidget } from "#src/http/utils/widgetUtils.js";
 
 async function regionaleStats({ codes_certifications, region, millesime }) {
   const code_certification = codes_certifications[0];
@@ -43,6 +44,28 @@ async function regionaleStats({ codes_certifications, region, millesime }) {
 
   const stats = transformDisplayStat()(result);
   return stats;
+}
+
+async function regionaleFilieresStats({ codes_certifications, millesime, region }) {
+  const cfds = await BCNRepository.findCodesFormationDiplome(codes_certifications);
+  if (!cfds || cfds.length === 0) {
+    throw new ErrorFormationNotExist();
+  }
+
+  const filieresStats = mapValues(
+    await RegionaleStatsRepository.getFilieresStats({
+      code_formation_diplome: cfds,
+      millesime,
+      region,
+    }),
+    transformDisplayStat()
+  );
+
+  if (isEmpty(filieresStats)) {
+    throw new ErrorRegionaleNotFound();
+  }
+
+  return filieresStats;
 }
 
 export default () => {
@@ -141,21 +164,11 @@ export default () => {
       );
 
       if (vue === "filieres" || codes_certifications.length > 1) {
-        const cfds = await BCNRepository.findCodesFormationDiplome(codes_certifications);
-        const filieresStats =
-          cfds && cfds.length > 0
-            ? mapValues(
-                await RegionaleStatsRepository.getFilieresStats({
-                  code_formation_diplome: cfds,
-                  millesime,
-                  region,
-                }),
-                transformDisplayStat()
-              )
-            : {};
-
         return sendImageOnError(
-          async () => await sendFilieresStats(filieresStats, res, options),
+          async () => {
+            const filieresStats = await regionaleFilieresStats({ codes_certifications, millesime, region });
+            await sendFilieresStats(filieresStats, res, options);
+          },
           res,
           { type: "regionales", regionCode: region },
           options
@@ -178,7 +191,7 @@ export default () => {
     "/api/inserjeunes/regionales/:region/certifications/:codes_certifications/widget/:hash",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { hash, theme, region, codes_certifications, millesime } = await validate(
+      const { hash, theme, region, codes_certifications, millesime, vue } = await validate(
         { ...req.params, ...req.query },
         {
           hash: Joi.string(),
@@ -191,25 +204,33 @@ export default () => {
       );
 
       try {
+        if (vue === "filieres" || codes_certifications.length > 1) {
+          const filieresStats = await regionaleFilieresStats({ codes_certifications, millesime, region });
+          const data = await formatDataFilieresWidget({ filieresStats, millesime, region: findRegionByCode(region) });
+          const widget = await getUserWidget({
+            hash,
+            name: "stats",
+            theme,
+            data,
+            plausibleCustomProperties: {
+              type: "regionales",
+              code_certification: codes_certifications.join(";"),
+              millesime,
+            },
+          });
+
+          res.setHeader("content-type", "text/html");
+          return res.status(200).send(widget);
+        }
+
         const stats = await regionaleStats({ codes_certifications, region, millesime });
-        const description = buildDescription(stats);
+        const data = await formatDataWidget({ stats, millesime, region: stats.region });
 
         const widget = await getUserWidget({
           hash,
           name: "stats",
           theme,
-          data: {
-            taux: [
-              { name: "formation", value: stats.taux_en_formation },
-              { name: "emploi", value: stats.taux_en_emploi_6_mois },
-              { name: "autres", value: stats.taux_autres_6_mois },
-            ],
-            millesimes: formatMillesime(millesime).split("_"),
-            description,
-            // TODO: fix libelle BCN
-            formationLibelle: stats.libelle,
-            region: stats.region,
-          },
+          data,
           plausibleCustomProperties: {
             type: "regionale",
             code_certification: codes_certifications[0],

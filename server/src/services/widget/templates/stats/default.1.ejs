@@ -67,20 +67,6 @@
       line-height: 20px;
     }
 
-    .card {
-      border: 1px solid #e3e3fd;
-      border-radius: 6px;
-      margin-top: 10px;
-      padding: 10px;
-      padding-top: 30px;
-    }
-
-    .card-footer {
-      color: #666666;
-      font-size: 12px;
-      margin-top: 15px;
-    }
-
     .blocks {
       display: flex;
       align-items: center;
@@ -196,6 +182,14 @@
       padding-top: 5px;
     }
 
+    .title-filieres {
+      margin-top: 10px;
+    }
+
+    .card .bodies {
+      padding-top: 15px;
+    }
+
     @media screen and (min-width: 40em) {
       .bodies {
         display: flex;
@@ -279,7 +273,7 @@
                 <use xlink:href="#icon-union" />
               </svg>
               <svg class="remix icon white">
-                <use xlink:href="<%= taux[key].icon %>" />
+                <use xlink:href="<%= infos[key].icon %>" />
               </svg>
             </div>
             <% } %>
@@ -287,11 +281,11 @@
           <div class="body-group body-<%= key %>-enable">
             <% for (var i=0; i<6;i++) { %>
             <div class="body">
-              <svg class="<%= taux[key].colorIcon %>">
+              <svg class="<%= infos[key].colorIcon %>">
                 <use xlink:href="#icon-union" />
               </svg>
               <svg class="remix icon white">
-                <use xlink:href="<%= taux[key].icon %>" />
+                <use xlink:href="<%= infos[key].icon %>" />
               </svg>
             </div>
             <% } %>
@@ -327,49 +321,40 @@
       <div class="label">CAP EN 2 ANS</div>
     </div> -->
 
+    <% if (data.type == "filieres") { %>
+    <div class="title black title-filieres">Par la voie scolaire</div>
     <div class="card">
       <div class="card-data">
-        <div class="bodies">
-          <% for (const key of ["emploi", "formation", "autres"]) { %>
-          <div class="body-group">
-            <% for (var i=0; i<taux[key].eleves;i++) { %>
-            <div class="body">
-              <svg class="<%= taux[key].colorIcon %>">
-                <use xlink:href="#icon-union" />
-              </svg>
-              <svg class="icon white">
-                <use xlink:href="<%= taux[key].icon %>" />
-              </svg>
-            </div>
-            <% } %>
-          </div>
-          <div class="body-description">
-            <div class="block modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : taux[key].colorText %>" onClick="showModal('<%= key %>')">
-              <div class="block-title">
-                <div>
-                  <div><%= taux[key].description %> ⓘ</div>
-                  <div><%= taux[key].title %></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <% } %>
+        <% if (!data.pro.exist) { %>
+        <div>
+          <div class="details-title">Nous ne disposons pas de données pour la voie scolaire.</div>
         </div>
-        <div class="blocks">
-          <% for (const key of ["emploi", "formation", "autres"]) { %>
-          <div onClick="showModal('<%= key %>')" class="block block-<%= key %> modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : taux[key].colorText %>">
-            <div class="block-title">
-              <svg class="remix icon">
-                <use xlink:href="<%= taux[key].icon %>" />
-              </svg>
-              <%= taux[key].title %> ⓘ
-            </div>
-            <div><%= taux[key].description %></div>
-          </div>
-          <% } %>
-        </div>
+        <% } else { %>
+        <%- await include('./personas.1.ejs', { taux: taux.pro}); %>
+        <% } %>
       </div>
     </div>
+    <div class="title black">Par la voie apprentissage</div>
+    <div class="card">
+      <div class="card-data">
+        <% if (!data.apprentissage.exist) { %>
+        <div>
+          <div class="details-title">Nous ne disposons pas de données pour la voie apprentissage.</div>
+        </div>
+        <% } else { %>
+        <%- await include('./personas.1.ejs', { taux: taux.apprentissage, exist: data.apprentissage.exist }); %>
+        <% } %>
+      </div>
+    </div>
+
+    <% } else { %>
+    <div class="card">
+      <div class="card-data">
+        <%- await include('./personas.1.ejs', {exist: true}); %>
+      </div>
+    </div>
+    <% } %>
+
     <div class="card-footer">
       Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html">InserJeunes</a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur ces indicateurs.</a>
     </div>

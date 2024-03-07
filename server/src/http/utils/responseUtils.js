@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
+import { isEmpty } from "lodash-es";
 import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "#src/http/widget/widget.js";
 import { buildDescription, buildDescriptionFiliere } from "#src/common/stats.js";
-import { isEmpty } from "lodash-es";
 import { findRegionByCode } from "#src/services/regions.js";
 import {
   ErrorRegionaleNotFound,

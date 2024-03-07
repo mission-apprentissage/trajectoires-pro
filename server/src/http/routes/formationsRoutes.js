@@ -8,7 +8,7 @@ import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src
 import { formatMillesime } from "#src/http/utils/formatters.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
-import { getLastMillesimesFormations, transformDisplayStat, buildDescription } from "#src/common/stats.js";
+import { getLastMillesimesFormations, transformDisplayStat } from "#src/common/stats.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
 import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
@@ -19,6 +19,7 @@ import {
   ErrorEtablissementNotExist,
 } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
+import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
 
 async function formationStats({ uai, code_certification, millesime }) {
   const result = await FormationStatsRepository.first({
@@ -157,25 +158,14 @@ export default () => {
 
       try {
         const stats = await formationStats({ uai, code_certification, millesime });
-        const description = buildDescription(stats);
         const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
+        const data = await formatDataWidget({ stats, millesime, etablissement });
 
         const widget = await getUserWidget({
           hash,
           name: "stats",
           theme,
-          data: {
-            taux: [
-              { name: "formation", value: stats.taux_en_formation },
-              { name: "emploi", value: stats.taux_en_emploi_6_mois },
-              { name: "autres", value: stats.taux_autres_6_mois },
-            ],
-            millesimes: formatMillesime(millesime).split("_"),
-            description,
-            // TODO: fix libelle BCN
-            formationLibelle: stats.libelle,
-            etablissementLibelle: etablissement.appellation_officielle,
-          },
+          data,
           plausibleCustomProperties: {
             type: "formation",
             uai,

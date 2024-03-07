@@ -24,7 +24,16 @@ export const WIDGETS = {
       },
     },
     validator: (data) => {
-      if (!data?.taux?.find || data.taux.find(({ value }) => isNil(value))) {
+      const isInvalid = (taux) => !taux || !!taux.find(({ value }) => isNil(value));
+
+      if (data.type === "filieres") {
+        if (isInvalid(data?.pro?.taux) && isInvalid(data?.apprentissage?.taux)) {
+          return false;
+        }
+        return true;
+      }
+
+      if (isInvalid(data?.taux)) {
         return false;
       }
       return true;
