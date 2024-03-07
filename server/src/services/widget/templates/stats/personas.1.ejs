@@ -1,5 +1,6 @@
 <div class="bodies">
   <% for (const key of ["emploi", "formation", "autres"]) { %>
+  <% if (taux[key].eleves > 0) { %>
   <div class="body-group">
     <% for (var i=0; i<taux[key].eleves;i++) { %>
     <div class="body">
@@ -23,9 +24,11 @@
     </div>
   </div>
   <% } %>
+  <% } %>
 </div>
 <div class="blocks">
   <% for (const key of ["emploi", "formation", "autres"]) { %>
+  <% if (taux[key].eleves > 0) { %>
   <div onClick="showModal('<%= key %>')" class="block block-<%= key %> modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : infos[key].colorText %>">
     <div class="block-title">
       <svg class="remix icon">
@@ -35,5 +38,6 @@
     </div>
     <div><%= taux[key].description %></div>
   </div>
+  <% } %>
   <% } %>
 </div>
