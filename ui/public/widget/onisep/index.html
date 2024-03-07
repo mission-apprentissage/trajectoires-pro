@@ -6063,7 +6063,8 @@ Domaines: commerce, marketing, vente matières premières, fabrication, industri
             <script>
               const params = (new URL(document.location)).searchParams;
               const url = params.get("url") || "certifications/45022105";
-              document.querySelector('#inserjeunes-data').innerHTML = `<iframe onLoad="!function(e){window.addEventListener('message',function(t){'https://exposition-sandbox.inserjeunes.beta.gouv.fr'!==t.origin||isNaN(t.data)||(e.style.height=t.data+'px')},!1)}(this);" style="width: 100%; height: 0;" src="https://exposition-sandbox.inserjeunes.beta.gouv.fr/api/inserjeunes/${url}/widget/405gzp2ilsvw9etc?" scrolling="no" frameBorder="0"></iframe>`;
+              const query = params.get("query") || "";
+              document.querySelector('#inserjeunes-data').innerHTML = `<iframe onLoad="!function(e){window.addEventListener('message',function(t){'https://exposition-sandbox.inserjeunes.beta.gouv.fr'!==t.origin||isNaN(t.data)||(e.style.height=t.data+'px')},!1)}(this);" style="width: 100%; height: 0;" src="https://exposition-sandbox.inserjeunes.beta.gouv.fr/api/inserjeunes/${url}/widget/405gzp2ilsvw9etc?${query}" scrolling="no" frameBorder="0"></iframe>`;
             </script>
 
 
