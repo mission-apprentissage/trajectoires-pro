@@ -12,6 +12,7 @@
   background-image: none;
 }
 
-.notion-page-icon-span {
+div.notion-page-icon-span:has(+ .notion-title) {
   display: none;
 }
+
