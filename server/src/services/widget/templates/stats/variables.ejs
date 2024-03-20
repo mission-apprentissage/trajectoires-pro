@@ -1,0 +1,62 @@
+<%_
+
+const computeTaux = (taux) => {
+    return taux.reduce((acc, taux, index) => {
+        const rounded = taux.value > 0 && taux.value < 5 ? 1 : Math.round(taux.value / 10);
+        let eleves = acc.prev + rounded > 10 ? 10 - acc.prev : rounded;
+        // Use the last taux to round
+        if (index === 2) {
+            eleves = eleves + acc.prev < 10 ? 10 - acc.prev : eleves;
+        }
+
+        const lessOne = taux.value > 0 && taux.value < 5 && eleves === 1;
+
+        let elevePlural = lessOne || eleves === 1 ? "élève" : "élèves";
+        let description=lessOne ? "Moins d'un " + elevePlural + " sur 10" : eleves + " " + elevePlural + " sur 10";
+        description=eleves== 0 ? "Aucun élève" : description;
+
+
+        acc.taux[taux.name] = {
+            ...taux,
+            rounded,
+            eleves,
+            lessOne,
+            description
+        };
+        acc.prev = acc.prev + acc.taux[taux.name].eleves;
+        return acc;
+    }, {taux: {}, prev: 0}).taux;
+}
+
+if (data.type == "filieres") {
+    taux = {apprentissage: computeTaux(data.apprentissage.taux), pro: computeTaux(data.pro.taux)};
+    maxElevesApprentissage = Object.keys(taux.apprentissage).reduce((acc, key) => 
+        taux.apprentissage[key].eleves > acc ? taux.apprentissage[key].eleves : acc, 0);
+    maxElevesPro = Object.keys(taux.pro).reduce((acc, key) => 
+        taux.pro[key].eleves > acc ? taux.pro[key].eleves : acc, 0);
+    maxEleves = Math.max(maxElevesApprentissage, maxElevesPro);
+} else {
+    taux = computeTaux(data.taux);
+    maxEleves = Object.keys(taux).reduce((acc, key) => taux[key].eleves > acc ? taux[key].eleves : acc, 0);
+}
+
+infos = {emploi: {}, formation: {}, autres: {}};
+infos["emploi"].colorIcon = "green-variant";
+infos["emploi"].colorText = "green";
+infos["emploi"].title = "EN EMPLOI";
+infos["emploi"].icon = "#ri-briefcase-4-line";
+
+infos["formation"].colorIcon = "orange-variant";
+infos["formation"].colorText = "orange";
+infos["formation"].title = "EN FORMATION";
+infos["formation"].icon = "#ri-graduation-cap-line";
+
+infos["autres"].colorIcon = "blue-variant";
+infos["autres"].colorText = "blue";
+infos["autres"].title = "AUTRES PARCOURS";
+infos["autres"].icon = "#ri-route-line";
+
+millesimes=data.millesimes;
+millesimesDouble=millesimes.length === 2;
+
+-%>

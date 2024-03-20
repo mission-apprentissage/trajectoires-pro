@@ -1,4 +1,4 @@
-import { object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
+import { object, objectId, string, arrayOf, number } from "./jsonSchema/jsonSchemaTypes.js";
 import { metaSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "users";
@@ -13,10 +13,20 @@ export function schema() {
       _id: objectId(),
       username: string(),
       password: string(),
+      widget: object({
+        hash: string(),
+        version: arrayOf(
+          object({
+            type: string(),
+            theme: string(),
+            version: number(),
+          })
+        ),
+      }),
       _meta: metaSchema(),
     },
     {
-      required: ["username", "password", "_meta"],
+      required: ["username", "password", "widget", "_meta"],
       additionalProperties: false,
     }
   );

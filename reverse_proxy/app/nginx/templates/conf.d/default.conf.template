@@ -23,15 +23,15 @@ server {
 
 
 server {
-    listen ${SSL_PORT} ssl;
-    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME} documentation.${SERVER_NAME};
+    listen ${SSL_PORT} ssl http2;
+    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME} documentation.${SERVER_NAME} test.${SERVER_NAME};
     include includes/server.conf;
     include includes/statistiques/location_*.conf;
 }
 
 server {
-    listen ${SSL_PORT} ssl;
-    server_name ${SERVER_NAME} ${SERVER_NAME_ALTERNATIVE};
+    listen ${SSL_PORT} ssl http2;
+    server_name ${SERVER_NAME} site.${SERVER_NAME};
     include includes/server.conf;
     include includes/location_*.conf;
     include includes/env/location_*.conf;

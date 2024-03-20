@@ -13,8 +13,8 @@ describe("repositories", () => {
     describe("getFilieresStats", () => {
       describe("Quand les CFDs sont les mêmes", async () => {
         it("Retourne les stats pour une filière", async () => {
-          insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" });
-          insertCertificationsStats({
+          await insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" });
+          await insertCertificationsStats({
             code_certification: "12345678",
             code_formation_diplome: "12345678",
             filiere: "apprentissage",
@@ -27,8 +27,8 @@ describe("repositories", () => {
             nb_en_emploi_12_mois: 25,
             nb_en_emploi_6_mois: 45,
           });
-          insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" });
-          insertCertificationsStats({
+          await insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" });
+          await insertCertificationsStats({
             code_certification: "23830024202",
             code_formation_diplome: "12345678",
             filiere: "pro",

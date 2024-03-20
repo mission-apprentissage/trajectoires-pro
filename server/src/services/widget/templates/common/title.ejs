@@ -1,0 +1,17 @@
+<div class="title fr-h5">Que deviennent les élèves à la fin de cette formation ?</div>
+<% if (data.etablissementLibelle) { %>
+<div class="subTitle blue-marine grid">
+  <div class="icon-spacing fr-icon-map-pin-2-fill" aria-hidden="true"></div>
+  <div><%= data.etablissementLibelle %></div>
+</div>
+<% } else if (data.region) { %>
+<div class="subTitle blue-marine grid">
+  <div class="icon-spacing fr-icon-map-pin-2-fill" aria-hidden="true"></div>
+  <div><%= data.region.nom %></div>
+</div>
+<% } else { %>
+<div class="subTitle blue-marine grid">
+  <div class="icon-spacing fr-icon-map-pin-2-fill" aria-hidden="true"></div>
+  <div>France</div>
+</div>
+<% }  %>

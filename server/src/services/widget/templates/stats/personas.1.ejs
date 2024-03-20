@@ -1,0 +1,43 @@
+<div class="bodies">
+  <% for (const key of ["emploi", "formation", "autres"]) { %>
+  <% if (taux[key].eleves > 0) { %>
+  <div class="body-group">
+    <% for (var i=0; i<taux[key].eleves;i++) { %>
+    <div class="body">
+      <svg class="<%= infos[key].colorIcon %>">
+        <use xlink:href="#icon-union" />
+      </svg>
+      <svg class="icon white">
+        <use xlink:href="<%= infos[key].icon %>" />
+      </svg>
+    </div>
+    <% } %>
+  </div>
+  <div class="body-description">
+    <div class="block modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : infos[key].colorText %>" onClick="showModal('<%= key %>')">
+      <div class="block-title">
+        <div>
+          <div><%= taux[key].description %></div>
+          <div><%= infos[key].title %> ⓘ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
+  <% } %>
+</div>
+<div class="blocks">
+  <% for (const key of ["emploi", "formation", "autres"]) { %>
+  <% if (taux[key].eleves > 0) { %>
+  <div onClick="showModal('<%= key %>')" class="block block-<%= key %> modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : infos[key].colorText %>">
+    <div class="block-title">
+      <svg class="remix icon">
+        <use xlink:href="<%= infos[key].icon %>" />
+      </svg>
+      <%= infos[key].title %> ⓘ
+    </div>
+    <div><%= taux[key].description %></div>
+  </div>
+  <% } %>
+  <% } %>
+</div>

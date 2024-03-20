@@ -1,8 +1,8 @@
-import * as Auth from "#src/services/auth/index.js";
+import * as User from "#src/services/user/user.js";
 
 export async function create({ username, password, passwordRepeat }) {
   try {
-    const user = await Auth.User.createUser({ username, password, passwordRepeat });
+    const user = await User.createUser({ username, password, passwordRepeat });
     console.log(`Utilisateur ${username} créé avec succès`);
     return user;
   } catch (err) {
@@ -14,7 +14,7 @@ export async function create({ username, password, passwordRepeat }) {
 
 export async function remove({ username }) {
   try {
-    await Auth.User.removeUser({ username });
+    await User.removeUser({ username });
     console.log(`Utilisateur ${username} supprimé avec succès`);
     return true;
   } catch (err) {

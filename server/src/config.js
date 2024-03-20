@@ -75,6 +75,12 @@ const config = {
     formations: env.get("TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS").default("2019_2020,2020_2021,2021_2022").asArray(),
     regionales: env.get("TRAJECTOIRES_PRO_MILLESIMES_REGIONALES").default("2019_2020,2020_2021,2021_2022").asArray(),
   },
+  widget: {
+    plausibleDomain: env
+      .get("WIDGET_PLAUSIBLE_DOMAIN")
+      .default("exposition-sandbox.inserjeunes.beta.gouv.fr")
+      .asString(),
+  },
 };
 
 export default config;

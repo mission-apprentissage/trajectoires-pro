@@ -157,6 +157,18 @@ paths:
         404:
           $ref: "#/components/responses/404-Code-Certification"
 
+  /api/inserjeunes/certifications/{codes_certifications}/widget:
+    get:
+      description: Retourne le code à utiliser pour intégrer le widget
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/codes_certifications"
+        - $ref: "#/components/parameters/millesime"
+        - $ref: "#/components/parameters/vue"
+      responses:
+        200:
+          $ref: "#/components/responses/CertificationWidgetResponse"
 
   /api/inserjeunes/regionales:
     get:
@@ -324,6 +336,20 @@ paths:
         404:
           $ref: "#/components/responses/404-Code-Regionale"
 
+  /api/inserjeunes/regionales/{code_region}/certifications/{codes_certifications}/widget:
+    get:
+      description: Retourne le code à utiliser pour intégrer le widget
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/code_region"
+        - $ref: "#/components/parameters/codes_certifications"
+        - $ref: "#/components/parameters/millesimePeriode"
+        - $ref: "#/components/parameters/vue"
+      responses:
+        200:
+          $ref: "#/components/responses/RegionaleWidgetResponse"
+
   /api/inserjeunes/formations:
     get:
       description: Rechercher des statistiques de formations
@@ -409,6 +435,19 @@ paths:
           $ref: "#/components/responses/401"
         404:
           $ref: "#/components/responses/404-Code-Formation"
+
+  /api/inserjeunes/formations/{uai}-{code_certification}/widget:
+    get:
+      description: Retourne le code à utiliser pour intégrer le widget
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/uai"
+        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/millesimePeriode"
+      responses:
+        200:
+          $ref: "#/components/responses/FormationWidgetResponse"
 
 components:
   parameters:
@@ -656,6 +695,20 @@ components:
        Un code certification peut-être :
           * un code formation diplome (CFD) pour la voie apprentissage
           * un code MEFSTAT11 pour la voie professionnelle
+      in: path
+      required: true
+      schema:
+        type: string
+        example: "32221031409"
+
+    codes_certifications:
+      name: codes_certifications
+      description: | 
+        Un ou plusieurs codes de certification séparés par des virgules ou des |.
+
+        Un code certification peut-être :
+            * un code formation diplome (CFD) pour la voie apprentissage
+            * un code MEFSTAT11 pour la voie professionnelle
       in: path
       required: true
       schema:
@@ -1321,6 +1374,42 @@ components:
             type: string
             format: xml
 
+    CertificationWidgetResponse:
+      description: Une iframe qui permet d'intégrer le widget
+      content:
+        "text/html":
+          schema:
+            type: string
+          examples:
+            html:
+              summary: Une iframe permettant d'intégrer le widget
+              value: |
+                <iframe onLoad="JS_CODE" style="width: 100%; height: 0;" src="/api/inserjeunes/certifications/[CODE_CERTIFICATION]/widget/[HASH]?" scrolling="no" frameBorder="0" />
+
+
+    RegionaleWidgetResponse:
+      description: Une iframe qui permet d'intégrer le widget
+      content:
+        "text/html":
+          schema:
+            type: string
+          examples:
+            html:
+              summary: Une iframe permettant d'intégrer le widget
+              value: |
+                <iframe onLoad="JS_CODE" style="width: 100%; height: 0;" src="/api/inserjeunes/regionales/[CODE_REGION]/certifications/[CODE_CERTIFICATION]/widget/[HASH]?" scrolling="no" frameBorder="0" />
+
+    FormationWidgetResponse:
+      description: Une iframe qui permet d'intégrer le widget
+      content:
+        "text/html":
+          schema:
+            type: string
+          examples:
+            html:
+              summary: Une iframe permettant d'intégrer le widget
+              value: |
+                <iframe onLoad="JS_CODE" style="width: 100%; height: 0;" src="/api/inserjeunes/formations/[UAI]-[CODE_CERTIFICATION]/widget/[HASH]?" scrolling="no" frameBorder="0" />
     LoginResponse:
       description: Un json content un Token
       content:

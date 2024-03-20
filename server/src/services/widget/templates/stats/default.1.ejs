@@ -1,0 +1,364 @@
+<%- await include('../common/variables'); %>
+<%- await include('./variables'); %>
+
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+  <title><%= data?.description?.titre %></title>
+  <meta name="description" content="<%= data.description.details %>">
+
+  <%- await include('../common/header'); %>
+  <script>
+    var types = ["emploi", "formation", "autres"];
+
+    function showModal(type) {
+      types.forEach(type => {
+        document.querySelector('#modal-description .description-' + type).style.display = "none";
+        document.querySelector('#modal-description .title-' + type).style.display = "none";
+        document.querySelector('#modal-description .body-' + type + '-enable').style.display = "none";
+        document.querySelector('#modal-description .body-' + type + '-disable').style.display = "flex";
+      })
+
+      document.querySelector('#modal-description .description-' + type).style.display = "block";
+      document.querySelector('#modal-description .title-' + type).style.display = "block";
+      document.querySelector('#modal-description .body-' + type + '-disable').style.display = "none";
+      document.querySelector('#modal-description .body-' + type + '-enable').style.display = "flex";
+
+      document.querySelector('#modal-description').style.display = "block";
+      document.querySelector('.container').style.display = "none";
+    }
+
+    function closeModal() {
+      document.querySelector('#modal-description').style.display = "none";
+      document.querySelector('.container').style.display = "block";
+    }
+  </script>
+
+  <style>
+    :root {
+      --body-width: calc(var(--widget-width) * 0.075);
+      --body-height: calc(var(--body-width) * 1.8125);
+
+      --body-icon-width: calc(var(--widget-width) * 0.03);
+      --body-icon-left: calc(var(--widget-width) * 0.022);
+      --body-icon-top: calc(var(--widget-width) * 0.04);
+    }
+
+
+
+    .card-modal .title {
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      align-items: center;
+      background-color: #e8edff;
+      border-radius: 4px;
+      padding: 0px 6px;
+      width: fit-content;
+    }
+
+    .badge .label {
+      color: #0063cb;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 20px;
+    }
+
+    .blocks {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .block-title {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .block-title .icon {
+      margin-right: 4px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .body-description {
+      margin-bottom: 10px;
+    }
+
+    .body-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .body {
+      position: relative;
+    }
+
+    .body svg {
+      width: var(--body-width);
+      height: var(--body-height)
+    }
+
+    .body .icon {
+      position: absolute;
+      left: var(--body-icon-left);
+      top: var(--body-icon-top);
+      width: var(--body-icon-width);
+      height: var(--body-icon-width);
+    }
+
+    .modal-link:hover {
+      cursor: pointer;
+    }
+
+    .button {
+      margin-top: 15px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .button a {
+      background-color: #000091;
+      padding: 8px;
+      padding-left: 16px;
+      padding-right: 16px;
+      color: #f5f5fe;
+    }
+
+    .description {
+      text-align: justify;
+      font-size: 14px;
+    }
+
+    .description-more {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 5px;
+    }
+
+    .description-more a:after {
+      display: none;
+    }
+
+    .icon-link {
+      width: 16px;
+      height: 16px;
+    }
+
+
+    .card-modal .close {
+      color: #000091;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .card-modal .close:hover {
+      cursor: pointer;
+    }
+
+    .modal {
+      display: none;
+    }
+
+    .modal .card {
+      margin-top: 0px;
+      padding-top: 5px;
+    }
+
+    .title-filieres {
+      margin-top: 10px;
+    }
+
+    .card .bodies {
+      padding-top: 15px;
+    }
+
+    @media screen and (min-width: 40em) {
+      .bodies {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        margin-bottom: 10px;
+        ;
+      }
+
+      .body-description {
+        display: none;
+      }
+
+      .card-modal .bodies {
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+    }
+
+    @media screen and (max-width: 40em) {
+      :root {
+        --body-width: min(calc(var(--widget-width) * 0.8 / <%=maxEleves %>), 30px);
+        --body-height: calc(var(--body-width) * 1.8125);
+
+        --body-icon-width: calc(var(--body-width) * 0.4);
+        --body-icon-left: calc(var(--body-width) * 0.29);
+        --body-icon-top: calc(var(--body-width) * 0.5);
+      }
+
+      .bodies {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        gap: 2px;
+        margin-bottom: 10px;
+        margin-left: 10px;
+        ;
+      }
+
+      .blocks {
+        display: none;
+      }
+
+      .body-grey {
+        display: none;
+      }
+
+      .card-modal .body-grey .body {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body style="margin: 0; padding: 0;">
+  <%- await include('../assets/remixicon.light.symbol.svg'); %>
+
+  <div class="modal" id="modal-description">
+    <div class="card">
+      <div class="card-modal">
+
+        <button onClick="closeModal()" class="plausible-event-name=Modal+Close fr-btn--close fr-btn" title="Fermer la fenêtre modale">Fermer</button>
+        <div class="title title-emploi">
+          Nombre d'élèves ayant obtenu un emploi
+        </div>
+        <div class="title title-formation">
+          Nombre d'élèves poursuivant leur formation
+        </div>
+        <div class="title title-autres">
+          Nombre d'élèves réalisant d'autres parcours
+        </div>
+
+        <div class="bodies">
+          <% for (const key of ["emploi", "formation", "autres"]) { %>
+          <div class="body-group body-grey body-<%= key %>-disable">
+            <% for (var i=0; i<2;i++) { %>
+            <div class="body">
+              <svg class="grey">
+                <use xlink:href="#icon-union" />
+              </svg>
+              <svg class="remix icon white">
+                <use xlink:href="<%= infos[key].icon %>" />
+              </svg>
+            </div>
+            <% } %>
+          </div>
+          <div class="body-group body-<%= key %>-enable">
+            <% for (var i=0; i<6;i++) { %>
+            <div class="body">
+              <svg class="<%= infos[key].colorIcon %>">
+                <use xlink:href="#icon-union" />
+              </svg>
+              <svg class="remix icon white">
+                <use xlink:href="<%= infos[key].icon %>" />
+              </svg>
+            </div>
+            <% } %>
+          </div>
+          <% } %>
+        </div>
+        <div class="description">
+          <div class="description-emploi">
+            Il s'agit du nombre d'élèves ayant trouvé un emploi 6 mois après leur dernière année de formation ou d'apprentissage dans cette formation.<br /><br />
+            Ce chiffre comprend les emplois privés et publics mais uniquement salariés. Les auto-entrepreneurs sont comptabilisés dans les “<span>autres parcours</span>”.</div>
+          <div class="description-formation">
+            Cet indicateur comptabilise le nombre d'élèves inscrits dans une formation, qu'il s'agisse d'un autre niveau d'étude, d'un redoublement, d'une réorientation vers une nouvelle formation...<br /><br />
+            L'indicateur ne tient pas compte de la continuité dans un parcours de formation pour le moment.
+          </div>
+          <div class="description-autres">
+            Il s'agit du nombre d'élèves qui ne sont ni en emploi, ni en formation. Ils peuvent être au chômage, en inactivité, indépendants, partis à l'étranger, en formation privée hors contrat.
+          </div>
+        </div>
+        <div class="description-more">
+          <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/"><button class="fr-btn fr-btn--icon-right fr-icon-external-link-line">
+              En savoir plus sur ces indicateurs
+            </button>
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <%- await include('../common/title.ejs'); %>
+    <!-- <div class="badge">
+      <div class="label">CAP EN 2 ANS</div>
+    </div> -->
+
+    <% if (data.type == "filieres") { %>
+    <div class="title black title-filieres">Par la voie scolaire</div>
+    <div class="card">
+      <div class="card-data">
+        <% if (!data.pro.exist) { %>
+        <div>
+          <div class="details-title">Nous ne disposons pas de données pour la voie scolaire.</div>
+        </div>
+        <% } else { %>
+        <%- await include('./personas.1.ejs', { taux: taux.pro}); %>
+        <% } %>
+      </div>
+    </div>
+    <div class="title black">Par la voie apprentissage</div>
+    <div class="card">
+      <div class="card-data">
+        <% if (!data.apprentissage.exist) { %>
+        <div>
+          <div class="details-title">Nous ne disposons pas de données pour la voie apprentissage.</div>
+        </div>
+        <% } else { %>
+        <%- await include('./personas.1.ejs', { taux: taux.apprentissage, exist: data.apprentissage.exist }); %>
+        <% } %>
+      </div>
+    </div>
+
+    <% } else { %>
+    <div class="card">
+      <div class="card-data">
+        <%- await include('./personas.1.ejs', {exist: true}); %>
+      </div>
+    </div>
+    <% } %>
+
+    <div class="card-footer">
+      Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html">InserJeunes</a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur ces indicateurs.</a>
+    </div>
+  </div>
+</body>
+
+</html>

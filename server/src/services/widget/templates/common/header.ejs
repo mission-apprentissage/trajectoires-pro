@@ -1,0 +1,183 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<script defer data-domain="<%= plausibleDomain %>" src="https://plausible.io/js/script.manual.local.outbound-links.tagged-events.pageview-props.js"></script>
+
+<script>
+  setInterval(() => {
+    document.body && parent.postMessage(document.body.offsetHeight, '*');
+  }, 50);
+
+  function collapse(id, btnExpandId, btnCollapseId) {
+    document.querySelector(id).classList.toggle("collapse-show");
+    document.querySelector(btnExpandId).classList.toggle("collapse-button-hide");
+    document.querySelector(btnCollapseId).classList.toggle("collapse-button-hide");
+  }
+
+  document.addEventListener("DOMContentLoaded", function(event) {
+    plausible('pageview', {
+      props: <%- JSON.stringify(plausibleCustomProperties) %>
+    })
+
+    parent.postMessage(document.body.offsetHeight, '*');
+  });
+</script>
+
+
+<link rel="preload" href="/static/dsfr/dsfr.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="/static/dsfr/utility/utility.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="/static/remixicon/remixicon.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+<noscript>
+  <link rel="stylesheet" href="/static/dsfr/dsfr.min.css">
+  <link rel="stylesheet" href="/static/dsfr/utility/utility.min.css">
+  <link rel="stylesheet" href="/static/remixicon/remixicon.min.css" />
+</noscript>
+
+
+<style>
+  /* Autres */
+  :root {
+    --widget-width: min(100vw, 650px);
+  }
+
+  body {
+    max-width: var(--widget-width);
+    width: 100%;
+    height: 100%;
+  }
+
+  a {
+    color: #000091;
+    text-decoration: none;
+  }
+
+  a:hover {
+    cursor: pointer;
+  }
+
+  .title {
+    color: #000091;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 28px;
+    margin-bottom: 0;
+  }
+
+  .subTitle {
+    margin-top: 5px;
+    font-weight: 500;
+  }
+
+  .subTitle span {
+    margin-right: 5px;
+  }
+
+  .icon-spacing {
+    margin-right: 5px;
+  }
+
+  .collapse-hide {
+    display: none;
+  }
+
+  .collapse-show {
+    display: block;
+  }
+
+  .collapse-button-hide {
+    display: none;
+  }
+
+  .blue-marine {
+    color: #000091;
+    fill: #000091;
+  }
+
+  .black {
+    color: #161616;
+    fill: #161616;
+  }
+
+  .white {
+    color: white;
+    fill: white;
+  }
+
+  .green {
+    color: #18753c;
+    fill: #18753c;
+  }
+
+  .orange {
+    color: #b34000;
+    fill: #b34000;
+  }
+
+  .blue {
+    color: #0063cb;
+    fill: #0063cb;
+  }
+
+  .grey {
+    color: #DDDDDD;
+    fill: #DDDDDD;
+  }
+
+  .grey-variant {
+    color: #929292;
+    fill: #929292;
+  }
+
+  .green-variant {
+    color: #58b77d;
+    fill: #58b77d;
+  }
+
+  .orange-variant {
+    color: #fa794a;
+    fill: #fa794a;
+  }
+
+  .blue-variant {
+    color: #0063cb;
+    fill: #0063cb;
+  }
+
+
+  .card {
+    border: 1px solid #e3e3fd;
+    border-radius: 6px;
+    margin-top: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+
+  .card-footer {
+    color: #666666;
+    font-size: 12px;
+  }
+
+  .grid {
+    display: flex;
+  }
+
+  .grid-number {
+    margin-right: 5px;
+  }
+
+
+
+  @media screen and (min-width: 40em) {}
+
+  @media screen and (max-width: 40em) {
+    .title {
+      font-weight: 500;
+      line-height: 24px;
+      font-size: 18px;
+    }
+
+    .subTitle {
+      font-size: 16px;
+    }
+  }
+</style>

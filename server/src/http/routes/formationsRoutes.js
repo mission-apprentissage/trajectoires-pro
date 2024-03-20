@@ -3,15 +3,54 @@ import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import Joi from "joi";
 import * as validators from "#src/http/utils/validators.js";
-import { arrayOf, validate } from "#src/http/utils/validators.js";
+import { validate } from "#src/http/utils/validators.js";
 import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src/http/utils/responseUtils.js";
 import { formatMillesime } from "#src/http/utils/formatters.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import { getLastMillesimesFormations, transformDisplayStat } from "#src/common/stats.js";
-
+import BCNRepository from "#src/common/repositories/bcn.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
-import { ErrorFormationNotFound, ErrorNoDataForMillesime } from "#src/http/errors.js";
+import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
+import {
+  ErrorFormationNotFound,
+  ErrorNoDataForMillesime,
+  ErrorFormationNotExist,
+  ErrorEtablissementNotExist,
+} from "#src/http/errors.js";
+import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
+import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
+
+async function formationStats({ uai, code_certification, millesime }) {
+  const result = await FormationStatsRepository.first({
+    uai,
+    code_certification,
+    millesime: formatMillesime(millesime),
+  });
+
+  if (!result) {
+    const existFormation = await BCNRepository.exist({ code_certification });
+    if (!existFormation) {
+      throw new ErrorFormationNotExist();
+    }
+
+    const existEtablissement = await AcceEtablissementRepository.exist({ numero_uai: uai });
+    if (!existEtablissement) {
+      throw new ErrorEtablissementNotExist();
+    }
+
+    const exist = await FormationStatsRepository.exist({ uai, code_certification });
+    if (!exist) {
+      throw new ErrorFormationNotFound();
+    }
+
+    const millesimesAvailable = await FormationStatsRepository.findMillesime({ uai, code_certification });
+    throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
+  }
+
+  const stats = transformDisplayStat()(result);
+  return stats;
+}
 
 export default () => {
   const router = express.Router();
@@ -23,11 +62,7 @@ export default () => {
       const { uais, regions, academies, millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
         {
-          uais: arrayOf(
-            Joi.string()
-              .pattern(/^[0-9]{7}[A-Z]{1}$/)
-              .required()
-          ).default([]),
+          ...validators.uais(),
           ...validators.regions(),
           ...validators.academies(),
           ...validators.statsList([getLastMillesimesFormations()]),
@@ -87,9 +122,7 @@ export default () => {
       const { uai, code_certification, millesime, ...options } = await validate(
         { ...req.params, ...req.query },
         {
-          uai: Joi.string()
-            .pattern(/^[0-9]{7}[A-Z]{1}$/)
-            .required(),
+          ...validators.uai(),
           code_certification: Joi.string().required(),
           millesime: Joi.string().default(getLastMillesimesFormations()),
           ...validators.svg(),
@@ -98,23 +131,7 @@ export default () => {
 
       return sendImageOnError(
         async () => {
-          const exist = await FormationStatsRepository.exist({ uai, code_certification });
-          if (!exist) {
-            throw new ErrorFormationNotFound();
-          }
-
-          const result = await FormationStatsRepository.first({
-            uai,
-            code_certification,
-            millesime: formatMillesime(millesime),
-          });
-
-          if (!result) {
-            const millesimesAvailable = await FormationStatsRepository.findMillesime({ uai, code_certification });
-            throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
-          }
-
-          const stats = transformDisplayStat()(result);
+          const stats = await formationStats({ uai, code_certification, millesime });
           return sendStats("formation", stats, res, options);
         },
         res,
@@ -124,5 +141,82 @@ export default () => {
     })
   );
 
+  router.get(
+    "/api/inserjeunes/formations/:uai-:code_certification/widget/:hash",
+    authMiddleware("public"),
+    tryCatch(async (req, res) => {
+      const { hash, theme, uai, code_certification, millesime } = await validate(
+        { ...req.params, ...req.query },
+        {
+          hash: Joi.string(),
+          ...validators.uai(),
+          code_certification: Joi.string().required(),
+          millesime: Joi.string().default(getLastMillesimesFormations()),
+          ...validators.widget("stats"),
+        }
+      );
+
+      try {
+        const stats = await formationStats({ uai, code_certification, millesime });
+        const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
+        const data = await formatDataWidget({ stats, millesime, etablissement });
+
+        const widget = await getUserWidget({
+          hash,
+          name: "stats",
+          theme,
+          data,
+          plausibleCustomProperties: {
+            type: "formation",
+            uai,
+            code_certification,
+            millesime,
+          },
+        });
+
+        res.setHeader("content-type", "text/html");
+        return res.status(200).send(widget);
+      } catch (err) {
+        const widget = await getUserWidget({
+          hash,
+          name: "error",
+          theme,
+          data: {
+            error: err.name,
+            millesimes: formatMillesime(millesime).split("_"),
+            code_certification,
+            uai,
+          },
+        });
+        res.setHeader("content-type", "text/html");
+        return res.status(200).send(widget);
+      }
+    })
+  );
+
+  router.get(
+    "/api/inserjeunes/formations/:uai-:code_certification/widget",
+    authMiddleware("private"),
+    tryCatch(async (req, res) => {
+      const { theme, millesime } = await validate(
+        { ...req.params, ...req.query },
+        {
+          ...validators.uai(),
+          code_certification: Joi.string().required(),
+          millesime: Joi.string().default(null),
+          ...validators.widget("stats"),
+        }
+      );
+
+      const widget = getIframe({
+        user: req.user,
+        parameters: { theme, millesime },
+        path: req.path,
+      });
+
+      res.setHeader("content-type", "text/html");
+      return res.status(200).send(widget);
+    })
+  );
   return router;
 };

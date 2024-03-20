@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
+import { isEmpty } from "lodash-es";
 import { buildWidget, isWidgetAvailable, prepareStatsForWidget } from "#src/http/widget/widget.js";
 import { buildDescription, buildDescriptionFiliere } from "#src/common/stats.js";
-import { isEmpty } from "lodash-es";
 import { findRegionByCode } from "#src/services/regions.js";
 import {
   ErrorRegionaleNotFound,
@@ -10,6 +10,8 @@ import {
   ErrorCertificationNotFound,
   ErrorNoDataAvailable,
   ErrorCertificationsNotFound,
+  ErrorEtablissementNotExist,
+  ErrorFormationNotExist,
 } from "#src/http/errors.js";
 
 export function addJsonHeaders(res) {
@@ -107,6 +109,8 @@ export async function sendImageOnError(cb, res, data = {}, options = { imageOnEr
   const errorsToRescue = [
     ErrorRegionaleNotFound,
     ErrorFormationNotFound,
+    ErrorFormationNotExist,
+    ErrorEtablissementNotExist,
     ErrorCertificationNotFound,
     ErrorCertificationsNotFound,
     ErrorNoDataForMillesime,

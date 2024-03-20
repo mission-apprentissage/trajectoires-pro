@@ -1,5 +1,7 @@
 # Voir l'historique git pour obtenir la version permettant d'accéder au container ui
 location / {
+    add_header X-Frame-Options "SAMEORIGIN" always;
+
     if ($always_redirect = on) {
         return 301 https://$host$request_uri;
     }
@@ -7,9 +9,13 @@ location / {
 }
 
 location /ui {
+    add_header X-Frame-Options "SAMEORIGIN" always;
+
     return 301 https://$host/statistiques;
 }
 
 location /statistiques {
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    
     return 301 https://statistiques.$host/;
 }

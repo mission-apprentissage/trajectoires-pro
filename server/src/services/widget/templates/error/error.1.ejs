@@ -1,0 +1,111 @@
+<%- await include('../common/variables'); %>
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <%- await include('../common/header'); %>
+  <style type="text/css">
+    .icon {
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+    }
+
+
+    .bold {
+      font-weight: 700;
+    }
+
+    .details {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    .margin {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body style="margin: 0; padding: 0;">
+  <%- await include('../assets/remixicon.light.symbol.svg'); %>
+
+  <div class="container">
+    <%- await include('../common/title.ejs'); %>
+
+    <div class="card">
+      <div class="card-data">
+        <div class="bodies">
+          <div>Oups, nous n'avons pas cette information. <a onclick="collapse('#no-data-description', '#no-data-description-expand', '#no-data-description-collapse')">
+              <svg id="no-data-description-expand" class="icon">
+                <use xlink:href="#ri-arrow-down-s-line" />
+              </svg>
+              <svg id="no-data-description-collapse" class="icon collapse-button-hide">
+                <use xlink:href="#ri-arrow-up-s-line" />
+              </svg>
+            </a>
+          </div>
+
+          <div id="no-data-description" class="details collapse-hide">
+            <% if (data?.error == 'ErrorFormationNotExist' || data?.error == 'ErrorCertificationNotFound' || data?.error == 'ErrorCertificationsNotFound') { %>
+            <div id="description-formation-unknow">
+              <div class="details-title">Nous ne disposons pas de données pour cette formation.</div>
+            </div>
+            <% } %>
+
+            <% if (data?.error == 'ErrorEtablissementNotExist') { %>
+            <div id="description-etablissement-unknow">
+              <div class="details-title">Nous ne disposons pas de données pour cet établissement.</div>
+            </div>
+            <% } %>
+
+            <% if (data?.error == 'ErrorRegionaleNotFound') { %>
+            <div id="description-region-unknow">
+              <div class="details-title">Nous ne disposons pas de données pour cette région.</div>
+            </div>
+            <% } %>
+
+            <% if (data?.error == 'ErrorNoDataForMillesime') { %>
+            <div id="description-millesime-no-data">
+              <div class="details-title">Nous ne disposons pas de données pour les promotions <%= data?.millesimes && data.millesimes[0] %><%= data?.millesimes && data.millesimes[1] ? " et " + data.millesimes[1] : "" %>.</div>
+            </div>
+            <% } %>
+
+            <% if (data?.error == 'ErrorWidgetInvalidData') { %>
+            <div id="description-seuil">
+              <div class="details-title">
+                Il y a aujourd'hui un petit nombre d'élèves dans cette spécialité. Nous ne pouvons pas faire des statistiques fiables sur seulement quelques individus, cela risquerait de fournir de mauvaises informations.
+              </div>
+            </div>
+            <% } %>
+
+            <% if (data?.error == 'ErrorFormationNotFound') { %>
+            <div id="description-others">
+              <div class="details-title bold">2 cas sont possibles :</div>
+              <div class="margin grid">
+                <div class="grid-number bold">1.</div>
+                <div><span class="bold">NOUVELLE FORMATION : </span>
+                  cette formation vient d'être créée. Nous aurons donc les résultats plus tard, lorsqu'une première promotion aura fini la formation.</div>
+              </div>
+              <div class="grid">
+                <div class="grid-number bold">3.</div>
+                <div><span class="bold">FORMATION NON DISPONIBLE : </span>l'établissement ne propose pas cette formation. </div>
+              </div>
+            </div>
+            <% } %>
+
+            <% if (!data?.error || data?.error == 'Error') { %>
+            <div id="description-error">
+              <div class="details-title bold">Une erreur s'est produite.</div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
