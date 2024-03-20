@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.16.1...v1.17.0) (2024-03-20)
+
+
+### Features
+
+* Widget v2 ([#234](https://github.com/mission-apprentissage/trajectoires-pro/issues/234)) ([882dbf9](https://github.com/mission-apprentissage/trajectoires-pro/commit/882dbf91eee94144b604a85ff22c5c512294ec37))
+
 ## [1.16.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.16.0...v1.16.1) (2024-02-20)
 
 
