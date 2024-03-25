@@ -5,7 +5,7 @@ import { BCN } from "#/types/bcn";
 import { CertificationStat } from "#/types/certification";
 import { Formation } from "#/types/formation";
 import { FormationsRequestSchema } from "./formations/route";
-import { FormationRequestSchema } from "./formation/route";
+import { FormationRequestSchema } from "./formation/type";
 import { ErrorFetchingJson } from "./apiError";
 
 export async function fetchJson(url: string, options?: RequestInit | undefined) {

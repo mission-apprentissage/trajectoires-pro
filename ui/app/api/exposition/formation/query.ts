@@ -1,6 +1,6 @@
 import { Formation } from "#/types/formation";
 import { mapValues } from "lodash-es";
-import { FormationRequestSchema } from "./route";
+import { FormationRequestSchema } from "./type";
 
 export async function formation(
   params: FormationRequestSchema,
