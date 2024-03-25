@@ -65,7 +65,7 @@ export default function ResearchFormationsResult({
             const key = `${formation.cfd}-${formation.codeDispositif}-${formation.uai}-${formation.voie}`;
             return (
               <Grid item xs={4} key={key}>
-                <Link href={`${BASE_PATH}/details/${key}?latitude=${latitude}&longitude=${longitude}`}>
+                <Link href={`/details/${key}?latitude=${latitude}&longitude=${longitude}`}>
                   <CardActionArea>
                     <Container style={{ border: "1px solid #DDDDDD", borderRadius: "10px" }}>
                       <Typography style={{ marginBottom: fr.spacing("3v") }} variant="subtitle2">
