@@ -1,32 +1,60 @@
-import { oleoduc, writeData } from "oleoduc";
-import moment from "moment-timezone";
+import { oleoduc, writeData, transformData } from "oleoduc";
+import transformation from "transform-coordinates";
 import { upsert } from "#src/common/db/mongodb.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
-import { acceEtablissements } from "#src/common/db/collections/collections.js";
+import { etablissement } from "#src/common/db/collections/collections.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
-import * as ACCE from "#src/services/acce.js";
+import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
 
 const logger = getLoggerWithContext("import");
 
-export async function importEtablissements(options = {}) {
-  logger.info(`Importation des établissements depuis le fichier établissement de l'ACCE`);
+export async function importEtablissements() {
+  logger.info(`Importation des établissements`);
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
 
-  const etablissementsFilePath = options.acceFile || null;
-
-  const formatDate = (dateStr) => (dateStr ? moment.tz(dateStr, "DD/MM/YYYY", "Europe/Paris").toDate() : null);
+  const transform = transformation("EPSG:2154", "EPSG:4326");
 
   await oleoduc(
-    ACCE.etablissements(etablissementsFilePath),
+    await AcceEtablissementRepository.find({
+      // Filtre les établissement qui nous intéressent (lycée, CFA ...)
+      nature_uai: { $regex: /^[3467]/ },
+    }),
+    transformData(async (data) => {
+      const coordinate =
+        data.coordonnee_x && data.coordonnee_y
+          ? transform.forward({ x: parseFloat(data.coordonnee_x), y: parseFloat(data.coordonnee_y) })
+          : null;
+
+      return {
+        uai: data.numero_uai,
+        libelle: data.appellation_officielle,
+        address: {
+          street: data.adresse_uai,
+          postCode: data.code_postal_uai,
+          city: data.commune_libe,
+          cedex: /cedex/i.test(data.localite_acheminement_uai),
+        },
+        //WGS84
+        coordinate: coordinate
+          ? {
+              type: "Point",
+              coordinates: [
+                coordinate.x, //longitude
+                coordinate.y, //latitude
+              ],
+            }
+          : null,
+      };
+    }),
     writeData(
       async (data) => {
         stats.total++;
 
         try {
           const res = await upsert(
-            acceEtablissements(),
+            etablissement(),
             {
-              numero_uai: data.numero_uai,
+              uai: data.uai,
             },
             {
               $setOnInsert: {
@@ -36,22 +64,19 @@ export async function importEtablissements(options = {}) {
               },
               $set: omitNil({
                 ...data,
-                date_ouverture: formatDate(data.date_ouverture),
-                date_fermeture: formatDate(data.date_fermeture),
-                date_derniere_mise_a_jour: formatDate(data.date_derniere_mise_a_jour),
-                date_geolocalisation: formatDate(data.date_geolocalisation),
+                address: omitNil(data.address),
               }),
             }
           );
 
           if (res.upsertedCount) {
-            logger.info(`Nouveau établissement ${data.numero_uai} ajouté`);
+            logger.info(`Nouveau établissement ${data.uai} ajouté`);
             stats.created++;
           } else if (res.modifiedCount) {
-            logger.debug(`Etablissement ${data.numero_uai} mis à jour`);
+            logger.debug(`Etablissement ${data.uai} mis à jour`);
             stats.updated++;
           } else {
-            logger.trace(`Etablissement ${data.numero_uai} déjà à jour`);
+            logger.trace(`Etablissement ${data.uai} déjà à jour`);
           }
         } catch (e) {
           logger.error(e, `Impossible d'ajouter les données de l'établissement ${data.numero_uai}`);

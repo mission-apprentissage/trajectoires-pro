@@ -7,12 +7,12 @@ import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import config from "#src/config.js";
 import { getDirname } from "#src/common/utils/esmUtils.js";
 import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
-import { importEtablissements } from "#src/jobs/etablissements/importEtablissements.js";
+import { importACCEEtablissements } from "#src/jobs/etablissements/importACCEEtablissements.js";
 
 chai.use(deepEqualInAnyOrder);
 const { assert } = chai;
 
-describe("importEtablissements", () => {
+describe("importACCEEtablissements", () => {
   before(() => {
     MockDate.set("2023-01-01");
 
@@ -28,7 +28,7 @@ describe("importEtablissements", () => {
   });
 
   it("Vérifie qu'on peut importer les établissements", async () => {
-    let stats = await importEtablissements();
+    let stats = await importACCEEtablissements();
 
     const found = await streamToArray(await AcceEtablissementRepository.find({}));
     assert.deepEqualInAnyOrder(

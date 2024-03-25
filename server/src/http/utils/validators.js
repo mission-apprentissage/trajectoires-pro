@@ -2,6 +2,7 @@ import Joi from "joi";
 import { getRegions, findRegionByCodePostal, getAcademies } from "#src/services/regions.js";
 import { formatArrayParameters } from "./formatters.js";
 import { WIDGETS } from "#src/services/widget/widget.js";
+import { ANCIENS_NIVEAUX_MAPPER } from "#src/services/bcn.js";
 
 const UAI_PATTERN = /^[0-9]{7}[A-Z]{1}$/;
 
@@ -49,6 +50,12 @@ export function uais() {
   };
 }
 
+export function codesDiplome() {
+  return {
+    codesDiplome: arrayOf(Joi.string().valid(...Object.values(ANCIENS_NIVEAUX_MAPPER))).default([]),
+  };
+}
+
 export function regions() {
   return {
     regions: arrayOf(customJoi.postalCodeToRegion().valid(...getRegions().map((r) => r.code))).default([]),
@@ -77,10 +84,10 @@ export function exports() {
   };
 }
 
-export function pagination() {
+export function pagination({ items_par_page, page } = {}) {
   return {
-    items_par_page: Joi.number().default(10),
-    page: Joi.number().default(1),
+    items_par_page: Joi.number().default(items_par_page ?? 10),
+    page: Joi.number().default(page ?? 1),
   };
 }
 
