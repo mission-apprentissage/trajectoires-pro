@@ -81,6 +81,11 @@ const config = {
       etablissements: path.join(getDirname(import.meta.url), "../data/", "acce_etablissements.csv"),
     },
   },
+  educationGouv: {
+    files: {
+      constatRentree: path.join(getDirname(import.meta.url), "../data/", "educationGouv/constatRentree2023.csv"),
+    },
+  },
   millesimes: {
     default: env.get("TRAJECTOIRES_PRO_MILLESIMES").default("2020,2021,2022").asArray(),
     formations: env.get("TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS").default("2019_2020,2020_2021,2021_2022").asArray(),

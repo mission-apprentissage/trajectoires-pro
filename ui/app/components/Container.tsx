@@ -1,8 +1,8 @@
-'use client';
-import styled from '@emotion/styled';
-import { ContainerProps as MUIContainerProps } from '@mui/material/Container';
-import { Container as MUIContainer } from '#/app/components/MaterialUINext';
-import { fr } from '@codegouvfr/react-dsfr';
+"use client";
+import styled from "@emotion/styled";
+import { ContainerProps as MUIContainerProps } from "@mui/material/Container";
+import { Container as MUIContainer } from "#/app/components/MaterialUINext";
+import { fr } from "@codegouvfr/react-dsfr";
 
 export interface ContainerProps extends MUIContainerProps {
   variant?: string;
@@ -10,13 +10,11 @@ export interface ContainerProps extends MUIContainerProps {
   noShadow?: boolean;
 }
 
-function Container({ children, ...props }: ContainerProps) {
+function Container({ children, variant, nopadding, noShadow, ...props }: ContainerProps) {
   const className = [
-    props.className || '',
-    ...(props?.variant === 'subContent'
-      ? [fr.cx('fr-card'), !props?.noShadow ? fr.cx('fr-card--shadow') : '']
-      : []),
-  ].join(' ');
+    props.className || "",
+    ...(variant === "subContent" ? [fr.cx("fr-card"), !noShadow ? fr.cx("fr-card--shadow") : ""] : []),
+  ].join(" ");
   return (
     <MUIContainer {...props} className={className}>
       <>{children}</>
@@ -25,17 +23,17 @@ function Container({ children, ...props }: ContainerProps) {
 }
 
 export default styled(Container)<ContainerProps>`
-  padding-top: ${({ nopadding }) => (nopadding ? '0' : fr.spacing('3w'))};
-  padding-bottom: ${({ nopadding }) => (nopadding ? '0' : fr.spacing('3w'))};
-  padding-left: ${({ nopadding }) => (nopadding ? '0' : fr.spacing('5w'))};
+  padding-top: ${({ nopadding }) => (nopadding ? "0" : fr.spacing("3w"))};
+  padding-bottom: ${({ nopadding }) => (nopadding ? "0" : fr.spacing("3w"))};
+  padding-left: ${({ nopadding }) => (nopadding ? "0" : fr.spacing("5w"))};
   ${({ variant }) => {
     switch (variant) {
-      case 'content':
+      case "content":
         return `background-color: var(--background-alt-grey);`;
-      case 'subContent':
+      case "subContent":
         return `background-color: var(--background-raised-grey);`;
       default:
-        return '';
+        return "";
     }
   }}
 `;

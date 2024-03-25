@@ -6,7 +6,7 @@ set -eu
 function validate_commit() {
   cd .
   local sensible_files_pattern="\.(csv|xls|xls(x?)|json|env)$"
-  local exception="package.json$|tsconfig.json$|server/data/depp(.*).csv$|bcn/n_mef.csv$|server/jsconfig.json$|acce_etablissements.csv$|server/tests/fixtures/files/(.*)$|server/public/remixicon/remixicon.*.json$"
+  local exception="package.json$|tsconfig.json$|server/data/depp(.*).csv$|bcn/n_mef.csv$|server/jsconfig.json$|acce_etablissements.csv$|server/tests/fixtures/files/*.json$|server/data/educationGouv/(.*).csv$|server/public/remixicon/remixicon.*.json$"
   local files
   files=$(git diff --cached --name-only | grep -v -E "$exception" | grep -E "$sensible_files_pattern") || true
 

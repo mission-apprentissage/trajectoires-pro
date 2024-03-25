@@ -2,6 +2,7 @@ import express from "express";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import Joi from "joi";
+import Boom from "boom";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
 import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src/http/utils/responseUtils.js";
@@ -29,6 +30,9 @@ import {
 } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
+import { getFormations } from "#src/queries/getFormations.js";
+import FormationEtablissement from "#src/common/repositories/FormationEtablissement.js";
+import Etablissement from "#src/common/repositories/Etablissement.js";
 
 async function formationStats({ uai, codeCertificationWithType, millesime }) {
   const { type, code_certification } = codeCertificationWithType;
@@ -269,6 +273,82 @@ export default () => {
 
       res.setHeader("content-type", "text/html");
       return res.status(200).send(widget);
+    })
+  );
+
+  router.get(
+    "/api/formation/:cfd-:codeDispositif?-:uai-:voie",
+    authMiddleware("public"),
+    tryCatch(async (req, res) => {
+      const { cfd, codeDispositif, uai, voie } = await validate(
+        { ...req.params, ...req.query },
+        {
+          cfd: Joi.string().required(),
+          codeDispositif: Joi.string().allow(null, "").default(null),
+          ...validators.uai(),
+          voie: Joi.string().valid("scolaire", "apprentissage").required(),
+        }
+      );
+
+      const formation = await FormationEtablissement.first({
+        uai,
+        cfd,
+        codeDispositif,
+        voie,
+      });
+      if (!formation) {
+        throw Boom.notFound();
+      }
+
+      const etablissement = await Etablissement.first({ uai });
+      if (!etablissement) {
+        throw Boom.notFound();
+      }
+
+      const bcn = await BCNRepository.first({ code_formation_diplome: cfd, type: "cfd" });
+      if (!bcn) {
+        throw Boom.notFound();
+      }
+
+      addJsonHeaders(res);
+      res.send({ ...formation, etablissement, bcn });
+    })
+  );
+
+  router.get(
+    "/api/formations",
+    authMiddleware("public"),
+    tryCatch(async (req, res) => {
+      const { longitude, latitude, distance, codesDiplome, page, items_par_page } = await validate(
+        { ...req.query, ...req.params },
+        {
+          longitude: Joi.number().min(-180).max(180).required(),
+          latitude: Joi.number().min(-90).max(90).required(),
+          distance: Joi.number().min(0).max(100000).default(1000),
+          ...validators.codesDiplome(),
+          ...validators.pagination({ items_par_page: 100 }),
+        }
+      );
+
+      const year = new Date().getFullYear();
+      const millesime = [(year - 1).toString(), year.toString()];
+      const { pagination, formations } = await getFormations(
+        { coordinate: { longitude, latitude }, maxDistance: distance, millesime, codesDiplome },
+        {
+          limit: items_par_page,
+          page,
+        }
+      );
+
+      addJsonHeaders(res);
+      const extensionTransformer = transformIntoJSON({
+        arrayPropertyName: "formations",
+        arrayWrapper: {
+          pagination,
+        },
+      });
+
+      compose(formations, extensionTransformer, res);
     })
   );
   return router;

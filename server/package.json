@@ -66,6 +66,7 @@
     "stream-json": "1.7.4",
     "stream-to-array": "2.3.0",
     "swagger-ui-express": "5.0.0",
+    "transform-coordinates": "1.0.0",
     "uglify-js": "3.17.4",
     "uniqid": "5.4.0",
     "unzipper": "0.10.14",

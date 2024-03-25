@@ -15,8 +15,10 @@ import { importCfdRomes } from "./jobs/romes/importCfdRomes.js";
 import { importRomes } from "./jobs/romes/importRomes.js";
 import { importCfdMetiers } from "./jobs/romes/importCfdMetiers.js";
 import { importRomeMetiers } from "./jobs/romes/importRomeMetiers.js";
+import { importACCEEtablissements } from "./jobs/etablissements/importACCEEtablissements.js";
 import { importEtablissements } from "./jobs/etablissements/importEtablissements.js";
 import { importFormations as importCAFormations } from "./jobs/catalogueApprentissage/importFormations.js";
+import { importFormationEtablissement } from "./jobs/formations/importFormationEtablissement.js";
 import { backfillMetrics } from "./jobs/backfillMetrics.js";
 import { asArray } from "./common/utils/stringUtils.js";
 import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
@@ -74,7 +76,12 @@ cli
   .command("importEtablissements")
   .description("Importe les données d'établissements")
   .action(() => {
-    runScript(importEtablissements);
+    runScript(async () => {
+      return {
+        importACCEEtablissements: await importACCEEtablissements(),
+        importEtablissements: await importEtablissements(),
+      };
+    });
   });
 
 cli
@@ -82,6 +89,13 @@ cli
   .description("Importe les données du catalogue de l'apprentissage")
   .action(() => {
     runScript(importCAFormations);
+  });
+
+cli
+  .command("importFormationEtablissement")
+  .description("Importe les formations dans les établissements")
+  .action(() => {
+    runScript(importFormationEtablissement);
   });
 
 cli

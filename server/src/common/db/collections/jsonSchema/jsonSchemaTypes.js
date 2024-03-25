@@ -47,3 +47,16 @@ export function enumOf(values, custom = {}) {
     ...custom,
   };
 }
+
+export function geoJsonPoint() {
+  return object(
+    {
+      type: string({ enum: ["Point"] }),
+      coordinates: arrayOf(number(), { minItems: 2, maxItems: 2 }),
+    },
+    {
+      required: ["type", "coordinates"],
+      additionalProperties: false,
+    }
+  );
+}

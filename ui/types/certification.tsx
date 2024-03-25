@@ -1,1 +1,1 @@
-export type Certification = any;
+export type CertificationStat = any;

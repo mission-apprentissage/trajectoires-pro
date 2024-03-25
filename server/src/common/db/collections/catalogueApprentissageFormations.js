@@ -67,6 +67,11 @@ export function schema() {
         })
       ),
       id: objectId(),
+      periode: arrayOf(date()),
+      parcoursup_statut: string(),
+      parcoursup_previous_statut: string(),
+      affelnet_statut: string(),
+      affelnet_previous_statut: string(),
       _meta: metaSchema([metaImportSchema()]),
     },
     {
