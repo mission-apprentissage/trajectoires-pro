@@ -11,6 +11,11 @@ const nextConfig = {
       ...(process.env.HOST_REWRITE === "true"
         ? [
             {
+              source: "/api/:path*",
+              destination: "/api/:path*",
+            },
+
+            {
               source: "/:path*",
               has: [
                 {
@@ -41,6 +46,17 @@ const nextConfig = {
                 },
               ],
               destination: "/documentation/:path*",
+            },
+
+            {
+              source: "/:path*",
+              has: [
+                {
+                  type: "host",
+                  value: process.env.PRESCRIPTEUR_SITE_HOST, //"prescripteur.*.inserjeunes.beta.gouv.fr",
+                },
+              ],
+              destination: "/prescripteur/:path*",
             },
           ]
         : []),

@@ -12,6 +12,8 @@ import * as cfdMetiersDescriptor from "./cfdMetiers.js";
 import * as acceEtablissementsDescriptor from "./acceEtablissements.js";
 import * as usersDescriptor from "./users.js";
 import * as catalogueApprentissageFormationsDescriptor from "./catalogueApprentissageFormations.js";
+import * as formationEtablissementDescriptor from "./formationEtablissement.js";
+import * as etablissementDescriptor from "./etablissement.js";
 import { dbCollection } from "#src/common/db/mongodb.js";
 
 export function getCollectionDescriptors() {
@@ -30,6 +32,8 @@ export function getCollectionDescriptors() {
     acceEtablissementsDescriptor,
     usersDescriptor,
     catalogueApprentissageFormationsDescriptor,
+    formationEtablissementDescriptor,
+    etablissementDescriptor,
   ];
 }
 
@@ -87,4 +91,12 @@ export function users() {
 
 export function CAFormations() {
   return dbCollection(catalogueApprentissageFormationsDescriptor.name);
+}
+
+export function formationEtablissement() {
+  return dbCollection(formationEtablissementDescriptor.name);
+}
+
+export function etablissement() {
+  return dbCollection(etablissementDescriptor.name);
 }

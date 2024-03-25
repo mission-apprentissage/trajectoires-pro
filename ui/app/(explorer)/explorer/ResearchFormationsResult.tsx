@@ -11,7 +11,7 @@ import { chunk, flatten } from "lodash-es";
 import { AutoSizer } from "react-virtualized";
 import { Typograhpy, Grid, Box } from "../../components/MaterialUINext";
 import { BCNResearch } from "#/types/bcn";
-import { Certification } from "#/types/certification";
+import { CertificationStat } from "#/types/certification";
 import { findRegionByCode } from "#/common/regions";
 export const revalidate = 0;
 
@@ -23,7 +23,7 @@ async function certifications(
   millesimes: string[],
   regions: string[],
   { signal }: { signal: AbortSignal | undefined }
-): Promise<Certification[]> {
+): Promise<CertificationStat[]> {
   const ITEM_PER_PAGE = 50;
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const hasRegion = regions.length > 0;
@@ -51,10 +51,10 @@ async function certifications(
     results.push(...(hasRegion ? json.regionales : json.certifications));
   }
 
-  return flatten(results) as Certification[];
+  return flatten(results) as CertificationStat[];
 }
 
-function Metrics({ metrics, millesimes }: { metrics: Certification; millesimes: string[] }) {
+function Metrics({ metrics, millesimes }: { metrics: CertificationStat; millesimes: string[] }) {
   const keys = [
     "nb_annee_term",
     "nb_en_emploi_6_mois",
@@ -80,7 +80,7 @@ function Metrics({ metrics, millesimes }: { metrics: Certification; millesimes: 
   return (
     <Grid container spacing={2}>
       {millesimes.map((millesime) => {
-        const currentMetric = metrics.find((m: Certification) => m.millesime === millesime) || { millesime };
+        const currentMetric = metrics.find((m: CertificationStat) => m.millesime === millesime) || { millesime };
         return (
           <Grid key={millesime} item xs={4}>
             <Grid item xs={12}>

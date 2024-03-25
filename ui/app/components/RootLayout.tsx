@@ -1,13 +1,8 @@
-import { NextAppDirEmotionCacheProvider } from "tss-react/next";
 import { DsfrHead } from "@codegouvfr/react-dsfr/next-appdir/DsfrHead";
-import { DsfrProvider } from "@codegouvfr/react-dsfr/next-appdir/DsfrProvider";
 import { getHtmlAttributes } from "@codegouvfr/react-dsfr/next-appdir/getHtmlAttributes";
 import StartDsfr from "#/app/StartDsfr";
 import { defaultColorScheme } from "#/app/defaultColorScheme";
-import MuiDsfrThemeProvider from "@codegouvfr/react-dsfr/mui";
 import Link from "next/link";
-import { Header } from "@codegouvfr/react-dsfr/Header";
-import { fr } from "@codegouvfr/react-dsfr";
 
 export default function RootLayout({ title, children }: { title: string; children: JSX.Element }) {
   const lang = "fr";
@@ -48,40 +43,7 @@ export default function RootLayout({ title, children }: { title: string; childre
           flexDirection: "column",
         }}
       >
-        <DsfrProvider>
-          <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
-            <MuiDsfrThemeProvider>
-              <Header
-                brandTop={
-                  <>
-                    RÉPUBLIQUE
-                    <br />
-                    FRANÇAISE
-                  </>
-                }
-                serviceTitle={title}
-                homeLinkProps={{
-                  href: "/",
-                  title: title,
-                }}
-                quickAccessItems={[]}
-              />
-              <div
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  margin: "auto",
-                  maxWidth: 1200,
-                  ...fr.spacing("padding", {
-                    topBottom: "10v",
-                  }),
-                }}
-              >
-                {children}
-              </div>
-            </MuiDsfrThemeProvider>
-          </NextAppDirEmotionCacheProvider>
-        </DsfrProvider>
+        {children}
       </body>
     </html>
   );

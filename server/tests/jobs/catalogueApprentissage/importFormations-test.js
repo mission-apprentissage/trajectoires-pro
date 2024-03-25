@@ -108,6 +108,11 @@ describe("importFormations", () => {
           num_departement: "33",
           region: "Nouvelle-Aquitaine",
           uai_formation: "0331707B",
+          parcoursup_previous_statut: "non publiable en l'état",
+          parcoursup_statut: "non publiable en l'état",
+          affelnet_previous_statut: "non publiable en l'état",
+          affelnet_statut: "non publiable en l'état",
+          periode: [new Date("2021-09-01T00:00:00.000Z")],
         },
         {
           id: new ObjectId("5fc61896712d48a988137bf9"),
@@ -152,6 +157,11 @@ describe("importFormations", () => {
           num_departement: "47",
           region: "Nouvelle-Aquitaine",
           uai_formation: "0470015L",
+          parcoursup_previous_statut: "non publiable en l'état",
+          parcoursup_statut: "non publiable en l'état",
+          affelnet_previous_statut: "non publiable en l'état",
+          affelnet_statut: "non publiable en l'état",
+          periode: [new Date("2021-09-01T00:00:00.000Z")],
         },
       ]
     );
