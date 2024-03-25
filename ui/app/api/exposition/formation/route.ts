@@ -2,12 +2,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 import * as API from "../index";
 import { ErrorFetchingJson } from "../apiError";
-import { object, number, array, string, InferType } from "yup";
-
-export const getSchema = object({
-  id: string().required(),
-});
-export type FormationRequestSchema = InferType<typeof getSchema>;
+import { getSchema } from "./type";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
