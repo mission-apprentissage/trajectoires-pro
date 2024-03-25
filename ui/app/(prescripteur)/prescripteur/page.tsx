@@ -16,7 +16,7 @@ function SearchHeader() {
       maxWidth={false}
     >
       <Container>
-        <SearchFormationForm url={"/prescripteur/"} defaultValues={{ address: null, distance: null }} />
+        <SearchFormationForm url={"/"} defaultValues={{ address: null, distance: null }} />
       </Container>
     </Container>
   );
