@@ -1,4 +1,4 @@
-const { EXPOSITION_API_BASE_URL, EXPOSITION_API_KEY } = process.env;
+import "server-only";
 import { mapValues, merge } from "lodash-es";
 import { Paginations } from "#/types/pagination";
 import { BCN } from "#/types/bcn";
@@ -7,6 +7,8 @@ import { Formation } from "#/types/formation";
 import { FormationsRequestSchema } from "./formations/route";
 import { FormationRequestSchema } from "./formation/type";
 import { ErrorFetchingJson } from "./apiError";
+
+const { EXPOSITION_API_BASE_URL, EXPOSITION_API_KEY } = process.env;
 
 export async function fetchJson(url: string, options?: RequestInit | undefined) {
   const res = await fetch(
@@ -39,6 +41,13 @@ async function bcn(page: number, items_par_page: number): Promise<Paginations<"b
   const urlParams = new URLSearchParams({
     page: page.toString(),
     items_par_page: items_par_page.toString(),
+  });
+
+  console.log(EXPOSITION_API_BASE_URL + `/inserjeunes/bcn?${urlParams}`, {
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": EXPOSITION_API_KEY || "",
+    },
   });
 
   const res = await fetch(EXPOSITION_API_BASE_URL + `/inserjeunes/bcn?${urlParams}`, {
