@@ -3,10 +3,8 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
-
 import { ReactNode, useEffect } from "react";
 import { MapContainer, Popup, Marker, TileLayer, Tooltip } from "react-leaflet";
-import AutoSizer from "react-virtualized-auto-sizer";
 import { Typograhpy } from "./MaterialUINext";
 import { useWindowSize, useWindowWidth, useWindowHeight } from "@react-hook/window-size";
 import { DivIcon } from "leaflet";

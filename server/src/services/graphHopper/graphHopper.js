@@ -2,7 +2,6 @@ import * as turf from "@turf/turf";
 import { RateLimitedApi } from "#src/common/api/RateLimitedApi.js";
 import config from "#src/config.js";
 import { fetchJsonWithRetry } from "#src/common/utils/httpUtils.js";
-import { getLoggerWithContext } from "#src/common/logger.js";
 import geotoolbox from "../../../node_modules/geotoolbox/dist/index.min.js";
 // import fs from "fs";
 // import { getDirname } from "#src/common/utils/esmUtils.js";
