@@ -13,8 +13,12 @@ import { formations } from "#/app/api/exposition/formations/query";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import Link from "next/link";
-import Map from "#/app/components/Map";
-import { Marker, Popup, Tooltip } from "react-leaflet";
+import dynamic from "next/dynamic";
+
+const Map = dynamic(() => import("#/app/components/Map"), { ssr: false });
+const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false });
+const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
+const Tooltip = dynamic(() => import("react-leaflet").then((mod) => mod.Tooltip), { ssr: false });
 
 export const revalidate = 0;
 
