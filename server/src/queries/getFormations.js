@@ -1,7 +1,104 @@
 import { etablissement } from "#src/common/db/collections/collections.js";
 
+export function getTimeFilter({ coordinate, isochroneBuckets }) {
+  const facets = {};
+  isochroneBuckets.forEach((result, index) => {
+    const next = isochroneBuckets[index + 1]
+      ? {
+          coordinate: {
+            $not: {
+              $geoWithin: {
+                $geometry: isochroneBuckets[index + 1].feature.geometry,
+              },
+            },
+          },
+        }
+      : null;
+
+    facets[result.time] = [
+      {
+        $match: {
+          $and: [
+            {
+              coordinate: {
+                $geoWithin: {
+                  $geometry: result.feature.geometry,
+                },
+              },
+            },
+            ...(next ? [next] : []),
+          ],
+        },
+      },
+      {
+        $set: {
+          accessTime: result.time,
+        },
+      },
+    ];
+  });
+
+  const filter = [
+    {
+      $geoNear: {
+        near: { type: "Point", coordinates: coordinate },
+        distanceField: "distance",
+        query: {
+          coordinate: {
+            $geoWithin: {
+              $geometry: isochroneBuckets[0].feature.geometry,
+            },
+          },
+        },
+        spherical: true,
+      },
+    },
+    {
+      $facet: facets,
+    },
+    {
+      $project: {
+        etablissements: { $setUnion: isochroneBuckets.map((v) => "$" + v.time) },
+        _id: 0,
+      },
+    },
+    {
+      $unwind: { path: "$etablissements" },
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$etablissements",
+      },
+    },
+    {
+      $sort: {
+        accessTime: 1,
+        distance: 1,
+      },
+    },
+  ];
+
+  return filter;
+}
+
+export function getDistanceFilter({ coordinate, maxDistance = 1000 }) {
+  const filter = [
+    {
+      $geoNear: {
+        near: { type: "Point", coordinates: [coordinate.longitude, coordinate.latitude] },
+        distanceField: "distance",
+        maxDistance,
+        key: "coordinate",
+        spherical: true,
+      },
+    },
+  ];
+
+  return filter;
+}
+
 export async function getFormations(
-  { coordinate, millesime, maxDistance = 1000, codesDiplome = ["3", "4"] },
+  { filter = [], millesime, codesDiplome = ["3", "4"] },
   pagination = { page: 1, limit: 100 }
 ) {
   let page = pagination.page || 1;
@@ -9,16 +106,7 @@ export async function getFormations(
   let skip = (page - 1) * limit;
 
   const query = [
-    {
-      $geoNear: {
-        near: { type: "Point", coordinates: [coordinate.longitude, coordinate.latitude] },
-        distanceField: "distance.calculated",
-        maxDistance,
-        includeLocs: "distance.location",
-        key: "coordinate",
-        spherical: true,
-      },
-    },
+    ...filter,
     {
       $set: {
         etablissement: "$$ROOT",
@@ -82,28 +170,32 @@ export async function getFormations(
     },
   ];
 
-  const countRequest = await etablissement()
+  const formationsStream = await etablissement()
     .aggregate([
       ...query,
       {
-        $count: "total",
+        $facet: {
+          pagination: [
+            { $count: "total" },
+            {
+              $set: {
+                page,
+                items_par_page: limit,
+                nombre_de_page: { $ceil: { $divide: ["$total", limit] } }, //Math.ceil(total / limit) || 1,
+              },
+            },
+          ],
+          formations: [{ $skip: skip }, { $limit: limit }],
+        },
+      },
+      {
+        $project: {
+          pagination: { $first: "$pagination" },
+          formations: "$formations",
+        },
       },
     ])
-    .toArray();
+    .next();
 
-  const total = countRequest.length > 0 ? countRequest[0].total : 0;
-
-  const formationsStream = await etablissement()
-    .aggregate([...query, { $skip: skip }, { $limit: limit }])
-    .stream();
-
-  return {
-    pagination: {
-      page,
-      items_par_page: limit,
-      nombre_de_page: Math.ceil(total / limit) || 1,
-      total: total,
-    },
-    formations: formationsStream,
-  };
+  return formationsStream;
 }

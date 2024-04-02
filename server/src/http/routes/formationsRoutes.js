@@ -2,6 +2,7 @@ import express from "express";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import Joi from "joi";
+import moment from "moment";
 import Boom from "boom";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
@@ -30,9 +31,10 @@ import {
 } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
-import { getFormations } from "#src/queries/getFormations.js";
+import { getFormations, getDistanceFilter, getTimeFilter } from "#src/queries/getFormations.js";
 import FormationEtablissement from "#src/common/repositories/FormationEtablissement.js";
 import Etablissement from "#src/common/repositories/Etablissement.js";
+import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
 
 async function formationStats({ uai, codeCertificationWithType, millesime }) {
   const { type, code_certification } = codeCertificationWithType;
@@ -319,12 +321,13 @@ export default () => {
     "/api/formations",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { longitude, latitude, distance, codesDiplome, page, items_par_page } = await validate(
+      const { longitude, latitude, distance, timeLimit, codesDiplome, page, items_par_page } = await validate(
         { ...req.query, ...req.params },
         {
           longitude: Joi.number().min(-180).max(180).required(),
           latitude: Joi.number().min(-90).max(90).required(),
           distance: Joi.number().min(0).max(100000).default(1000),
+          timeLimit: Joi.number().min(0).max(7200).default(null),
           ...validators.codesDiplome(),
           ...validators.pagination({ items_par_page: 100 }),
         }
@@ -332,8 +335,35 @@ export default () => {
 
       const year = new Date().getFullYear();
       const millesime = [(year - 1).toString(), year.toString()];
-      const { pagination, formations } = await getFormations(
-        { coordinate: { longitude, latitude }, maxDistance: distance, millesime, codesDiplome },
+
+      let filter = null;
+
+      if (timeLimit) {
+        const buckets = [7200, 3600, 1800, 900];
+        const graphHopperApi = new GraphHopperApi();
+        try {
+          const isochroneBuckets = await graphHopperApi.fetchIsochronePTBuckets({
+            point: `${latitude},${longitude}`,
+            departureTime: moment().set("hour", 8).toDate(),
+            buckets: buckets.filter((b) => b <= timeLimit),
+          });
+
+          filter = getTimeFilter({ coordinate: { longitude, latitude }, isochroneBuckets });
+        } catch (err) {
+          console.error(err);
+          // TODO : gestion des erreurs de récupération de l'isochrone
+          filter = getDistanceFilter({ coordinate: { longitude, latitude }, maxDistance: distance });
+        }
+      } else {
+        filter = getDistanceFilter({ coordinate: { longitude, latitude }, maxDistance: distance });
+      }
+
+      const paginatedFormations = await getFormations(
+        {
+          filter: filter,
+          millesime,
+          codesDiplome,
+        },
         {
           limit: items_par_page,
           page,
@@ -341,14 +371,7 @@ export default () => {
       );
 
       addJsonHeaders(res);
-      const extensionTransformer = transformIntoJSON({
-        arrayPropertyName: "formations",
-        arrayWrapper: {
-          pagination,
-        },
-      });
-
-      compose(formations, extensionTransformer, res);
+      res.send(paginatedFormations);
     })
   );
   return router;

@@ -7,6 +7,7 @@ const getSchema = object({
   longitude: number().min(-180).max(180).required(),
   latitude: number().min(-90).max(90).required(),
   distance: number().default(1000),
+  timeLimit: number().min(600).max(7200),
   codesDiplome: array()
     .transform(function (value, originalValue) {
       return originalValue ? originalValue.split(/[\s,]+/) : [];
