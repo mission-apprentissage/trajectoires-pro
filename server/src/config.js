@@ -22,6 +22,12 @@ const config = {
       .default("mongodb://127.0.0.1:27017/trajectoires-pro?retryWrites=true&w=majority")
       .asString(),
   },
+  graphHopper: {
+    api: {
+      // Sandbox url for testing purpose
+      baseUrl: env.get("GRAPHHOPPER_BASE_URL").default("http://141.94.105.71:8989").asString(),
+    },
+  },
   ovh: {
     storage: {
       uri: env.get("TRAJECTOIRES_PRO_OVH_STORAGE_URI").required().asString(),

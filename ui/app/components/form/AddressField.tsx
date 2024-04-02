@@ -23,7 +23,14 @@ export default function AddressField({
     queryKey: ["address", valueDebounce],
     queryFn: async () => {
       const result = await fetchAddress(valueDebounce);
-      return result ? result.features.map((f: any) => f.properties.label) : [];
+      return result
+        ? result.features.map((f: any) => {
+            if (f.properties.type === "municipality") {
+              return f.properties.label + " (" + f.properties.postcode + ")";
+            }
+            return f.properties.label;
+          })
+        : [];
     },
     // cacheTime: Infinity,
   });
@@ -98,9 +105,9 @@ export default function AddressField({
                 <CircularProgress />
               ) : (
                 <>
-                  {value && params.InputProps.endAdornment}
+                  {value && <div style={{ position: "absolute", right: "40px" }}>{params.InputProps.endAdornment}</div>}
                   <Button
-                    iconId="fr-icon-send-plane-fill"
+                    iconId="fr-icon-map-pin-2-fill"
                     onClick={getLocation}
                     priority="tertiary no outline"
                     title="Votre localisation"

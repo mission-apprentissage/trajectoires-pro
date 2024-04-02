@@ -16,7 +16,7 @@ function SearchHeader() {
       maxWidth={false}
     >
       <Container>
-        <SearchFormationForm url={"/"} defaultValues={{ address: null, distance: null }} />
+        <SearchFormationForm url={"/"} defaultValues={{ address: null, distance: null, time: null }} />
       </Container>
     </Container>
   );
@@ -25,7 +25,11 @@ function SearchHeader() {
 export default function Page() {
   const searchParams = useSearchParams();
   const [coordinate, setCoordinate] = useState(null);
-  const { address, distance } = searchParamsToObject(searchParams, { address: null, distance: 1 }, schemaFormation);
+  const { address, distance, time } = searchParamsToObject(
+    searchParams,
+    { address: null, distance: 1, time: null },
+    schemaFormation
+  );
 
   useEffect(() => {
     (async () => {
@@ -51,6 +55,7 @@ export default function Page() {
             longitude={coordinate[0]}
             latitude={coordinate[1]}
             distance={distance * 1000}
+            time={time * 60}
             page={1}
           />
         </Container>

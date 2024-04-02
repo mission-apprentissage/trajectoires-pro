@@ -44,7 +44,13 @@ function FormationResult({ formation }: { formation: Formation }) {
           <Typograhpy variant="subtitle2" style={{ color: "#000091", marginBottom: fr.spacing("2v") }}>
             <i className={fr.cx("fr-icon-map-pin-2-fill")} style={{ marginRight: fr.spacing("1w") }} />
             <a
-              href={`https://orion-recette.inserjeunes.beta.gouv.fr/panorama/etablissement/${formation.uai}`}
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                formation.etablissement.address.street +
+                  ", " +
+                  formation.etablissement.address.postCode +
+                  " " +
+                  formation.etablissement.address.city
+              )}`}
               target="_blank"
             >
               {formation.etablissement.libelle}
