@@ -2,6 +2,11 @@
 import { ExtendedRecordMap } from "notion-types";
 import { Suspense } from "react";
 import { NotionRenderer } from "react-notion-x";
+import dynamic from "next/dynamic";
+import "prismjs/themes/prism-tomorrow.css";
+import "./NotionDoc.css";
+
+const Code = dynamic(() => import("react-notion-x/build/third-party/code").then((m) => m.Code));
 
 const NotionDoc = ({
   urlBasePath,
@@ -29,6 +34,9 @@ const NotionDoc = ({
         recordMap={recordMap}
         fullPage={true}
         darkMode={false}
+        components={{
+          Code,
+        }}
       />
     </Suspense>
   );
