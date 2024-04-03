@@ -1,3 +1,10 @@
+## [1.17.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.17.0...v1.17.1) (2024-04-03)
+
+
+### Bug Fixes
+
+* affichage des blocs de codes dans Notion ([#236](https://github.com/mission-apprentissage/trajectoires-pro/issues/236)) ([9f9b0a6](https://github.com/mission-apprentissage/trajectoires-pro/commit/9f9b0a6490887812071099a2b4dea7e104a4991a))
+
 # [1.17.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.16.1...v1.17.0) (2024-03-20)
 
 
