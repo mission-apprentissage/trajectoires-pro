@@ -87,9 +87,7 @@ export default function FormationCard({
                 </Typography>
               )}
             </Grid>
-            <Grid item xs={2}>
-              TOTO
-            </Grid>
+            <Grid item xs={2}></Grid>
           </Grid>
 
           <PortesOuvertes etablissement={etablissement} />
