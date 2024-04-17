@@ -1,4 +1,38 @@
 import { etablissement } from "#src/common/db/collections/collections.js";
+import { dbCollection } from "#src/common/db/mongodb.js";
+
+export function testTimeFilter({ coordinate }) {
+  return [
+    {
+      $match: {
+        polygons: {
+          $geoIntersects: {
+            $geometry: {
+              type: "Point",
+              coordinates: coordinate,
+            },
+          },
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "etablissement",
+        foreignField: "uai",
+        localField: "uai",
+        as: "etablissements",
+      },
+    },
+    {
+      $unwind: { path: "$etablissements" },
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$etablissements",
+      },
+    },
+  ];
+}
 
 export function getTimeFilter({ coordinate, isochroneBuckets }) {
   const facets = {};
@@ -150,12 +184,8 @@ export async function getFormations(
     {
       $set: {
         bcn: { $first: "$bcn" },
+        formation: "$formations",
         _id: "$formation._id",
-      },
-    },
-    {
-      $replaceRoot: {
-        newRoot: { $mergeObjects: ["$$ROOT", "$formations"] },
       },
     },
     {
@@ -165,12 +195,15 @@ export async function getFormations(
     },
     {
       $project: {
-        formations: 0,
+        formation: 1,
+        etablissement: 1,
+        bcn: 1,
       },
     },
   ];
 
   const formationsStream = await etablissement()
+    //await dbCollection("testGeoJson")
     .aggregate([
       ...query,
       {

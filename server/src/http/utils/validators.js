@@ -111,6 +111,7 @@ export function widget(type) {
 
         return value;
       }),
+    ...(WIDGETS[type] && WIDGETS[type].options ? WIDGETS[type].options : {}),
   };
 }
 

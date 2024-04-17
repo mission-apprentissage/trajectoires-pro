@@ -33,7 +33,9 @@
   <%- await include('../assets/remixicon.light.symbol.svg'); %>
 
   <div class="container">
+    <% if (!options?.noTitle) { %>
     <%- await include('../common/title.ejs'); %>
+    <% } %>
 
     <div class="card">
       <div class="card-data">

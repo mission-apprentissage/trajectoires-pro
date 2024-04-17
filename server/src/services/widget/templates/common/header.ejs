@@ -4,7 +4,7 @@
 
 <script>
   setInterval(() => {
-    document.body && parent.postMessage(document.body.offsetHeight, '*');
+    document.documentElement && parent.postMessage(document.documentElement.offsetHeight, '*');
   }, 50);
 
   function collapse(id, btnExpandId, btnCollapseId) {

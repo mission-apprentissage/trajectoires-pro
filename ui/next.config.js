@@ -6,6 +6,9 @@ const nextConfig = {
     appDir: true,
   },
   output: "standalone",
+  experimental: {
+    scrollRestoration: true,
+  },
   async rewrites() {
     return [
       ...(process.env.HOST_REWRITE === "true"

@@ -61,6 +61,17 @@ const config = {
       rome: "1c893376-8476-4262-9a0e-8df519883e1e",
     },
   },
+  onisep: {
+    api: {
+      baseUrl: env.get("ONISEP_BASE_URL").default("https://api.opendata.onisep.fr/api/1.0").asString(),
+    },
+    datasets: {
+      tablePassageCodesCertifications: "6152ccdf850ef",
+      ideoActionsFormationInitialeUniversLycee: "605340ddc19a9",
+      ideoStructuresEnseignementSecondaire: "5fa5816ac6a6e",
+      ideoFormationsInitiales: "5fa591127f501",
+    },
+  },
   catalogueApprentissage: {
     api: {
       baseUrl: env

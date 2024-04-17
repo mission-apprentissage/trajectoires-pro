@@ -1,4 +1,4 @@
-import { oleoduc, writeData, transformData, mergeStreams, compose, filterData } from "oleoduc";
+import { oleoduc, writeData, transformData, mergeStreams, concatStreams, compose, filterData } from "oleoduc";
 import moment from "moment";
 import { omit } from "lodash-es";
 import { upsert } from "#src/common/db/mongodb.js";
@@ -8,6 +8,7 @@ import { constatRentree } from "#src/services/educationGouv/educationGouv.js";
 import { formationEtablissement } from "#src/common/db/collections/collections.js";
 import BCNMefRepository from "#src/common/repositories/bcnMef.js";
 import CAFormation from "#src/common/repositories/CAFormation.js";
+import { streamOnisepFormations } from "./streamOnisepFormations.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -63,18 +64,20 @@ async function streamCAFormations({ stats }) {
 }
 
 export async function importFormationEtablissement(options = {}) {
-  logger.info(`Importation des formations depuis le constat de rentrée et depuis le catalogue de l'apprentissage`);
+  logger.info(`Importation des formations depuis l'onisep' et depuis le catalogue de l'apprentissage`);
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
 
   const constatRentreeFilePath = options.constatRentreeFilePath || null;
 
   await oleoduc(
     // Importation des formations depuis le constat de rentrée (voie scolaire)
-    mergeStreams(streamConstatRentree({ constatRentreeFilePath, stats }), await streamCAFormations({ stats })),
+    // mergeStreams(streamConstatRentree({ constatRentreeFilePath, stats })),
+    // Important des formations depuis l'Idéo actions de formation initiale de l'Onisep et du catalogue de l'apprentissage
+    concatStreams(await streamOnisepFormations({ stats }), await streamCAFormations({ stats })),
     writeData(
       async (data) => {
         try {
-          const res = await upsert(formationEtablissement(), omit(data, ["millesime"]), {
+          const res = await upsert(formationEtablissement(), omit(data, ["mef11", "millesime"]), {
             $setOnInsert: {
               "_meta.date_import": new Date(),
               "_meta.created_on": new Date(),
@@ -96,7 +99,6 @@ export async function importFormationEtablissement(options = {}) {
             logger.trace(`Formation ${data.uai}/${data.cfd} déjà à jour`);
           }
         } catch (e) {
-          console.log("key", omit(data, ["millesime"]));
           logger.error(e, `Impossible d'ajouter les données de la formation ${data.uai}/${data.cfd}`);
           stats.failed++;
         }

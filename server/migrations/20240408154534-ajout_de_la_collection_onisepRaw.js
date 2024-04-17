@@ -1,44 +1,20 @@
 import { logger } from "#src/common/logger.js";
-import {
-  object,
-  objectId,
-  string,
-  boolean,
-  geoJsonPoint,
-  date,
-  arrayOf,
-} from "#src/common/db/collections/jsonSchema/jsonSchemaTypes.js";
+import { object, objectId, string, date } from "#src/common/db/collections/jsonSchema/jsonSchemaTypes.js";
 
-const name = "etablissement";
+const name = "onisepRaw";
 
 function indexes() {
-  return [[{ uai: 1 }, { unique: true }], [{ coordinate: "2dsphere" }]];
+  return [[{ type: 1, key: 1, millesime: 1 }, { unique: true }], [{ type: 1 }]];
 }
 
 function schema() {
   return object(
     {
       _id: objectId(),
-      uai: string(),
-      libelle: string(),
-      address: object({
-        street: string(),
-        postCode: string(),
-        city: string(),
-        cedex: boolean(),
-      }),
-      coordinate: geoJsonPoint(),
-      journeesPortesOuvertes: object({
-        details: string(),
-        dates: arrayOf(
-          object({
-            from: date(),
-            to: date(),
-            fullDay: boolean(),
-            details: string(),
-          })
-        ),
-      }),
+      dataset: string(),
+      type: string(),
+      key: string(),
+      millesime: string(),
       _meta: object(
         {
           created_on: date(),
@@ -49,8 +25,8 @@ function schema() {
       ),
     },
     {
-      required: ["uai"],
-      additionalProperties: false,
+      required: ["type", "dataset", "key", "millesime", "_meta"],
+      additionalProperties: true,
     }
   );
 }
