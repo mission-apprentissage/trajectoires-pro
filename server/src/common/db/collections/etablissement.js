@@ -1,4 +1,4 @@
-import { object, objectId, string, boolean, geoJsonPoint, arrayOf } from "./jsonSchema/jsonSchemaTypes.js";
+import { object, objectId, string, boolean, geoJsonPoint, arrayOf, date } from "./jsonSchema/jsonSchemaTypes.js";
 import { metaSchema, metaImportSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "etablissement";
