@@ -4,7 +4,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 import { ReactNode, useEffect, useRef } from "react";
-import { Popup, Marker, TileLayer, Tooltip, useMap } from "react-leaflet";
+import { Popup, Marker, Tooltip, useMap } from "react-leaflet";
 import { Typograhpy } from "./MaterialUINext";
 import { useWindowSize, useWindowWidth, useWindowHeight } from "@react-hook/window-size";
 import { DivIcon } from "leaflet";
@@ -41,11 +41,20 @@ function MapAutoresize() {
   return <></>;
 }
 
+function TileLayer() {
+  const map = useMap();
+
+  if (!map) {
+    return <></>;
+  }
+  return <VectorTileLayer styleUrl="https://openmaptiles.geo.data.gouv.fr/styles/osm-bright/style.json" />;
+}
+
 export default function Map({ center, children }: { center: any; children?: ReactNode }) {
   return (
     <MapContainer scrollWheelZoom={true} style={{ height: "100%", width: "100%" }} center={center} zoom={13}>
       <MapAutoresize />
-      <VectorTileLayer styleUrl="https://openmaptiles.geo.data.gouv.fr/styles/osm-bright/style.json" />
+      <TileLayer />
 
       {children}
       {center && (
