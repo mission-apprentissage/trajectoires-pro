@@ -27,6 +27,7 @@ export async function getUserWidget({
   name,
   theme = "default",
   data = {},
+  options = {},
   plausibleCustomProperties = {},
 }) {
   const user = await UserRepository.first({ "widget.hash": hash });
@@ -55,6 +56,7 @@ export async function getUserWidget({
   return renderWidget({
     widget: widget,
     data,
+    options,
     plausibleCustomProperties: {
       user: user.username,
       ...plausibleCustomProperties,

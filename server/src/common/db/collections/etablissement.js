@@ -1,4 +1,4 @@
-import { object, objectId, string, boolean, geoJsonPoint } from "./jsonSchema/jsonSchemaTypes.js";
+import { object, objectId, string, boolean, geoJsonPoint, arrayOf } from "./jsonSchema/jsonSchemaTypes.js";
 import { metaSchema, metaImportSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "etablissement";
@@ -20,6 +20,17 @@ export function schema() {
         cedex: boolean(),
       }),
       coordinate: geoJsonPoint(),
+      journeesPortesOuvertes: object({
+        details: string(),
+        dates: arrayOf(
+          object({
+            from: date(),
+            to: date(),
+            fullDay: boolean(),
+            details: string(),
+          })
+        ),
+      }),
       _meta: metaSchema([metaImportSchema()]),
     },
     {

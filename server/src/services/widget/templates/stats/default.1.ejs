@@ -190,7 +190,7 @@
       padding-top: 15px;
     }
 
-    @media screen and (min-width: 40em) {
+    @media screen and (min-width: <%=options.responsiveWidth %>) {
       .bodies {
         display: flex;
         align-items: center;
@@ -210,7 +210,7 @@
       }
     }
 
-    @media screen and (max-width: 40em) {
+    @media screen and (max-width: <%=options.responsiveWidth %>) {
       :root {
         --body-width: min(calc(var(--widget-width) * 0.8 / <%=maxEleves %>), 30px);
         --body-height: calc(var(--body-width) * 1.8125);
@@ -241,6 +241,12 @@
 
       .card-modal .body-grey .body {
         display: none;
+      }
+    }
+
+    @media screen and (max-width: 30em) {
+      .block-title {
+        font-size: 12px;
       }
     }
   </style>
@@ -316,7 +322,9 @@
   </div>
 
   <div class="container">
+    <% if (!options?.noTitle) { %>
     <%- await include('../common/title.ejs'); %>
+    <% } %>
     <!-- <div class="badge">
       <div class="label">CAP EN 2 ANS</div>
     </div> -->

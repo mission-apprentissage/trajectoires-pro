@@ -1,7 +1,12 @@
-import { Formation } from "#/types/formation";
+import { Formation, formationSchema } from "#/types/formation";
 import { mapValues } from "lodash-es";
 import { FormationsRequestSchema } from "./route";
-import { Paginations } from "#/types/pagination";
+import { Paginations, getPaginationSchema } from "#/types/pagination";
+import * as yup from "yup";
+
+const formationsPaginatedSchema: yup.ObjectSchema<Paginations<"formations", Formation>> = getPaginationSchema({
+  formations: yup.array().of(formationSchema).required(),
+});
 
 export async function formations(
   params: FormationsRequestSchema,
@@ -15,5 +20,5 @@ export async function formations(
   });
 
   const json = await result.json();
-  return json;
+  return await formationsPaginatedSchema.validate(json);
 }

@@ -10,11 +10,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 
 function SearchHeader() {
   return (
-    <Container
-      style={{ border: "1px solid #DDDDDD", marginBottom: fr.spacing("3v") }}
-      nopadding={true}
-      maxWidth={false}
-    >
+    <Container style={{ border: "1px solid #DDDDDD" }} nopadding={true} maxWidth={false}>
       <Container>
         <SearchFormationForm url={"/"} defaultValues={{ address: null, distance: null, time: null }} />
       </Container>
@@ -50,15 +46,13 @@ export default function Page() {
     <>
       <SearchHeader />
       {coordinate && (
-        <Container>
-          <ResearchFormationsResult
-            longitude={coordinate[0]}
-            latitude={coordinate[1]}
-            distance={distance * 1000}
-            time={time * 60}
-            page={1}
-          />
-        </Container>
+        <ResearchFormationsResult
+          longitude={coordinate[0]}
+          latitude={coordinate[1]}
+          distance={distance * 1000}
+          time={time * 60}
+          page={1}
+        />
       )}
     </>
   );

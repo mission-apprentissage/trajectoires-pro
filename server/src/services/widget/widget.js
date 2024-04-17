@@ -1,4 +1,5 @@
 import path from "path";
+import Joi from "joi";
 import { isNil } from "lodash-es";
 import { getDirname } from "#src/common/utils/esmUtils.js";
 import ejs from "ejs";
@@ -22,6 +23,12 @@ export const WIDGETS = {
           },
         ],
       },
+    },
+    options: {
+      noTitle: Joi.boolean().default(false),
+      responsiveWidth: Joi.string()
+        .regex(/^[0-9]+(em|px)/)
+        .default("40em"),
     },
     validator: (data) => {
       const isInvalid = (taux) => !taux || !!taux.find(({ value }) => isNil(value));
@@ -51,6 +58,9 @@ export const WIDGETS = {
         ],
       },
     },
+    options: {
+      noTitle: Joi.boolean().default(false),
+    },
     validator: () => true,
   },
 };
@@ -63,7 +73,7 @@ function getVersion(widget, version = null) {
   return template;
 }
 
-function getBaseData({ widget, plausibleCustomProperties = {} }) {
+function getBaseData({ widget, plausibleCustomProperties = {}, options = {} }) {
   const base64Font = loadBase64Font();
 
   return {
@@ -76,6 +86,7 @@ function getBaseData({ widget, plausibleCustomProperties = {} }) {
     },
     base64Font,
     version: widget.template.version,
+    options,
   };
 }
 
@@ -97,14 +108,14 @@ export function getWidget({ widgets = WIDGETS, name = null, theme = null, versio
   return { widget, template, theme: widgetTheme, name: widgetName };
 }
 
-export async function renderWidget({ widget, data = {}, plausibleCustomProperties = {} }) {
+export async function renderWidget({ widget, data = {}, options = {}, plausibleCustomProperties = {} }) {
   if (!widget.widget.validator(data)) {
     throw new ErrorWidgetInvalidData();
   }
 
   return ejs.renderFile(
     widget.template.template,
-    { ...getBaseData({ widget, plausibleCustomProperties }), data },
+    { ...getBaseData({ widget, plausibleCustomProperties, options }), data },
     { async: true }
   );
 }

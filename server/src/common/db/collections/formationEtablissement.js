@@ -14,6 +14,7 @@ export function schema() {
       uai: string(),
       cfd: string(),
       codeDispositif: string(),
+      mef11: string(),
       voie: enumOf(["scolaire", "apprentissage"]),
       millesime: arrayOf(string()),
       _meta: metaSchema([metaImportSchema()]),

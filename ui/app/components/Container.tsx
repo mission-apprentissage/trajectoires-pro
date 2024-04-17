@@ -35,5 +35,5 @@ export default styled(Container)<ContainerProps>`
       default:
         return "";
     }
-  }}
+  }};
 `;

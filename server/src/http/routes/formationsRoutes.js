@@ -31,9 +31,9 @@ import {
 } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
-import { getFormations, getDistanceFilter, getTimeFilter } from "#src/queries/getFormations.js";
-import FormationEtablissement from "#src/common/repositories/FormationEtablissement.js";
-import Etablissement from "#src/common/repositories/Etablissement.js";
+import { getFormations, getDistanceFilter, getTimeFilter, testTimeFilter } from "#src/queries/getFormations.js";
+import FormationEtablissement from "#src/common/repositories/formationEtablissement.js";
+import Etablissement from "#src/common/repositories/etablissement.js";
 import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
 
 async function formationStats({ uai, codeCertificationWithType, millesime }) {
@@ -225,6 +225,7 @@ export default () => {
           name: "stats",
           theme,
           data,
+          options,
           plausibleCustomProperties: {
             type: "formation",
             uai,
@@ -240,6 +241,7 @@ export default () => {
           hash,
           name: "error",
           theme,
+          options,
           data: {
             error: err.name,
             millesimes: formatMillesime(millesime).split("_"),
@@ -313,7 +315,7 @@ export default () => {
       }
 
       addJsonHeaders(res);
-      res.send({ ...formation, etablissement, bcn });
+      res.send({ formation, etablissement, bcn });
     })
   );
 
@@ -349,6 +351,7 @@ export default () => {
           });
 
           filter = getTimeFilter({ coordinate: { longitude, latitude }, isochroneBuckets });
+          //  filter = testTimeFilter({ coordinate: { longitude, latitude } });
         } catch (err) {
           console.error(err);
           // TODO : gestion des erreurs de récupération de l'isochrone

@@ -17,8 +17,8 @@ export default function Layout({
 }) {
   return (
     <DsfrProvider>
-      <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
-        <MuiDsfrThemeProvider>
+      <MuiDsfrThemeProvider>
+        <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
           <Providers>
             {header || (
               <Header
@@ -50,8 +50,8 @@ export default function Layout({
               {children}
             </div>
           </Providers>
-        </MuiDsfrThemeProvider>
-      </NextAppDirEmotionCacheProvider>
+        </NextAppDirEmotionCacheProvider>
+      </MuiDsfrThemeProvider>
     </DsfrProvider>
   );
 }

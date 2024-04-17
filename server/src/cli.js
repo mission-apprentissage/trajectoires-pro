@@ -19,6 +19,7 @@ import { importACCEEtablissements } from "./jobs/etablissements/importACCEEtabli
 import { importEtablissements } from "./jobs/etablissements/importEtablissements.js";
 import { importFormations as importCAFormations } from "./jobs/catalogueApprentissage/importFormations.js";
 import { importFormationEtablissement } from "./jobs/formations/importFormationEtablissement.js";
+import { importOnisep } from "./jobs/onisep/importOnisep.js";
 import { backfillMetrics } from "./jobs/backfillMetrics.js";
 import { asArray } from "./common/utils/stringUtils.js";
 import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
@@ -63,6 +64,23 @@ cli
   .description("Import les CFD et MEF depuis la BCN")
   .action(() => {
     runScript(importBCNCommand);
+  });
+
+cli
+  .command("importOnisep")
+  .description("Importe les données de l'onisep")
+  .action(() => {
+    runScript(async () => {
+      return {
+        importTablePassage: await importOnisep("tablePassageCodesCertifications", ["certif_info_ci_identifiant"]),
+        importFormationsLycee: await importOnisep("ideoActionsFormationInitialeUniversLycee", [
+          "action_de_formation_af_identifiant_onisep",
+          "ens_code_uai",
+        ]),
+        importStructuresSecondaire: await importOnisep("ideoStructuresEnseignementSecondaire", ["code_uai"]),
+        importFormationsInitiales: await importOnisep("ideoFormationsInitiales", ["url_et_id_onisep", "duree"]),
+      };
+    });
   });
 
 cli

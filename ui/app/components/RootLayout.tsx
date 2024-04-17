@@ -14,6 +14,8 @@ export default function RootLayout({ title, children }: { title: string; childre
         overflow: "-moz-scrollbars-vertical",
         overflowY: "scroll",
       }}
+      // TODO: Temporary disable hydratation warning because caused by chrome extension
+      suppressHydrationWarning={true}
     >
       <head>
         <title>{title}</title>

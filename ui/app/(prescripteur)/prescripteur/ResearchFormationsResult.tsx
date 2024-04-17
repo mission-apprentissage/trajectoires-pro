@@ -1,24 +1,15 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
-import { Typograhpy, Grid, Box } from "../../components/MaterialUINext";
+import { Typograhpy, Grid } from "../../components/MaterialUINext";
 import InformationCard from "#/app/components/InformationCard";
-import Container from "#/app/components/Container";
-import { CardActionArea, Typography } from "@mui/material";
-
-import { Tag } from "@codegouvfr/react-dsfr/Tag";
-
 import { formations } from "#/app/api/exposition/formations/query";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
-import Link from "next/link";
-import dynamic from "next/dynamic";
-
-const Map = dynamic(() => import("#/app/components/Map"), { ssr: false });
-const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false });
-const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
-const Tooltip = dynamic(() => import("react-leaflet").then((mod) => mod.Tooltip), { ssr: false });
+import Button from "#/app/components/Button";
+import FormationCard from "./components/FormationCard";
+import FormationsMap from "./components/FormationsMap";
 
 export const revalidate = 0;
 
@@ -35,6 +26,8 @@ export default function ResearchFormationsResult({
   time: number;
   page: number;
 }) {
+  const [expandMap, setExpandMap] = useState(false);
+
   const { isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, data } = useInfiniteQuery({
     staleTime: Infinity,
     cacheTime: Infinity,
@@ -49,7 +42,7 @@ export default function ResearchFormationsResult({
           timeLimit: time,
           page: pageParam ?? 1,
           codesDiplome: ["3", "4"],
-          items_par_page: 3000,
+          items_par_page: 200,
         },
         { signal }
       );
@@ -93,65 +86,51 @@ export default function ResearchFormationsResult({
 
   return (
     <>
-      <div style={{ height: "400px", marginBottom: fr.spacing("5v") }}>
-        <Map center={[latitude, longitude]}>
-          {etablissements.map((etablissement) => {
-            const key = `marker_${etablissement.uai}`;
-            const coordinate = etablissement.coordinate.coordinates;
+      <Grid container spacing={0}>
+        <Grid
+          item
+          md={expandMap === true ? 6 : 10}
+          style={{
+            zIndex: 500,
+            padding: fr.spacing("5v"),
+            paddingLeft: fr.spacing("20v"),
+            boxShadow: "4px 0px 6px 0px #00000040",
+          }}
+        >
+          <Grid container spacing={4}>
+            {data.pages.map((page) => {
+              return page.formations.map((formation) => {
+                const formationDetail = formation.formation;
+                const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
+                return (
+                  <Grid item xs={4} key={key}>
+                    <FormationCard latitude={latitude} longitude={longitude} formation={formation} />
+                  </Grid>
+                );
+              });
+            })}
+          </Grid>
+        </Grid>
 
-            return (
-              <Marker key={key} position={[coordinate[1], coordinate[0]]}>
-                <Popup>{etablissement.libelle}</Popup>
-                <Tooltip>
-                  <div style={{ width: "300px" }}>
-                    <Typograhpy sx={{ whiteSpace: "pre-line" }} variant="subtitle1">
-                      {etablissement.libelle}
-                    </Typograhpy>
-                    <Typograhpy variant="body1">
-                      A moins de {Math.round(etablissement.accessTime / 60)} minutes
-                    </Typograhpy>
-                    <Typograhpy variant="body1">{etablissement.address.street}</Typograhpy>
-                    <Typograhpy variant="body1">
-                      {etablissement.address.postCode} {etablissement.address.city}
-                    </Typograhpy>
-                  </div>
-                </Tooltip>
-              </Marker>
-            );
-          })}
-        </Map>
-      </div>
-      <Grid container spacing={2}>
-        {data.pages.map((page) => {
-          return page.formations.map((formation) => {
-            const key = `${formation.cfd}-${formation.codeDispositif}-${formation.uai}-${formation.voie}`;
-            return (
-              <Grid item xs={4} key={key}>
-                <Link href={`/details/${key}?latitude=${latitude}&longitude=${longitude}`}>
-                  <CardActionArea>
-                    <Container style={{ border: "1px solid #DDDDDD", borderRadius: "10px" }}>
-                      <Typography style={{ marginBottom: fr.spacing("3v") }} variant="subtitle2">
-                        {formation.bcn.libelle_long}
-                      </Typography>
-                      <Typography style={{ marginBottom: fr.spacing("1v") }}>
-                        {formation.etablissement.libelle}
-                      </Typography>
-                      <Tag style={{ marginBottom: fr.spacing("3v") }}>{formation.voie}</Tag>
-                      <Typography variant="subtitle2" color={"#000091"}>
-                        A {(formation.etablissement.distance / 1000).toFixed(2)} km
-                      </Typography>
-                      {formation.etablissement.accessTime && (
-                        <Typography variant="subtitle2" color={"#000091"}>
-                          A moins de {(formation.etablissement.accessTime / 60).toFixed(0)} minutes
-                        </Typography>
-                      )}
-                    </Container>
-                  </CardActionArea>
-                </Link>
-              </Grid>
-            );
-          });
-        })}
+        <Grid item md={expandMap === true ? 6 : 2}>
+          <div style={{ height: "100vh", width: "100%", top: 0, position: "sticky" }}>
+            <div style={{ position: "absolute", top: "20px", width: "100%", zIndex: 600, textAlign: "center" }}>
+              <Button
+                iconId="fr-icon-road-map-line"
+                priority="secondary"
+                size="small"
+                variant="white"
+                rounded
+                onClick={() => {
+                  setExpandMap(!expandMap);
+                }}
+              >
+                Voir sur la carte
+              </Button>
+            </div>
+            <FormationsMap longitude={longitude} latitude={latitude} etablissements={etablissements} />
+          </div>
+        </Grid>
       </Grid>
       {isFetchingNextPage && <Loader style={{ marginTop: fr.spacing("5v") }} />}
     </>

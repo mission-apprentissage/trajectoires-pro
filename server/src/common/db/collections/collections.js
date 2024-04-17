@@ -15,6 +15,7 @@ import * as usersDescriptor from "./users.js";
 import * as catalogueApprentissageFormationsDescriptor from "./catalogueApprentissageFormations.js";
 import * as formationEtablissementDescriptor from "./formationEtablissement.js";
 import * as etablissementDescriptor from "./etablissement.js";
+import * as onisepRawDescriptor from "./onisepRaw.js";
 import { dbCollection } from "#src/common/db/mongodb.js";
 
 export function getCollectionDescriptors() {
@@ -36,6 +37,7 @@ export function getCollectionDescriptors() {
     catalogueApprentissageFormationsDescriptor,
     formationEtablissementDescriptor,
     etablissementDescriptor,
+    onisepRawDescriptor,
   ];
 }
 
@@ -105,4 +107,8 @@ export function formationEtablissement() {
 
 export function etablissement() {
   return dbCollection(etablissementDescriptor.name);
+}
+
+export function onisepRaw() {
+  return dbCollection(onisepRawDescriptor.name);
 }
