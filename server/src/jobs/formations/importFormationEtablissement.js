@@ -12,6 +12,7 @@ import { streamOnisepFormations } from "./streamOnisepFormations.js";
 
 const logger = getLoggerWithContext("import");
 
+// eslint-disable-next-line no-unused-vars
 function streamConstatRentree({ constatRentreeFilePath, stats }) {
   return compose(
     constatRentree(constatRentreeFilePath),
@@ -67,6 +68,7 @@ export async function importFormationEtablissement(options = {}) {
   logger.info(`Importation des formations depuis l'onisep' et depuis le catalogue de l'apprentissage`);
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
 
+  // eslint-disable-next-line no-unused-vars
   const constatRentreeFilePath = options.constatRentreeFilePath || null;
 
   await oleoduc(

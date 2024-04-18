@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { Typograhpy, Grid } from "../../components/MaterialUINext";
@@ -10,8 +10,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Button from "#/app/components/Button";
 import FormationCard from "./components/FormationCard";
 import FormationsMap from "./components/FormationsMap";
-
-export const revalidate = 0;
+import ClientSideScrollRestorer from "#/app/components/ClientSideScrollRestorer";
 
 export default function ResearchFormationsResult({
   latitude,
@@ -86,6 +85,9 @@ export default function ResearchFormationsResult({
 
   return (
     <>
+      <Suspense>
+        <ClientSideScrollRestorer />
+      </Suspense>
       <Grid container spacing={0}>
         <Grid
           item

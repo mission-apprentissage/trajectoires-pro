@@ -7,7 +7,7 @@ import { Typograhpy } from "../../../components/MaterialUINext";
 import { MetabaseConfig } from "../../../../types/metabase";
 import Config from "#/app/(statistiques)/statistiques/config";
 
-export const revalidate = 0;
+export const revalidate = false;
 
 export default async function Page({
   searchParams,

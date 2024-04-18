@@ -1,5 +1,5 @@
 import { etablissement } from "#src/common/db/collections/collections.js";
-import { dbCollection } from "#src/common/db/mongodb.js";
+//import { dbCollection } from "#src/common/db/mongodb.js";
 
 export function testTimeFilter({ coordinate }) {
   return [

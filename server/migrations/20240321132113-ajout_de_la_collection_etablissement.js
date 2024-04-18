@@ -39,6 +39,9 @@ function schema() {
           })
         ),
       }),
+      onisep: object({
+        id: string(),
+      }),
       _meta: object(
         {
           created_on: date(),

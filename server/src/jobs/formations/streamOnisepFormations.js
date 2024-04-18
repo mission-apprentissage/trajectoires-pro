@@ -1,4 +1,4 @@
-import { oleoduc, writeData, transformData, mergeStreams, compose, filterData } from "oleoduc";
+import { transformData, compose, filterData } from "oleoduc";
 import streamToArray from "stream-to-array";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import BCNMefRepository from "#src/common/repositories/bcnMef.js";

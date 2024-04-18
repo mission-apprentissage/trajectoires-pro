@@ -27,3 +27,11 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 .leaflet-control a {
     background: none;
 }
+
+form[target=_blank]::after {
+    content: none;
+  }
+  
+.no-icon-link::after {
+    content: none;
+}

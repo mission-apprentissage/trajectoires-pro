@@ -1,4 +1,4 @@
-import { Formation } from "#/types/formation";
+import { Formation, formationSchema } from "#/types/formation";
 import { mapValues } from "lodash-es";
 import { FormationRequestSchema } from "./type";
 
@@ -19,5 +19,5 @@ export async function formation(
   }
 
   const json = await result.json();
-  return json;
+  return await formationSchema.validate(json);
 }
