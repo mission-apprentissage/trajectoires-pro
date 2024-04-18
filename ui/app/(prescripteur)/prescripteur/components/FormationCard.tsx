@@ -24,17 +24,27 @@ export default function FormationCard({
   latitude,
   longitude,
   formation,
+  selected,
+  onMouseEnter,
+  onMouseLeave,
 }: {
   latitude: number;
   longitude: number;
   formation: Formation;
+  selected: boolean;
+  onMouseEnter?: Function;
+  onMouseLeave?: Function;
 }) {
   const { formation: formationDetail, etablissement, bcn } = formation;
   const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
 
   return (
     <Link href={`/details/${key}?latitude=${latitude}&longitude=${longitude}`}>
-      <CardActionArea>
+      <CardActionArea
+        onMouseEnter={() => onMouseEnter && onMouseEnter()}
+        onMouseLeave={() => onMouseLeave && onMouseLeave()}
+        style={{ ...(selected ? { backgroundColor: "var(--hover)" } : {}) }}
+      >
         <Card>
           <Typography style={{ marginBottom: fr.spacing("3v") }} variant="subtitle2">
             {bcn.libelle_long}

@@ -2,6 +2,7 @@
 import React from "react";
 import { Typograhpy } from "#/app/components/MaterialUINext";
 import dynamic from "next/dynamic";
+import { LeafletEtablissementIcon, LeafletSelectedEtablissementIcon } from "#/app/components/Map";
 
 const Map = dynamic(() => import("#/app/components/Map"), { ssr: false });
 const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false });
@@ -12,10 +13,12 @@ export default function FormationsMap({
   latitude,
   longitude,
   etablissements,
+  selected,
 }: {
   latitude: number;
   longitude: number;
   etablissements: any[];
+  selected?: string | null;
 }) {
   return (
     <Map center={[latitude, longitude]}>
@@ -24,7 +27,11 @@ export default function FormationsMap({
         const coordinate = etablissement.coordinate.coordinates;
 
         return (
-          <Marker key={key} position={[coordinate[1], coordinate[0]]}>
+          <Marker
+            icon={selected === etablissement.uai ? LeafletSelectedEtablissementIcon : LeafletEtablissementIcon}
+            key={key}
+            position={[coordinate[1], coordinate[0]]}
+          >
             <Popup>{etablissement.libelle}</Popup>
             <Tooltip>
               <div style={{ width: "300px" }}>

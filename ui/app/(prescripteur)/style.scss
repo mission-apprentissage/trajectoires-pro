@@ -28,6 +28,11 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
     background: none;
 }
 
+
+.leaflet-icon-selected {
+    z-index: 1000 !important;
+}
+
 form[target=_blank]::after {
     content: none;
   }
@@ -35,3 +40,12 @@ form[target=_blank]::after {
 .no-icon-link::after {
     content: none;
 }
+
+.color-white {
+    color: #fff;
+}
+
+.color-grey {
+    color: #ddd;
+}
+

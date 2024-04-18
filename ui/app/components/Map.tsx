@@ -8,18 +8,37 @@ import { Marker, Tooltip, useMap } from "react-leaflet";
 import { Typograhpy } from "./MaterialUINext";
 import { DivIcon } from "leaflet";
 import { renderToString } from "react-dom/server";
-import { fr } from "@codegouvfr/react-dsfr";
-import VectorTileLayer from "react-leaflet-vector-tile-layer";
 import dynamic from "next/dynamic";
+import HomeIcon from "./icon/HomeIcon";
+import EtablissementIcon from "./icon/EtablissementIcon";
 
+const VectorTileLayer = dynamic(() => import("react-leaflet-vector-tile-layer").then((mod) => mod), {
+  ssr: false,
+});
 const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), { ssr: false });
 
-const HomeIcon = new DivIcon({
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
+export const LeafletHomeIcon = new DivIcon({
+  iconSize: [52, 58],
+  iconAnchor: [26, 58],
   popupAnchor: [-3, -76],
-  className: "custom-leaflet-icon",
-  html: renderToString(<i className={fr.cx("fr-icon-home-4-fill") + " " + "fr-icon--lg"} />),
+  className: "custom-leaflet-icon color-white",
+  html: renderToString(<HomeIcon />),
+});
+
+export const LeafletEtablissementIcon = new DivIcon({
+  iconSize: [52, 58],
+  iconAnchor: [26, 58],
+  popupAnchor: [-3, -76],
+  className: "custom-leaflet-icon color-white",
+  html: renderToString(<EtablissementIcon />),
+});
+
+export const LeafletSelectedEtablissementIcon = new DivIcon({
+  iconSize: [52, 58],
+  iconAnchor: [26, 58],
+  popupAnchor: [-3, -76],
+  className: "custom-leaflet-icon color-grey leaflet-icon-selected",
+  html: renderToString(<EtablissementIcon />),
 });
 
 function MapAutoresize() {
@@ -57,7 +76,7 @@ export default function Map({ center, children }: { center: any; children?: Reac
 
       {children}
       {center && (
-        <Marker icon={HomeIcon} position={center}>
+        <Marker icon={LeafletHomeIcon} position={center}>
           <Tooltip>
             <Typograhpy variant="subtitle1">Ma position</Typograhpy>
           </Tooltip>
