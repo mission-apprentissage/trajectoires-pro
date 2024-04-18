@@ -35,14 +35,14 @@ export default function SearchFormationForm({
       {({ control, errors }) => {
         return (
           <Grid container spacing={2}>
-            <Grid item md={4} xs={6}>
+            <Grid item md={6} xs={8}>
               <Controller
                 name="address"
                 control={control}
                 render={(form) => <AddressField error={errors?.address} form={form} />}
               />
             </Grid>
-            <Grid item md={2} xs={2}>
+            <Grid item md={2} xs={2} style={{ display: "none" }}>
               <Controller
                 name="distance"
                 control={control}
