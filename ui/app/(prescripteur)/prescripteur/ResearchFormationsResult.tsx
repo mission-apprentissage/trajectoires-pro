@@ -9,8 +9,13 @@ import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import Button from "#/app/components/Button";
 import FormationCard from "./components/FormationCard";
-import FormationsMap from "./components/FormationsMap";
 import ClientSideScrollRestorer from "#/app/components/ClientSideScrollRestorer";
+import dynamic from "next/dynamic";
+import { FormationDetail } from "#/types/formation";
+
+const FormationsMap = dynamic(() => import("#/app/(prescripteur)/prescripteur/components/FormationsMap"), {
+  ssr: false,
+});
 
 export default function ResearchFormationsResult({
   latitude,
@@ -25,6 +30,7 @@ export default function ResearchFormationsResult({
   time: number;
   page: number;
 }) {
+  const [selected, setSelected] = useState<null | FormationDetail>(null);
   const [expandMap, setExpandMap] = useState(false);
 
   const { isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, data } = useInfiniteQuery({
@@ -103,10 +109,19 @@ export default function ResearchFormationsResult({
             {data.pages.map((page) => {
               return page.formations.map((formation) => {
                 const formationDetail = formation.formation;
+                const isSelected = selected ? selected._id === formationDetail._id : false;
                 const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
                 return (
                   <Grid item xs={4} key={key}>
-                    <FormationCard latitude={latitude} longitude={longitude} formation={formation} />
+                    <FormationCard
+                      selected={isSelected}
+                      onMouseEnter={() => {
+                        setSelected(formationDetail);
+                      }}
+                      latitude={latitude}
+                      longitude={longitude}
+                      formation={formation}
+                    />
                   </Grid>
                 );
               });
@@ -130,7 +145,12 @@ export default function ResearchFormationsResult({
                 Voir sur la carte
               </Button>
             </div>
-            <FormationsMap longitude={longitude} latitude={latitude} etablissements={etablissements} />
+            <FormationsMap
+              selected={selected && selected.uai}
+              longitude={longitude}
+              latitude={latitude}
+              etablissements={etablissements}
+            />
           </div>
         </Grid>
       </Grid>
