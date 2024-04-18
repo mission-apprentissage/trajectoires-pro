@@ -13,7 +13,7 @@ function SearchHeader() {
   return (
     <Container style={{ border: "1px solid #DDDDDD" }} nopadding={true} maxWidth={false}>
       <Container>
-        <SearchFormationForm url={"/"} defaultValues={{ address: null, distance: null, time: null }} />
+        <SearchFormationForm url={"/"} defaultValues={{ address: null, distance: 10, time: null }} />
       </Container>
     </Container>
   );
