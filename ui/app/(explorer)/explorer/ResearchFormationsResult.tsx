@@ -13,7 +13,6 @@ import { Typograhpy, Grid, Box } from "../../components/MaterialUINext";
 import { BCNResearch } from "#/types/bcn";
 import { CertificationStat } from "#/types/certification";
 import { findRegionByCode } from "#/common/regions";
-export const revalidate = 0;
 
 const MILLESIMES = ["2020", "2021", "2022"];
 const MILLESIME_DOUBLE = ["2019_2020", "2020_2021", "2021_2022"];
@@ -203,7 +202,7 @@ export default function ResearchFormationsResult({
         },
       },
     ],
-    [regions, labels, hasRegion]
+    [hasRegion]
   );
 
   const rowVirtualizerInstanceRef = useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null);
@@ -233,7 +232,7 @@ export default function ResearchFormationsResult({
       );
       setIsLoading(false);
     }
-  }, [formations, isLoadingMetrics, dataMetrics, regions]);
+  }, [formations, isLoadingMetrics, dataMetrics, regions, labels]);
 
   useEffect(() => {
     //scroll to the top of the table when the sorting changes

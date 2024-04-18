@@ -10,7 +10,6 @@ import ResearchFormationsResult from "#/app/(explorer)/explorer/ResearchFormatio
 import useFuzzyFilter from "#/hooks/useFuzzyFilter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Grid from "@mui/material/Grid";
-export const revalidate = 0;
 
 export default function ResearchPage({ formations }: { formations: BCNResearch[] }) {
   const router = useRouter();

@@ -5,7 +5,7 @@ import Tag, { TagProps as DSFRBTagProps } from "@codegouvfr/react-dsfr/Tag";
 import { fr } from "@codegouvfr/react-dsfr";
 
 export type TagProps = {
-  variant?: "white" | "yellow";
+  variant?: "white" | "yellow" | "grey";
 } & DSFRBTagProps;
 
 // TODO: fix css order
@@ -24,6 +24,8 @@ export default styled(Tag, {
         color: #716043;
         font-weight: 700;
         border-radius: 4px;`;
+      case "grey":
+        return `color: #3A3A3A;`;
       default:
         return "";
     }

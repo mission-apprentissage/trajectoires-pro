@@ -7,6 +7,7 @@ import { omitNil } from "#src/common/utils/objectUtils.js";
 import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
 import OnisepRaw from "#src/common/repositories/onisepRaw.js";
 import { parseJourneesPortesOuvertes } from "#src/services/onisep/etablissement.js";
+import { get } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
@@ -45,6 +46,13 @@ export async function importEtablissements() {
 
       const onisepFormated = {};
       if (onisepEtab) {
+        const idOnisep = onisepEtab.data.url_et_id_onisep
+          ? get(onisepEtab.data.url_et_id_onisep.match(/ENS\.[0-9]+/), "0", null)
+          : null;
+        onisepFormated["onisep"] = {
+          id: idOnisep,
+        };
+
         const jPO = parseJourneesPortesOuvertes(onisepEtab.data.journees_portes_ouvertes);
         if (jPO) {
           onisepFormated["journeesPortesOuvertes"] = jPO;

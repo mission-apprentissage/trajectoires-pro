@@ -31,6 +31,9 @@ export function schema() {
           })
         ),
       }),
+      onisep: object({
+        id: string(),
+      }),
       _meta: metaSchema([metaImportSchema()]),
     },
     {

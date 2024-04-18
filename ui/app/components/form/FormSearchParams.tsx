@@ -6,8 +6,9 @@ import * as yup from "yup";
 import { FieldValues, Resolver } from "react-hook-form";
 import { flatten } from "lodash-es";
 import { searchParamsToObject } from "#/app/utils/searchParams";
+import { Suspense } from "react";
 
-export default function FormSearchParams<FormData extends FieldValues>({
+export function FormSearchParams<FormData extends FieldValues>({
   url,
   defaultValues,
   schema,
@@ -48,5 +49,25 @@ export default function FormSearchParams<FormData extends FieldValues>({
     <form autoComplete="off" onSubmit={onSubmit} style={{ flex: "1" }}>
       {children({ control, errors })}
     </form>
+  );
+}
+
+export default function FormSearchParamsWithSuspense<FormData extends FieldValues>({
+  url,
+  defaultValues,
+  schema,
+  children,
+}: {
+  url: string;
+  defaultValues: FormData;
+  schema: yup.ObjectSchema<FormData>;
+  children: ({ control, errors }: { control: Control<FormData, any>; errors: FieldErrors<FormData> }) => JSX.Element;
+}) {
+  return (
+    <Suspense>
+      <FormSearchParams url={url} defaultValues={defaultValues} schema={schema}>
+        {children}
+      </FormSearchParams>
+    </Suspense>
   );
 }

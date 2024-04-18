@@ -9,7 +9,7 @@ import Overview from "./overview";
 import Plateformes from "./plateformes";
 import { fr } from "@codegouvfr/react-dsfr";
 
-export const revalidate = 0;
+export const revalidate = false;
 
 export default async function Page() {
   const dashboards = (Config.METABASE as unknown as MetabaseConfig).dashboards;

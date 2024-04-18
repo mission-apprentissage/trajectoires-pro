@@ -31,7 +31,7 @@ import {
 } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
-import { getFormations, getDistanceFilter, getTimeFilter, testTimeFilter } from "#src/queries/getFormations.js";
+import { getFormations, getDistanceFilter, getTimeFilter } from "#src/queries/getFormations.js";
 import FormationEtablissement from "#src/common/repositories/formationEtablissement.js";
 import Etablissement from "#src/common/repositories/etablissement.js";
 import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";

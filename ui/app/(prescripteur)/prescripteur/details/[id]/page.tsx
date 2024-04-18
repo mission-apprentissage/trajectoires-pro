@@ -14,8 +14,7 @@ import { TagApprentissage } from "../../components/FormationCard";
 import Link from "next/link";
 import Divider from "#/app/components/Divider";
 import Card from "#/app/components/Card";
-
-export const revalidate = 0;
+import EtablissementCard from "../../components/EtablissementCard";
 
 function WidgetInserJeunes({ etablissement, formation }: { etablissement: Etablissement; formation: FormationDetail }) {
   const WIDGET_HASH = process.env.NEXT_PUBLIC_EXPOSITION_WIDGET_HASH;
@@ -56,7 +55,7 @@ function FormationResult({ formation: { formation, etablissement, bcn } }: { for
       },
       0.01
     );
-  }, [longitude, latitude]);
+  }, [longitude, latitude, etablissement.coordinate.coordinates]);
 
   const address =
     etablissement.address.street + ", " + etablissement.address.postCode + " " + etablissement.address.city;
@@ -64,14 +63,17 @@ function FormationResult({ formation: { formation, etablissement, bcn } }: { for
   return (
     <Container style={{ marginTop: fr.spacing("10v") }} nopadding={true} maxWidth={"xl"}>
       <Grid container spacing={2}>
-        <Grid item md={6}>
+        <Grid item md={7}>
           <Typograhpy variant="h4" style={{ marginBottom: fr.spacing("3v") }}>
             {bcn.libelle_long}
           </Typograhpy>
           {distance !== null && (
             <Grid container>
               <Grid item xs={6}>
-                <Typograhpy variant="subtitle2" style={{ color: "#000091", marginBottom: fr.spacing("3v") }}>
+                <Typograhpy
+                  variant="subtitle2"
+                  style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
+                >
                   <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
                   {(distance / 1000).toFixed(2)} km
                 </Typograhpy>
@@ -93,24 +95,8 @@ function FormationResult({ formation: { formation, etablissement, bcn } }: { for
             <TagApprentissage formationDetail={formation} />
           </Box>
         </Grid>
-        <Grid item md={6}>
-          <Container style={{ border: "1px solid #DDDDDD", borderRadius: "10px" }}>
-            <Typograhpy variant="h5" style={{ marginBottom: fr.spacing("3v") }}>
-              {etablissement.libelle}
-            </Typograhpy>
-            <Typograhpy variant="body1">{etablissement.address.street}</Typograhpy>
-            <Typograhpy variant="body1">
-              {etablissement.address.postCode} {etablissement.address.city}
-            </Typograhpy>
-            <Typograhpy>
-              <a
-                href={`https://orion-recette.inserjeunes.beta.gouv.fr/panorama/etablissement/${formation.uai}`}
-                target="_blank"
-              >
-                Voir sur orion
-              </a>
-            </Typograhpy>
-          </Container>
+        <Grid item md={5}>
+          <EtablissementCard etablissement={etablissement} />
         </Grid>
       </Grid>
       <Divider variant="middle" />

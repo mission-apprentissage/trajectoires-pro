@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { BCN, BCNResearch } from "#/types/bcn";
 import { Paginations } from "#/types/pagination";
 import ResearchPage from "./ResearchPage";
-export const revalidate = 0;
 
 async function bcn(items_par_page: number): Promise<BCNResearch[]> {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;

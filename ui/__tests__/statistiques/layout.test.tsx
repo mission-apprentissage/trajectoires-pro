@@ -1,14 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
-import { Layout } from "#/app/(statistiques)/layout";
+import BaseLayout from "#/app/(statistiques)/BaseLayout";
 
 describe("Layout", () => {
   it("renders a layout", async () => {
     await act(async () =>
       render(
-        <Layout>
+        <BaseLayout>
           <></>
-        </Layout>
+        </BaseLayout>
       )
     );
   });
@@ -16,9 +16,9 @@ describe("Layout", () => {
   it("render the children", async () => {
     await act(async () =>
       render(
-        <Layout>
+        <BaseLayout>
           <div data-testid="children" />
-        </Layout>
+        </BaseLayout>
       )
     );
 

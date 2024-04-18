@@ -1,20 +1,32 @@
+"use client";
 import { fr } from "@codegouvfr/react-dsfr";
-import { Container, Typograhpy } from "./MaterialUINext";
+import styled from "@emotion/styled";
+import { Box, Container, Typograhpy } from "./MaterialUINext";
 
-export default function Card({ title, children }: { title: string; children?: JSX.Element }) {
+export interface CardProps {
+  title?: string | JSX.Element | null;
+  children?: JSX.Element | JSX.Element[];
+  className?: string;
+}
+
+export function Card({ title, children, className }: CardProps) {
   return (
-    <Container style={{ border: "1px solid #DDDDDD", borderRadius: "10px", padding: 0, overflow: "hidden" }}>
-      <Typograhpy
-        style={{
-          backgroundColor: "#F5F5FE",
-          color: "var(--blue-france-sun-113-625)",
-          padding: fr.spacing("3v"),
-        }}
-        variant="h4"
-      >
-        {title}
-      </Typograhpy>
+    <Box className={className}>
+      {title && (typeof title === "string" ? <Typograhpy variant="h4">{title}</Typograhpy> : title)}
       <Container style={{ padding: fr.spacing("3v") }}>{children}</Container>
-    </Container>
+    </Box>
   );
 }
+
+export default styled(Card)<CardProps>`
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  padding: 0;
+  overflow: hidden;
+
+  h4 {
+    background-color: #f5f5fe;
+    color: var(--blue-france-sun-113-625);
+    padding: ${fr.spacing("3v")};
+  }
+`;

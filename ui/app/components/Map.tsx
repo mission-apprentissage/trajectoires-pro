@@ -4,9 +4,8 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 import { ReactNode, useEffect, useRef } from "react";
-import { Popup, Marker, Tooltip, useMap } from "react-leaflet";
+import { Marker, Tooltip, useMap } from "react-leaflet";
 import { Typograhpy } from "./MaterialUINext";
-import { useWindowSize, useWindowWidth, useWindowHeight } from "@react-hook/window-size";
 import { DivIcon } from "leaflet";
 import { renderToString } from "react-dom/server";
 import { fr } from "@codegouvfr/react-dsfr";
@@ -37,7 +36,7 @@ function MapAutoresize() {
     return () => {
       resizeObserver && resizeObserver.current && resizeObserver.current.disconnect();
     };
-  }, []);
+  }, [map]);
   return <></>;
 }
 
