@@ -61,7 +61,7 @@ function FormationResult({ formation: { formation, etablissement, bcn } }: { for
     etablissement.address.street + ", " + etablissement.address.postCode + " " + etablissement.address.city;
 
   return (
-    <Container style={{ marginTop: fr.spacing("10v") }} nopadding={true} maxWidth={"xl"}>
+    <Container style={{ marginTop: fr.spacing("5v") }} maxWidth={"xl"}>
       <Grid container spacing={2}>
         <Grid item md={7}>
           <Typograhpy variant="h4" style={{ marginBottom: fr.spacing("3v") }}>

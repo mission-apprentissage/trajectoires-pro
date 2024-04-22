@@ -1,15 +1,22 @@
 "use client";
 import styled from "@emotion/styled";
-import isPropValid from "@emotion/is-prop-valid";
 import Button, { ButtonProps as DSFRButtonProps } from "@codegouvfr/react-dsfr/Button";
-import { fr } from "@codegouvfr/react-dsfr";
 
 export type ButtonProps = {
   rounded?: boolean;
   variant?: "white";
+  smallIconOnly?: boolean;
 } & DSFRButtonProps;
 
-export default styled(Button, {
+function ButtonBase({ children, smallIconOnly, ...props }: ButtonProps) {
+  return (
+    <Button {...props}>
+      <div>{children}</div>
+    </Button>
+  );
+}
+
+export default styled(ButtonBase, {
   shouldForwardProp: (prop) => !["rounded", "variant"].includes(prop),
 })<ButtonProps>`
   ${({ rounded }) => (rounded ? "border-radius: 16px;" : "")}
@@ -21,4 +28,18 @@ export default styled(Button, {
         return "";
     }
   }};
+  ${({ smallIconOnly, theme }) => {
+    return smallIconOnly
+      ? `${theme.breakpoints.down("md")} {
+        &[class^=fr-icon-]::before, &[class*=" fr-icon-"]::before, &[class^=fr-fi-]::before, &[class*=" fr-fi-"]::before {
+          margin-right: auto;
+          margin-left: auto;
+       }
+
+       & > div {
+        display: none;
+       }
+      }`
+      : "";
+  }}
 `;

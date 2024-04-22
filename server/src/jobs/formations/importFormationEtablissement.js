@@ -76,6 +76,13 @@ export async function importFormationEtablissement(options = {}) {
     // mergeStreams(streamConstatRentree({ constatRentreeFilePath, stats })),
     // Important des formations depuis l'Idéo actions de formation initiale de l'Onisep et du catalogue de l'apprentissage
     concatStreams(await streamOnisepFormations({ stats }), await streamCAFormations({ stats })),
+    // TODO : validate all field
+    transformData((data) => {
+      return {
+        ...data,
+        uai: data.uai.toUpperCase(),
+      };
+    }),
     writeData(
       async (data) => {
         try {
