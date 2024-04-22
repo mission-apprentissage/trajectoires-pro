@@ -1,4 +1,4 @@
-import { NextAppDirEmotionCacheProvider } from "tss-react/next";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { DsfrProvider } from "@codegouvfr/react-dsfr/next-appdir/DsfrProvider";
 import MuiDsfrThemeProvider from "#/app/components/MuiDsfrThemeProvider";
 import { Header } from "@codegouvfr/react-dsfr/Header";
@@ -17,8 +17,8 @@ export default function Layout({
 }) {
   return (
     <DsfrProvider>
-      <MuiDsfrThemeProvider>
-        <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
+      <AppRouterCacheProvider options={{ key: "css", speedy: true }}>
+        <MuiDsfrThemeProvider>
           <Providers>
             {header || (
               <Header
@@ -50,8 +50,8 @@ export default function Layout({
               {children}
             </div>
           </Providers>
-        </NextAppDirEmotionCacheProvider>
-      </MuiDsfrThemeProvider>
+        </MuiDsfrThemeProvider>
+      </AppRouterCacheProvider>
     </DsfrProvider>
   );
 }

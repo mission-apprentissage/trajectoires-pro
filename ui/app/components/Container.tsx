@@ -26,6 +26,7 @@ export default styled(Container)<ContainerProps>`
   padding-top: ${({ nopadding }) => (nopadding ? "0" : fr.spacing("3w"))};
   padding-bottom: ${({ nopadding }) => (nopadding ? "0" : fr.spacing("3w"))};
   padding-left: ${({ nopadding }) => (nopadding ? "0" : fr.spacing("5w"))};
+  padding-right: ${({ nopadding }) => (nopadding ? "0" : fr.spacing("5w"))};
   ${({ variant }) => {
     switch (variant) {
       case "content":

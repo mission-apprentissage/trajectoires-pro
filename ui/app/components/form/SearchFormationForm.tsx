@@ -1,5 +1,5 @@
 "use client";
-import Button from "@codegouvfr/react-dsfr/Button";
+
 import { Grid } from "#/app/components/MaterialUINext";
 import { Controller } from "react-hook-form";
 import * as yup from "yup";
@@ -8,6 +8,7 @@ import FormSearchParams from "./FormSearchParams";
 import AddressField from "./AddressField";
 import DistanceField from "./DistanceField";
 import TimeField from "./TimeField";
+import Button from "../Button";
 
 export type SearchFormationFormData = {
   address: string;
@@ -56,8 +57,13 @@ export default function SearchFormationForm({
                 render={(form) => <TimeField error={errors?.time} form={form} />}
               />
             </Grid>
-            <Grid item md={4} xs={4} style={{ textAlign: "left" }}>
-              <Button type={"submit"} style={{ height: "100%" }} className="fr-btn-fix" iconId={"fr-icon-search-line"}>
+            <Grid item md={4} xs={2} style={{ textAlign: "left" }}>
+              <Button
+                type={"submit"}
+                smallIconOnly={true}
+                style={{ height: "100%", width: "100%" }}
+                iconId={"fr-icon-search-line"}
+              >
                 {"Rechercher des formations"}
               </Button>
             </Grid>

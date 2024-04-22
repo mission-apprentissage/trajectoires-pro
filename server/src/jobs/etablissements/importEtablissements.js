@@ -20,7 +20,7 @@ export async function importEtablissements() {
   await oleoduc(
     await AcceEtablissementRepository.find({
       // Filtre les établissement qui nous intéressent (lycée, CFA ...)
-      nature_uai: { $regex: /^[3467]/ },
+      nature_uai: { $regex: /^[34678]/ },
     }),
     transformData((data) => {
       return {
@@ -37,7 +37,7 @@ export async function importEtablissements() {
         },
       };
     }),
-    // Add Onisep struture data
+    // Ajout des donnéezs de l'onisep
     transformData(async ({ data, formated }) => {
       const onisepEtab = await OnisepRaw.first({
         type: "ideoStructuresEnseignementSecondaire",
@@ -52,6 +52,10 @@ export async function importEtablissements() {
         onisepFormated["onisep"] = {
           id: idOnisep,
         };
+        // Utilisation du libelle onisep de préférence
+        if (onisepEtab.data.nom) {
+          onisepFormated["libelle"] = onisepEtab.data.nom;
+        }
 
         const jPO = parseJourneesPortesOuvertes(onisepEtab.data.journees_portes_ouvertes);
         if (jPO) {

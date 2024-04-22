@@ -1,6 +1,7 @@
 "use client";
 import React, { Suspense, useMemo, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { css } from "@emotion/css";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { Typograhpy, Grid } from "../../components/MaterialUINext";
 import InformationCard from "#/app/components/InformationCard";
@@ -12,6 +13,7 @@ import FormationCard from "./components/FormationCard";
 import ClientSideScrollRestorer from "#/app/components/ClientSideScrollRestorer";
 import dynamic from "next/dynamic";
 import { FormationDetail } from "#/types/formation";
+import { useTheme } from "@mui/material";
 
 const FormationsMap = dynamic(() => import("#/app/(prescripteur)/prescripteur/components/FormationsMap"), {
   ssr: false,
@@ -30,6 +32,7 @@ export default function ResearchFormationsResult({
   time: number;
   page: number;
 }) {
+  const theme = useTheme();
   const [selected, setSelected] = useState<null | FormationDetail>(null);
   const [expandMap, setExpandMap] = useState(false);
 
@@ -94,16 +97,54 @@ export default function ResearchFormationsResult({
       <Suspense>
         <ClientSideScrollRestorer />
       </Suspense>
-      <Grid container spacing={0}>
+      <Grid container spacing={0} direction="row-reverse">
+        <Grid
+          item
+          sm={12}
+          md={expandMap === true ? 6 : 2}
+          style={{ width: "100%", top: 0, position: "sticky" }}
+          className={css`
+            height: 100vh;
+            ${theme.breakpoints.down("md")} {
+              height: 40vh;
+              z-index: 600;
+            }
+          `}
+        >
+          <div style={{ position: "absolute", top: "20px", width: "100%", zIndex: 600, textAlign: "center" }}>
+            <Button
+              iconId="fr-icon-road-map-line"
+              priority="secondary"
+              size="small"
+              variant="white"
+              rounded
+              onClick={() => {
+                setExpandMap(!expandMap);
+              }}
+            >
+              Voir sur la carte
+            </Button>
+          </div>
+          <FormationsMap
+            selected={selected && selected.uai}
+            longitude={longitude}
+            latitude={latitude}
+            etablissements={etablissements}
+          />
+        </Grid>
+
         <Grid
           item
           md={expandMap === true ? 6 : 10}
-          style={{
-            zIndex: 500,
-            padding: fr.spacing("5v"),
-            paddingLeft: fr.spacing("20v"),
-            boxShadow: "4px 0px 6px 0px #00000040",
-          }}
+          sm={12}
+          className={css`
+            padding: ${fr.spacing("5v")};
+            z-index: 500;
+            box-shadow: 4px 0px 6px 0px #00000040;
+            ${theme.breakpoints.up("lg")} {
+              padding-left: ${fr.spacing("20v")};
+            }
+          `}
         >
           <Grid container spacing={4}>
             {data.pages.map((page) => {
@@ -112,7 +153,7 @@ export default function ResearchFormationsResult({
                 const isSelected = selected ? selected._id === formationDetail._id : false;
                 const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
                 return (
-                  <Grid item xs={4} key={key}>
+                  <Grid item sm={12} md={4} key={key}>
                     <FormationCard
                       selected={isSelected}
                       onMouseEnter={() => {
@@ -127,31 +168,6 @@ export default function ResearchFormationsResult({
               });
             })}
           </Grid>
-        </Grid>
-
-        <Grid item md={expandMap === true ? 6 : 2}>
-          <div style={{ height: "100vh", width: "100%", top: 0, position: "sticky" }}>
-            <div style={{ position: "absolute", top: "20px", width: "100%", zIndex: 600, textAlign: "center" }}>
-              <Button
-                iconId="fr-icon-road-map-line"
-                priority="secondary"
-                size="small"
-                variant="white"
-                rounded
-                onClick={() => {
-                  setExpandMap(!expandMap);
-                }}
-              >
-                Voir sur la carte
-              </Button>
-            </div>
-            <FormationsMap
-              selected={selected && selected.uai}
-              longitude={longitude}
-              latitude={latitude}
-              etablissements={etablissements}
-            />
-          </div>
         </Grid>
       </Grid>
       {isFetchingNextPage && <Loader style={{ marginTop: fr.spacing("5v") }} />}
