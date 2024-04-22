@@ -36,7 +36,7 @@ export default function SearchFormationForm({
       {({ control, errors }) => {
         return (
           <Grid container spacing={2}>
-            <Grid item md={6} xs={8}>
+            <Grid item md={6} sm={8} xs={12}>
               <Controller
                 name="address"
                 control={control}
@@ -50,14 +50,14 @@ export default function SearchFormationForm({
                 render={(form) => <DistanceField error={errors?.distance} form={form} />}
               />
             </Grid>
-            <Grid item md={2} xs={2}>
+            <Grid item md={2} sm={2} xs={6}>
               <Controller
                 name="time"
                 control={control}
                 render={(form) => <TimeField error={errors?.time} form={form} />}
               />
             </Grid>
-            <Grid item md={4} xs={2} style={{ textAlign: "left" }}>
+            <Grid item md={4} sm={2} xs={6} style={{ textAlign: "left" }}>
               <Button
                 type={"submit"}
                 smallIconOnly={true}
