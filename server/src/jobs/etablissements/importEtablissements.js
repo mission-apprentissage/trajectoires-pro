@@ -20,7 +20,7 @@ export async function importEtablissements() {
   await oleoduc(
     await AcceEtablissementRepository.find({
       // Filtre les établissement qui nous intéressent (lycée, CFA ...)
-      nature_uai: { $regex: /^[34678]/ },
+      nature_uai: { $regex: /^[2345678]/ },
     }),
     transformData((data) => {
       return {
@@ -38,36 +38,39 @@ export async function importEtablissements() {
       };
     }),
     // Ajout des donnéezs de l'onisep
-    transformData(async ({ data, formated }) => {
-      const onisepEtab = await OnisepRaw.first({
-        type: "ideoStructuresEnseignementSecondaire",
-        "data.code_uai": formated.uai,
-      });
+    transformData(
+      async ({ data, formated }) => {
+        const onisepEtab = await OnisepRaw.first({
+          type: "ideoStructuresEnseignementSecondaire",
+          "data.code_uai": formated.uai,
+        });
 
-      const onisepFormated = {};
-      if (onisepEtab) {
-        const idOnisep = onisepEtab.data.url_et_id_onisep
-          ? get(onisepEtab.data.url_et_id_onisep.match(/ENS\.[0-9]+/), "0", null)
-          : null;
-        onisepFormated["onisep"] = {
-          id: idOnisep,
+        const onisepFormated = {};
+        if (onisepEtab) {
+          const idOnisep = onisepEtab.data.url_et_id_onisep
+            ? get(onisepEtab.data.url_et_id_onisep.match(/ENS\.[0-9]+/), "0", null)
+            : null;
+          onisepFormated["onisep"] = {
+            id: idOnisep,
+          };
+          // Utilisation du libelle onisep de préférence
+          if (onisepEtab.data.nom) {
+            onisepFormated["libelle"] = onisepEtab.data.nom;
+          }
+
+          const jPO = parseJourneesPortesOuvertes(onisepEtab.data.journees_portes_ouvertes);
+          if (jPO) {
+            onisepFormated["journeesPortesOuvertes"] = jPO;
+          }
+        }
+
+        return {
+          data,
+          formated: { ...formated, ...onisepFormated },
         };
-        // Utilisation du libelle onisep de préférence
-        if (onisepEtab.data.nom) {
-          onisepFormated["libelle"] = onisepEtab.data.nom;
-        }
-
-        const jPO = parseJourneesPortesOuvertes(onisepEtab.data.journees_portes_ouvertes);
-        if (jPO) {
-          onisepFormated["journeesPortesOuvertes"] = jPO;
-        }
-      }
-
-      return {
-        data,
-        formated: { ...formated, ...onisepFormated },
-      };
-    }),
+      },
+      { parallel: 10 }
+    ),
     // Transform coordinate
     transformData(({ data, formated }) => {
       const coordinate =

@@ -59,6 +59,18 @@ async function importRomesCommand() {
   };
 }
 
+async function importOnisepCommand() {
+  return {
+    importTablePassage: await importOnisep("tablePassageCodesCertifications", ["certif_info_ci_identifiant"]),
+    importFormationsLycee: await importOnisep("ideoActionsFormationInitialeUniversLycee", [
+      "action_de_formation_af_identifiant_onisep",
+      "ens_code_uai",
+    ]),
+    importStructuresSecondaire: await importOnisep("ideoStructuresEnseignementSecondaire", ["code_uai"]),
+    importFormationsInitiales: await importOnisep("ideoFormationsInitiales", ["url_et_id_onisep", "duree"]),
+  };
+}
+
 cli
   .command("importBCN")
   .description("Import les CFD et MEF depuis la BCN")
@@ -70,17 +82,7 @@ cli
   .command("importOnisep")
   .description("Importe les données de l'onisep")
   .action(() => {
-    runScript(async () => {
-      return {
-        importTablePassage: await importOnisep("tablePassageCodesCertifications", ["certif_info_ci_identifiant"]),
-        importFormationsLycee: await importOnisep("ideoActionsFormationInitialeUniversLycee", [
-          "action_de_formation_af_identifiant_onisep",
-          "ens_code_uai",
-        ]),
-        importStructuresSecondaire: await importOnisep("ideoStructuresEnseignementSecondaire", ["code_uai"]),
-        importFormationsInitiales: await importOnisep("ideoFormationsInitiales", ["url_et_id_onisep", "duree"]),
-      };
-    });
+    runScript(importOnisepCommand);
   });
 
 cli
@@ -169,6 +171,7 @@ cli
     runScript(async () => {
       return {
         importBCN: await importBCNCommand(),
+        importOnisep: await importOnisepCommand(),
         importEtablissements: await importEtablissements(),
         importStats: await importStats(),
         importSupStats: await importSupStats(),
@@ -176,6 +179,7 @@ cli
         importCatalogueApprentissage: await importCAFormations(),
         computeUAI: await computeUAI(),
         importRomes: await importRomesCommand(),
+        importFormationEtablissement: await importFormationEtablissement(),
       };
     });
   });
