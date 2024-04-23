@@ -22,13 +22,13 @@ location /static {
 
 
 # Allow iframe usage for the widget
-location ~ ^/.*/widget/.* {
+location ~ ^/api/.*/widget/.* {
     set $upstream http://server:5000;
-    rewrite ^/(.*) /api/$1 break;
     include includes/proxy.conf;
 }
 
-location ~ ^/api/.*/widget/.* {
+location ~ ^/.*/widget/.* {
     set $upstream http://server:5000;
+    rewrite ^/(.*) /api/$1 break;
     include includes/proxy.conf;
 }
