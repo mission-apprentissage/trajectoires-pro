@@ -1,0 +1,21 @@
+location / {
+    add_header X-Frame-Options "SAMEORIGIN" always;
+
+    set $upstream http://server:5000;
+    include includes/proxy.conf;
+}
+
+location /static {
+    add_header X-Frame-Options "SAMEORIGIN" always;
+
+    set $upstream http://server:5000;
+    include includes/proxy.conf;
+}
+
+
+
+# Allow iframe usage for the widget
+location ~ ^/.*/widget/.* {
+    set $upstream http://server:5000;
+    include includes/proxy.conf;
+}
