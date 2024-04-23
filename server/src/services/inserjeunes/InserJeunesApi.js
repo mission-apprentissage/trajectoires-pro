@@ -1,6 +1,6 @@
 import { RateLimitedApi } from "#src/common/api/RateLimitedApi.js";
 import config from "#src/config.js";
-import { fetchJsonWithRetry } from "#src/common/utils/httpUtils.js";
+import { fetchJsonWithRetry, fetchStreamWithRetry } from "#src/common/utils/httpUtils.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 
 const logger = getLoggerWithContext("api/inserjeunes");
@@ -61,7 +61,7 @@ class InserJeunesApi extends RateLimitedApi {
       }
 
       // /!\ L'API Inserjeunes retourne un json dans un json, on retourne le json en string ici
-      const response = await fetchJsonWithRetry(
+      const response = await fetchStreamWithRetry(
         `${InserJeunesApi.baseApiUrl}/UAI/${uai}/millesime/${millesime}`,
         {
           headers: {
@@ -81,7 +81,7 @@ class InserJeunesApi extends RateLimitedApi {
         await this.login();
       }
 
-      const response = await fetchJsonWithRetry(
+      const response = await fetchStreamWithRetry(
         `${InserJeunesApi.baseApiUrl}/region/${code_region_academique}/millesime/${millesime}`,
         {
           headers: {
@@ -102,7 +102,7 @@ class InserJeunesApi extends RateLimitedApi {
       }
 
       // /!\ L'API Inserjeunes retourne un json dans un json, on retourne le json en string ici
-      const response = await fetchJsonWithRetry(
+      const response = await fetchStreamWithRetry(
         `${InserJeunesApi.baseApiUrl}/france/millesime/${millesime}/filiere/${filiere}`,
         {
           headers: {

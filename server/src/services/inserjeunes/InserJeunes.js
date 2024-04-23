@@ -1,4 +1,3 @@
-import { Readable } from "stream";
 import { transformData, filterData, accumulateData, flattenArray, oleoduc, writeData } from "oleoduc";
 
 import { InserJeunesApi } from "./InserJeunesApi.js";
@@ -89,7 +88,7 @@ function computeMissingStats() {
 async function transformApiStats(statsFromApi, groupBy) {
   let stats = [];
   await oleoduc(
-    Readable.from([statsFromApi]),
+    statsFromApi,
     streamNestedJsonArray("data"),
     filterFormationStats(),
     groupBy,
@@ -120,7 +119,7 @@ class InserJeunes {
   async getRegionalesStats(millesime, code_region_academique) {
     // l'API IJ renvoi un JSON dans un JSON sauf sur la route regionale
     // stringify le JSON reçu pour être cohérent avec les autres routes
-    const regionalesStats = JSON.stringify(await this.api.fetchRegionalesStats(millesime, code_region_academique));
+    const regionalesStats = await this.api.fetchRegionalesStats(millesime, code_region_academique);
 
     return await transformApiStats(regionalesStats, groupByCertification({ millesime }));
   }
