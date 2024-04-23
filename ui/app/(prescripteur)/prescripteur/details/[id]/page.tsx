@@ -24,7 +24,7 @@ function WidgetInserJeunes({ etablissement, formation }: { etablissement: Etabli
   const code = formation.voie === "apprentissage" ? formation.cfd : formation.mef11;
 
   const widgetCode = `<iframe onLoad="!function(i){window.addEventListener('message',function(t){'${HOST}'!==t.origin||isNaN(t.data)||(i.style.height=t.data+'px')},!1)}(this);" style="width: 100%; height: 0;" 
-  src="${API_URL}/inserjeunes/formations/${etablissement.uai}-${code}/widget/${WIDGET_HASH}?noTitle=true&responsiveWidth=20em"
+  src="${API_URL}/inserjeunes/formations/${etablissement.uai}-${code}/widget/${WIDGET_HASH}?noTitle=true&responsiveWidth=28em"
    scrolling="no" frameBorder="0"></iframe>`;
 
   return (
