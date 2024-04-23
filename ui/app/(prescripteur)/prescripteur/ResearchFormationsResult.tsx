@@ -5,14 +5,14 @@ import { css } from "@emotion/css";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { Typograhpy, Grid } from "../../components/MaterialUINext";
 import InformationCard from "#/app/components/InformationCard";
-import { formations } from "#/app/api/exposition/formations/query";
+import { formations as formationsQuery } from "#/app/api/exposition/formations/query";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import Button from "#/app/components/Button";
 import FormationCard from "./components/FormationCard";
 import ClientSideScrollRestorer from "#/app/components/ClientSideScrollRestorer";
 import dynamic from "next/dynamic";
-import { FormationDetail } from "#/types/formation";
+import { Formation, FormationDetail } from "#/types/formation";
 import { useTheme } from "@mui/material";
 
 const FormationsMap = dynamic(() => import("#/app/(prescripteur)/prescripteur/components/FormationsMap"), {
@@ -33,7 +33,7 @@ export default function ResearchFormationsResult({
   page: number;
 }) {
   const theme = useTheme();
-  const [selected, setSelected] = useState<null | FormationDetail>(null);
+  const [selected, setSelected] = useState<null | Formation>(null);
   const [expandMap, setExpandMap] = useState(false);
 
   const { isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, data } = useInfiniteQuery({
@@ -42,7 +42,7 @@ export default function ResearchFormationsResult({
     //keepPreviousData: true,
     queryKey: ["formations", latitude, longitude, distance, time, page],
     queryFn: ({ pageParam, signal }) => {
-      return formations(
+      return formationsQuery(
         {
           latitude,
           longitude,
@@ -63,6 +63,15 @@ export default function ResearchFormationsResult({
   });
   useBottomScrollListener(() => (hasNextPage && !isFetchingNextPage && !isFetching ? fetchNextPage() : null));
 
+  const formations = useMemo(
+    () =>
+      (data ? data.pages.flatMap((page) => page.formations) : []).map((data) => ({
+        ...data,
+        ref: React.createRef<HTMLDivElement>(),
+      })),
+    [data]
+  );
+
   const etablissements = useMemo(() => {
     const etablissements: Record<string, any> = {};
 
@@ -70,10 +79,8 @@ export default function ResearchFormationsResult({
       return [];
     }
 
-    for (const page of data.pages) {
-      for (const formation of page.formations) {
-        etablissements[formation.etablissement.uai] = formation.etablissement;
-      }
+    for (const formation of formations) {
+      etablissements[formation.etablissement.uai] = formation.etablissement;
     }
 
     return Object.values(etablissements);
@@ -83,7 +90,7 @@ export default function ResearchFormationsResult({
     return <Loader />;
   }
 
-  if (!data?.pages[0].formations?.length) {
+  if (!formations?.length) {
     return (
       <InformationCard>
         <Typograhpy variant="subtitle1">Il n’y pas de formation proche de ton secteur de rechercher </Typograhpy>
@@ -126,10 +133,15 @@ export default function ResearchFormationsResult({
             </Button>
           </div>
           <FormationsMap
-            selected={selected && selected.uai}
+            selected={selected}
             longitude={longitude}
             latitude={latitude}
             etablissements={etablissements}
+            onMarkerClick={(etablissement) => {
+              const formation = formations.find((f) => f.etablissement.uai === etablissement.uai);
+              formation && setSelected(formation);
+              formation?.ref?.current && formation.ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
           />
         </Grid>
 
@@ -147,25 +159,23 @@ export default function ResearchFormationsResult({
           `}
         >
           <Grid container spacing={4}>
-            {data.pages.map((page) => {
-              return page.formations.map((formation) => {
-                const formationDetail = formation.formation;
-                const isSelected = selected ? selected._id === formationDetail._id : false;
-                const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
-                return (
-                  <Grid item sm={12} md={4} key={key}>
-                    <FormationCard
-                      selected={isSelected}
-                      onMouseEnter={() => {
-                        setSelected(formationDetail);
-                      }}
-                      latitude={latitude}
-                      longitude={longitude}
-                      formation={formation}
-                    />
-                  </Grid>
-                );
-              });
+            {formations.map((formation) => {
+              const formationDetail = formation.formation;
+              const isSelected = selected ? selected.formation._id === formationDetail._id : false;
+              const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
+              return (
+                <Grid item sm={12} md={4} key={key} ref={formation.ref}>
+                  <FormationCard
+                    selected={isSelected}
+                    onMouseEnter={() => {
+                      setSelected(formation);
+                    }}
+                    latitude={latitude}
+                    longitude={longitude}
+                    formation={formation}
+                  />
+                </Grid>
+              );
             })}
           </Grid>
         </Grid>
