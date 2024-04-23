@@ -1,3 +1,10 @@
+## [1.17.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.17.1...v1.17.2) (2024-04-23)
+
+
+### Bug Fixes
+
+* mise à jour de l'API de la depp ([#237](https://github.com/mission-apprentissage/trajectoires-pro/issues/237)) ([a3c2f66](https://github.com/mission-apprentissage/trajectoires-pro/commit/a3c2f66ca53ecd5a5ba5427f243c350ed418befd))
+
 ## [1.17.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.17.0...v1.17.1) (2024-04-03)
 
 
