@@ -4,9 +4,8 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 import { ReactNode, useEffect, useRef } from "react";
-import { Marker, Tooltip, useMap } from "react-leaflet";
-import { Typograhpy } from "./MaterialUINext";
-import { DivIcon } from "leaflet";
+import { useMap } from "react-leaflet";
+import { DivIcon, LatLngExpression, LatLngTuple } from "leaflet";
 import { renderToString } from "react-dom/server";
 import dynamic from "next/dynamic";
 import HomeIcon from "./icon/HomeIcon";
@@ -68,20 +67,21 @@ function TileLayer() {
   return <VectorTileLayer styleUrl="https://openmaptiles.geo.data.gouv.fr/styles/osm-bright/style.json" />;
 }
 
-export default function Map({ center, children }: { center: any; children?: ReactNode }) {
+const RecenterAutomatically = ({ position }: { position: LatLngTuple }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(position);
+  }, [position[0], position[1]]);
+  return null;
+};
+
+export default function Map({ center, children }: { center: LatLngTuple; children?: ReactNode }) {
   return (
     <MapContainer scrollWheelZoom={true} style={{ height: "100%", width: "100%" }} center={center} zoom={13}>
       <MapAutoresize />
       <TileLayer />
-
       {children}
-      {center && (
-        <Marker icon={LeafletHomeIcon} position={center}>
-          <Tooltip>
-            <Typograhpy variant="subtitle1">Ma position</Typograhpy>
-          </Tooltip>
-        </Marker>
-      )}
+      <RecenterAutomatically position={center} />
     </MapContainer>
   );
 }
