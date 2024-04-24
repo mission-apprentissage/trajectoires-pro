@@ -12,8 +12,10 @@ import Button from "#/app/components/Button";
 import FormationCard from "./components/FormationCard";
 import ClientSideScrollRestorer from "#/app/components/ClientSideScrollRestorer";
 import dynamic from "next/dynamic";
-import { Formation, FormationDetail } from "#/types/formation";
-import { useTheme } from "@mui/material";
+import { Formation, FormationTag } from "#/types/formation";
+import { Stack, useTheme } from "@mui/material";
+import { useSearchParams, useRouter } from "next/navigation";
+import FormationAllTags from "./components/FormationAllTags";
 
 const FormationsMap = dynamic(() => import("#/app/(prescripteur)/prescripteur/components/FormationsMap"), {
   ssr: false,
@@ -24,14 +26,19 @@ export default function ResearchFormationsResult({
   longitude,
   distance,
   time,
+  tag,
   page = 1,
 }: {
   latitude: number;
   longitude: number;
   distance: number;
   time: number;
+  tag?: FormationTag | null;
   page: number;
 }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const theme = useTheme();
   const [selected, setSelected] = useState<null | Formation>(null);
   const [expandMap, setExpandMap] = useState(false);
@@ -39,8 +46,9 @@ export default function ResearchFormationsResult({
   const { isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, data } = useInfiniteQuery({
     staleTime: Infinity,
     cacheTime: Infinity,
+    retry: false,
     //keepPreviousData: true,
-    queryKey: ["formations", latitude, longitude, distance, time, page],
+    queryKey: ["formations", latitude, longitude, distance, time, tag, page],
     queryFn: ({ pageParam, signal }) => {
       return formationsQuery(
         {
@@ -48,9 +56,10 @@ export default function ResearchFormationsResult({
           longitude,
           distance,
           timeLimit: time,
+          tag,
           page: pageParam ?? 1,
           codesDiplome: ["3", "4"],
-          items_par_page: 200,
+          items_par_page: 100,
         },
         { signal }
       );
@@ -60,6 +69,7 @@ export default function ResearchFormationsResult({
         ? undefined
         : lastPage.pagination.page + 1;
     },
+    useErrorBoundary: true,
   });
   useBottomScrollListener(() => (hasNextPage && !isFetchingNextPage && !isFetching ? fetchNextPage() : null));
 
@@ -90,20 +100,12 @@ export default function ResearchFormationsResult({
     return <Loader />;
   }
 
-  if (!formations?.length) {
-    return (
-      <InformationCard>
-        <Typograhpy variant="subtitle1">Il n’y pas de formation proche de ton secteur de rechercher </Typograhpy>
-        <Typograhpy>Mais ne te décourage pas il y a plein de solutions pour toi : </Typograhpy>
-      </InformationCard>
-    );
-  }
-
   return (
     <>
       <Suspense>
         <ClientSideScrollRestorer />
       </Suspense>
+
       <Grid container spacing={0} direction="row-reverse">
         <Grid
           item
@@ -158,26 +160,49 @@ export default function ResearchFormationsResult({
             }
           `}
         >
-          <Grid container spacing={4}>
-            {formations.map((formation) => {
-              const formationDetail = formation.formation;
-              const isSelected = selected ? selected.formation._id === formationDetail._id : false;
-              const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
-              return (
-                <Grid item sm={12} md={4} key={key} ref={formation.ref}>
-                  <FormationCard
-                    selected={isSelected}
-                    onMouseEnter={() => {
-                      setSelected(formation);
-                    }}
-                    latitude={latitude}
-                    longitude={longitude}
-                    formation={formation}
-                  />
-                </Grid>
-              );
-            })}
-          </Grid>
+          <Stack direction="row" spacing={2} style={{ marginBottom: fr.spacing("5v") }}>
+            <FormationAllTags
+              selected={tag}
+              onClick={(selectedTag) => {
+                const urlSearchParams = new URLSearchParams(searchParams);
+                if (tag === selectedTag) {
+                  urlSearchParams.delete("tag");
+                } else {
+                  urlSearchParams.set("tag", selectedTag);
+                }
+
+                router.push(`?${urlSearchParams}`);
+              }}
+            />
+          </Stack>
+
+          {!formations?.length ? (
+            <InformationCard>
+              <Typograhpy variant="subtitle1">Il n’y pas de formation proche de ton secteur de rechercher </Typograhpy>
+              <Typograhpy>Mais ne te décourage pas il y a plein de solutions pour toi : </Typograhpy>
+            </InformationCard>
+          ) : (
+            <Grid container spacing={4}>
+              {formations.map((formation) => {
+                const formationDetail = formation.formation;
+                const isSelected = selected ? selected.formation._id === formationDetail._id : false;
+                const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
+                return (
+                  <Grid item sm={12} md={4} key={key} ref={formation.ref}>
+                    <FormationCard
+                      selected={isSelected}
+                      onMouseEnter={() => {
+                        setSelected(formation);
+                      }}
+                      latitude={latitude}
+                      longitude={longitude}
+                      formation={formation}
+                    />
+                  </Grid>
+                );
+              })}
+            </Grid>
+          )}
         </Grid>
       </Grid>
       {isFetchingNextPage && <Loader style={{ marginTop: fr.spacing("5v") }} />}

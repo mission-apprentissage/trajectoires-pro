@@ -1,19 +1,18 @@
 import React from "react";
-import Container from "#/app/components/Container";
-import { CardActionArea, Grid, Typography } from "@mui/material";
+import { CardActionArea, Grid, Stack, Typography } from "@mui/material";
 import Tag from "#/app/components/Tag";
 import { fr } from "@codegouvfr/react-dsfr";
 import Link from "next/link";
-import { Etablissement, Formation, FormationDetail } from "#/types/formation";
-import moment from "moment";
+import { Formation, FormationDetail } from "#/types/formation";
 import "moment/locale/fr";
 import { TagPortesOuvertes } from "./PortesOuvertes";
 import Card from "#/app/components/Card";
+import FormationTags from "./FormationTags";
 
 export function TagApprentissage({ formationDetail }: { formationDetail: FormationDetail }) {
   return (
     formationDetail.voie === "apprentissage" && (
-      <Tag variant="yellow" style={{ marginBottom: fr.spacing("3v") }}>
+      <Tag square variant="yellow">
         {formationDetail.voie.toUpperCase()}
       </Tag>
     )
@@ -35,7 +34,7 @@ export default function FormationCard({
   onMouseEnter?: Function;
   onMouseLeave?: Function;
 }) {
-  const { formation: formationDetail, etablissement, bcn } = formation;
+  const { formation: formationDetail, etablissement, bcn, tags } = formation;
   const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
 
   return (
@@ -49,7 +48,11 @@ export default function FormationCard({
           <Typography style={{ marginBottom: fr.spacing("3v") }} variant="subtitle2">
             {bcn.libelle_long}
           </Typography>
-          <TagApprentissage formationDetail={formationDetail} />
+          <Stack spacing={1} style={{ marginBottom: fr.spacing("3v") }}>
+            <FormationTags tags={tags} />
+            <TagApprentissage formationDetail={formationDetail} />
+          </Stack>
+
           <Typography style={{ color: "#3A3A3A", fontWeight: 700, marginBottom: fr.spacing("5v") }}>
             {etablissement.libelle}
           </Typography>

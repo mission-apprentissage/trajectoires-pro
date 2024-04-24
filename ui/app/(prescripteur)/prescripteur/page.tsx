@@ -21,9 +21,9 @@ function SearchHeader() {
 
 function SearchResult() {
   const searchParams = useSearchParams();
-  const { address, distance, time } = searchParamsToObject(
+  const { address, distance, time, tag } = searchParamsToObject(
     searchParams,
-    { address: null, distance: 1, time: null },
+    { address: null, distance: 10, time: null, tag: null },
     schemaFormation
   );
 
@@ -53,6 +53,7 @@ function SearchResult() {
         latitude={coordinate[1]}
         distance={distance * 1000}
         time={time * 60}
+        tag={tag}
         page={1}
       />
     )

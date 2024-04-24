@@ -3,22 +3,26 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, Control, FieldErrors } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { FieldValues, Resolver } from "react-hook-form";
-import { flatten } from "lodash-es";
+import { FieldValues } from "react-hook-form";
+import { flatten, get } from "lodash-es";
 import { searchParamsToObject } from "#/app/utils/searchParams";
 import { Suspense } from "react";
+
+type FormSearchParamsProps<FormData extends FieldValues> = {
+  url: string;
+  defaultValues: FormData;
+  forceValues?: Partial<FormData>;
+  schema: yup.ObjectSchema<FormData>;
+  children: ({ control, errors }: { control: Control<FormData, any>; errors: FieldErrors<FormData> }) => JSX.Element;
+};
 
 export function FormSearchParams<FormData extends FieldValues>({
   url,
   defaultValues,
+  forceValues,
   schema,
   children,
-}: {
-  url: string;
-  defaultValues: FormData;
-  schema: yup.ObjectSchema<FormData>;
-  children: ({ control, errors }: { control: Control<FormData, any>; errors: FieldErrors<FormData> }) => JSX.Element;
-}) {
+}: FormSearchParamsProps<FormData>) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -36,9 +40,9 @@ export function FormSearchParams<FormData extends FieldValues>({
   const onSubmit = handleSubmit((data) => {
     const entries = Object.entries(schema.fields).map(([key, fieldSchema]) => {
       if (fieldSchema.type === "array") {
-        return [data[key].map((v: any) => [key, v])];
+        return [get(forceValues, key, data[key]).map((v: any) => [key, v])];
       }
-      return [[key, data[key]]];
+      return [[key, get(forceValues, key, data[key])]];
     });
 
     const urlParams = new URLSearchParams(flatten(entries));
@@ -55,17 +59,13 @@ export function FormSearchParams<FormData extends FieldValues>({
 export default function FormSearchParamsWithSuspense<FormData extends FieldValues>({
   url,
   defaultValues,
+  forceValues,
   schema,
   children,
-}: {
-  url: string;
-  defaultValues: FormData;
-  schema: yup.ObjectSchema<FormData>;
-  children: ({ control, errors }: { control: Control<FormData, any>; errors: FieldErrors<FormData> }) => JSX.Element;
-}) {
+}: FormSearchParamsProps<FormData>) {
   return (
     <Suspense>
-      <FormSearchParams url={url} defaultValues={defaultValues} schema={schema}>
+      <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={forceValues}>
         {children}
       </FormSearchParams>
     </Suspense>

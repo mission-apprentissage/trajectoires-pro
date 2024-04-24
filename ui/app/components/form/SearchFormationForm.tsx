@@ -14,6 +14,7 @@ export type SearchFormationFormData = {
   address: string;
   time: number;
   distance: number;
+  tag?: string;
 };
 
 export const schema: yup.ObjectSchema<SearchFormationFormData> = yup
@@ -21,6 +22,7 @@ export const schema: yup.ObjectSchema<SearchFormationFormData> = yup
     address: yup.string().required(),
     time: yup.number().required(),
     distance: yup.number().required(),
+    tag: yup.string(),
   })
   .required();
 
@@ -32,7 +34,7 @@ export default function SearchFormationForm({
   defaultValues: Nullable<SearchFormationFormData>;
 }) {
   return (
-    <FormSearchParams url={url} defaultValues={defaultValues} schema={schema}>
+    <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={{ tag: "" }}>
       {({ control, errors }) => {
         return (
           <Grid container spacing={2}>
