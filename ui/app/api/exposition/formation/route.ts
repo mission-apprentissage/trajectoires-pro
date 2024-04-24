@@ -1,20 +1,14 @@
 import "server-only";
 import { NextResponse } from "next/server";
 import * as API from "../index";
-import { ErrorFetchingJson } from "../apiError";
 import { getSchema } from "./type";
+import { tryCatch } from "#/app/utils/routeUtils";
 
 export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const params = await getSchema.validate(Object.fromEntries(url.searchParams.entries()));
-
-  try {
+  return tryCatch(async () => {
+    const url = new URL(request.url);
+    const params = await getSchema.validate(Object.fromEntries(url.searchParams.entries()));
     const formation = await API.formation(params);
     return NextResponse.json(formation);
-  } catch (err) {
-    if (err instanceof ErrorFetchingJson) {
-      return NextResponse.json(err.data, { status: err.status });
-    }
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-  }
+  });
 }

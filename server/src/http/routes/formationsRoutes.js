@@ -4,6 +4,7 @@ import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import Joi from "joi";
 import moment from "moment";
 import Boom from "boom";
+import { flatten } from "lodash-es";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
 import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src/http/utils/responseUtils.js";
@@ -32,6 +33,8 @@ import {
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
 import { getFormations, getDistanceFilter, getTimeFilter } from "#src/queries/getFormations.js";
+import { FORMATION_TAG } from "#src/queries/formationTag.js";
+
 import FormationEtablissement from "#src/common/repositories/formationEtablissement.js";
 import Etablissement from "#src/common/repositories/etablissement.js";
 import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
@@ -323,13 +326,17 @@ export default () => {
     "/api/formations",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { longitude, latitude, distance, timeLimit, codesDiplome, page, items_par_page } = await validate(
+      const { longitude, latitude, distance, timeLimit, tag, codesDiplome, page, items_par_page } = await validate(
         { ...req.query, ...req.params },
         {
           longitude: Joi.number().min(-180).max(180).required(),
           latitude: Joi.number().min(-90).max(90).required(),
           distance: Joi.number().min(0).max(100000).default(1000),
           timeLimit: Joi.number().min(0).max(7200).default(null),
+          tag: Joi.string()
+            .empty("")
+            .valid(...flatten(Object.values(FORMATION_TAG).map((t) => t.tags)))
+            .default(null),
           ...validators.codesDiplome(),
           ...validators.pagination({ items_par_page: 100 }),
         }
@@ -338,7 +345,7 @@ export default () => {
       const year = new Date().getFullYear();
       const millesime = [(year - 1).toString(), year.toString()];
 
-      let filter = null;
+      let filtersEtablissement = [];
 
       if (timeLimit) {
         const buckets = [7200, 3600, 1800, 900];
@@ -350,20 +357,25 @@ export default () => {
             buckets: buckets.filter((b) => b <= timeLimit),
           });
 
-          filter = getTimeFilter({ coordinate: { longitude, latitude }, isochroneBuckets });
+          filtersEtablissement.push(getTimeFilter({ coordinate: { longitude, latitude }, isochroneBuckets }));
           //  filter = testTimeFilter({ coordinate: { longitude, latitude } });
         } catch (err) {
           console.error(err);
           // TODO : gestion des erreurs de récupération de l'isochrone
-          filter = getDistanceFilter({ coordinate: { longitude, latitude }, maxDistance: distance });
+          filtersEtablissement.push(getDistanceFilter({ coordinate: { longitude, latitude }, maxDistance: distance }));
         }
       } else {
-        filter = getDistanceFilter({ coordinate: { longitude, latitude }, maxDistance: distance });
+        filtersEtablissement.push(getDistanceFilter({ coordinate: { longitude, latitude }, maxDistance: distance }));
       }
+
+      // Formations filter
+      const filtersFormation = [];
 
       const paginatedFormations = await getFormations(
         {
-          filter: filter,
+          filtersEtablissement: filtersEtablissement,
+          filtersFormation: filtersFormation,
+          tag,
           millesime,
           codesDiplome,
         },

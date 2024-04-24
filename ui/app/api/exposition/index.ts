@@ -6,36 +6,10 @@ import { CertificationStat } from "#/types/certification";
 import { Formation } from "#/types/formation";
 import { FormationsRequestSchema } from "./formations/route";
 import { FormationRequestSchema } from "./formation/type";
-import { ErrorFetchingJson } from "./apiError";
+
+import { fetchJson } from "../../utils/fetch";
 
 const { EXPOSITION_API_BASE_URL, EXPOSITION_API_KEY } = process.env;
-
-export async function fetchJson(url: string, options?: RequestInit | undefined) {
-  const res = await fetch(
-    url,
-    merge(
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-      options || {}
-    )
-  );
-
-  if (!res.ok) {
-    let jsonError = null;
-    try {
-      jsonError = await res.json();
-    } catch (err) {
-      throw new ErrorFetchingJson(await res.text(), res.status);
-    }
-    throw new ErrorFetchingJson(jsonError, res.status);
-  }
-
-  return await res.json();
-}
 
 async function bcn(page: number, items_par_page: number): Promise<Paginations<"bcn", BCN>> {
   const urlParams = new URLSearchParams({

@@ -1,4 +1,6 @@
+import { flatMap } from "lodash-es";
 import { etablissement } from "#src/common/db/collections/collections.js";
+import { createTags, filterTag } from "./formationTag.js";
 //import { dbCollection } from "#src/common/db/mongodb.js";
 
 export function testTimeFilter({ coordinate }) {
@@ -132,7 +134,7 @@ export function getDistanceFilter({ coordinate, maxDistance = 1000 }) {
 }
 
 export async function getFormations(
-  { filter = [], millesime, codesDiplome = ["3", "4"] },
+  { filtersEtablissement = [], filtersFormation = [], tag = null, millesime, codesDiplome = ["3", "4"] },
   pagination = { page: 1, limit: 100 }
 ) {
   let page = pagination.page || 1;
@@ -140,7 +142,7 @@ export async function getFormations(
   let skip = (page - 1) * limit;
 
   const query = [
-    ...filter,
+    ...flatMap(filtersEtablissement),
     {
       $set: {
         etablissement: "$$ROOT",
@@ -193,15 +195,22 @@ export async function getFormations(
         ...(codesDiplome.length > 0 ? { "bcn.diplome.code": { $in: codesDiplome } } : {}),
       },
     },
+    // Create tag
+    ...createTags(),
+    ...filterTag(tag),
+    ...flatMap(filtersFormation),
     {
       $project: {
         formation: 1,
         etablissement: 1,
         bcn: 1,
+        tags: 1,
+        inserjeunes: 1,
       },
     },
   ];
 
+  const queryStart = Date.now();
   const formationsStream = await etablissement()
     //await dbCollection("testGeoJson")
     .aggregate([
@@ -223,12 +232,23 @@ export async function getFormations(
       },
       {
         $project: {
-          pagination: { $first: "$pagination" },
+          pagination: {
+            $ifNull: [
+              { $first: "$pagination" },
+              {
+                total: 0,
+                page,
+                items_par_page: limit,
+                nombre_de_page: 0,
+              },
+            ],
+          },
           formations: "$formations",
         },
       },
     ])
     .next();
 
+  console.log("QUERY TIME", Date.now() - queryStart);
   return formationsStream;
 }

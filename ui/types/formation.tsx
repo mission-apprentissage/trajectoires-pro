@@ -1,6 +1,16 @@
 import * as yup from "yup";
 import { BCN, bcnSchema } from "./bcn";
 
+export enum FormationTag {
+  POUR_TRAVAILLER_RAPIDEMENT = "pour_travailler_rapidement",
+  POUR_CONTINUER_DES_ETUDES = "pour_continuer_des_etudes",
+}
+
+export const formationTagSchema: yup.StringSchema<FormationTag> = yup
+  .string()
+  .oneOf(Object.values(FormationTag))
+  .required();
+
 export type FormationDetail = Record<string, any>;
 
 type JourneesPortesOuverteDate = {
@@ -23,6 +33,7 @@ export type Formation = {
   formation: FormationDetail;
   etablissement: Etablissement;
   bcn: BCN;
+  tags: FormationTag[];
 };
 
 export const formationSchema: yup.ObjectSchema<Formation> = yup.object({
@@ -54,4 +65,5 @@ export const formationSchema: yup.ObjectSchema<Formation> = yup.object({
     )
     .required(),
   bcn: bcnSchema,
+  tags: yup.array(yup.string().oneOf(Object.values(FormationTag)).required()).required(),
 });
