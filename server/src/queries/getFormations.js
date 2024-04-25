@@ -204,7 +204,6 @@ export async function getFormations(
         formation: 1,
         etablissement: 1,
         bcn: 1,
-        tags: 1,
         inserjeunes: 1,
       },
     },

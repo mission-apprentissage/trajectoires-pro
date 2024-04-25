@@ -11,7 +11,7 @@ export const formationTagSchema: yup.StringSchema<FormationTag> = yup
   .oneOf(Object.values(FormationTag))
   .required();
 
-export type FormationDetail = Record<string, any>;
+export type FormationDetail = { tags: FormationTag[] } & Record<string, any>;
 
 type JourneesPortesOuverteDate = {
   from: Date;
@@ -33,11 +33,17 @@ export type Formation = {
   formation: FormationDetail;
   etablissement: Etablissement;
   bcn: BCN;
-  tags: FormationTag[];
 };
 
 export const formationSchema: yup.ObjectSchema<Formation> = yup.object({
-  formation: yup.mixed().required(),
+  formation: yup
+    .object()
+    .concat(
+      yup.object().shape({
+        tags: yup.array(yup.string().oneOf(Object.values(FormationTag)).required()).required(),
+      })
+    )
+    .required(),
   etablissement: yup
     .object()
     .concat(
@@ -65,5 +71,4 @@ export const formationSchema: yup.ObjectSchema<Formation> = yup.object({
     )
     .required(),
   bcn: bcnSchema,
-  tags: yup.array(yup.string().oneOf(Object.values(FormationTag)).required()).required(),
 });

@@ -1,10 +1,7 @@
 import React from "react";
-import Container from "#/app/components/Container";
-import { CardActionArea, Grid, Typography } from "@mui/material";
 import Tag from "#/app/components/Tag";
 import { fr } from "@codegouvfr/react-dsfr";
-import Link from "next/link";
-import { Etablissement, Formation, FormationDetail } from "#/types/formation";
+import { Etablissement } from "#/types/formation";
 import moment from "moment";
 import "moment/locale/fr";
 

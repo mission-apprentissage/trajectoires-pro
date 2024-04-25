@@ -4,17 +4,15 @@ import { useQuery } from "@tanstack/react-query";
 import { Typograhpy, Grid, Box } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
 import { getDistance } from "geolib";
-import { Tag } from "@codegouvfr/react-dsfr/Tag";
 import { formation } from "#/app/api/exposition/formation/query";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import { useSearchParams } from "next/navigation";
 import { Etablissement, Formation, FormationDetail } from "#/types/formation";
-import { TagApprentissage } from "../../components/FormationCard";
-import Link from "next/link";
+import { TagApprentissage } from "../../../components/FormationCard";
 import Divider from "#/app/components/Divider";
 import Card from "#/app/components/Card";
-import EtablissementCard from "../../components/EtablissementCard";
+import EtablissementCard from "../../../components/EtablissementCard";
 
 function WidgetInserJeunes({ etablissement, formation }: { etablissement: Etablissement; formation: FormationDetail }) {
   const WIDGET_HASH = process.env.NEXT_PUBLIC_EXPOSITION_WIDGET_HASH;

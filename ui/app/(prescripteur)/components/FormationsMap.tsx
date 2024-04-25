@@ -1,6 +1,5 @@
 "use client";
 import React, { useMemo } from "react";
-import { Typograhpy } from "#/app/components/MaterialUINext";
 import dynamic from "next/dynamic";
 import { LeafletHomeIcon, LeafletEtablissementIcon, LeafletSelectedEtablissementIcon } from "#/app/components/Map";
 import { Etablissement, Formation } from "#/types/formation";
@@ -43,6 +42,7 @@ export default function FormationsMap({
             zIndexOffset={isSelected ? 10500 : 0}
             key={key}
             position={[coordinate[1], coordinate[0]]}
+            bubblingMouseEvents={false}
             eventHandlers={{
               click: (e) => {
                 onMarkerClick && onMarkerClick(etablissement);
