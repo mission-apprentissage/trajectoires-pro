@@ -17,7 +17,7 @@ export function createTags() {
   return [
     {
       $set: {
-        tags: [],
+        "formation.tags": [],
       },
     },
     ...flatten(
@@ -84,9 +84,9 @@ export function createInserJeunesTag(
     },
     {
       $set: {
-        tags: {
+        "formation.tags": {
           $concatArrays: [
-            "$tags",
+            "$formation.tags",
             {
               $cond: [
                 {
@@ -126,7 +126,7 @@ export function filterTag(tag) {
   return [
     {
       $match: {
-        tags: tag,
+        "formation.tags": tag,
       },
     },
   ];

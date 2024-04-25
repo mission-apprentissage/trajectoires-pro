@@ -319,7 +319,14 @@ export default () => {
 
       addJsonHeaders(res);
       // TODO: add tags
-      res.send({ formation, etablissement, bcn, tags: [] });
+      res.send({
+        formation: {
+          tags: [],
+          ...formation,
+        },
+        etablissement,
+        bcn,
+      });
     })
   );
 

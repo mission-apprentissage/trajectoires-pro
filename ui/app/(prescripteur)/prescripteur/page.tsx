@@ -1,13 +1,11 @@
 "use client";
 import Container from "#/app/components/Container";
-import SearchFormationForm, { schema as schemaFormation } from "#/app/components/form/SearchFormationForm";
-import { useSearchParams } from "next/navigation";
+import SearchFormationForm from "#/app/components/form/SearchFormationForm";
 import ResearchFormationsResult from "./ResearchFormationsResult";
-import { searchParamsToObject } from "#/app/utils/searchParams";
 import { fetchAddress } from "#/app/services/address";
-import { Suspense, useEffect, useState } from "react";
-import { fr } from "@codegouvfr/react-dsfr";
+import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
+import FormationsSearchProvider, { useFormationsSearch } from "../context/FormationsSearchContext";
 
 function SearchHeader() {
   return (
@@ -20,12 +18,8 @@ function SearchHeader() {
 }
 
 function SearchResult() {
-  const searchParams = useSearchParams();
-  const { address, distance, time, tag } = searchParamsToObject(
-    searchParams,
-    { address: null, distance: 10, time: null, tag: null },
-    schemaFormation
-  );
+  const { params } = useFormationsSearch();
+  const { address, distance = 10, time = 15, tag } = params ?? {};
 
   const { data: coordinate } = useQuery({
     staleTime: Infinity,
@@ -46,6 +40,10 @@ function SearchResult() {
     },
   });
 
+  if (!params) {
+    return null;
+  }
+
   return (
     coordinate && (
       <ResearchFormationsResult
@@ -65,7 +63,9 @@ export default function Page() {
     <>
       <SearchHeader />
       <Suspense>
-        <SearchResult />
+        <FormationsSearchProvider>
+          <SearchResult />
+        </FormationsSearchProvider>
       </Suspense>
     </>
   );

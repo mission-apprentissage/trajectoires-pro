@@ -3,9 +3,9 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
-import { ReactNode, useEffect, useRef } from "react";
-import { useMap } from "react-leaflet";
-import { DivIcon, LatLngExpression, LatLngTuple } from "leaflet";
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ZoomControl, useMap } from "react-leaflet";
+import { DivIcon, LatLngTuple } from "leaflet";
 import { renderToString } from "react-dom/server";
 import dynamic from "next/dynamic";
 import HomeIcon from "./icon/HomeIcon";
@@ -75,13 +75,41 @@ const RecenterAutomatically = ({ position }: { position: LatLngTuple }) => {
   return null;
 };
 
+function PreventFocus() {
+  const map = useMap();
+  map.getContainer().focus = () => {};
+  return null;
+}
+
 export default function Map({ center, children }: { center: LatLngTuple; children?: ReactNode }) {
+  const [unmountMap, setUnmountMap] = useState(false);
+  //to prevent map re-initialization
+  useLayoutEffect(() => {
+    setUnmountMap(false);
+    return () => {
+      setUnmountMap(true);
+    };
+  }, []);
+
+  if (unmountMap) {
+    return <></>;
+  }
+
   return (
-    <MapContainer scrollWheelZoom={true} style={{ height: "100%", width: "100%" }} center={center} zoom={13}>
+    <MapContainer
+      zoomControl={false}
+      scrollWheelZoom={true}
+      style={{ height: "100%", width: "100%" }}
+      center={center}
+      zoom={13}
+    >
+      <PreventFocus />
       <MapAutoresize />
       <TileLayer />
       {children}
       <RecenterAutomatically position={center} />
+
+      <ZoomControl />
     </MapContainer>
   );
 }

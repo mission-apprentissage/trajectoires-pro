@@ -1,25 +1,47 @@
 "use client";
 import React, { Suspense, useMemo, useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { css } from "@emotion/css";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { Typograhpy, Grid } from "../../components/MaterialUINext";
 import InformationCard from "#/app/components/InformationCard";
-import { formations as formationsQuery } from "#/app/api/exposition/formations/query";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import Button from "#/app/components/Button";
-import FormationCard from "./components/FormationCard";
+import FormationCard from "../components/FormationCard";
 import ClientSideScrollRestorer from "#/app/components/ClientSideScrollRestorer";
 import dynamic from "next/dynamic";
 import { Formation, FormationTag } from "#/types/formation";
 import { Stack, useTheme } from "@mui/material";
-import { useSearchParams, useRouter } from "next/navigation";
-import FormationAllTags from "./components/FormationAllTags";
+import FormationAllTags from "../components/FormationAllTags";
+import useGetFormations from "../hooks/useGetFormations";
+import { useFormationsSearch } from "../context/FormationsSearchContext";
 
-const FormationsMap = dynamic(() => import("#/app/(prescripteur)/prescripteur/components/FormationsMap"), {
+const FormationsMap = dynamic(() => import("#/app/(prescripteur)/components/FormationsMap"), {
   ssr: false,
 });
+
+function FormationAllTagsWithParams({ selected }: { selected?: FormationTag | null }) {
+  const { params, updateParams } = useFormationsSearch();
+
+  return (
+    <FormationAllTags
+      selected={selected}
+      onClick={(selectedTag) => {
+        if (!params) {
+          return;
+        }
+        const { address, distance, time } = params;
+
+        updateParams({
+          address,
+          distance,
+          time,
+          tag: selectedTag === selected ? undefined : selectedTag,
+        });
+      }}
+    />
+  );
+}
 
 export default function ResearchFormationsResult({
   latitude,
@@ -36,65 +58,22 @@ export default function ResearchFormationsResult({
   tag?: FormationTag | null;
   page: number;
 }) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
   const theme = useTheme();
   const [selected, setSelected] = useState<null | Formation>(null);
   const [expandMap, setExpandMap] = useState(false);
 
-  const { isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, data } = useInfiniteQuery({
-    staleTime: Infinity,
-    cacheTime: Infinity,
-    retry: false,
-    //keepPreviousData: true,
-    queryKey: ["formations", latitude, longitude, distance, time, tag, page],
-    queryFn: ({ pageParam, signal }) => {
-      return formationsQuery(
-        {
-          latitude,
-          longitude,
-          distance,
-          timeLimit: time,
-          tag,
-          page: pageParam ?? 1,
-          codesDiplome: ["3", "4"],
-          items_par_page: 100,
-        },
-        { signal }
-      );
-    },
-    getNextPageParam: (lastPage, pages) => {
-      return !lastPage.pagination || lastPage.pagination.nombre_de_page === lastPage.pagination.page
-        ? undefined
-        : lastPage.pagination.page + 1;
-    },
-    useErrorBoundary: true,
+  const { isLoading, fetchNextPage, isFetchingNextPage, formations, etablissements } = useGetFormations({
+    latitude,
+    longitude,
+    distance,
+    time,
+    tag,
+    page,
   });
-  useBottomScrollListener(() => (hasNextPage && !isFetchingNextPage && !isFetching ? fetchNextPage() : null));
 
-  const formations = useMemo(
-    () =>
-      (data ? data.pages.flatMap((page) => page.formations) : []).map((data) => ({
-        ...data,
-        ref: React.createRef<HTMLDivElement>(),
-      })),
-    [data]
-  );
+  useBottomScrollListener(fetchNextPage);
 
-  const etablissements = useMemo(() => {
-    const etablissements: Record<string, any> = {};
-
-    if (!data) {
-      return [];
-    }
-
-    for (const formation of formations) {
-      etablissements[formation.etablissement.uai] = formation.etablissement;
-    }
-
-    return Object.values(etablissements);
-  }, [data]);
+  const formationsRef = useMemo(() => formations.map((data) => React.createRef<HTMLDivElement>()), [formations]);
 
   if (isLoading) {
     return <Loader />;
@@ -140,9 +119,15 @@ export default function ResearchFormationsResult({
             latitude={latitude}
             etablissements={etablissements}
             onMarkerClick={(etablissement) => {
-              const formation = formations.find((f) => f.etablissement.uai === etablissement.uai);
-              formation && setSelected(formation);
-              formation?.ref?.current && formation.ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
+              const formationIndex = formations.findIndex((f) => f.etablissement.uai === etablissement.uai);
+              if (formationIndex === -1) {
+                return;
+              }
+
+              const formation = formations[formationIndex];
+              const formationRef = formationsRef[formationIndex];
+              setSelected(formation);
+              formationRef?.current && formationRef?.current.scrollIntoView({ behavior: "smooth", block: "start" });
             }}
           />
         </Grid>
@@ -161,19 +146,7 @@ export default function ResearchFormationsResult({
           `}
         >
           <Stack direction="row" spacing={2} style={{ marginBottom: fr.spacing("5v") }}>
-            <FormationAllTags
-              selected={tag}
-              onClick={(selectedTag) => {
-                const urlSearchParams = new URLSearchParams(searchParams);
-                if (tag === selectedTag) {
-                  urlSearchParams.delete("tag");
-                } else {
-                  urlSearchParams.set("tag", selectedTag);
-                }
-
-                router.push(`?${urlSearchParams}`);
-              }}
-            />
+            <FormationAllTagsWithParams selected={tag} />
           </Stack>
 
           {!formations?.length ? (
@@ -183,12 +156,12 @@ export default function ResearchFormationsResult({
             </InformationCard>
           ) : (
             <Grid container spacing={4}>
-              {formations.map((formation) => {
+              {formations.map((formation, index) => {
                 const formationDetail = formation.formation;
                 const isSelected = selected ? selected.formation._id === formationDetail._id : false;
                 const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
                 return (
-                  <Grid item sm={12} md={4} key={key} ref={formation.ref}>
+                  <Grid item sm={12} md={4} key={key} ref={formationsRef[index]}>
                     <FormationCard
                       selected={isSelected}
                       onMouseEnter={() => {
