@@ -15,9 +15,11 @@ type FormationsSearchParams = {
 const FormationsSearchContext = createContext<{
   params?: FormationsSearchParams | null;
   updateParams: (params: FormationsSearchParams) => void;
+  getUrlParams: () => string;
 }>({
   params: null,
   updateParams: (params: FormationsSearchParams) => {},
+  getUrlParams: () => "",
 });
 
 const FormationsSearchProvider = ({ children }: { children: React.ReactNode }) => {
@@ -29,6 +31,11 @@ const FormationsSearchProvider = ({ children }: { children: React.ReactNode }) =
     schemaFormation
   );
 
+  const getUrlParams = useCallback(() => {
+    const urlSearchParams = new URLSearchParams(mapValues(params, (v) => (!isNil(v) ? v.toString() : "")));
+    return `${urlSearchParams}`;
+  }, []);
+
   const updateParams = useCallback((params: FormationsSearchParams) => {
     const urlSearchParams = new URLSearchParams(mapValues(params, (v) => (!isNil(v) ? v.toString() : "")));
     router.push(`?${urlSearchParams}`);
@@ -38,6 +45,7 @@ const FormationsSearchProvider = ({ children }: { children: React.ReactNode }) =
     <FormationsSearchContext.Provider
       value={{
         updateParams,
+        getUrlParams,
         params,
       }}
     >

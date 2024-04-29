@@ -17,7 +17,7 @@ export function formatPortesOuvertes(etablissement: Etablissement) {
   if (!journeesPortesOuvertes.dates || journeesPortesOuvertes.dates.length === 0) {
     return {
       ended: false,
-      str: `Portes ouvertes ${journeesPortesOuvertes.details}`,
+      str: `Portes ouvertes le ${journeesPortesOuvertes.details}`,
     };
   }
 

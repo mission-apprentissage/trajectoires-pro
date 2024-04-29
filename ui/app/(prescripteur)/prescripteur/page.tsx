@@ -1,21 +1,10 @@
 "use client";
-import Container from "#/app/components/Container";
-import SearchFormationForm from "#/app/components/form/SearchFormationForm";
 import ResearchFormationsResult from "./ResearchFormationsResult";
 import { fetchAddress } from "#/app/services/address";
 import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import FormationsSearchProvider, { useFormationsSearch } from "../context/FormationsSearchContext";
-
-function SearchHeader() {
-  return (
-    <Container style={{ border: "1px solid #DDDDDD" }} nopadding={true} maxWidth={false}>
-      <Container>
-        <SearchFormationForm url={"/"} defaultValues={{ address: null, distance: 10, time: null }} />
-      </Container>
-    </Container>
-  );
-}
+import SearchHeader from "../components/SearchHeader";
 
 function SearchResult() {
   const { params } = useFormationsSearch();

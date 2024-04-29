@@ -90,8 +90,10 @@ export default function ResearchFormationsResult({
           item
           sm={12}
           md={expandMap === true ? 6 : 2}
-          style={{ width: "100%", top: 0, position: "sticky" }}
           className={css`
+            width: 100%;
+            top: 0;
+            position: sticky;
             height: 100vh;
             ${theme.breakpoints.down("md")} {
               height: 40vh;
@@ -139,13 +141,14 @@ export default function ResearchFormationsResult({
           className={css`
             padding: ${fr.spacing("5v")};
             z-index: 500;
+            width: 100%;
             box-shadow: 4px 0px 6px 0px #00000040;
             ${theme.breakpoints.up("lg")} {
               padding-left: ${fr.spacing("20v")};
             }
           `}
         >
-          <Stack direction="row" spacing={2} style={{ marginBottom: fr.spacing("5v") }}>
+          <Stack direction="row" useFlexGap flexWrap="wrap" spacing={2} style={{ marginBottom: fr.spacing("5v") }}>
             <FormationAllTagsWithParams selected={tag} />
           </Stack>
 

@@ -17,9 +17,9 @@ const PortesOuvertesTitle = ({ etablissement }: { etablissement: Etablissement }
     <Typograhpy
       variant="subtitle1"
       style={{
-        backgroundColor: "#1212FF",
+        backgroundColor: strPortesOuvertes.ended ? "var(--background-contrast-grey)" : "#1212FF",
         fontWeight: 500,
-        color: "#fff",
+        color: strPortesOuvertes.ended ? "#3A3A3A" : "#fff",
         padding: fr.spacing("2v"),
         paddingLeft: fr.spacing("5v"),
         paddingRight: fr.spacing("5v"),
