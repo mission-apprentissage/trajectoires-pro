@@ -113,7 +113,7 @@ function FormationResult({ formation: { formation, etablissement, bcn } }: { for
   );
 }
 
-export function ResearchFormationResult({ id }: { id: string }) {
+function ResearchFormationResult({ id }: { id: string }) {
   const { isLoading, isError, data } = useQuery({
     staleTime: Infinity,
     cacheTime: Infinity,
