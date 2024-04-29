@@ -35,7 +35,7 @@ export function formatPortesOuvertes(etablissement: Etablissement) {
     if (date.from > currentDate || date.to > currentDate) {
       ended = false;
       strPortesOuvertes +=
-        (!first ? ", " : "Portes ouvertes ") +
+        (!first ? ", " : "Portes ouvertes le ") +
         moment(date.from).format("DD MMMM YYYY") +
         (date.details ? ` ${date.details}` : "");
       first = false;
