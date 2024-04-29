@@ -29,8 +29,13 @@ export function createTags() {
 }
 
 export function createInserJeunesTag(
-  { thresholdEnEmploi = null, thresholdEnEtude = null } = { thresholdEnEmploi: null, thresholdEnEtude: null }
+  { thresholdEnEmploi = null, thresholdEnEtude = null } = {
+    thresholdEnEmploi: null,
+    thresholdEnEtude: null,
+  }
 ) {
+  const MIN_ELEVES_THRESHOLD = 20;
+
   if (isNil(thresholdEnEmploi) || isNil(thresholdEnEtude)) {
     logger.error("Seuil en emploi ou en étude non défini");
     return null;
@@ -48,6 +53,7 @@ export function createInserJeunesTag(
           {
             $match: {
               millesime: getLastMillesimesFormations(),
+              nb_annee_term: MIN_ELEVES_THRESHOLD,
               $expr: {
                 $or: [
                   {
