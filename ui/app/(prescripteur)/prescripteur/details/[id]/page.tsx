@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { Suspense, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Typograhpy, Grid, Box } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
@@ -13,6 +13,7 @@ import { TagApprentissage } from "../../../components/FormationCard";
 import Divider from "#/app/components/Divider";
 import Card from "#/app/components/Card";
 import EtablissementCard from "../../../components/EtablissementCard";
+import SearchHeader from "#/app/(prescripteur)/components/SearchHeader";
 
 function WidgetInserJeunes({ etablissement, formation }: { etablissement: Etablissement; formation: FormationDetail }) {
   const WIDGET_HASH = process.env.NEXT_PUBLIC_EXPOSITION_WIDGET_HASH;
@@ -112,14 +113,14 @@ function FormationResult({ formation: { formation, etablissement, bcn } }: { for
   );
 }
 
-export default function ResearchFormationResult({ params }: { params: { id: string } }) {
+export function ResearchFormationResult({ id }: { id: string }) {
   const { isLoading, isError, data } = useQuery({
     staleTime: Infinity,
     cacheTime: Infinity,
     retry: 0,
-    queryKey: ["formation", params.id],
+    queryKey: ["formation", id],
     queryFn: ({ signal }) => {
-      return formation({ id: params.id }, { signal });
+      return formation({ id: id }, { signal });
     },
   });
 
@@ -132,4 +133,15 @@ export default function ResearchFormationResult({ params }: { params: { id: stri
   }
 
   return <FormationResult formation={data} />;
+}
+
+export default function Page({ params }: { params: { id: string } }) {
+  return (
+    <>
+      <SearchHeader />
+      <Suspense>
+        <ResearchFormationResult id={params.id} />
+      </Suspense>
+    </>
+  );
 }

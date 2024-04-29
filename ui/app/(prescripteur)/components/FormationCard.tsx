@@ -7,6 +7,7 @@ import "moment/locale/fr";
 import { TagPortesOuvertes } from "./PortesOuvertes";
 import Card from "#/app/components/Card";
 import FormationTags from "./FormationTags";
+import { useFormationsSearch } from "../context/FormationsSearchContext";
 
 export function TagApprentissage({ formationDetail }: { formationDetail: FormationDetail }) {
   return (
@@ -33,6 +34,7 @@ export default function FormationCard({
   onMouseEnter?: Function;
   onMouseLeave?: Function;
 }) {
+  const { getUrlParams } = useFormationsSearch();
   const { formation: formationDetail, etablissement, bcn } = formation;
   const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
 
@@ -43,7 +45,7 @@ export default function FormationCard({
         onMouseEnter: () => onMouseEnter && onMouseEnter(),
         onMouseLeave: () => onMouseLeave && onMouseLeave(),
       }}
-      link={`/details/${key}?latitude=${latitude}&longitude=${longitude}`}
+      link={`/details/${key}?latitude=${latitude}&longitude=${longitude}&${getUrlParams()}`}
     >
       <Typography style={{ marginBottom: fr.spacing("3v") }} variant="subtitle2">
         {bcn.libelle_long}
