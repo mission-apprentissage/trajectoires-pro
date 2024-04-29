@@ -34,6 +34,7 @@ export function createInserJeunesTag(
     thresholdEnEtude: null,
   }
 ) {
+  // TODO : tag inserjeunes stats when we don't want to display
   const MIN_ELEVES_THRESHOLD = 20;
 
   if (isNil(thresholdEnEmploi) || isNil(thresholdEnEtude)) {
@@ -53,7 +54,7 @@ export function createInserJeunesTag(
           {
             $match: {
               millesime: getLastMillesimesFormations(),
-              nb_annee_term: MIN_ELEVES_THRESHOLD,
+              nb_annee_term: { $gte: MIN_ELEVES_THRESHOLD },
               $expr: {
                 $or: [
                   {
