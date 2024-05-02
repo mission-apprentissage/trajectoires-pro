@@ -1,4 +1,5 @@
 location / {
+    include conf.d/headers.conf;
     add_header X-Frame-Options "SAMEORIGIN" always;
 
     set $upstream http://server:5000;
@@ -7,12 +8,14 @@ location / {
 }
 
 location /api {
+    include conf.d/headers.conf;
     add_header X-Frame-Options "SAMEORIGIN" always;
     set $upstream http://server:5000;
     include includes/proxy.conf;
 }
 
 location /static {
+    include conf.d/headers.conf;
     add_header X-Frame-Options "SAMEORIGIN" always;
 
     set $upstream http://server:5000;
@@ -23,11 +26,13 @@ location /static {
 
 # Allow iframe usage for the widget
 location ~ ^/api/.*/widget/.* {
+    include conf.d/headers.conf;
     set $upstream http://server:5000;
     include includes/proxy.conf;
 }
 
 location ~ ^/.*/widget/.* {
+    include conf.d/headers.conf;
     set $upstream http://server:5000;
     rewrite ^/(.*) /api/$1 break;
     include includes/proxy.conf;
