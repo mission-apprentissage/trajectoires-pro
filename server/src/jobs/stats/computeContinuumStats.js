@@ -99,6 +99,7 @@ async function buildDataContinuum({ type, code_certification, oldData, oldQuery,
         "libelle",
         "libelle_ancien",
         "donnee_source",
+        "date_fermeture",
       ]),
       ...certification,
       donnee_source: {

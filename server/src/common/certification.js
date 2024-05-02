@@ -13,5 +13,6 @@ export async function getCertificationInfo(code_certification) {
     libelle: certification?.libelle_long,
     libelle_ancien: certification?.libelle_long_ancien,
     diplome: pickWithNil(certification?.diplome, ["code", "libelle"]),
+    date_fermeture: certification?.date_fermeture,
   };
 }

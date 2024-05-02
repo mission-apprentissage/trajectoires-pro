@@ -212,6 +212,14 @@ function transformDisplayStatRules() {
       message: (data) => data,
     },
     {
+      // Ajout du booléen de fermeture d'une formation
+      cond: (data) => data && (!data?.codes_formation_diplome || data.codes_formation_diplome.length === 1),
+      transformation: (data) => {
+        return { ...data, formationFermee: data.date_fermeture && data.date_fermeture < new Date() ? true : false };
+      },
+      message: (data) => data,
+    },
+    {
       // Remplace les taux par null si le nbr en année terminales < 20
       cond: (data) => data && data.nb_annee_term < 20,
       transformation: (data) => mapValues(data, (o, k) => (TAUX.test(k) ? null : o)),
