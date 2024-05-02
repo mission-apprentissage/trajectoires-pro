@@ -1,4 +1,5 @@
 location /metabase/ {
+    include conf.d/headers.conf;
     add_header X-Frame-Options "SAMEORIGIN" always;
     
     proxy_pass              http://metabase:3000/;
