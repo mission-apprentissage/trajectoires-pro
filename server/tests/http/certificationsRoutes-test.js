@@ -81,6 +81,7 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 14,
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
+            formationFermee: false,
             donnee_source: {
               code_certification: "12345678",
               type: "self",
@@ -449,6 +450,7 @@ describe("certificationsRoutes", () => {
         taux_autres_12_mois: 14,
         taux_autres_18_mois: 15,
         taux_autres_24_mois: 16,
+        formationFermee: false,
         donnee_source: {
           code_certification: "12345678",
           type: "self",
@@ -458,6 +460,67 @@ describe("certificationsRoutes", () => {
           details:
             "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millesime 2020",
         },
+      });
+    });
+
+    it("Vérifie que l'on renvoi l'information si la formation est fermée", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        filiere: "apprentissage",
+        date_fermeture: new Date("2010-01-01T00:00:00.000Z"),
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/certifications/12345678`);
+
+      assert.strictEqual(response.status, 200);
+      assert.deepInclude(response.data, {
+        millesime: "2020",
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        libelle: "LIBELLE",
+        filiere: "apprentissage",
+        formationFermee: true,
+      });
+    });
+
+    it("Vérifie que l'on renvoi l'information si la formation est ouverte", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        filiere: "apprentissage",
+        date_fermeture: new Date(Date.now() + 24 * 3600),
+      });
+
+      // Sans date de fermeture
+      await insertCertificationsStats({
+        code_certification: "12345679",
+        code_formation_diplome: "12345679",
+        filiere: "apprentissage",
+      });
+
+      const responseWithDate = await httpClient.get(`/api/inserjeunes/certifications/12345678`);
+      assert.strictEqual(responseWithDate.status, 200);
+      assert.deepInclude(responseWithDate.data, {
+        millesime: "2020",
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        libelle: "LIBELLE",
+        filiere: "apprentissage",
+        formationFermee: false,
+      });
+
+      const responseWithoutDate = await httpClient.get(`/api/inserjeunes/certifications/12345679`);
+      assert.strictEqual(responseWithoutDate.status, 200);
+      assert.deepInclude(responseWithoutDate.data, {
+        millesime: "2020",
+        code_certification: "12345679",
+        code_formation_diplome: "12345679",
+        libelle: "LIBELLE",
+        filiere: "apprentissage",
+        formationFermee: false,
       });
     });
 
@@ -572,6 +635,7 @@ describe("certificationsRoutes", () => {
           taux_autres_12_mois: 70,
           taux_autres_18_mois: 70,
           taux_autres_24_mois: 70,
+          formationFermee: false,
         },
         pro: {
           codes_certifications: ["23830024202"],
@@ -601,6 +665,7 @@ describe("certificationsRoutes", () => {
           taux_autres_12_mois: 70,
           taux_autres_18_mois: 70,
           taux_autres_24_mois: 70,
+          formationFermee: false,
         },
       });
     });
@@ -1083,6 +1148,7 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
+            formationFermee: false,
           },
           pro: {
             codes_certifications: ["23830024202"],
@@ -1113,6 +1179,7 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
+            formationFermee: false,
           },
         });
       });
@@ -1179,6 +1246,7 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
+            formationFermee: false,
           },
           pro: {
             codes_certifications: ["23830024202"],
@@ -1208,7 +1276,61 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
+            formationFermee: false,
           },
+        });
+      });
+
+      it("Vérifie qu'on peut obtenir les informations de fermeture de la formation", async () => {
+        const { httpClient } = await startServer();
+        await Promise.all([
+          insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
+          insertCertificationsStats({
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            libelle_ancien: "LIBELLE ANCIEN",
+            date_fermeture: new Date("2010-01-01T00:00:00.000Z"),
+          }),
+          insertCertificationsStats({
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            libelle_ancien: "LIBELLE ANCIEN",
+            date_fermeture: new Date("2010-01-01T00:00:00.000Z"),
+          }),
+        ]);
+
+        const response = await httpClient.get("/api/inserjeunes/certifications/12345678,23830024202");
+
+        assert.strictEqual(response.status, 200);
+        assert.deepInclude(response.data.apprentissage, {
+          codes_certifications: ["12345678"],
+          code_formation_diplome: "12345678",
+          codes_formation_diplome: ["12345678"],
+          diplome: {
+            code: "4",
+            libelle: "BAC",
+          },
+          filiere: "apprentissage",
+          libelle: "LIBELLE",
+          libelle_ancien: "LIBELLE ANCIEN",
+          millesime: "2020",
+          formationFermee: true,
+        });
+        assert.deepInclude(response.data.pro, {
+          codes_certifications: ["23830024202"],
+          code_formation_diplome: "12345678",
+          codes_formation_diplome: ["12345678"],
+          diplome: {
+            code: "4",
+            libelle: "BAC",
+          },
+          filiere: "pro",
+          libelle: "LIBELLE",
+          libelle_ancien: "LIBELLE ANCIEN",
+          millesime: "2020",
+          formationFermee: true,
         });
       });
     });
@@ -1328,6 +1450,44 @@ describe("certificationsRoutes", () => {
             taux_autres_24_mois: 70,
           },
         });
+      });
+
+      it("Vérifie qu'on n'obtient pas les informations de fermeture de la formation", async () => {
+        const { httpClient } = await startServer();
+        await Promise.all([
+          insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" }),
+          insertCFD({ code_certification: "87654321", code_formation_diplome: "87654321" }),
+          insertCertificationsStats({
+            code_certification: "12345678",
+            code_formation_diplome: "12345678",
+            filiere: "apprentissage",
+            date_fermeture: new Date("2010-01-01T00:00:00.000Z"),
+          }),
+          insertCertificationsStats({
+            code_certification: "87654321",
+            code_formation_diplome: "87654321",
+            filiere: "apprentissage",
+            date_fermeture: new Date("2010-01-01T00:00:00.000Z"),
+          }),
+          insertCertificationsStats({
+            code_certification: "23830024202",
+            code_formation_diplome: "12345678",
+            filiere: "pro",
+            date_fermeture: new Date("2010-01-01T00:00:00.000Z"),
+          }),
+          insertCertificationsStats({
+            code_certification: "23876543212",
+            code_formation_diplome: "87654321",
+            filiere: "pro",
+            date_fermeture: new Date("2010-01-01T00:00:00.000Z"),
+          }),
+        ]);
+
+        const response = await httpClient.get("/api/inserjeunes/certifications/12345678,87654321");
+
+        assert.strictEqual(response.status, 200);
+        assert.doesNotHaveAllKeys(response.data.apprentissage, ["date_fermeture", "formationFermee"]);
+        assert.doesNotHaveAllKeys(response.data.pro, ["date_fermeture", "formationFermee"]);
       });
 
       it("Vérifie qu'on peut obtenir les données aggregées (mef)", async () => {

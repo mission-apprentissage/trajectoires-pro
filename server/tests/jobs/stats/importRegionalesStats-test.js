@@ -146,6 +146,7 @@ describe("importRegionalesStats", () => {
         code_certification: "12345678900",
         type: "self",
       },
+      date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
       _meta: {
         inserjeunes: {},
         created_on: new Date("2023-01-01T00:00:00.000Z"),
