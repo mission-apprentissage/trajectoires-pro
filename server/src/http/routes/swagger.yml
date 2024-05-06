@@ -849,7 +849,7 @@ components:
         date_fermeture:
           description: "Date de fermeture de la formation (si elle existe)"
           type: string
-        formation_fermee:
+        formationFermee:
           description: "Booléen qui permet de savoir si la certification est fermée"
           type: boolean
         donnee_source:
@@ -937,7 +937,7 @@ components:
         date_fermeture:
           description: "Date de fermeture de la formation (si elle existe)"
           type: string
-        formation_fermee:
+        formationFermee:
           description: "Booléen qui permet de savoir si la certification est fermée"
           type: boolean
         donnee_source:
@@ -1023,7 +1023,7 @@ components:
         date_fermeture:
           description: "Date de fermeture de la formation (si elle existe)"
           type: string
-        formation_fermee:
+        formationFermee:
           description: "Booléen qui permet de savoir si la certification est fermée"
           type: boolean
         donnee_source:
@@ -1146,7 +1146,7 @@ components:
         date_fermeture:
           description: "Date de fermeture de la formation (si elle existe). Présent uniquement si il n'y a qu'un seul CFD."
           type: string
-        formation_fermee:
+        formationFermee:
           description: "Booléen qui permet de savoir si la certification est fermée.  Présent uniquement si il n'y a qu'un seul CFD."
           type: boolean
         nb_sortant:
