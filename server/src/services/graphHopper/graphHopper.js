@@ -24,6 +24,7 @@ class GraphHopperApi extends RateLimitedApi {
     departureTime = new Date(),
     timeLimit = 1800,
     buckets = 1,
+    reverse_flow = false,
     result = "multipolygon",
   }) {
     return this.execute(async () => {
@@ -34,6 +35,7 @@ class GraphHopperApi extends RateLimitedApi {
         time_limit: timeLimit,
         buckets,
         result,
+        reverse_flow,
       });
       console.error(`${GraphHopperApi.baseApiUrl}/isochrone?${params}`);
       const response = await fetchJsonWithRetry(
@@ -51,7 +53,7 @@ class GraphHopperApi extends RateLimitedApi {
     return buffered;
   }
 
-  async fetchIsochronePTBuckets({ point, departureTime = new Date(), buckets = [1800] }) {
+  async fetchIsochronePTBuckets({ point, departureTime = new Date(), reverse_flow = false, buckets = [1800] }) {
     // GraphHopper does not support buckets for public transportation
     // We request the isochrone API with different duration
 
@@ -79,7 +81,7 @@ class GraphHopperApi extends RateLimitedApi {
       //     feature: geometry.polygons[0],
       //   });
       // }
-      const geometry = await this.fetchIsochrone({ point, departureTime, timeLimit: time });
+      const geometry = await this.fetchIsochrone({ point, departureTime, timeLimit: time, reverse_flow });
       geometries.push({
         time,
         feature: geometry.polygons[0],
