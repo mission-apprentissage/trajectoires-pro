@@ -363,6 +363,7 @@ export default () => {
             point: `${latitude},${longitude}`,
             departureTime: moment().set("hour", 8).toDate(),
             buckets: buckets.filter((b) => b <= timeLimit),
+            reverse_flow: true,
           });
 
           filtersEtablissement.push(getTimeFilter({ coordinate: { longitude, latitude }, isochroneBuckets }));
