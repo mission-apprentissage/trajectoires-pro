@@ -361,7 +361,7 @@ export default () => {
         try {
           const isochroneBuckets = await graphHopperApi.fetchIsochronePTBuckets({
             point: `${latitude},${longitude}`,
-            departureTime: moment().set("hour", 8).toDate(),
+            departureTime: moment().set("hour", 7).set("minute", 0).toDate(),
             buckets: buckets.filter((b) => b <= timeLimit),
             reverse_flow: true,
           });
