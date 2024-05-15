@@ -215,7 +215,7 @@ function transformDisplayStatRules() {
       // Ajout du booléen de fermeture d'une formation
       cond: (data) => data && (!data?.codes_formation_diplome || data.codes_formation_diplome.length === 1),
       transformation: (data) => {
-        return { ...data, formationFermee: data.date_fermeture && data.date_fermeture < new Date() ? true : false };
+        return { ...data, formation_fermee: data.date_fermeture && data.date_fermeture < new Date() ? true : false };
       },
       message: (data) => data,
     },

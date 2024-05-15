@@ -81,7 +81,7 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 14,
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
-            formationFermee: false,
+            formation_fermee: false,
             donnee_source: {
               code_certification: "12345678",
               type: "self",
@@ -450,7 +450,7 @@ describe("certificationsRoutes", () => {
         taux_autres_12_mois: 14,
         taux_autres_18_mois: 15,
         taux_autres_24_mois: 16,
-        formationFermee: false,
+        formation_fermee: false,
         donnee_source: {
           code_certification: "12345678",
           type: "self",
@@ -481,7 +481,7 @@ describe("certificationsRoutes", () => {
         code_formation_diplome: "12345678",
         libelle: "LIBELLE",
         filiere: "apprentissage",
-        formationFermee: true,
+        formation_fermee: true,
       });
     });
 
@@ -509,7 +509,7 @@ describe("certificationsRoutes", () => {
         code_formation_diplome: "12345678",
         libelle: "LIBELLE",
         filiere: "apprentissage",
-        formationFermee: false,
+        formation_fermee: false,
       });
 
       const responseWithoutDate = await httpClient.get(`/api/inserjeunes/certifications/12345679`);
@@ -520,7 +520,7 @@ describe("certificationsRoutes", () => {
         code_formation_diplome: "12345679",
         libelle: "LIBELLE",
         filiere: "apprentissage",
-        formationFermee: false,
+        formation_fermee: false,
       });
     });
 
@@ -635,7 +635,7 @@ describe("certificationsRoutes", () => {
           taux_autres_12_mois: 70,
           taux_autres_18_mois: 70,
           taux_autres_24_mois: 70,
-          formationFermee: false,
+          formation_fermee: false,
         },
         pro: {
           codes_certifications: ["23830024202"],
@@ -665,7 +665,7 @@ describe("certificationsRoutes", () => {
           taux_autres_12_mois: 70,
           taux_autres_18_mois: 70,
           taux_autres_24_mois: 70,
-          formationFermee: false,
+          formation_fermee: false,
         },
       });
     });
@@ -1148,7 +1148,7 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
-            formationFermee: false,
+            formation_fermee: false,
           },
           pro: {
             codes_certifications: ["23830024202"],
@@ -1179,7 +1179,7 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
-            formationFermee: false,
+            formation_fermee: false,
           },
         });
       });
@@ -1246,7 +1246,7 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
-            formationFermee: false,
+            formation_fermee: false,
           },
           pro: {
             codes_certifications: ["23830024202"],
@@ -1276,7 +1276,7 @@ describe("certificationsRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
-            formationFermee: false,
+            formation_fermee: false,
           },
         });
       });
@@ -1316,7 +1316,7 @@ describe("certificationsRoutes", () => {
           libelle: "LIBELLE",
           libelle_ancien: "LIBELLE ANCIEN",
           millesime: "2020",
-          formationFermee: true,
+          formation_fermee: true,
         });
         assert.deepInclude(response.data.pro, {
           codes_certifications: ["23830024202"],
@@ -1330,7 +1330,7 @@ describe("certificationsRoutes", () => {
           libelle: "LIBELLE",
           libelle_ancien: "LIBELLE ANCIEN",
           millesime: "2020",
-          formationFermee: true,
+          formation_fermee: true,
         });
       });
     });
@@ -1486,8 +1486,8 @@ describe("certificationsRoutes", () => {
         const response = await httpClient.get("/api/inserjeunes/certifications/12345678,87654321");
 
         assert.strictEqual(response.status, 200);
-        assert.doesNotHaveAllKeys(response.data.apprentissage, ["date_fermeture", "formationFermee"]);
-        assert.doesNotHaveAllKeys(response.data.pro, ["date_fermeture", "formationFermee"]);
+        assert.doesNotHaveAllKeys(response.data.apprentissage, ["date_fermeture", "formation_fermee"]);
+        assert.doesNotHaveAllKeys(response.data.pro, ["date_fermeture", "formation_fermee"]);
       });
 
       it("Vérifie qu'on peut obtenir les données aggregées (mef)", async () => {
