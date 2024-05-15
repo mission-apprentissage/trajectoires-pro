@@ -6,7 +6,7 @@ import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
-import { formatMillesime } from "#src/http/utils/formatters.js";
+import { formatMillesime, formatCodesCertifications } from "#src/http/utils/formatters.js";
 import {
   addCsvHeaders,
   addJsonHeaders,
@@ -109,7 +109,8 @@ export default () => {
         {
           ...validators.regions(),
           ...validators.statsList([getLastMillesimesRegionales()]),
-        }
+        },
+        { code_certifications: formatCodesCertifications }
       );
 
       const paginable = await RegionaleStatsRepository.findAndPaginate(
@@ -133,7 +134,8 @@ export default () => {
         {
           ...validators.region(),
           ...validators.statsList([getLastMillesimesRegionales()]),
-        }
+        },
+        { code_certifications: formatCodesCertifications }
       );
 
       const paginable = await RegionaleStatsRepository.findAndPaginate(
@@ -156,11 +158,13 @@ export default () => {
         { ...req.params, ...req.query },
         {
           ...validators.region(),
-          codes_certifications: validators.arrayOf(Joi.string().required()).default([]).min(1),
+          ...validators.codesCertifications(),
+          ...validators.universe(),
           millesime: Joi.string().default(getLastMillesimesRegionales()),
           ...validators.vues(),
           ...validators.svg(),
-        }
+        },
+        { codes_certifications: formatCodesCertifications }
       );
 
       if (vue === "filieres" || codes_certifications.length > 1) {
@@ -196,11 +200,13 @@ export default () => {
         {
           hash: Joi.string(),
           ...validators.region(),
-          codes_certifications: validators.arrayOf(Joi.string().required()).default([]).min(1),
+          ...validators.codesCertifications(),
+          ...validators.universe(),
           millesime: Joi.string().default(getLastMillesimesRegionales()),
           ...validators.vues(),
           ...validators.widget("stats"),
-        }
+        },
+        { codes_certifications: formatCodesCertifications }
       );
 
       try {
@@ -268,11 +274,13 @@ export default () => {
         { ...req.params, ...req.query },
         {
           ...validators.region(),
-          codes_certifications: validators.arrayOf(Joi.string().required()).default([]).min(1),
+          ...validators.codesCertifications(),
+          ...validators.universe(),
           millesime: Joi.string().default(null),
           ...validators.vues(),
           ...validators.widget("stats"),
-        }
+        },
+        { codes_certifications: formatCodesCertifications }
       );
 
       const widget = getIframe({

@@ -155,26 +155,42 @@ describe("certificationsRoutes", () => {
       assert.strictEqual(response.data.pagination.total, 1);
     });
 
-    it("Vérifie qu'on peut obtenir les stats de formations pour code formation", async () => {
+    it("Vérifie qu'on peut obtenir les stats de formations pour un code formation", async () => {
       const { httpClient } = await startServer();
-      await insertCertificationsStats({ code_certification: "12345" });
-      await insertCertificationsStats({ code_certification: "67890" });
+      await insertCertificationsStats({ code_certification: "12345678" });
+      await insertCertificationsStats({ code_certification: "67890123" });
 
-      const response = await httpClient.get(`/api/inserjeunes/certifications?code_certifications=12345`, {
+      const response = await httpClient.get(`/api/inserjeunes/certifications?code_certifications=12345678`, {
         headers: {
           ...getAuthHeaders(),
         },
       });
 
       assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.data.certifications[0].code_certification, "12345");
+      assert.strictEqual(response.data.certifications[0].code_certification, "12345678");
+      assert.strictEqual(response.data.pagination.total, 1);
+    });
+
+    it("Vérifie qu'on peut obtenir les stats de formations pour un code formation au format XXX:XXX", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({ code_certification: "12345678" });
+      await insertCertificationsStats({ code_certification: "67890123" });
+
+      const response = await httpClient.get(`/api/inserjeunes/certifications?code_certifications=CFD:12345678`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.data.certifications[0].code_certification, "12345678");
       assert.strictEqual(response.data.pagination.total, 1);
     });
 
     it("Vérifie que l'on met les taux à null pour les effectifs < 20", async () => {
       const { httpClient } = await startServer();
       await insertCertificationsStats({
-        code_certification: "12345",
+        code_certification: "12345678",
         nb_annee_term: 19,
         nb_poursuite_etudes: 1,
         nb_en_emploi_24_mois: 2,
@@ -194,14 +210,14 @@ describe("certificationsRoutes", () => {
         taux_autres_24_mois: 16,
       });
 
-      const response = await httpClient.get(`/api/inserjeunes/certifications/12345`, {
+      const response = await httpClient.get(`/api/inserjeunes/certifications/12345678`, {
         headers: {
           ...getAuthHeaders(),
         },
       });
 
       assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.data.code_certification, "12345");
+      assert.strictEqual(response.data.code_certification, "12345678");
       assert.include(response.data, {
         taux_rupture_contrats: null,
         taux_en_formation: null,
@@ -463,6 +479,50 @@ describe("certificationsRoutes", () => {
       });
     });
 
+    it("Vérifie qu'on peut obtenir la certification avec le format CFD:XXXXXXXX", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        filiere: "apprentissage",
+        nb_annee_term: 100,
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/certifications/CFD:12345678`);
+
+      assert.strictEqual(response.status, 200);
+      assert.deepInclude(response.data, {
+        millesime: "2020",
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        filiere: "apprentissage",
+        diplome: { code: "4", libelle: "BAC" },
+        nb_annee_term: 100,
+      });
+    });
+
+    it("Vérifie qu'on peut obtenir la certification avec le format MEF11:XXXXXXXXXXX", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({
+        code_certification: "12345678910",
+        code_formation_diplome: "12345678910",
+        filiere: "pro",
+        nb_annee_term: 100,
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/certifications/MEF11:12345678910`);
+
+      assert.strictEqual(response.status, 200);
+      assert.deepInclude(response.data, {
+        millesime: "2020",
+        code_certification: "12345678910",
+        code_formation_diplome: "12345678910",
+        filiere: "pro",
+        diplome: { code: "4", libelle: "BAC" },
+        nb_annee_term: 100,
+      });
+    });
+
     it("Vérifie que l'on renvoi l'information si la formation est fermée", async () => {
       const { httpClient } = await startServer();
       await insertCertificationsStats({
@@ -673,13 +733,38 @@ describe("certificationsRoutes", () => {
     it("Vérifie qu'on retourne une 404 si la certification est inconnue", async () => {
       const { httpClient } = await startServer();
 
-      const response = await httpClient.get(`/api/inserjeunes/certifications/INCONNUE`);
+      const response = await httpClient.get(`/api/inserjeunes/certifications/12345678`);
 
       assert.strictEqual(response.status, 404);
       assert.deepStrictEqual(response.data, {
         error: "Not Found",
         message: "Certification inconnue",
         statusCode: 404,
+      });
+    });
+
+    it("Vérifie qu'on retourne une 400 si le code de certification n'est pas valide", async () => {
+      const { httpClient } = await startServer();
+
+      const response = await httpClient.get(`/api/inserjeunes/certifications/INVALIDE`);
+
+      assert.strictEqual(response.status, 400);
+      assert.deepStrictEqual(response.data, {
+        error: "Bad Request",
+        message: "Erreur de validation",
+        statusCode: 400,
+        details: [
+          {
+            context: {
+              key: "codes_certifications",
+              label: "codes_certifications",
+              value: ["INVALIDE"],
+            },
+            message: '"codes_certifications" must have the same type (CFD/MEF11 or SISE)',
+            path: ["codes_certifications"],
+            type: "codes_certification.invalid",
+          },
+        ],
       });
     });
   });
@@ -981,7 +1066,7 @@ describe("certificationsRoutes", () => {
     describe("Vérifie qu'on obtient une erreur quand la statistique n'existe pas", async () => {
       it("Retourne une erreur par défaut", async () => {
         const { httpClient } = await startServer();
-        const response = await httpClient.get("/api/inserjeunes/certifications/INCONNUE.svg");
+        const response = await httpClient.get("/api/inserjeunes/certifications/12345678.svg");
 
         assert.strictEqual(response.status, 404);
         assert.strictEqual(response.data.message, "Certification inconnue");
@@ -989,7 +1074,7 @@ describe("certificationsRoutes", () => {
 
       it("Retourne une image vide quand imageOnError est empty", async () => {
         const { httpClient } = await startServer();
-        const response = await httpClient.get("/api/inserjeunes/certifications/INCONNUE.svg?imageOnError=empty");
+        const response = await httpClient.get("/api/inserjeunes/certifications/12345678.svg?imageOnError=empty");
 
         const svgFixture = await fs.promises.readFile(
           `tests/fixtures/widgets/dsfr/certifications/error_empty.svg`,
@@ -1003,7 +1088,7 @@ describe("certificationsRoutes", () => {
       it("Quand imageOnError est false", async () => {
         const { httpClient } = await startServer();
 
-        const response = await httpClient.get("/api/inserjeunes/certifications/INCONNUE.svg?imageOnError=false");
+        const response = await httpClient.get("/api/inserjeunes/certifications/12345678.svg?imageOnError=false");
 
         assert.strictEqual(response.status, 404);
         assert.strictEqual(response.data.message, "Certification inconnue");
@@ -1625,6 +1710,27 @@ describe("certificationsRoutes", () => {
 
     beforeEach(async () => {
       await insertUser();
+    });
+
+    it("Vérifie qu'on obtient un widget avec un code au format XXX:XXX", async () => {
+      const { httpClient } = await startServer();
+      await createDefaultStats();
+      const response = await httpClient.get("/api/inserjeunes/certifications/CFD:12345678/widget/test");
+      assert.strictEqual(response.status, 200);
+
+      const dom = new JSDOM(response.data);
+
+      const emploiBlock = dom.window.document.querySelector(".block-emploi");
+      expect(emploiBlock).to.contain.text("EN EMPLOI");
+      expect(emploiBlock).to.contain.text("3 élèves sur 10");
+
+      const formationBlock = dom.window.document.querySelector(".block-formation");
+      expect(formationBlock).to.contain.text("EN FORMATION");
+      expect(formationBlock).to.contain.text("5 élèves sur 10");
+
+      const autresBlock = dom.window.document.querySelector(".block-autres");
+      expect(autresBlock).to.contain.text("AUTRES PARCOURS");
+      expect(autresBlock).to.contain.text("2 élèves sur 10");
     });
 
     it("Vérifie qu'on obtient un widget", async () => {

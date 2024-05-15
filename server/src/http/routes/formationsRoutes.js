@@ -5,7 +5,7 @@ import Joi from "joi";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
 import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src/http/utils/responseUtils.js";
-import { formatMillesime } from "#src/http/utils/formatters.js";
+import { formatMillesime, formatCodesCertifications, formatCodeCertification } from "#src/http/utils/formatters.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import { getLastMillesimesFormations, transformDisplayStat } from "#src/common/stats.js";
@@ -66,7 +66,8 @@ export default () => {
           ...validators.regions(),
           ...validators.academies(),
           ...validators.statsList([getLastMillesimesFormations()]),
-        }
+        },
+        { code_certifications: formatCodesCertifications }
       );
 
       let { find, pagination } = await FormationStatsRepository.findAndPaginate(
@@ -123,10 +124,12 @@ export default () => {
         { ...req.params, ...req.query },
         {
           ...validators.uai(),
-          code_certification: Joi.string().required(),
+          ...validators.codeCertification(),
+          ...validators.universe(),
           millesime: Joi.string().default(getLastMillesimesFormations()),
           ...validators.svg(),
-        }
+        },
+        { code_certification: formatCodeCertification }
       );
 
       return sendImageOnError(
@@ -150,10 +153,11 @@ export default () => {
         {
           hash: Joi.string(),
           ...validators.uai(),
-          code_certification: Joi.string().required(),
+          ...validators.codeCertification(),
           millesime: Joi.string().default(getLastMillesimesFormations()),
           ...validators.widget("stats"),
-        }
+        },
+        { code_certification: formatCodeCertification }
       );
 
       try {
@@ -202,10 +206,11 @@ export default () => {
         { ...req.params, ...req.query },
         {
           ...validators.uai(),
-          code_certification: Joi.string().required(),
+          ...validators.codeCertification(),
           millesime: Joi.string().default(null),
           ...validators.widget("stats"),
-        }
+        },
+        { code_certification: formatCodeCertification }
       );
 
       const widget = getIframe({

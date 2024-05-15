@@ -1,6 +1,8 @@
 import { bcn } from "#src/common/db/collections/collections.js";
 import { pickWithNil } from "#src/common/utils/objectUtils.js";
 
+export const CERTIFICATION_UNIVERSE = ["secondaire", "superieur"];
+
 export async function getCertificationInfo(code_certification) {
   const certification = await bcn().findOne({ code_certification });
   if (!certification) {
