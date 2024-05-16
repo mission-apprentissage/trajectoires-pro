@@ -1,3 +1,15 @@
+---
+title: "Impact LBA - Mai 2024"
+subtitle: "Document de travail"
+date: "Mai 2024"
+output: 
+    html_document:
+      keep_md: yes
+      toc: true
+      toc_float:
+        toc_collapsed: true
+---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,warning = FALSE,error = FALSE,message = FALSE)
 
@@ -6,8 +18,6 @@ library(tidyverse)
 library(jsonlite)
 library(rpart)
 library(rpart.plot)
-library(knitr)
-library(kableExtra)
 
 source("../../../../0- data/.env")
 
@@ -348,9 +358,7 @@ stats_lba_cle_rdv %>%
       T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
     )
   ) %>% 
- kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
-  kable_paper()
-
+  knitr::kable()
 ```
 
 ### Demandes de rendez-vous sur la période
@@ -372,9 +380,7 @@ stats_lba_cle_rdv %>%
       T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
     )
   ) %>% 
- kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
-  kable_paper()
-
+  knitr::kable()
 ```
 
 ### Demandes de rendez-vous pour 1000 visites sur la période
@@ -403,8 +409,7 @@ stats_lba_cle_rdv %>%
       T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
     )
   )  %>% 
- kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
-  kable_paper()
+  knitr::kable()
 ```
 
 ## Lien avec l'affichage des données IJ
@@ -480,11 +485,23 @@ temp <- stats_lba_cle_rdv %>%
   )
 
 
-temp %>% 
-  setNames(c("Affichage des données IJ en 2024",rep(c('2023', '2024',"Evolution"), 3))) %>% 
- kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
-  kable_paper() %>% 
-  add_header_above(c(" " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
+sketch = htmltools::withTags(table(
+  class = 'display',
+  thead(
+    tr(
+      th(rowspan = 2, 'Affichage des données IJ en 2024'),
+      th(colspan = 3, 'Demandes de rdv'),
+      th(colspan = 3, 'Visites'),
+      th(colspan = 3, 'Demandes de rdv pour 1000 Visites'),
+    ),
+    tr(
+      lapply(rep(c('2023', '2024',"Evolution"), 3), th)
+    )
+  )
+))
+
+DT::datatable(temp, container = sketch, rownames = FALSE,options = list(dom = 't',ordering=F))
+
 ```
 
 
@@ -559,12 +576,22 @@ temp <- stats_lba_cle_rdv %>%
   )
 
 
-temp %>% 
-  setNames(c("Avant/Après le bac",rep(c('2023', '2024',"Evolution"), 3))) %>% 
- kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
-  kable_paper() %>% 
-  add_header_above(c(" " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
+sketch = htmltools::withTags(table(
+  class = 'display',
+  thead(
+    tr(
+      th(rowspan = 2, 'Avant/Après le bac'),
+      th(colspan = 3, 'Demandes de rdv'),
+      th(colspan = 3, 'Visites'),
+      th(colspan = 3, 'Demandes de rdv pour 1000 Visites'),
+    ),
+    tr(
+      lapply(rep(c('2023', '2024',"Evolution"), 3), th)
+    )
+  )
+))
 
+DT::datatable(temp, container = sketch, rownames = FALSE,options = list(dom = 't',ordering=F))
 ```
 
 ### Demandes de rendez-vous pour 1000 visites sur la période
@@ -650,13 +677,23 @@ temp <- stats_lba_cle_rdv %>%
   )
 
 
+sketch = htmltools::withTags(table(
+  class = 'display',
+  thead(
+    tr(
+      th(rowspan = 2, 'Affichage des données IJ en 2024'),
+      th(rowspan = 2, 'Avant/Après le bac'),
+      th(colspan = 3, 'Demandes de rdv'),
+      th(colspan = 3, 'Visites'),
+      th(colspan = 3, 'Demandes de rdv pour 1000 Visites'),
+    ),
+    tr(
+      lapply(rep(c('2023', '2024',"Evolution"), 3), th)
+    )
+  )
+))
 
-temp %>% 
-  setNames(c("Affichage des données IJ en 2024","Avant/Après le bac",rep(c('2023', '2024',"Evolution"), 3))) %>% 
- kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
-  kable_paper() %>% 
-  add_header_above(c(" " = 1," " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
-
+DT::datatable(temp, container = sketch, rownames = FALSE,options = list(dom = 't',ordering=F))
 ```
 
 
@@ -805,12 +842,23 @@ temp <- stats_lba_cle_rdv %>%
   )
 
 
-temp  %>% 
-  setNames(c("Avant/Après le bac","Groupe de taux de devenir favorable",rep(c('2023', '2024',"Evolution"), 3))) %>% 
- kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
-  kable_paper() %>% 
-  add_header_above(c(" " = 1," " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
+sketch = htmltools::withTags(table(
+  class = 'display',
+  thead(
+    tr(
+      th(rowspan = 2, 'Avant/Après le bac'),
+      th(rowspan = 2, 'Groupe de taux de devenir favorable'),
+      th(colspan = 3, 'Demandes de rdv'),
+      th(colspan = 3, 'Visites'),
+      th(colspan = 3, 'Demandes de rdv pour 1000 Visites'),
+    ),
+    tr(
+      lapply(rep(c('2023', '2024',"Evolution"), 3), th)
+    )
+  )
+))
 
+DT::datatable(temp, container = sketch, rownames = FALSE,options = list(dom = 't',ordering=F))
 ```
 
 
@@ -954,13 +1002,22 @@ temp <-stats_lba_cle_rdv %>%
   )
 
 
-temp  %>% 
-  setNames(c("Avant/Après le bac","Groupe de taux en emploi et en formation",rep(c('2023', '2024',"Evolution"), 3))) %>% 
-  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
-  kable_paper() %>% 
-  add_header_above(c(" " = 1," " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
+sketch = htmltools::withTags(table(
+  class = 'display',
+  thead(
+    tr(
+      th(rowspan = 2, 'Avant/Après le bac'),
+      th(rowspan = 2, 'Groupe de taux en emploi et en formation'),
+      th(colspan = 3, 'Demandes de rdv'),
+      th(colspan = 3, 'Visites'),
+      th(colspan = 3, 'Demandes de rdv pour 1000 Visites'),
+    ),
+    tr(
+      lapply(rep(c('2023', '2024',"Evolution"), 3), th)
+    )
+  )
+))
 
+DT::datatable(temp, container = sketch, rownames = FALSE,options = list(dom = 't',ordering=F))
 
 ```
-
-![Visualisation simplifiée de l'évolution des demandes de rendez-vous en fonction du taux d'emploi à 6 mois et du taux en formation](images/graphique_simplifie.jpg)
