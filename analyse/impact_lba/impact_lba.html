@@ -1518,69 +1518,6 @@ background-color: #00000008;
 border: 0;
 }
 </style>
-<style type="text/css">.tabwid {
-font-size: initial;
-padding-bottom: 1em;
-}
-.tabwid table{
-border-spacing:0px !important;
-border-collapse:collapse;
-line-height:1;
-margin-left:auto;
-margin-right:auto;
-border-width: 0;
-border-color: transparent;
-caption-side: top;
-}
-.tabwid-caption-bottom table{
-caption-side: bottom;
-}
-.tabwid_left table{
-margin-left:0;
-}
-.tabwid_right table{
-margin-right:0;
-}
-.tabwid td, .tabwid th {
-padding: 0;
-}
-.tabwid a {
-text-decoration: none;
-}
-.tabwid thead {
-background-color: transparent;
-}
-.tabwid tfoot {
-background-color: transparent;
-}
-.tabwid table tr {
-background-color: transparent;
-}
-.katex-display {
-margin: 0 0 !important;
-}
-</style>
-<script>document.addEventListener("DOMContentLoaded", function(event) {
-  var els = document.querySelectorAll(".tabwid");
-  var tabwid_link = document.querySelector('link[href*="tabwid.css"]')
-  if (tabwid_link === null) {
-    const tabwid_styles = document.evaluate("//style[contains(., 'tabwid')]", document, null, XPathResult.ANY_TYPE, null );
-    tabwid_link = tabwid_styles.iterateNext();
-  }
-
-  Array.prototype.forEach.call(els, function(template) {
-      const dest = document.createElement("div");
-      template.parentNode.insertBefore(dest, template.nextSibling)
-      dest.setAttribute("class", "flextable-shadow-host");
-      const fantome = dest.attachShadow({mode: 'open'});
-      fantome.appendChild(template);
-      if (tabwid_link !== null) {
-        fantome.appendChild(tabwid_link.cloneNode(true));
-      }
-  });
-});
-
-</script>
 
 <style type="text/css">
 code{white-space: pre-wrap;}
@@ -1816,19 +1753,31 @@ selon les critères détaillés ci-dessus.</p>
 <h3>Visites sur la période</h3>
 <p>Pour ces formations, on constate une forte hausse de 180% des visites
 entre 2023 et 2024 (de 32010 en 2023 à 89471 en 2024) :</p>
-<table>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
 <thead>
-<tr class="header">
-<th align="right">2023 - visiteurs</th>
-<th align="right">2024 - visiteurs</th>
-<th align="left">Evolution_visiteurs</th>
+<tr>
+<th style="text-align:right;">
+2023 - visiteurs
+</th>
+<th style="text-align:right;">
+2024 - visiteurs
+</th>
+<th style="text-align:left;">
+Evolution_visiteurs
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="right">32010</td>
-<td align="right">89471</td>
-<td align="left">+180%</td>
+<tr>
+<td style="text-align:right;">
+32 010
+</td>
+<td style="text-align:right;">
+89 471
+</td>
+<td style="text-align:left;">
++180%
+</td>
 </tr>
 </tbody>
 </table>
@@ -1855,10 +1804,10 @@ Evolution_RDV
 <tbody>
 <tr>
 <td style="text-align:right;">
-5099
+5 099
 </td>
 <td style="text-align:right;">
-5126
+5 126
 </td>
 <td style="text-align:left;">
 +1%
@@ -1872,7 +1821,34 @@ Evolution_RDV
 <p>Pour ces formations, on constate une baisse de 64% du nombre de
 demandes de rendez-vous pour 1000 visites entre 2023 et 2024 (de 159 en
 2023 à 57.3 en 2024) :</p>
-<div class="tabwid"><style>.cl-b02c0e16{}.cl-b021340a{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-b024ae96{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b024aea0{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b024cac0{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b024caca{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b024cad4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b024cad5{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-b02c0e16"><thead><tr style="overflow-wrap:break-word;"><th class="cl-b024cac0"><p class="cl-b024ae96"><span class="cl-b021340a">2023 - RDV pour 1000 visites</span></p></th><th class="cl-b024cac0"><p class="cl-b024ae96"><span class="cl-b021340a">2024 - RDV pour 1000 visites</span></p></th><th class="cl-b024caca"><p class="cl-b024aea0"><span class="cl-b021340a">Evolution_rdv_pour_1000_visites</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-b024cad4"><p class="cl-b024ae96"><span class="cl-b021340a">159,294</span></p></td><td class="cl-b024cad4"><p class="cl-b024ae96"><span class="cl-b021340a">57,29231</span></p></td><td class="cl-b024cad5"><p class="cl-b024aea0"><span class="cl-b021340a">-64%</span></p></td></tr></tbody></table></div>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+2023 - RDV pour 1000 visites
+</th>
+<th style="text-align:right;">
+2024 - RDV pour 1000 visites
+</th>
+<th style="text-align:left;">
+Evolution_rdv_pour_1000_visites
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+159,294
+</td>
+<td style="text-align:right;">
+57,29231
+</td>
+<td style="text-align:left;">
+-64%
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="lien-avec-laffichage-des-données-ij" class="section level2">
@@ -1954,19 +1930,19 @@ Evolution
 Non
 </td>
 <td style="text-align:right;">
-1265
+1 265
 </td>
 <td style="text-align:right;">
-2199
+2 199
 </td>
 <td style="text-align:left;">
 +74%
 </td>
 <td style="text-align:right;">
-12249
+12 249
 </td>
 <td style="text-align:right;">
-42991
+42 991
 </td>
 <td style="text-align:left;">
 +251%
@@ -1986,19 +1962,19 @@ Non
 Oui
 </td>
 <td style="text-align:right;">
-3834
+3 834
 </td>
 <td style="text-align:right;">
-2927
+2 927
 </td>
 <td style="text-align:left;">
 -24%
 </td>
 <td style="text-align:right;">
-19761
+19 761
 </td>
 <td style="text-align:right;">
-46480
+46 480
 </td>
 <td style="text-align:left;">
 +135%
@@ -2031,7 +2007,127 @@ découle une baisse beaucoup plus importante des demandes de rendez-vous
 pour 1000 visites concernant les formations post-bac (-73% vs
 -30%).</p></li>
 </ul>
-<div class="tabwid"><style>.cl-b087b2de{}.cl-b07f701a{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-b08272ce{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b08272d8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b08287d2{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b08287dc{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b08287e6{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b08287f0{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b08287fa{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b08287fb{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-b087b2de"><thead><tr style="overflow-wrap:break-word;"><th class="cl-b08287d2"><p class="cl-b08272ce"><span class="cl-b07f701a"></span></p></th><th colspan="3" class="cl-b08287dc"><p class="cl-b08272d8"><span class="cl-b07f701a">Demandes de rdv</span></p></th><th colspan="3" class="cl-b08287dc"><p class="cl-b08272d8"><span class="cl-b07f701a">Visites</span></p></th><th colspan="3" class="cl-b08287dc"><p class="cl-b08272d8"><span class="cl-b07f701a">Demandes de rdv pour 1000 visites</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-b08287d2"><p class="cl-b08272ce"><span class="cl-b07f701a">Avant/Après le bac</span></p></th><th class="cl-b08287dc"><p class="cl-b08272d8"><span class="cl-b07f701a">2023</span></p></th><th class="cl-b08287dc"><p class="cl-b08272d8"><span class="cl-b07f701a">2024</span></p></th><th class="cl-b08287d2"><p class="cl-b08272ce"><span class="cl-b07f701a">Evolution</span></p></th><th class="cl-b08287dc"><p class="cl-b08272d8"><span class="cl-b07f701a">2023</span></p></th><th class="cl-b08287dc"><p class="cl-b08272d8"><span class="cl-b07f701a">2024</span></p></th><th class="cl-b08287d2"><p class="cl-b08272ce"><span class="cl-b07f701a">Evolution</span></p></th><th class="cl-b08287dc"><p class="cl-b08272d8"><span class="cl-b07f701a">2023</span></p></th><th class="cl-b08287dc"><p class="cl-b08272d8"><span class="cl-b07f701a">2024</span></p></th><th class="cl-b08287d2"><p class="cl-b08272ce"><span class="cl-b07f701a">Evolution</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-b08287e6"><p class="cl-b08272ce"><span class="cl-b07f701a">Avant le bac</span></p></td><td class="cl-b08287f0"><p class="cl-b08272d8"><span class="cl-b07f701a">1 029</span></p></td><td class="cl-b08287f0"><p class="cl-b08272d8"><span class="cl-b07f701a">2 066</span></p></td><td class="cl-b08287e6"><p class="cl-b08272ce"><span class="cl-b07f701a">+101%</span></p></td><td class="cl-b08287f0"><p class="cl-b08272d8"><span class="cl-b07f701a">11 187</span></p></td><td class="cl-b08287f0"><p class="cl-b08272d8"><span class="cl-b07f701a">32 113</span></p></td><td class="cl-b08287e6"><p class="cl-b08272ce"><span class="cl-b07f701a">+187%</span></p></td><td class="cl-b08287f0"><p class="cl-b08272d8"><span class="cl-b07f701a">92</span></p></td><td class="cl-b08287f0"><p class="cl-b08272d8"><span class="cl-b07f701a">64</span></p></td><td class="cl-b08287e6"><p class="cl-b08272ce"><span class="cl-b07f701a">-30%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-b08287fa"><p class="cl-b08272ce"><span class="cl-b07f701a">Après le bac</span></p></td><td class="cl-b08287fb"><p class="cl-b08272d8"><span class="cl-b07f701a">4 070</span></p></td><td class="cl-b08287fb"><p class="cl-b08272d8"><span class="cl-b07f701a">3 060</span></p></td><td class="cl-b08287fa"><p class="cl-b08272ce"><span class="cl-b07f701a">-25%</span></p></td><td class="cl-b08287fb"><p class="cl-b08272d8"><span class="cl-b07f701a">20 823</span></p></td><td class="cl-b08287fb"><p class="cl-b08272d8"><span class="cl-b07f701a">57 358</span></p></td><td class="cl-b08287fa"><p class="cl-b08272ce"><span class="cl-b07f701a">+175%</span></p></td><td class="cl-b08287fb"><p class="cl-b08272d8"><span class="cl-b07f701a">195</span></p></td><td class="cl-b08287fb"><p class="cl-b08272d8"><span class="cl-b07f701a">53</span></p></td><td class="cl-b08287fa"><p class="cl-b08272ce"><span class="cl-b07f701a">-73%</span></p></td></tr></tbody></table></div>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Demandes de rdv
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Visites
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Demandes de rdv pour 1000 visites
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Avant/Après le bac
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Avant le bac
+</td>
+<td style="text-align:right;">
+1 029
+</td>
+<td style="text-align:right;">
+2 066
+</td>
+<td style="text-align:left;">
++101%
+</td>
+<td style="text-align:right;">
+11 187
+</td>
+<td style="text-align:right;">
+32 113
+</td>
+<td style="text-align:left;">
++187%
+</td>
+<td style="text-align:right;">
+92
+</td>
+<td style="text-align:right;">
+64
+</td>
+<td style="text-align:left;">
+-30%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Après le bac
+</td>
+<td style="text-align:right;">
+4 070
+</td>
+<td style="text-align:right;">
+3 060
+</td>
+<td style="text-align:left;">
+-25%
+</td>
+<td style="text-align:right;">
+20 823
+</td>
+<td style="text-align:right;">
+57 358
+</td>
+<td style="text-align:left;">
++175%
+</td>
+<td style="text-align:right;">
+195
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:left;">
+-73%
+</td>
+</tr>
+</tbody>
+</table>
 <div id="demandes-de-rendez-vous-pour-1000-visites-sur-la-période-1" class="section level3">
 <h3>Demandes de rendez-vous pour 1000 visites sur la période</h3>
 </div>
@@ -2060,7 +2156,208 @@ baisse moins importante des demandes de rendez-vous pour 1000 visites
 que les formations infra-bac avec exposition des données IJ. Il en va de
 même pour les formations post-bac.</p></li>
 </ul>
-<div class="tabwid"><style>.cl-b0c75466{}.cl-b0bdbe92{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-b0c1530e{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b0c15322{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b0c1670e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b0c16718{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b0c16722{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b0c1672c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b0c16736{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b0c16737{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-b0c75466"><thead><tr style="overflow-wrap:break-word;"><th class="cl-b0c1670e"><p class="cl-b0c1530e"><span class="cl-b0bdbe92"></span></p></th><th class="cl-b0c1670e"><p class="cl-b0c1530e"><span class="cl-b0bdbe92"></span></p></th><th colspan="3" class="cl-b0c16718"><p class="cl-b0c15322"><span class="cl-b0bdbe92">Demandes de rdv</span></p></th><th colspan="3" class="cl-b0c16718"><p class="cl-b0c15322"><span class="cl-b0bdbe92">Visites</span></p></th><th colspan="3" class="cl-b0c16718"><p class="cl-b0c15322"><span class="cl-b0bdbe92">Demandes de rdv pour 1000 visites</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-b0c1670e"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Affichage des données IJ en 2024</span></p></th><th class="cl-b0c1670e"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Avant/Après le bac</span></p></th><th class="cl-b0c16718"><p class="cl-b0c15322"><span class="cl-b0bdbe92">2023</span></p></th><th class="cl-b0c16718"><p class="cl-b0c15322"><span class="cl-b0bdbe92">2024</span></p></th><th class="cl-b0c1670e"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Evolution</span></p></th><th class="cl-b0c16718"><p class="cl-b0c15322"><span class="cl-b0bdbe92">2023</span></p></th><th class="cl-b0c16718"><p class="cl-b0c15322"><span class="cl-b0bdbe92">2024</span></p></th><th class="cl-b0c1670e"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Evolution</span></p></th><th class="cl-b0c16718"><p class="cl-b0c15322"><span class="cl-b0bdbe92">2023</span></p></th><th class="cl-b0c16718"><p class="cl-b0c15322"><span class="cl-b0bdbe92">2024</span></p></th><th class="cl-b0c1670e"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Evolution</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Non</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Avant le bac</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">140</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">432</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">+209%</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">2 536</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">8 945</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">+252.7%</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">55</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">48</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">-13%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Non</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Après le bac</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">1 125</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">1 767</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">+57%</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">9 713</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">34 046</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">+250.5%</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">116</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">52</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">-55%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Oui</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Avant le bac</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">889</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">1 634</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">+84%</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">8 651</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">23 168</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">+167.8%</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">103</span></p></td><td class="cl-b0c1672c"><p class="cl-b0c15322"><span class="cl-b0bdbe92">71</span></p></td><td class="cl-b0c16722"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">-31%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-b0c16736"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Oui</span></p></td><td class="cl-b0c16736"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">Après le bac</span></p></td><td class="cl-b0c16737"><p class="cl-b0c15322"><span class="cl-b0bdbe92">2 945</span></p></td><td class="cl-b0c16737"><p class="cl-b0c15322"><span class="cl-b0bdbe92">1 293</span></p></td><td class="cl-b0c16736"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">-56%</span></p></td><td class="cl-b0c16737"><p class="cl-b0c15322"><span class="cl-b0bdbe92">11 110</span></p></td><td class="cl-b0c16737"><p class="cl-b0c15322"><span class="cl-b0bdbe92">23 312</span></p></td><td class="cl-b0c16736"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">+109.8%</span></p></td><td class="cl-b0c16737"><p class="cl-b0c15322"><span class="cl-b0bdbe92">265</span></p></td><td class="cl-b0c16737"><p class="cl-b0c15322"><span class="cl-b0bdbe92">55</span></p></td><td class="cl-b0c16736"><p class="cl-b0c1530e"><span class="cl-b0bdbe92">-79%</span></p></td></tr></tbody></table></div>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Demandes de rdv
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Visites
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Demandes de rdv pour 1000 visites
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Affichage des données IJ en 2024
+</th>
+<th style="text-align:left;">
+Avant/Après le bac
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Non
+</td>
+<td style="text-align:left;">
+Avant le bac
+</td>
+<td style="text-align:right;">
+140
+</td>
+<td style="text-align:right;">
+432
+</td>
+<td style="text-align:left;">
++209%
+</td>
+<td style="text-align:right;">
+2 536
+</td>
+<td style="text-align:right;">
+8 945
+</td>
+<td style="text-align:left;">
++252.7%
+</td>
+<td style="text-align:right;">
+55
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:left;">
+-13%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Non
+</td>
+<td style="text-align:left;">
+Après le bac
+</td>
+<td style="text-align:right;">
+1 125
+</td>
+<td style="text-align:right;">
+1 767
+</td>
+<td style="text-align:left;">
++57%
+</td>
+<td style="text-align:right;">
+9 713
+</td>
+<td style="text-align:right;">
+34 046
+</td>
+<td style="text-align:left;">
++250.5%
+</td>
+<td style="text-align:right;">
+116
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:left;">
+-55%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oui
+</td>
+<td style="text-align:left;">
+Avant le bac
+</td>
+<td style="text-align:right;">
+889
+</td>
+<td style="text-align:right;">
+1 634
+</td>
+<td style="text-align:left;">
++84%
+</td>
+<td style="text-align:right;">
+8 651
+</td>
+<td style="text-align:right;">
+23 168
+</td>
+<td style="text-align:left;">
++167.8%
+</td>
+<td style="text-align:right;">
+103
+</td>
+<td style="text-align:right;">
+71
+</td>
+<td style="text-align:left;">
+-31%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oui
+</td>
+<td style="text-align:left;">
+Après le bac
+</td>
+<td style="text-align:right;">
+2 945
+</td>
+<td style="text-align:right;">
+1 293
+</td>
+<td style="text-align:left;">
+-56%
+</td>
+<td style="text-align:right;">
+11 110
+</td>
+<td style="text-align:right;">
+23 312
+</td>
+<td style="text-align:left;">
++109.8%
+</td>
+<td style="text-align:right;">
+265
+</td>
+<td style="text-align:right;">
+55
+</td>
+<td style="text-align:left;">
+-79%
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="zoom-sur-les-formations-ayant-un-affichage-de-données-ij-en-2024" class="section level2">
 <h2>Zoom sur les formations ayant un affichage de données IJ en
@@ -2075,7 +2372,208 @@ Un taux de devenir favorable faible (Q25: premier quartile) correspond à une va
 demandent plus de rendez-vous lorsque le taux de devenir favorable est
 compris entre 73 et 83%.</p>
 <p><img src="data:image/png;base64,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XS+gqHUsxWOH8w2POutuw3TkspTLztABtQM8ADtLuewMHXS/RAVRy5gBRx8WcgN2lnLZGTrofokItA9LuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOws5TLzmY9IoQAAAnySURBVNABtQM8ADtLuewMHVA7wAOws5TLztABtQM8ADtLuewMHVA7wAOQW8IksnnIG7kPoxY3YYYbMd11wOOTWITPRr3Hc5OY/9sAvN+GKW/EFFehhTydRqdyaSC0Uef8SxQt5Tm1RDtf01adcy7Rtuqcb4l2UOe0Eu14RSd5zq9EO8lzbiXaVZ5TSbRT+c7ynE+J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" /><!-- --></p>
-<div class="tabwid"><style>.cl-b12aa82c{}.cl-b1192d04{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-b123f432{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b123f446{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b1240d14{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b1240d1e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b1240d1f{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b1240d20{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b1240d28{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b1240d29{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-b12aa82c"><thead><tr style="overflow-wrap:break-word;"><th class="cl-b1240d14"><p class="cl-b123f432"><span class="cl-b1192d04"></span></p></th><th class="cl-b1240d14"><p class="cl-b123f432"><span class="cl-b1192d04"></span></p></th><th colspan="3" class="cl-b1240d1e"><p class="cl-b123f446"><span class="cl-b1192d04">Demandes de rdv</span></p></th><th colspan="3" class="cl-b1240d1e"><p class="cl-b123f446"><span class="cl-b1192d04">Visites</span></p></th><th colspan="3" class="cl-b1240d1e"><p class="cl-b123f446"><span class="cl-b1192d04">Demandes de rdv pour 1000 visites</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-b1240d14"><p class="cl-b123f432"><span class="cl-b1192d04">Avant/Après le bac</span></p></th><th class="cl-b1240d14"><p class="cl-b123f432"><span class="cl-b1192d04">Groupe de taux de devenir favorable</span></p></th><th class="cl-b1240d1e"><p class="cl-b123f446"><span class="cl-b1192d04">2023</span></p></th><th class="cl-b1240d1e"><p class="cl-b123f446"><span class="cl-b1192d04">2024</span></p></th><th class="cl-b1240d14"><p class="cl-b123f432"><span class="cl-b1192d04">Evolution</span></p></th><th class="cl-b1240d1e"><p class="cl-b123f446"><span class="cl-b1192d04">2023</span></p></th><th class="cl-b1240d1e"><p class="cl-b123f446"><span class="cl-b1192d04">2024</span></p></th><th class="cl-b1240d14"><p class="cl-b123f432"><span class="cl-b1192d04">Evolution</span></p></th><th class="cl-b1240d1e"><p class="cl-b123f446"><span class="cl-b1192d04">2023</span></p></th><th class="cl-b1240d1e"><p class="cl-b123f446"><span class="cl-b1192d04">2024</span></p></th><th class="cl-b1240d14"><p class="cl-b123f432"><span class="cl-b1192d04">Evolution</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">Avant le bac</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">Taux de devenir favorable compris entre 73 et 83%</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">465</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">763</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">+64.1%</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">4 305</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">10 596</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">+146%</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">108</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">72</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">-33.3%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">Avant le bac</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">Taux de devenir favorable supérieur à 83% ou inférieur à 73%</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">424</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">871</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">+105.4%</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">4 346</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">12 572</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">+189%</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">98</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">69</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">-29.6%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">Après le bac</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">Taux de devenir favorable compris entre 73 et 83%</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">1 604</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">729</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">-54.6%</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">5 716</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">11 451</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">+100%</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">281</span></p></td><td class="cl-b1240d20"><p class="cl-b123f446"><span class="cl-b1192d04">64</span></p></td><td class="cl-b1240d1f"><p class="cl-b123f432"><span class="cl-b1192d04">-77.2%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-b1240d28"><p class="cl-b123f432"><span class="cl-b1192d04">Après le bac</span></p></td><td class="cl-b1240d28"><p class="cl-b123f432"><span class="cl-b1192d04">Taux de devenir favorable supérieur à 83% ou inférieur à 73%</span></p></td><td class="cl-b1240d29"><p class="cl-b123f446"><span class="cl-b1192d04">1 341</span></p></td><td class="cl-b1240d29"><p class="cl-b123f446"><span class="cl-b1192d04">564</span></p></td><td class="cl-b1240d28"><p class="cl-b123f432"><span class="cl-b1192d04">-57.9%</span></p></td><td class="cl-b1240d29"><p class="cl-b123f446"><span class="cl-b1192d04">5 394</span></p></td><td class="cl-b1240d29"><p class="cl-b123f446"><span class="cl-b1192d04">11 861</span></p></td><td class="cl-b1240d28"><p class="cl-b123f432"><span class="cl-b1192d04">+120%</span></p></td><td class="cl-b1240d29"><p class="cl-b123f446"><span class="cl-b1192d04">249</span></p></td><td class="cl-b1240d29"><p class="cl-b123f446"><span class="cl-b1192d04">48</span></p></td><td class="cl-b1240d28"><p class="cl-b123f432"><span class="cl-b1192d04">-80.7%</span></p></td></tr></tbody></table></div>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Demandes de rdv
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Visites
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Demandes de rdv pour 1000 visites
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Avant/Après le bac
+</th>
+<th style="text-align:left;">
+Groupe de taux de devenir favorable
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Avant le bac
+</td>
+<td style="text-align:left;">
+Taux de devenir favorable compris entre 73 et 83%
+</td>
+<td style="text-align:right;">
+465
+</td>
+<td style="text-align:right;">
+763
+</td>
+<td style="text-align:left;">
++64.1%
+</td>
+<td style="text-align:right;">
+4 305
+</td>
+<td style="text-align:right;">
+10 596
+</td>
+<td style="text-align:left;">
++146%
+</td>
+<td style="text-align:right;">
+108
+</td>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:left;">
+-33.3%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Avant le bac
+</td>
+<td style="text-align:left;">
+Taux de devenir favorable supérieur à 83% ou inférieur à 73%
+</td>
+<td style="text-align:right;">
+424
+</td>
+<td style="text-align:right;">
+871
+</td>
+<td style="text-align:left;">
++105.4%
+</td>
+<td style="text-align:right;">
+4 346
+</td>
+<td style="text-align:right;">
+12 572
+</td>
+<td style="text-align:left;">
++189%
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+69
+</td>
+<td style="text-align:left;">
+-29.6%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Après le bac
+</td>
+<td style="text-align:left;">
+Taux de devenir favorable compris entre 73 et 83%
+</td>
+<td style="text-align:right;">
+1 604
+</td>
+<td style="text-align:right;">
+729
+</td>
+<td style="text-align:left;">
+-54.6%
+</td>
+<td style="text-align:right;">
+5 716
+</td>
+<td style="text-align:right;">
+11 451
+</td>
+<td style="text-align:left;">
++100%
+</td>
+<td style="text-align:right;">
+281
+</td>
+<td style="text-align:right;">
+64
+</td>
+<td style="text-align:left;">
+-77.2%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Après le bac
+</td>
+<td style="text-align:left;">
+Taux de devenir favorable supérieur à 83% ou inférieur à 73%
+</td>
+<td style="text-align:right;">
+1 341
+</td>
+<td style="text-align:right;">
+564
+</td>
+<td style="text-align:left;">
+-57.9%
+</td>
+<td style="text-align:right;">
+5 394
+</td>
+<td style="text-align:right;">
+11 861
+</td>
+<td style="text-align:left;">
++120%
+</td>
+<td style="text-align:right;">
+249
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:left;">
+-80.7%
+</td>
+</tr>
+</tbody>
+</table>
 <!--*   **Demandes de rendez-vous**: Le premier quartile de taux de devenir favorable (72% pour l’infra-bac et 78% pour le post-bac) est discriminant pour les formations infra et post-bac. 
 
 **Deux constats relativement proches à nuancer néanmoins:**
@@ -2119,7 +2617,212 @@ demandes de rendez-vous est en baisse si:</p>
 6 mois est compris entre 57 et 81%.</li>
 </ul>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
-<div class="tabwid"><style>.cl-b17ba100{}.cl-b1732bf6{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-b175fdae{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b175fdb8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b176112c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b1761136{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b1761137{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b1761140{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b1761141{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b1761142{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-b17ba100"><thead><tr style="overflow-wrap:break-word;"><th class="cl-b176112c"><p class="cl-b175fdae"><span class="cl-b1732bf6"></span></p></th><th class="cl-b176112c"><p class="cl-b175fdae"><span class="cl-b1732bf6"></span></p></th><th colspan="3" class="cl-b1761136"><p class="cl-b175fdb8"><span class="cl-b1732bf6">Demandes de rdv</span></p></th><th colspan="3" class="cl-b1761136"><p class="cl-b175fdb8"><span class="cl-b1732bf6">Visites</span></p></th><th colspan="3" class="cl-b1761136"><p class="cl-b175fdb8"><span class="cl-b1732bf6">Demandes de rdv pour 1000 visites</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-b176112c"><p class="cl-b175fdae"><span class="cl-b1732bf6">Avant/Après le bac</span></p></th><th class="cl-b176112c"><p class="cl-b175fdae"><span class="cl-b1732bf6">Groupe de taux en emploi et en formation</span></p></th><th class="cl-b1761136"><p class="cl-b175fdb8"><span class="cl-b1732bf6">2023</span></p></th><th class="cl-b1761136"><p class="cl-b175fdb8"><span class="cl-b1732bf6">2024</span></p></th><th class="cl-b176112c"><p class="cl-b175fdae"><span class="cl-b1732bf6">Evolution</span></p></th><th class="cl-b1761136"><p class="cl-b175fdb8"><span class="cl-b1732bf6">2023</span></p></th><th class="cl-b1761136"><p class="cl-b175fdb8"><span class="cl-b1732bf6">2024</span></p></th><th class="cl-b176112c"><p class="cl-b175fdae"><span class="cl-b1732bf6">Evolution</span></p></th><th class="cl-b1761136"><p class="cl-b175fdb8"><span class="cl-b1732bf6">2023</span></p></th><th class="cl-b1761136"><p class="cl-b175fdb8"><span class="cl-b1732bf6">2024</span></p></th><th class="cl-b176112c"><p class="cl-b175fdae"><span class="cl-b1732bf6">Evolution</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">Avant le bac</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">Autres</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">170</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">507</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">+198%</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">2 160</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">6 632</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">+207.0%</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">79</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">76</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">-3.8%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">Avant le bac</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">Taux en empoi à 6 mois &gt;= 81%, taux en formation &gt;= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">719</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">1 127</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">+57%</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">6 491</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">16 536</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">+154.8%</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">111</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">68</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">-38.7%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">Après le bac</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">Autres</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">45</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">60</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">+33%</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">472</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">1 218</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">+158.1%</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">95</span></p></td><td class="cl-b1761140"><p class="cl-b175fdb8"><span class="cl-b1732bf6">49</span></p></td><td class="cl-b1761137"><p class="cl-b175fdae"><span class="cl-b1732bf6">-48.4%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-b1761141"><p class="cl-b175fdae"><span class="cl-b1732bf6">Après le bac</span></p></td><td class="cl-b1761141"><p class="cl-b175fdae"><span class="cl-b1732bf6">Taux en empoi à 6 mois &gt;= 81%, taux en formation &gt;= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%</span></p></td><td class="cl-b1761142"><p class="cl-b175fdb8"><span class="cl-b1732bf6">2 900</span></p></td><td class="cl-b1761142"><p class="cl-b175fdb8"><span class="cl-b1732bf6">1 233</span></p></td><td class="cl-b1761141"><p class="cl-b175fdae"><span class="cl-b1732bf6">-57%</span></p></td><td class="cl-b1761142"><p class="cl-b175fdb8"><span class="cl-b1732bf6">10 638</span></p></td><td class="cl-b1761142"><p class="cl-b175fdb8"><span class="cl-b1732bf6">22 094</span></p></td><td class="cl-b1761141"><p class="cl-b175fdae"><span class="cl-b1732bf6">+107.7%</span></p></td><td class="cl-b1761142"><p class="cl-b175fdb8"><span class="cl-b1732bf6">273</span></p></td><td class="cl-b1761142"><p class="cl-b175fdb8"><span class="cl-b1732bf6">56</span></p></td><td class="cl-b1761141"><p class="cl-b175fdae"><span class="cl-b1732bf6">-79.5%</span></p></td></tr></tbody></table></div>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Demandes de rdv
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Visites
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Demandes de rdv pour 1000 visites
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Avant/Après le bac
+</th>
+<th style="text-align:left;">
+Groupe de taux en emploi et en formation
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2024
+</th>
+<th style="text-align:left;">
+Evolution
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Avant le bac
+</td>
+<td style="text-align:left;">
+Autres
+</td>
+<td style="text-align:right;">
+170
+</td>
+<td style="text-align:right;">
+507
+</td>
+<td style="text-align:left;">
++198%
+</td>
+<td style="text-align:right;">
+2 160
+</td>
+<td style="text-align:right;">
+6 632
+</td>
+<td style="text-align:left;">
++207.0%
+</td>
+<td style="text-align:right;">
+79
+</td>
+<td style="text-align:right;">
+76
+</td>
+<td style="text-align:left;">
+-3.8%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Avant le bac
+</td>
+<td style="text-align:left;">
+Taux en empoi à 6 mois &gt;= 81%, taux en formation &gt;= 23 ou taux en
+formation est compris entre 15 et 23% et taux en emploi à 6 mois est
+compris entre 57 et 81%
+</td>
+<td style="text-align:right;">
+719
+</td>
+<td style="text-align:right;">
+1 127
+</td>
+<td style="text-align:left;">
++57%
+</td>
+<td style="text-align:right;">
+6 491
+</td>
+<td style="text-align:right;">
+16 536
+</td>
+<td style="text-align:left;">
++154.8%
+</td>
+<td style="text-align:right;">
+111
+</td>
+<td style="text-align:right;">
+68
+</td>
+<td style="text-align:left;">
+-38.7%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Après le bac
+</td>
+<td style="text-align:left;">
+Autres
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:left;">
++33%
+</td>
+<td style="text-align:right;">
+472
+</td>
+<td style="text-align:right;">
+1 218
+</td>
+<td style="text-align:left;">
++158.1%
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:left;">
+-48.4%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Après le bac
+</td>
+<td style="text-align:left;">
+Taux en empoi à 6 mois &gt;= 81%, taux en formation &gt;= 23 ou taux en
+formation est compris entre 15 et 23% et taux en emploi à 6 mois est
+compris entre 57 et 81%
+</td>
+<td style="text-align:right;">
+2 900
+</td>
+<td style="text-align:right;">
+1 233
+</td>
+<td style="text-align:left;">
+-57%
+</td>
+<td style="text-align:right;">
+10 638
+</td>
+<td style="text-align:right;">
+22 094
+</td>
+<td style="text-align:left;">
++107.7%
+</td>
+<td style="text-align:right;">
+273
+</td>
+<td style="text-align:right;">
+56
+</td>
+<td style="text-align:left;">
+-79.5%
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
