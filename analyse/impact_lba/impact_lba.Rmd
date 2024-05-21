@@ -19,6 +19,8 @@ library(jsonlite)
 library(rpart)
 library(rpart.plot)
 library(flextable)
+library(knitr)
+library(kableExtra)
 
 source("../../../../0- data/.env")
 
@@ -359,11 +361,12 @@ stats_lba_cle_rdv %>%
       T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
     )
   ) %>% 
-  flextable() %>% 
-  colformat_num(
-  big.mark = " ", decimal.mark = ",",
-  na_str = "N/A"
-)
+  knitr::kable()
+#   flextable() %>% 
+#   colformat_num(
+#   big.mark = " ", decimal.mark = ",",
+#   na_str = "N/A"
+# )
 ```
 
 ### Demandes de rendez-vous sur la période
@@ -385,11 +388,13 @@ stats_lba_cle_rdv %>%
       T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
     )
   ) %>% 
-  flextable() %>% 
-  colformat_num(
-  big.mark = " ", decimal.mark = ",",
-  na_str = "N/A"
-)
+  kbl() %>% 
+  kable_paper()
+#   flextable() %>% 
+#   colformat_num(
+#   big.mark = " ", decimal.mark = ",",
+#   na_str = "N/A"
+# )
 ```
 
 ### Demandes de rendez-vous pour 1000 visites sur la période
@@ -498,19 +503,26 @@ temp <- stats_lba_cle_rdv %>%
   )
 
 
-temp %>%
-  flextable() %>% 
-  set_header_labels(
-    values = c("Affichage des données IJ en 2024",rep(c('2023', '2024',"Evolution"), 3))
-  ) %>% 
-  add_header_row(
-    values = c("","Demandes de rdv", "Visites","Demandes de rdv pour 1000 visites"),
-    colwidths = c(1, 3,3,3), top = TRUE
-)%>% 
-  colformat_num(
-  big.mark = " ", decimal.mark = ",",
-  na_str = "N/A"
-)
+# temp %>%
+#   flextable() %>% 
+#   set_header_labels(
+#     values = c("Affichage des données IJ en 2024",rep(c('2023', '2024',"Evolution"), 3))
+#   ) %>% 
+#   add_header_row(
+#     values = c("","Demandes de rdv", "Visites","Demandes de rdv pour 1000 visites"),
+#     colwidths = c(1, 3,3,3), top = TRUE
+# )%>% 
+#   colformat_num(
+#   big.mark = " ", decimal.mark = ",",
+#   na_str = "N/A"
+# )
+# 
+
+temp %>% 
+  setNames(c("Affichage des données IJ en 2024",rep(c('2023', '2024',"Evolution"), 3))) %>% 
+  kbl() %>% 
+  kable_paper() %>% 
+  add_header_above(c(" " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
 ```
 
 
