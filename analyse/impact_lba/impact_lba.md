@@ -114,8 +114,8 @@ Pour ces formations, on constate une baisse de  64% du nombre de demandes de ren
 
 *   **Demandes de rendez-vous pour 1000 visites**:  
 
-    *   En 2024: Pour 1000 visites, il y a plus de demandes de rendez-vous pour les formations exposant les données IJ: 63 contre 51 demandes de rdv pour les formations n'exposant pas les données IJ.  
-    *   Evolution depuis 2023: La baisse de demande de rendez-vous entre 2023 et 2024 est plus forte pour les formations exposant les données IJ (-68% vs -50%).  
+    *   **En 2024**: Pour 1000 visites, il y a plus de demandes de rendez-vous pour les formations exposant les données IJ: 63 contre 51 demandes de rdv pour les formations n'exposant pas les données IJ.  
+    *   **Evolution depuis 2023**: La baisse de demande de rendez-vous entre 2023 et 2024 est plus forte pour les formations exposant les données IJ (-68% vs -50%).  
   
 
 <table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'>
@@ -177,8 +177,8 @@ Pour ces formations, on constate une baisse de  64% du nombre de demandes de ren
 
 *   **Demandes de rendez-vous pour 1000 visites**:  
 
-    *   En 2024: Pour 1000 visites, il y a plus de demandes de rendez-vous pour les formations infra-bac que post-bac: 64 contre 53 demandes de rdv pour les formations post-bac.  
-    *   Evolution depuis 2023: En 2023, il y avait plus de demandes de rendez-vous pour les formations post-bac que pour les formations infra-bac (195 contre 92). Il en découle une baisse beaucoup plus importante des demandes de rendez-vous pour 1000 visites concernant les formations post-bac (-73% vs -30%).    
+    *   **En 2024: Pour 1000 visites**, il y a plus de demandes de rendez-vous pour les formations infra-bac que post-bac: 64 contre 53 demandes de rdv pour les formations post-bac.  
+    *   **Evolution depuis 2023**: En 2023, il y avait plus de demandes de rendez-vous pour les formations post-bac que pour les formations infra-bac (195 contre 92). Il en découle une baisse beaucoup plus importante des demandes de rendez-vous pour 1000 visites concernant les formations post-bac (-73% vs -30%).    
 
 
 <table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'>
@@ -361,8 +361,8 @@ Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes
 
 *   **Demandes de rendez-vous pour 1000 visites**:  
 
-    *   En 2024: Les formations ayant un taux de devenir "plutôt moins favorable" ont plus de demandes de rendez-vous pour 1000 visites que les formations à taux de devenir "plutôt plus favorable" (72 contre 61).  
-    *   Evolution depuis 2023: En 2023, il y avait beaucoup plus de demandes de rendez-vous pour les formations à taux de devenir "plutôt plus favorable" (211 contre 61 en 2024, soit une baisse de 71% des demandes de rendez-vous). La baisse des demandes de rendez-vous est plus contenue pour les formations à taux de devenir "plutôt moins favorable" (-12% contre -71% pour les formations à taux de devenir "plutôt plus favorable").  
+    *   **En 2024**: Les formations ayant un taux de devenir "plutôt moins favorable" ont plus de demandes de rendez-vous pour 1000 visites que les formations à taux de devenir "plutôt plus favorable" (72 contre 61).  
+    *   **Evolution depuis 2023**: En 2023, il y avait beaucoup plus de demandes de rendez-vous pour les formations à taux de devenir "plutôt plus favorable" (211 contre 61 en 2024, soit une baisse de 71% des demandes de rendez-vous). La baisse des demandes de rendez-vous est plus contenue pour les formations à taux de devenir "plutôt moins favorable" (-12% contre -71% pour les formations à taux de devenir "plutôt plus favorable").  
 
 
 <table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'>
