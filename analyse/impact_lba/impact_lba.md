@@ -1,7 +1,6 @@
 ---
 title: "Impact LBA - Mai 2024"
-subtitle: "Document de travail"
-date: "Mai 2024"
+subtitle: "Document de travail - Mai 2024"
 output: 
     html_document:
       keep_md: yes
