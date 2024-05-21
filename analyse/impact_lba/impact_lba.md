@@ -20,8 +20,8 @@ output:
 
 Les données analysées sont issues de LBA et concernent toutes les fiches formations ayant été consultées sur LBA:  
 
--   Antre le 1er fevrier et le 28 avril des années 2023 et 2024  
--   Ayant un CFD et un UAI valide  
+-   Entre le 1er fevrier et le 28 avril des années 2023 et 2024  
+-   Ayant un CFD et un UAI valides  
 -   Présentes sur le catalogue des ministères éducatifs en 2023 et en 2024  
 
 
@@ -48,7 +48,7 @@ Pour ces formations, on constate une forte hausse de 180% des visites entre 2023
   <tr>
    <th style="text-align:right;"> 2023 - visiteurs </th>
    <th style="text-align:right;"> 2024 - visiteurs </th>
-   <th style="text-align:left;"> Evolution_visiteurs </th>
+   <th style="text-align:left;"> Evolution visites </th>
   </tr>
  </thead>
 <tbody>
@@ -71,7 +71,7 @@ Pour ces formations, on constate une légère hausse de 1% des demandes de rende
   <tr>
    <th style="text-align:right;"> 2023 - RDV </th>
    <th style="text-align:right;"> 2024 - RDV </th>
-   <th style="text-align:left;"> Evolution_RDV </th>
+   <th style="text-align:left;"> Evolution RDV </th>
   </tr>
  </thead>
 <tbody>
@@ -85,7 +85,7 @@ Pour ces formations, on constate une légère hausse de 1% des demandes de rende
 
 ### Demandes de rendez-vous pour 1000 visites sur la période
 
-Pour ces formations, on constate une baisse de  64% du nombre de demandes de rendez-vous pour 1000 visites entre 2023 et 2024 (de 159 en 2023 à 57.3 en 2024) :  
+Pour ces formations, on constate une baisse de  64% du nombre de demandes de rendez-vous pour 1000 visites entre 2023 et 2024 (de 159 en 2023 à 57 en 2024) :  
 
 
 
@@ -94,13 +94,13 @@ Pour ces formations, on constate une baisse de  64% du nombre de demandes de ren
   <tr>
    <th style="text-align:right;"> 2023 - RDV pour 1000 visites </th>
    <th style="text-align:right;"> 2024 - RDV pour 1000 visites </th>
-   <th style="text-align:left;"> Evolution_rdv_pour_1000_visites </th>
+   <th style="text-align:left;"> Evolution rdv pour 1000 visites </th>
   </tr>
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> 159,294 </td>
-   <td style="text-align:right;"> 57,29231 </td>
+   <td style="text-align:right;"> 159 </td>
+   <td style="text-align:right;"> 57 </td>
    <td style="text-align:left;"> -64% </td>
   </tr>
 </tbody>
@@ -112,8 +112,11 @@ Pour ces formations, on constate une baisse de  64% du nombre de demandes de ren
 
 *   **Visites**:  Lorsque les formations ont un affichage des données IJ en 2024, on constate une hausse de 135% des visites de fiches formation. Lorsque les données IJ ne sont pas disponibles en 2024, on constate que cette hausse est encore plus forte avec 251% entre les deux périodes.  
 
-*   **Demandes de rendez-vous pour 1000 visites**:  Rapportées aux visites, les demandes de rendez-vous pour 1000 visites sont à la baisse que les données IJ soient exposées ou non. Cette baisse est néanmoins beaucoup plus marquée concernant les formations dont les données IJ sont exposées (-68% contre - 50%).  
+*   **Demandes de rendez-vous pour 1000 visites**:  
 
+    *   En 2024: Pour 1000 visites, il y a plus de demandes de rendez-vous pour les formations exposant les données IJ: 63 contre 51 demandes de rdv pour les formations n'exposant pas les données IJ.  
+    *   Evolution depuis 2023: La baisse de demande de rendez-vous entre 2023 et 2024 est plus forte pour les formations exposant les données IJ (-68% vs -50%).  
+  
 
 <table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'>
  <thead>
@@ -172,7 +175,10 @@ Pour ces formations, on constate une baisse de  64% du nombre de demandes de ren
 
 *   **Visites**: L'évolution des visites des fiches formation est assez proche entre les formations post-bac et infra-bac (resp. +175% et +187%).  
 
-*   **Demandes de rendez-vous pour 1000 visites**: Il en découle une baisse beaucoup plus importante des demandes de rendez-vous pour 1000 visites concernant les formations post-bac (-73% vs -30%).  
+*   **Demandes de rendez-vous pour 1000 visites**:  
+
+    *   En 2024: Pour 1000 visites, il y a plus de demandes de rendez-vous pour les formations infra-bac que post-bac: 64 contre 53 demandes de rdv pour les formations post-bac.  
+    *   Evolution depuis 2023: En 2023, il y avait plus de demandes de rendez-vous pour les formations post-bac que pour les formations infra-bac (195 contre 92). Il en découle une baisse beaucoup plus importante des demandes de rendez-vous pour 1000 visites concernant les formations post-bac (-73% vs -30%).    
 
 
 <table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'>
@@ -224,7 +230,7 @@ Pour ces formations, on constate une baisse de  64% du nombre de demandes de ren
 </tbody>
 </table>
 
-### Demandes de rendez-vous pour 1000 visites sur la période
+<!--
 
 ## Lien avec l'affichage des données IJ et le niveau de formation
 
@@ -315,37 +321,60 @@ A l'inverse, avec affichage des données IJ les formations post-bac voient une b
 </tbody>
 </table>
 
+-->
 
 ## Zoom sur les formations ayant un affichage de données IJ en 2024
 
-### Lien avec le niveau de formation et le taux de devenir favorable
+### Lien avec le niveau de formation, le taux en emploi à 6 mois et le taux en formation
+
+#### Arbre de décision
+
+Nous avons testé une méthode de partitionnement récursif pour déterminer des seuils discriminants pour la hausse du nombre de demandes de rendez-vous pour 1000 visites. 
 
 
+Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes de rendez-vous pour 1000 visites est en baisse si:  
 
+*   Le taux en formation est supérieur ou égal à 23%,   
+*   Le taux en emploi à 6 mois est suprieur ou égal à 81%,  
+*   Le taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%.  
 
-
-
-<!--10% des formations ont un taux de devenir favorable inférieur à 68% et 25% des formations ont un taux de devenir favorable inférieur à 74%.
-
-Un taux de devenir favorable faible (Q25: premier quartile) correspond à une valeur de 72% pour l’infra-bac et 78% pour le post-bac.-->
-
-L'arbre de décision suivant tend à montrer que les utilisateurs demandent plus de rendez-vous lorsque le taux de devenir favorable est compris entre 73 et 83%.
 
 ![](impact_lba_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+
+#### Heatmap
+
+
+##### Par tranche de 10%
+
+![](impact_lba_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+
+##### Par les seuils déterminés par l'arbre de décision
+
+![](impact_lba_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+#### Synthèse
+
+*   **Demandes de rendez-vous**: infra-bac voient une hausse de 101% des demandes de rendez-vous entre 2023 et 2024. A l'inverse, les formations post-bac voient une baisse de 25% des demandes de rendez-vous entre 2023 et 2024.  
+
+*   **Visites**: L'évolution des visites des fiches formation est assez proche entre les formations post-bac et infra-bac (resp. +175% et +187%).  
+
+*   **Demandes de rendez-vous pour 1000 visites**:  
+
+    *   En 2024: Les formations ayant un taux de devenir "plutôt moins favorable" ont plus de demandes de rendez-vous pour 1000 visites que les formations à taux de devenir "plutôt plus favorable" (72 contre 61).  
+    *   Evolution depuis 2023: En 2023, il y avait beaucoup plus de demandes de rendez-vous pour les formations à taux de devenir "plutôt plus favorable" (211 contre 61 en 2024, soit une baisse de 71% des demandes de rendez-vous). La baisse des demandes de rendez-vous est plus contenue pour les formations à taux de devenir "plutôt moins favorable" (-12% contre -71% pour les formations à taux de devenir "plutôt plus favorable").  
 
 
 <table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'>
  <thead>
 <tr>
 <th style="empty-cells: hide;" colspan="1"></th>
-<th style="empty-cells: hide;" colspan="1"></th>
 <th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">Demandes de rdv</div></th>
 <th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">Visites</div></th>
 <th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">Demandes de rdv pour 1000 visites</div></th>
 </tr>
   <tr>
-   <th style="text-align:left;"> Avant/Après le bac </th>
-   <th style="text-align:left;"> Groupe de taux de devenir favorable </th>
+   <th style="text-align:left;"> Groupe de taux en emploi et en formation </th>
    <th style="text-align:right;"> 2023 </th>
    <th style="text-align:right;"> 2024 </th>
    <th style="text-align:left;"> Evolution </th>
@@ -359,63 +388,57 @@ L'arbre de décision suivant tend à montrer que les utilisateurs demandent plus
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> Avant le bac </td>
-   <td style="text-align:left;"> Taux de devenir favorable compris entre 73 et 83% </td>
-   <td style="text-align:right;"> 465 </td>
-   <td style="text-align:right;"> 763 </td>
-   <td style="text-align:left;"> +64.1% </td>
-   <td style="text-align:right;"> 4 305 </td>
-   <td style="text-align:right;"> 10 596 </td>
-   <td style="text-align:left;"> +146% </td>
-   <td style="text-align:right;"> 108 </td>
+   <td style="text-align:left;"> Taux de devenir "plutôt moins favorable" </td>
+   <td style="text-align:right;"> 215 </td>
+   <td style="text-align:right;"> 567 </td>
+   <td style="text-align:left;"> +164% </td>
+   <td style="text-align:right;"> 2 632 </td>
+   <td style="text-align:right;"> 7 850 </td>
+   <td style="text-align:left;"> +198% </td>
+   <td style="text-align:right;"> 82 </td>
    <td style="text-align:right;"> 72 </td>
-   <td style="text-align:left;"> -33.3% </td>
+   <td style="text-align:left;"> -12% </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Avant le bac </td>
-   <td style="text-align:left;"> Taux de devenir favorable supérieur à 83% ou inférieur à 73% </td>
-   <td style="text-align:right;"> 424 </td>
-   <td style="text-align:right;"> 871 </td>
-   <td style="text-align:left;"> +105.4% </td>
-   <td style="text-align:right;"> 4 346 </td>
-   <td style="text-align:right;"> 12 572 </td>
-   <td style="text-align:left;"> +189% </td>
-   <td style="text-align:right;"> 98 </td>
-   <td style="text-align:right;"> 69 </td>
-   <td style="text-align:left;"> -29.6% </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Après le bac </td>
-   <td style="text-align:left;"> Taux de devenir favorable compris entre 73 et 83% </td>
-   <td style="text-align:right;"> 1 604 </td>
-   <td style="text-align:right;"> 729 </td>
-   <td style="text-align:left;"> -54.6% </td>
-   <td style="text-align:right;"> 5 716 </td>
-   <td style="text-align:right;"> 11 451 </td>
-   <td style="text-align:left;"> +100% </td>
-   <td style="text-align:right;"> 281 </td>
-   <td style="text-align:right;"> 64 </td>
-   <td style="text-align:left;"> -77.2% </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Après le bac </td>
-   <td style="text-align:left;"> Taux de devenir favorable supérieur à 83% ou inférieur à 73% </td>
-   <td style="text-align:right;"> 1 341 </td>
-   <td style="text-align:right;"> 564 </td>
-   <td style="text-align:left;"> -57.9% </td>
-   <td style="text-align:right;"> 5 394 </td>
-   <td style="text-align:right;"> 11 861 </td>
-   <td style="text-align:left;"> +120% </td>
-   <td style="text-align:right;"> 249 </td>
-   <td style="text-align:right;"> 48 </td>
-   <td style="text-align:left;"> -80.7% </td>
+   <td style="text-align:left;"> Taux de devenir "plutôt plus favorable": Taux en empoi à 6 mois &gt;= 81%, taux en formation &gt;= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81% </td>
+   <td style="text-align:right;"> 3 619 </td>
+   <td style="text-align:right;"> 2 360 </td>
+   <td style="text-align:left;"> -35% </td>
+   <td style="text-align:right;"> 17 129 </td>
+   <td style="text-align:right;"> 38 630 </td>
+   <td style="text-align:left;"> +126% </td>
+   <td style="text-align:right;"> 211 </td>
+   <td style="text-align:right;"> 61 </td>
+   <td style="text-align:left;"> -71% </td>
   </tr>
 </tbody>
 </table>
 
+![Visualisation simplifiée de l'évolution des demandes de rendez-vous en fonction du taux d'emploi à 6 mois et du taux en formation](images/graphique_simplifie2.jpg)
+
+<!--
+### Lien avec le niveau de formation et le taux de devenir favorable
 
 
-<!--*   **Demandes de rendez-vous**: Le premier quartile de taux de devenir favorable (72% pour l’infra-bac et 78% pour le post-bac) est discriminant pour les formations infra et post-bac. 
+
+
+
+
+10% des formations ont un taux de devenir favorable inférieur à 68% et 25% des formations ont un taux de devenir favorable inférieur à 74%.
+
+Un taux de devenir favorable faible (Q25: premier quartile) correspond à une valeur de 72% pour l’infra-bac et 78% pour le post-bac.
+
+L'arbre de décision suivant tend à montrer que les utilisateurs demandent plus de rendez-vous lorsque le taux de devenir favorable est compris entre 73 et 83%.
+
+![](impact_lba_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+-->
+
+
+
+<!--
+
+*   **Demandes de rendez-vous**: Le premier quartile de taux de devenir favorable (72% pour l’infra-bac et 78% pour le post-bac) est discriminant pour les formations infra et post-bac. 
 
 **Deux constats relativement proches à nuancer néanmoins:**
 
@@ -446,96 +469,3 @@ En abaissant le seuil du taux de devenir favorable au 10ème quantile (Q10), le 
 
 
 
-### Lien avec le niveau de formation, le taux en emploi à 6 mois et le taux en formation
-
-L'arbre de décision ci-dessous tend à montrer que le nombre de demandes de rendez-vous est en baisse si:  
-
-*   Le taux en formation est supérieur ou égal à 23%,   
-*   Le taux en emploi à 6 mois est suprieur ou égal à 81%,  
-*   Le taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%.  
-
-
-![](impact_lba_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
-
-
-
-<table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'>
- <thead>
-<tr>
-<th style="empty-cells: hide;" colspan="1"></th>
-<th style="empty-cells: hide;" colspan="1"></th>
-<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">Demandes de rdv</div></th>
-<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">Visites</div></th>
-<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">Demandes de rdv pour 1000 visites</div></th>
-</tr>
-  <tr>
-   <th style="text-align:left;"> Avant/Après le bac </th>
-   <th style="text-align:left;"> Groupe de taux en emploi et en formation </th>
-   <th style="text-align:right;"> 2023 </th>
-   <th style="text-align:right;"> 2024 </th>
-   <th style="text-align:left;"> Evolution </th>
-   <th style="text-align:right;"> 2023 </th>
-   <th style="text-align:right;"> 2024 </th>
-   <th style="text-align:left;"> Evolution </th>
-   <th style="text-align:right;"> 2023 </th>
-   <th style="text-align:right;"> 2024 </th>
-   <th style="text-align:left;"> Evolution </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> Avant le bac </td>
-   <td style="text-align:left;"> Autres </td>
-   <td style="text-align:right;"> 170 </td>
-   <td style="text-align:right;"> 507 </td>
-   <td style="text-align:left;"> +198% </td>
-   <td style="text-align:right;"> 2 160 </td>
-   <td style="text-align:right;"> 6 632 </td>
-   <td style="text-align:left;"> +207.0% </td>
-   <td style="text-align:right;"> 79 </td>
-   <td style="text-align:right;"> 76 </td>
-   <td style="text-align:left;"> -3.8% </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Avant le bac </td>
-   <td style="text-align:left;"> Taux en empoi à 6 mois &gt;= 81%, taux en formation &gt;= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81% </td>
-   <td style="text-align:right;"> 719 </td>
-   <td style="text-align:right;"> 1 127 </td>
-   <td style="text-align:left;"> +57% </td>
-   <td style="text-align:right;"> 6 491 </td>
-   <td style="text-align:right;"> 16 536 </td>
-   <td style="text-align:left;"> +154.8% </td>
-   <td style="text-align:right;"> 111 </td>
-   <td style="text-align:right;"> 68 </td>
-   <td style="text-align:left;"> -38.7% </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Après le bac </td>
-   <td style="text-align:left;"> Autres </td>
-   <td style="text-align:right;"> 45 </td>
-   <td style="text-align:right;"> 60 </td>
-   <td style="text-align:left;"> +33% </td>
-   <td style="text-align:right;"> 472 </td>
-   <td style="text-align:right;"> 1 218 </td>
-   <td style="text-align:left;"> +158.1% </td>
-   <td style="text-align:right;"> 95 </td>
-   <td style="text-align:right;"> 49 </td>
-   <td style="text-align:left;"> -48.4% </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Après le bac </td>
-   <td style="text-align:left;"> Taux en empoi à 6 mois &gt;= 81%, taux en formation &gt;= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81% </td>
-   <td style="text-align:right;"> 2 900 </td>
-   <td style="text-align:right;"> 1 233 </td>
-   <td style="text-align:left;"> -57% </td>
-   <td style="text-align:right;"> 10 638 </td>
-   <td style="text-align:right;"> 22 094 </td>
-   <td style="text-align:left;"> +107.7% </td>
-   <td style="text-align:right;"> 273 </td>
-   <td style="text-align:right;"> 56 </td>
-   <td style="text-align:left;"> -79.5% </td>
-  </tr>
-</tbody>
-</table>
-
-![Visualisation simplifiée de l'évolution des demandes de rendez-vous en fonction du taux d'emploi à 6 mois et du taux en formation](images/graphique_simplifie.jpg)
