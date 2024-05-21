@@ -323,8 +323,8 @@ nb_formations <- stats_lba_cle_rdv %>%
 
 Les données analysées sont issues de LBA et concernent toutes les fiches formations ayant été consultées sur LBA:  
 
--   Antre le 1er fevrier et le 28 avril des années 2023 et 2024  
--   Ayant un CFD et un UAI valide  
+-   Entre le 1er fevrier et le 28 avril des années 2023 et 2024  
+-   Ayant un CFD et un UAI valides  
 -   Présentes sur le catalogue des ministères éducatifs en 2023 et en 2024  
 
 
@@ -354,7 +354,7 @@ stats_lba_cle_rdv %>%
     `2024 - visiteurs`=sum(`2024 - visiteurs`,na.rm = T)
   ) %>% 
   mutate(
-    Evolution_visiteurs=case_when(
+    "Evolution visites"=case_when(
       .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
       T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
     )
@@ -378,7 +378,7 @@ stats_lba_cle_rdv %>%
     `2024 - RDV`=sum(`2024 - RDV`,na.rm = T)
   ) %>% 
   mutate(
-    Evolution_RDV=case_when(
+    "Evolution RDV"=case_when(
       .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
       T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
     )
@@ -390,7 +390,7 @@ stats_lba_cle_rdv %>%
 
 ### Demandes de rendez-vous pour 1000 visites sur la période
 
-Pour ces formations, on constate une baisse de  64% du nombre de demandes de rendez-vous pour 1000 visites entre 2023 et 2024 (de 159 en 2023 à 57.3 en 2024) :  
+Pour ces formations, on constate une baisse de  64% du nombre de demandes de rendez-vous pour 1000 visites entre 2023 et 2024 (de 159 en 2023 à 57 en 2024) :  
 
 
 
@@ -404,12 +404,12 @@ stats_lba_cle_rdv %>%
     `2024 - visiteurs`=sum(`2024 - visiteurs`,na.rm = T)
   )  %>% 
   mutate(
-    `2023 - RDV pour 1000 visites`=`2023 - RDV`/`2023 - visiteurs` *1000,
-    `2024 - RDV pour 1000 visites`=`2024 - RDV`/`2024 - visiteurs` *1000
+    `2023 - RDV pour 1000 visites`=round(`2023 - RDV`/`2023 - visiteurs` *1000),
+    `2024 - RDV pour 1000 visites`=round(`2024 - RDV`/`2024 - visiteurs` *1000)
   ) %>% 
   select(`2023 - RDV pour 1000 visites`,`2024 - RDV pour 1000 visites`) %>% 
   mutate(
-    Evolution_rdv_pour_1000_visites=case_when(
+    "Evolution rdv pour 1000 visites"=case_when(
       .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
       T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
     )
@@ -424,8 +424,11 @@ stats_lba_cle_rdv %>%
 
 *   **Visites**:  Lorsque les formations ont un affichage des données IJ en 2024, on constate une hausse de 135% des visites de fiches formation. Lorsque les données IJ ne sont pas disponibles en 2024, on constate que cette hausse est encore plus forte avec 251% entre les deux périodes.  
 
-*   **Demandes de rendez-vous pour 1000 visites**:  Rapportées aux visites, les demandes de rendez-vous pour 1000 visites sont à la baisse que les données IJ soient exposées ou non. Cette baisse est néanmoins beaucoup plus marquée concernant les formations dont les données IJ sont exposées (-68% contre - 50%).  
+*   **Demandes de rendez-vous pour 1000 visites**:  
 
+    *   En 2024: Pour 1000 visites, il y a plus de demandes de rendez-vous pour les formations exposant les données IJ: 63 contre 51 demandes de rdv pour les formations n'exposant pas les données IJ.  
+    *   Evolution depuis 2023: La baisse de demande de rendez-vous entre 2023 et 2024 est plus forte pour les formations exposant les données IJ (-68% vs -50%).  
+  
 
 ```{r}
 temp <- stats_lba_cle_rdv %>% 
@@ -506,7 +509,10 @@ temp %>%
 
 *   **Visites**: L'évolution des visites des fiches formation est assez proche entre les formations post-bac et infra-bac (resp. +175% et +187%).  
 
-*   **Demandes de rendez-vous pour 1000 visites**: Il en découle une baisse beaucoup plus importante des demandes de rendez-vous pour 1000 visites concernant les formations post-bac (-73% vs -30%).  
+*   **Demandes de rendez-vous pour 1000 visites**:  
+
+    *   En 2024: Pour 1000 visites, il y a plus de demandes de rendez-vous pour les formations infra-bac que post-bac: 64 contre 53 demandes de rdv pour les formations post-bac.  
+    *   Evolution depuis 2023: En 2023, il y avait plus de demandes de rendez-vous pour les formations post-bac que pour les formations infra-bac (195 contre 92). Il en découle une baisse beaucoup plus importante des demandes de rendez-vous pour 1000 visites concernant les formations post-bac (-73% vs -30%).    
 
 
 ```{r}
@@ -578,7 +584,7 @@ temp %>%
 
 ```
 
-### Demandes de rendez-vous pour 1000 visites sur la période
+<!--
 
 ## Lien avec l'affichage des données IJ et le niveau de formation
 
@@ -670,9 +676,202 @@ temp %>%
 
 ```
 
+-->
 
 ## Zoom sur les formations ayant un affichage de données IJ en 2024
 
+### Lien avec le niveau de formation, le taux en emploi à 6 mois et le taux en formation
+
+#### Arbre de décision
+
+Nous avons testé une méthode de partitionnement récursif pour déterminer des seuils discriminants pour la hausse du nombre de demandes de rendez-vous pour 1000 visites. 
+
+
+Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes de rendez-vous pour 1000 visites est en baisse si:  
+
+*   Le taux en formation est supérieur ou égal à 23%,   
+*   Le taux en emploi à 6 mois est suprieur ou égal à 81%,  
+*   Le taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%.  
+
+
+```{r}
+data_rpart <- stats_lba_cle_rdv %>% 
+  filter(Presence=="2023-2024",affichage_ij_2024) %>% 
+  filter(Evolution_RDV_par_visiteur!="Stable") %>% 
+  mutate(Evolution_RDV_par_visiteur=factor(Evolution_RDV_par_visiteur,levels=c("Baisse","Hausse"))) 
+
+model <- rpart(Evolution_RDV_par_visiteur ~ taux_en_emploi_6_mois + taux_en_formation, data = data_rpart)
+rpart.plot(model)
+
+stats_lba_cle_rdv <- stats_lba_cle_rdv %>% 
+  mutate(
+    group_taux_en_emploi_6_mois_en_formation=case_when(
+    taux_en_emploi_6_mois>=81 ~"Taux de devenir \"plutôt plus favorable\": Taux en empoi à 6 mois >= 81%, taux en formation >= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%",
+    taux_en_formation>=23 ~"Taux de devenir \"plutôt plus favorable\": Taux en empoi à 6 mois >= 81%, taux en formation >= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%",
+    taux_en_emploi_6_mois>=57 & taux_en_formation>=15 ~ "Taux de devenir \"plutôt plus favorable\": Taux en empoi à 6 mois >= 81%, taux en formation >= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%",
+    T~"Taux de devenir \"plutôt moins favorable\""
+  ))
+
+```
+
+
+#### Heatmap
+
+
+##### Par tranche de 10%
+
+```{r}
+stats_lba_cle_rdv %>% 
+  filter(Presence=="2023-2024",affichage_ij_2024) %>% 
+  mutate(
+    group_taux_en_emploi_6_mois=cut(taux_en_emploi_6_mois,seq(0,100,10),include.lowest = TRUE),
+    group_taux_en_formation=cut(taux_en_formation,seq(0,100,10),include.lowest = TRUE)
+  ) %>% 
+  group_by(group_taux_en_emploi_6_mois,group_taux_en_formation) %>%
+  summarise(
+    `2024 - visiteurs`=sum(`2024 - visiteurs`,na.rm = T),
+    `2024 - RDV`=sum(`2024 - RDV`,na.rm = T)
+  ) %>% 
+  mutate(
+    `2024 - RDV/visiteur`=`2024 - RDV`/`2024 - visiteurs`*1000
+  ) %>% 
+  ggplot(aes(x=group_taux_en_emploi_6_mois,y=group_taux_en_formation,fill = `2024 - RDV/visiteur`,
+             label=round(`2024 - RDV/visiteur`)))+
+  geom_tile()+
+  scale_fill_gradient2(low = "#4682B4", 
+                       mid = "#FFFFFF",
+                       high = "#FF0000", 
+                       midpoint = 57,
+                       space = "Lab",
+                       na.value = "grey50", guide = "colourbar")+
+  geom_text()+
+  theme(legend.position="none",
+        axis.text.x = element_text(angle=35,vjust=0.5))+
+  labs(x="Taux en emploi à 6 mois",y="Taux en formation",
+       title = "Nombre de demandes de rendez-vous pour 1000 visites\nen fonction du taux en emploi à 6 mois et du taux en formation")
+
+```
+
+##### Par les seuils déterminés par l'arbre de décision
+
+```{r}
+stats_lba_cle_rdv %>% 
+  filter(Presence=="2023-2024",affichage_ij_2024) %>% 
+  mutate(
+    group_taux_en_emploi_6_mois=cut(taux_en_emploi_6_mois,c(0,57,81,100),include.lowest = TRUE),
+    group_taux_en_formation=cut(taux_en_formation,c(0,15,23,100),include.lowest = TRUE)
+  ) %>% 
+  group_by(group_taux_en_emploi_6_mois,group_taux_en_formation) %>%
+  summarise(
+    `2024 - visiteurs`=sum(`2024 - visiteurs`,na.rm = T),
+    `2024 - RDV`=sum(`2024 - RDV`,na.rm = T)
+  ) %>% 
+  mutate(
+    `2024 - RDV/visiteur`=`2024 - RDV`/`2024 - visiteurs`*1000
+  ) %>% 
+  ggplot(aes(x=group_taux_en_emploi_6_mois,y=group_taux_en_formation,fill = `2024 - RDV/visiteur`,
+             label=round(`2024 - RDV/visiteur`)))+
+  geom_tile()+
+  scale_fill_gradient2(low = "#4682B4", 
+                       mid = "#FFFFFF",
+                       high = "#FF0000", 
+                       midpoint = 57,
+                       space = "Lab",
+                       na.value = "grey50", guide = "colourbar")+
+  geom_text()+
+  theme(legend.position="none",
+        axis.text.x = element_text(angle=35,vjust=0.5))+
+  labs(x="Taux en emploi à 6 mois",y="Taux en formation",
+       title = "Nombre de demandes de rendez-vous pour 1000 visites\nen fonction du taux en emploi à 6 mois et du taux en formation")
+
+```
+
+#### Synthèse
+
+*   **Demandes de rendez-vous**: infra-bac voient une hausse de 101% des demandes de rendez-vous entre 2023 et 2024. A l'inverse, les formations post-bac voient une baisse de 25% des demandes de rendez-vous entre 2023 et 2024.  
+
+*   **Visites**: L'évolution des visites des fiches formation est assez proche entre les formations post-bac et infra-bac (resp. +175% et +187%).  
+
+*   **Demandes de rendez-vous pour 1000 visites**:  
+
+    *   En 2024: Les formations ayant un taux de devenir "plutôt moins favorable" ont plus de demandes de rendez-vous pour 1000 visites que les formations à taux de devenir "plutôt plus favorable" (72 contre 61).  
+    *   Evolution depuis 2023: En 2023, il y avait beaucoup plus de demandes de rendez-vous pour les formations à taux de devenir "plutôt plus favorable" (211 contre 61 en 2024, soit une baisse de 71% des demandes de rendez-vous). La baisse des demandes de rendez-vous est plus contenue pour les formations à taux de devenir "plutôt moins favorable" (-12% contre -71% pour les formations à taux de devenir "plutôt plus favorable").  
+
+
+```{r}
+temp <-stats_lba_cle_rdv %>% 
+  filter(Presence=="2023-2024",affichage_ij_2024 )  %>% 
+  select(`2023 - RDV`, `2024 - RDV`,type_formation ,group_taux_en_emploi_6_mois_en_formation,type_formation) %>% 
+  pivot_longer(cols = c(`2023 - RDV` ,`2024 - RDV`),names_to = "Periode",values_to = "RDV") %>% 
+  group_by(group_taux_en_emploi_6_mois_en_formation,Periode) %>% 
+  summarise(RDV=sum(RDV,na.rm=T)) %>%  
+  pivot_wider(names_from = Periode,values_from = RDV) %>% 
+  ungroup() %>% 
+  rename("Groupe de taux de devenir favorable"=group_taux_en_emploi_6_mois_en_formation) %>%
+  mutate(
+    Evolution=case_when(
+      .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
+      T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
+    )
+  ) %>% 
+  left_join(
+    stats_lba_cle_rdv %>% 
+      filter(Presence=="2023-2024",affichage_ij_2024 )  %>% 
+      select(`2023 - visiteurs`, `2024 - visiteurs` ,group_taux_en_emploi_6_mois_en_formation) %>% 
+      pivot_longer(cols = c(`2023 - visiteurs` ,`2024 - visiteurs`),names_to = "Periode",values_to = "visiteurs") %>% 
+      group_by(group_taux_en_emploi_6_mois_en_formation,Periode) %>% 
+      summarise(visiteurs=sum(visiteurs,na.rm=T)) %>%  
+      pivot_wider(names_from = Periode,values_from = visiteurs) %>% 
+      ungroup() %>% 
+      rename("Groupe de taux de devenir favorable"=group_taux_en_emploi_6_mois_en_formation) %>%
+      mutate(
+        Evolution=case_when(
+          .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
+          T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
+        )
+      ),
+    by=c("Groupe de taux de devenir favorable")
+  ) %>% 
+  left_join(
+    stats_lba_cle_rdv %>% 
+      filter(Presence=="2023-2024",affichage_ij_2024 )  %>% 
+      group_by(group_taux_en_emploi_6_mois_en_formation) %>% 
+      summarise(
+        `2023 - RDV`=sum(`2023 - RDV`,na.rm = T),
+        `2024 - RDV`=sum(`2024 - RDV`,na.rm = T),
+        `2023 - visiteurs`=sum(`2023 - visiteurs`,na.rm = T),
+        `2024 - visiteurs`=sum(`2024 - visiteurs`,na.rm = T)
+      )  %>% 
+      mutate(
+        `2023 - RDV pour 1000 visites`=round(`2023 - RDV`/`2023 - visiteurs` *1000),
+        `2024 - RDV pour 1000 visites`=round(`2024 - RDV`/`2024 - visiteurs` *1000)
+      ) %>%
+      ungroup() %>% 
+      mutate(
+        Evolution_rdv_pour_1000_visites=case_when(
+          .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
+          T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
+        )
+      ) %>% 
+      select(group_taux_en_emploi_6_mois_en_formation      ,`2023 - RDV pour 1000 visites`,`2024 - RDV pour 1000 visites`,Evolution_rdv_pour_1000_visites)%>%
+      rename(
+             "Groupe de taux de devenir favorable"=group_taux_en_emploi_6_mois_en_formation),
+      by=c("Groupe de taux de devenir favorable")
+  )
+
+
+temp  %>% 
+  setNames(c("Groupe de taux en emploi et en formation",rep(c('2023', '2024',"Evolution"), 3))) %>% 
+  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
+  kable_paper() %>% 
+  add_header_above(c(" " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
+
+
+```
+
+![Visualisation simplifiée de l'évolution des demandes de rendez-vous en fonction du taux d'emploi à 6 mois et du taux en formation](images/graphique_simplifie2.jpg)
+
+<!--
 ### Lien avec le niveau de formation et le taux de devenir favorable
 
 ```{r satats_descriptives_dev_favorable}
@@ -728,105 +927,105 @@ temp %>%
 #   )
 ```
 
-<!--10% des formations ont un taux de devenir favorable inférieur à 68% et 25% des formations ont un taux de devenir favorable inférieur à 74%.
+10% des formations ont un taux de devenir favorable inférieur à 68% et 25% des formations ont un taux de devenir favorable inférieur à 74%.
 
-Un taux de devenir favorable faible (Q25: premier quartile) correspond à une valeur de 72% pour l’infra-bac et 78% pour le post-bac.-->
+Un taux de devenir favorable faible (Q25: premier quartile) correspond à une valeur de 72% pour l’infra-bac et 78% pour le post-bac.
 
 L'arbre de décision suivant tend à montrer que les utilisateurs demandent plus de rendez-vous lorsque le taux de devenir favorable est compris entre 73 et 83%.
 
 ```{r}
-data_rpart <- stats_lba_cle_rdv %>% 
-  filter(Presence=="2023-2024",affichage_ij_2024) %>% 
-  filter(Evolution_RDV_par_visiteur!="Stable") %>% 
-  mutate(Evolution_RDV_par_visiteur=factor(Evolution_RDV_par_visiteur,levels=c("Baisse","Hausse"))) 
 
 model <- rpart(Evolution_RDV_par_visiteur ~ taux_devenir_favorable, data = data_rpart)
 rpart.plot(model,main="Arbre de décision:\nEvolution du nombre de rdv pour 1000 visites\nen fonction du taux de devenir favorable") 
 
 stats_lba_cle_rdv <- stats_lba_cle_rdv %>% 
-  mutate(group_taux_en_devenir_favorable=case_when(
-    taux_devenir_favorable>=83 | taux_devenir_favorable<73 ~"Taux de devenir favorable supérieur à 83% ou inférieur à 73%",
-    taux_devenir_favorable<83|taux_devenir_favorable>=73 ~"Taux de devenir favorable compris entre 73 et 83%"
-  ))
+  mutate(
+  #   group_taux_en_devenir_favorable=case_when(
+  #   taux_devenir_favorable>=83 | taux_devenir_favorable<73 ~"Taux de devenir favorable supérieur à 83% ou inférieur à 73%",
+  #   taux_devenir_favorable<83|taux_devenir_favorable>=73 ~"Taux de devenir favorable compris entre 73 et 83%"
+  # ),
+  group_taux_en_devenir_favorable=cut(taux_devenir_favorable,c(0,73,83,100),include.lowest = TRUE)
+  )
   
 ```
 
+-->
 
 ```{r}
-temp <- stats_lba_cle_rdv %>%
-  filter(Presence=="2023-2024",affichage_ij_2024 )  %>%
-  select(`2023 - RDV`, `2024 - RDV`,type_formation ,group_taux_en_devenir_favorable,type_formation) %>%
-  pivot_longer(cols = c(`2023 - RDV` ,`2024 - RDV`),names_to = "Periode",values_to = "RDV") %>%
-  group_by(type_formation,group_taux_en_devenir_favorable,Periode) %>%
-  summarise(RDV=sum(RDV,na.rm=T)) %>%
-  pivot_wider(names_from = Periode,values_from = RDV) %>%
-  ungroup() %>%
-  rename("Avant/Après le bac"=type_formation,
-         "Groupe de taux de devenir favorable"=group_taux_en_devenir_favorable) %>%
-  mutate(
-    Evolution=case_when(
-      .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
-      T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
-    )
-  ) %>%
-  left_join(
-    stats_lba_cle_rdv %>%
-      filter(Presence=="2023-2024",affichage_ij_2024 )  %>%
-      select(`2023 - visiteurs`, `2024 - visiteurs`,type_formation ,group_taux_en_devenir_favorable,type_formation) %>%
-      pivot_longer(cols = c(`2023 - visiteurs` ,`2024 - visiteurs`),names_to = "Periode",values_to = "visiteurs") %>%
-      group_by(type_formation,group_taux_en_devenir_favorable,Periode) %>%
-      summarise(visiteurs=sum(visiteurs,na.rm=T)) %>%
-      pivot_wider(names_from = Periode,values_from = visiteurs) %>%
-      ungroup() %>%
-      rename("Avant/Après le bac"=type_formation,
-             "Groupe de taux de devenir favorable"=group_taux_en_devenir_favorable) %>%
-      mutate(
-        Evolution=case_when(
-          .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
-          T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
-        )
-      ),
-    by=c("Avant/Après le bac","Groupe de taux de devenir favorable")
-  ) %>%
-  left_join(
-    stats_lba_cle_rdv %>%
-      filter(Presence=="2023-2024",affichage_ij_2024 )  %>%
-      group_by(type_formation,group_taux_en_devenir_favorable) %>%
-      summarise(
-        `2023 - RDV`=sum(`2023 - RDV`,na.rm = T),
-        `2024 - RDV`=sum(`2024 - RDV`,na.rm = T),
-        `2023 - visiteurs`=sum(`2023 - visiteurs`,na.rm = T),
-        `2024 - visiteurs`=sum(`2024 - visiteurs`,na.rm = T)
-      )  %>%
-      mutate(
-        `2023 - RDV pour 1000 visites`=round(`2023 - RDV`/`2023 - visiteurs` *1000),
-        `2024 - RDV pour 1000 visites`=round(`2024 - RDV`/`2024 - visiteurs` *1000)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Evolution_rdv_pour_1000_visites=case_when(
-          .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
-          T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
-        )
-      ) %>%
-      select(type_formation,group_taux_en_devenir_favorable      ,`2023 - RDV pour 1000 visites`,`2024 - RDV pour 1000 visites`,Evolution_rdv_pour_1000_visites)%>%
-      rename("Avant/Après le bac"=type_formation,
-             "Groupe de taux de devenir favorable"=group_taux_en_devenir_favorable),
-      by=c("Avant/Après le bac","Groupe de taux de devenir favorable")
-  )
-
-
-temp  %>% 
-  setNames(c("Avant/Après le bac","Groupe de taux de devenir favorable",rep(c('2023', '2024',"Evolution"), 3))) %>% 
- kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
-  kable_paper() %>% 
-  add_header_above(c(" " = 1," " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
+# temp <- stats_lba_cle_rdv %>%
+#   filter(Presence=="2023-2024",affichage_ij_2024 )  %>%
+#   select(`2023 - RDV`, `2024 - RDV`,group_taux_en_devenir_favorable) %>%
+#   pivot_longer(cols = c(`2023 - RDV` ,`2024 - RDV`),names_to = "Periode",values_to = "RDV") %>%
+#   group_by(group_taux_en_devenir_favorable,Periode) %>%
+#   summarise(RDV=sum(RDV,na.rm=T)) %>%
+#   pivot_wider(names_from = Periode,values_from = RDV) %>%
+#   ungroup() %>%
+#   rename(
+#          "Groupe de taux de devenir favorable"=group_taux_en_devenir_favorable) %>%
+#   mutate(
+#     Evolution=case_when(
+#       .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
+#       T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
+#     )
+#   ) %>%
+#   left_join(
+#     stats_lba_cle_rdv %>%
+#       filter(Presence=="2023-2024",affichage_ij_2024 )  %>%
+#       select(`2023 - visiteurs`, `2024 - visiteurs`,group_taux_en_devenir_favorable) %>%
+#       pivot_longer(cols = c(`2023 - visiteurs` ,`2024 - visiteurs`),names_to = "Periode",values_to = "visiteurs") %>%
+#       group_by(group_taux_en_devenir_favorable,Periode) %>%
+#       summarise(visiteurs=sum(visiteurs,na.rm=T)) %>%
+#       pivot_wider(names_from = Periode,values_from = visiteurs) %>%
+#       ungroup() %>%
+#       rename(
+#              "Groupe de taux de devenir favorable"=group_taux_en_devenir_favorable) %>%
+#       mutate(
+#         Evolution=case_when(
+#           .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
+#           T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
+#         )
+#       ),
+#     by=c("Groupe de taux de devenir favorable")
+#   ) %>%
+#   left_join(
+#     stats_lba_cle_rdv %>%
+#       filter(Presence=="2023-2024",affichage_ij_2024 )  %>%
+#       group_by(group_taux_en_devenir_favorable) %>%
+#       summarise(
+#         `2023 - RDV`=sum(`2023 - RDV`,na.rm = T),
+#         `2024 - RDV`=sum(`2024 - RDV`,na.rm = T),
+#         `2023 - visiteurs`=sum(`2023 - visiteurs`,na.rm = T),
+#         `2024 - visiteurs`=sum(`2024 - visiteurs`,na.rm = T)
+#       )  %>%
+#       mutate(
+#         `2023 - RDV pour 1000 visites`=round(`2023 - RDV`/`2023 - visiteurs` *1000),
+#         `2024 - RDV pour 1000 visites`=round(`2024 - RDV`/`2024 - visiteurs` *1000)
+#       ) %>%
+#       ungroup() %>%
+#       mutate(
+#         Evolution_rdv_pour_1000_visites=case_when(
+#           .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
+#           T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
+#         )
+#       ) %>%
+#       select(group_taux_en_devenir_favorable,`2023 - RDV pour 1000 visites`,`2024 - RDV pour 1000 visites`,Evolution_rdv_pour_1000_visites)%>%
+#       rename(
+#              "Groupe de taux de devenir favorable"=group_taux_en_devenir_favorable),
+#       by=c("Groupe de taux de devenir favorable")
+#   )
+# 
+# 
+# temp  %>% 
+#   setNames(c("Groupe de taux de devenir favorable",rep(c('2023', '2024',"Evolution"), 3))) %>% 
+#  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
+#   kable_paper() %>% 
+#   add_header_above(c(" " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
 
 ```
 
+<!--
 
-
-<!--*   **Demandes de rendez-vous**: Le premier quartile de taux de devenir favorable (72% pour l’infra-bac et 78% pour le post-bac) est discriminant pour les formations infra et post-bac. 
+*   **Demandes de rendez-vous**: Le premier quartile de taux de devenir favorable (72% pour l’infra-bac et 78% pour le post-bac) est discriminant pour les formations infra et post-bac. 
 
 **Deux constats relativement proches à nuancer néanmoins:**
 
@@ -875,103 +1074,3 @@ En abaissant le seuil du taux de devenir favorable au 10ème quantile (Q10), le 
 #   knitr::kable()
 ```
 
-### Lien avec le niveau de formation, le taux en emploi à 6 mois et le taux en formation
-
-L'arbre de décision ci-dessous tend à montrer que le nombre de demandes de rendez-vous est en baisse si:  
-
-*   Le taux en formation est supérieur ou égal à 23%,   
-*   Le taux en emploi à 6 mois est suprieur ou égal à 81%,  
-*   Le taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%.  
-
-
-```{r}
-model <- rpart(Evolution_RDV_par_visiteur ~ taux_en_emploi_6_mois + taux_en_formation, data = data_rpart)
-rpart.plot(model)
-
-stats_lba_cle_rdv <- stats_lba_cle_rdv %>% 
-  mutate(
-    group_taux_en_emploi_6_mois_en_formation=case_when(
-    taux_en_emploi_6_mois>=81 ~"Taux en empoi à 6 mois >= 81%, taux en formation >= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%",
-    taux_en_formation>=23 ~"Taux en empoi à 6 mois >= 81%, taux en formation >= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%",
-    taux_en_emploi_6_mois>=57 & taux_en_formation>=15 ~ "Taux en empoi à 6 mois >= 81%, taux en formation >= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%",
-    T~"Autres"
-  ))
-
-```
-
-
-
-```{r}
-temp <-stats_lba_cle_rdv %>% 
-  filter(Presence=="2023-2024",affichage_ij_2024 )  %>% 
-  select(`2023 - RDV`, `2024 - RDV`,type_formation ,group_taux_en_emploi_6_mois_en_formation,type_formation) %>% 
-  pivot_longer(cols = c(`2023 - RDV` ,`2024 - RDV`),names_to = "Periode",values_to = "RDV") %>% 
-  group_by(type_formation,group_taux_en_emploi_6_mois_en_formation,Periode) %>% 
-  summarise(RDV=sum(RDV,na.rm=T)) %>%  
-  pivot_wider(names_from = Periode,values_from = RDV) %>% 
-  ungroup() %>% 
-  rename("Avant/Après le bac"=type_formation,
-         "Groupe de taux de devenir favorable"=group_taux_en_emploi_6_mois_en_formation) %>%
-  mutate(
-    Evolution=case_when(
-      .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
-      T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
-    )
-  ) %>% 
-  left_join(
-    stats_lba_cle_rdv %>% 
-      filter(Presence=="2023-2024",affichage_ij_2024 )  %>% 
-      select(`2023 - visiteurs`, `2024 - visiteurs`,type_formation ,group_taux_en_emploi_6_mois_en_formation,type_formation) %>% 
-      pivot_longer(cols = c(`2023 - visiteurs` ,`2024 - visiteurs`),names_to = "Periode",values_to = "visiteurs") %>% 
-      group_by(type_formation,group_taux_en_emploi_6_mois_en_formation,Periode) %>% 
-      summarise(visiteurs=sum(visiteurs,na.rm=T)) %>%  
-      pivot_wider(names_from = Periode,values_from = visiteurs) %>% 
-      ungroup() %>% 
-      rename("Avant/Après le bac"=type_formation,
-             "Groupe de taux de devenir favorable"=group_taux_en_emploi_6_mois_en_formation) %>%
-      mutate(
-        Evolution=case_when(
-          .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
-          T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
-        )
-      ),
-    by=c("Avant/Après le bac","Groupe de taux de devenir favorable")
-  ) %>% 
-  left_join(
-    stats_lba_cle_rdv %>% 
-      filter(Presence=="2023-2024",affichage_ij_2024 )  %>% 
-      group_by(type_formation,group_taux_en_emploi_6_mois_en_formation) %>% 
-      summarise(
-        `2023 - RDV`=sum(`2023 - RDV`,na.rm = T),
-        `2024 - RDV`=sum(`2024 - RDV`,na.rm = T),
-        `2023 - visiteurs`=sum(`2023 - visiteurs`,na.rm = T),
-        `2024 - visiteurs`=sum(`2024 - visiteurs`,na.rm = T)
-      )  %>% 
-      mutate(
-        `2023 - RDV pour 1000 visites`=round(`2023 - RDV`/`2023 - visiteurs` *1000),
-        `2024 - RDV pour 1000 visites`=round(`2024 - RDV`/`2024 - visiteurs` *1000)
-      ) %>%
-      ungroup() %>% 
-      mutate(
-        Evolution_rdv_pour_1000_visites=case_when(
-          .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
-          T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
-        )
-      ) %>% 
-      select(type_formation,group_taux_en_emploi_6_mois_en_formation      ,`2023 - RDV pour 1000 visites`,`2024 - RDV pour 1000 visites`,Evolution_rdv_pour_1000_visites)%>%
-      rename("Avant/Après le bac"=type_formation,
-             "Groupe de taux de devenir favorable"=group_taux_en_emploi_6_mois_en_formation),
-      by=c("Avant/Après le bac","Groupe de taux de devenir favorable")
-  )
-
-
-temp  %>% 
-  setNames(c("Avant/Après le bac","Groupe de taux en emploi et en formation",rep(c('2023', '2024',"Evolution"), 3))) %>% 
-  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
-  kable_paper() %>% 
-  add_header_above(c(" " = 1," " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
-
-
-```
-
-![Visualisation simplifiée de l'évolution des demandes de rendez-vous en fonction du taux d'emploi à 6 mois et du taux en formation](images/graphique_simplifie.jpg)
