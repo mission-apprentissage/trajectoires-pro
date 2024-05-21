@@ -974,3 +974,5 @@ temp  %>%
 
 
 ```
+
+![Visualisation simplifiée de l'évolution des demandes de rendez-vous en fonction du taux d'emploi à 6 mois et du taux en formation](images/graphique_simplifie.jpg)

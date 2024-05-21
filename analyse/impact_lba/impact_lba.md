@@ -538,3 +538,5 @@ L'arbre de décision ci-dessous tend à montrer que le nombre de demandes de ren
   </tr>
 </tbody>
 </table>
+
+![Visualisation simplifiée de l'évolution des demandes de rendez-vous en fonction du taux d'emploi à 6 mois et du taux en formation](images/graphique_simplifie.jpg)
