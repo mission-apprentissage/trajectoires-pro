@@ -1,17 +1,3 @@
----
-title: "Impact LBA - Mai 2024"
-subtitle: "Document de travail"
-date: "Mai 2024"
-output: 
-    html_document:
-      keep_md: yes
-      toc: true
-      toc_float:
-        toc_collapsed: true
----
-
-
-
 ## Les questions
 
    -    L'exposition des données InserJeunes et les demandes de rendez-vous sur LBA ont-elles un lien?
