@@ -24,7 +24,7 @@ export class MongoRepository extends Repository {
         return query;
       }
 
-      if (Array.isArray(value)) {
+      if (parameterName.substring(0, 1) !== "$" && Array.isArray(value)) {
         return {
           ...query,
           [parameterName]: { $in: [...value] },

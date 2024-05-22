@@ -27,6 +27,7 @@ export function buildWidget(templateName, data, options = {}) {
     templateName,
     {
       type: data.type || "",
+      filiere: data.filiere || "",
       stats: data.stats || {},
       description: data.description || {},
       millesime: data.millesime || "",

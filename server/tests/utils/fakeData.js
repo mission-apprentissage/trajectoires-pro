@@ -31,12 +31,16 @@ export function createCodeRome() {
 
 export function insertCertificationsStats(custom = {}, withStat = true) {
   const code_certification = custom?.code_certification || generateCodeCertification("4");
+  const code_certification_type =
+    code_certification.length === 11 ? "mef11" : code_certification.length === 7 ? "sise" : "cfd";
+
   return certificationsStats().insertOne(
     merge(
       {},
       {
         millesime: "2020",
         code_certification: code_certification,
+        code_certification_type,
         code_formation_diplome: createCodeFormationDiplome(),
         libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },
@@ -59,6 +63,9 @@ export function insertCertificationsStats(custom = {}, withStat = true) {
 
 export function insertRegionalesStats(custom = {}, withStat = true) {
   const code_certification = custom?.code_certification || generateCodeCertification("4");
+  const code_certification_type =
+    code_certification.length === 11 ? "mef11" : code_certification.length === 7 ? "sise" : "cfd";
+
   return regionalesStats().insertOne(
     merge(
       {},
@@ -67,6 +74,7 @@ export function insertRegionalesStats(custom = {}, withStat = true) {
         millesime: "2018_2019",
         filiere: "apprentissage",
         code_certification,
+        code_certification_type,
         code_formation_diplome: createCodeFormationDiplome(),
         libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },
@@ -88,6 +96,9 @@ export function insertRegionalesStats(custom = {}, withStat = true) {
 
 export function insertFormationsStats(custom = {}, withStat = true) {
   const code_certification = custom?.code_certification || generateCodeCertification("4");
+  const code_certification_type =
+    code_certification.length === 11 ? "mef11" : code_certification.length === 7 ? "sise" : "cfd";
+
   return formationsStats().insertOne(
     merge(
       {},
@@ -96,6 +107,7 @@ export function insertFormationsStats(custom = {}, withStat = true) {
         millesime: "2018_2019",
         filiere: "apprentissage",
         code_certification,
+        code_certification_type,
         code_formation_diplome: createCodeFormationDiplome(),
         libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },

@@ -6,6 +6,7 @@ export async function formatDataWidget({ stats, millesime, region = null, etabli
 
   const data = {
     type: "",
+    filiere: stats.filiere,
     taux: [
       { name: "formation", value: stats.taux_en_formation },
       { name: "emploi", value: stats.taux_en_emploi_6_mois },

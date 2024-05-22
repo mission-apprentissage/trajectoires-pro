@@ -60,6 +60,7 @@ describe("certificationsRoutes", () => {
           {
             millesime: "2020",
             code_certification: "12345678",
+            code_certification_type: "cfd",
             code_formation_diplome: "12345678",
             libelle: "LIBELLE",
             filiere: "apprentissage",
@@ -445,6 +446,7 @@ describe("certificationsRoutes", () => {
       assert.deepStrictEqual(response.data, {
         millesime: "2020",
         code_certification: "12345678",
+        code_certification_type: "cfd",
         code_formation_diplome: "12345678",
         libelle: "LIBELLE",
         filiere: "apprentissage",
@@ -501,7 +503,7 @@ describe("certificationsRoutes", () => {
       });
     });
 
-    it("Vérifie qu'on peut obtenir la certification avec le format MEF11:XXXXXXXXXXX", async () => {
+    it("Vérifie qu'on peut obtenir la certification avec le format MEFSTAT11:XXXXXXXXXXX", async () => {
       const { httpClient } = await startServer();
       await insertCertificationsStats({
         code_certification: "12345678910",
@@ -510,7 +512,7 @@ describe("certificationsRoutes", () => {
         nb_annee_term: 100,
       });
 
-      const response = await httpClient.get(`/api/inserjeunes/certifications/MEF11:12345678910`);
+      const response = await httpClient.get(`/api/inserjeunes/certifications/MEFSTAT11:12345678910`);
 
       assert.strictEqual(response.status, 200);
       assert.deepInclude(response.data, {
@@ -760,7 +762,7 @@ describe("certificationsRoutes", () => {
               label: "codes_certifications",
               value: ["INVALIDE"],
             },
-            message: '"codes_certifications" must have the same type (CFD/MEF11 or SISE)',
+            message: '"codes_certifications" must have the type (CFD/MEF11 or SISE)',
             path: ["codes_certifications"],
             type: "codes_certification.invalid",
           },

@@ -8,17 +8,24 @@ export function formatArrayParameters(value) {
   return value.split ? value.split(/,|\|/) : [value];
 }
 
-export function formatCodeCertification(code_certification) {
-  const match = CODE_CERTIFICATION_PATTERNS.map((code_certification_pattern) => {
-    return code_certification.match(code_certification_pattern);
-  }).find((m) => m);
+export function formatCodeCertificationWithType(code_certification) {
+  const patternsMatching = CODE_CERTIFICATION_PATTERNS.map(({ type, filiere, pattern }) => {
+    const matched = code_certification.match(pattern);
+    return {
+      type,
+      filiere,
+      code_certification: matched ? matched[1] : null,
+    };
+  }).find((m) => m.code_certification);
 
-  if (!match) {
+  if (!patternsMatching) {
     throw new Error("Invalid code_certification");
   }
-  return match[1];
+  return patternsMatching;
 }
 
 export function formatCodesCertifications(codes_certifications) {
-  return codes_certifications.map((code_certification) => formatCodeCertification(code_certification));
+  return codes_certifications
+    .map((code_certification) => formatCodeCertificationWithType(code_certification))
+    .map(({ code_certification }) => code_certification);
 }

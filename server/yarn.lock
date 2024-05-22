@@ -831,6 +831,13 @@
   dependencies:
     sparse-bitfield "^3.0.3"
 
+"@opendatasoft/api-client@21.4.0":
+  version "21.4.0"
+  resolved "https://registry.yarnpkg.com/@opendatasoft/api-client/-/api-client-21.4.0.tgz#1eae27b9722919069ce9290285df94a75a6fa2f2"
+  integrity sha512-aphnUFzF5mtvPE6Z1gOi/rpJ90f75NoEKz/AB0IbtfGw8rbYTfSlTKC3go8UzBYZLWjcZ0P5gORTBszxxR7Vkw==
+  dependencies:
+    immutability-helper "^3.1.1"
+
 "@sideway/address@^4.1.3":
   version "4.1.4"
   resolved "https://registry.yarnpkg.com/@sideway/address/-/address-4.1.4.tgz#03dccebc6ea47fdc226f7d3d1ad512955d4783f0"
@@ -3630,6 +3637,11 @@ ignore@^5.1.1:
   version "5.2.4"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.4.tgz#a291c0c6178ff1b960befe47fcdec301674a6324"
   integrity sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==
+
+immutability-helper@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-3.1.1.tgz#2b86b2286ed3b1241c9e23b7b21e0444f52f77b7"
+  integrity sha512-Q0QaXjPjwIju/28TsugCHNEASwoCcJSyJV3uO1sOIQGI0jKgm9f41Lvz0DZj3n46cNCyAZTsEYoY4C2bVRUzyQ==
 
 import-fresh@^3.0.0:
   version "3.3.0"

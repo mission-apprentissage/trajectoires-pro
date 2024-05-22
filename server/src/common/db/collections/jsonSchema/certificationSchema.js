@@ -8,15 +8,16 @@ export function indexes() {
 export function fields() {
   return {
     code_certification: string(),
+    code_certification_type: string({ enum: ["cfd", "mef11", "sise"] }),
     code_formation_diplome: string(),
     libelle: string(),
     libelle_ancien: string(),
-    filiere: string({ enum: ["apprentissage", "pro"] }),
+    filiere: string({ enum: ["apprentissage", "pro", "superieur"] }),
     diplome: diplomeSchema(),
     date_fermeture: date(),
   };
 }
 
 export function required() {
-  return ["code_certification", "code_formation_diplome", "filiere", "libelle", "diplome"];
+  return ["code_certification", "code_certification_type", "filiere", "libelle", "diplome"];
 }

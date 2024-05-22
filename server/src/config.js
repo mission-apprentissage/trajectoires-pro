@@ -55,6 +55,17 @@ const config = {
       rome: "1c893376-8476-4262-9a0e-8df519883e1e",
     },
   },
+  dataenseignementsup: {
+    api: {
+      domain: env
+        .get("DATAENSEIGNEMENTSUP_DOMAIN")
+        .default("https://data.enseignementsup-recherche.gouv.fr")
+        .asString(),
+    },
+    datasets: {
+      insersup: "fr-esr-insersup",
+    },
+  },
   catalogueApprentissage: {
     api: {
       baseUrl: env
@@ -73,6 +84,7 @@ const config = {
   millesimes: {
     default: env.get("TRAJECTOIRES_PRO_MILLESIMES").default("2020,2021,2022").asArray(),
     formations: env.get("TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS").default("2019_2020,2020_2021,2021_2022").asArray(),
+    formationsSup: env.get("MILLESIMES_FORMATIONS_SUP").default("2020_2021").asArray(),
     regionales: env.get("TRAJECTOIRES_PRO_MILLESIMES_REGIONALES").default("2019_2020,2020_2021,2021_2022").asArray(),
   },
   widget: {

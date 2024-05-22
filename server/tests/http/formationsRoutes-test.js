@@ -58,6 +58,7 @@ describe("formationsRoutes", () => {
           {
             uai: "0751234J",
             code_certification: "12345678",
+            code_certification_type: "cfd",
             code_formation_diplome: "12345678",
             libelle: "LIBELLE",
             millesime: "2018_2019",
@@ -562,6 +563,7 @@ describe("formationsRoutes", () => {
       assert.deepStrictEqual(response.data, {
         uai: "0751234J",
         code_certification: "12345678",
+        code_certification_type: "cfd",
         code_formation_diplome: "12345678",
         libelle: "LIBELLE",
         millesime: "2018_2019",

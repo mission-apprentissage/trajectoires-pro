@@ -6,9 +6,25 @@ import { WIDGETS } from "#src/services/widget/widget.js";
 
 const UAI_PATTERN = /^[0-9]{7}[A-Z]{1}$/;
 export const CFD_PATTERN = /^(?:CFD:)?([0-9]{8})$/;
-export const MEF11_PATTERN = /^(?:MEF11:)?([0-9]{11})$/;
-export const SISE_PATTERN = /^SISE:([0-9]+)$/;
-export const CODE_CERTIFICATION_PATTERNS = [CFD_PATTERN, MEF11_PATTERN, SISE_PATTERN];
+export const MEF11_PATTERN = /^(?:MEFSTAT11:)?([0-9]{11})$/;
+export const SISE_PATTERN = /^SISE:([0-9]{7})$/;
+export const CODE_CERTIFICATION_PATTERNS = [
+  {
+    type: "cfd",
+    filiere: "apprentissage",
+    pattern: CFD_PATTERN,
+  },
+  {
+    type: "mef11",
+    filiere: "pro",
+    pattern: MEF11_PATTERN,
+  },
+  {
+    type: "sise",
+    filiere: "superieur",
+    pattern: SISE_PATTERN,
+  },
+];
 
 const customJoi = Joi.extend(
   (joi) => ({
@@ -54,12 +70,13 @@ const customJoi = Joi.extend(
     type: "codesCertification",
     base: joi.arrayOf().items(joi.codeCertification().required()).single().default([]),
     messages: {
-      "codes_certification.invalid": "{{#label}} must have the same type (CFD/MEF11 or SISE)",
+      "codes_certification.invalid": "{{#label}} must have the type (CFD/MEF11 or SISE)",
     },
     validate(value, helpers) {
-      const errors = ![[CFD_PATTERN, MEF11_PATTERN], [SISE_PATTERN]].some((patterns) => {
-        return value.every((v) => patterns.some((pattern) => pattern.test(v)));
+      const errors = value.some((v) => {
+        return ![CFD_PATTERN, MEF11_PATTERN, SISE_PATTERN].some((r) => r.test(v));
       });
+
       return { value, errors: errors ? helpers.error("codes_certification.invalid") : null };
     },
   })

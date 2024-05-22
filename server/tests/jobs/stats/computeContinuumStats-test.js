@@ -94,6 +94,7 @@ describe("computeContinuumStats", () => {
         const newDiplome = await CertificationStatsRepository.first({ code_certification: "10000002" });
         assert.deepEqual(omit(newDiplome, "_id"), {
           code_certification: "10000002",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000002",
           libelle: "BAC PRO BATIMENT NOUVEAU",
           diplome: {
@@ -182,6 +183,7 @@ describe("computeContinuumStats", () => {
         const newDiplome = await CertificationStatsRepository.first({ code_certification: "10000002" });
         assert.deepEqual(omit(newDiplome, "_id"), {
           code_certification: "10000002",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000002",
           libelle: "BAC PRO BATIMENT NOUVEAU",
           diplome: {
@@ -267,6 +269,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await CertificationStatsRepository.first({ code_certification: "10000001" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000001",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000001",
           libelle: "BAC PRO BATIMENT",
           diplome: {
@@ -355,6 +358,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await CertificationStatsRepository.first({ code_certification: "10000001" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000001",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000001",
           libelle: "BAC PRO BATIMENT",
           diplome: {
@@ -443,6 +447,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await CertificationStatsRepository.first({ code_certification: "10000001" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000001",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000001",
           libelle: "BAC PRO BATIMENT",
           diplome: {
@@ -542,6 +547,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await CertificationStatsRepository.first({ code_certification: "10000002" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000002",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000002",
           libelle: "BAC PRO BATIMENT NOUVEAU",
           diplome: {
@@ -596,6 +602,7 @@ describe("computeContinuumStats", () => {
         const newDiplome = await RegionaleStatsRepository.first({ code_certification: "10000002", region: "11" });
         assert.deepEqual(omit(newDiplome, "_id"), {
           code_certification: "10000002",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000002",
           libelle: "BAC PRO BATIMENT",
           diplome: {
@@ -681,6 +688,7 @@ describe("computeContinuumStats", () => {
         const newDiplome = await RegionaleStatsRepository.first({ code_certification: "10000002" });
         assert.deepEqual(omit(newDiplome, "_id"), {
           code_certification: "10000002",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000002",
           libelle: "LIBELLE",
           diplome: {
@@ -768,6 +776,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await RegionaleStatsRepository.first({ code_certification: "10000001" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000001",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000001",
           libelle: "BAC PRO BATIMENT",
           diplome: {
@@ -855,6 +864,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await RegionaleStatsRepository.first({ code_certification: "10000001" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000001",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000001",
           libelle: "BAC PRO BATIMENT",
           diplome: {
@@ -943,6 +953,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await RegionaleStatsRepository.first({ code_certification: "10000001" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000001",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000001",
           libelle: "LIBELLE",
           diplome: {
@@ -1041,6 +1052,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await RegionaleStatsRepository.first({ code_certification: "10000002" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000002",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000002",
           libelle: "BAC PRO BATIMENT",
           diplome: {
@@ -1114,6 +1126,7 @@ describe("computeContinuumStats", () => {
       const oldDiplome = await RegionaleStatsRepository.first({ code_certification: "10000001", region: "11" });
       assert.deepEqual(omit(oldDiplome, "_id"), {
         code_certification: "10000001",
+        code_certification_type: "cfd",
         code_formation_diplome: "10000001",
         libelle: "BAC PRO BATIMENT",
         diplome: {
@@ -1138,6 +1151,7 @@ describe("computeContinuumStats", () => {
       const newDiplome = await RegionaleStatsRepository.first({ code_certification: "10000003", region: "11" });
       assert.deepEqual(omit(newDiplome, "_id"), {
         code_certification: "10000003",
+        code_certification_type: "cfd",
         code_formation_diplome: "10000003",
         libelle: "BAC PRO BATIMENT",
         diplome: {
@@ -1165,6 +1179,7 @@ describe("computeContinuumStats", () => {
       });
       assert.deepEqual(omit(oldDiplomeOtherRegion, "_id"), {
         code_certification: "10000001",
+        code_certification_type: "cfd",
         code_formation_diplome: "10000001",
         libelle: "LIBELLE",
         diplome: {
@@ -1195,6 +1210,7 @@ describe("computeContinuumStats", () => {
       });
       assert.deepEqual(omit(newDiplomeOtherRegion, "_id"), {
         code_certification: "10000003",
+        code_certification_type: "cfd",
         code_formation_diplome: "10000003",
         libelle: "LIBELLE",
         diplome: {
@@ -1253,6 +1269,7 @@ describe("computeContinuumStats", () => {
         const newDiplome = await FormationStatsRepository.first({ code_certification: "10000002" });
         assert.deepEqual(omit(newDiplome, "_id"), {
           code_certification: "10000002",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000002",
           libelle: "BAC PRO BATIMENT",
           uai: "1234567",
@@ -1346,6 +1363,7 @@ describe("computeContinuumStats", () => {
         const newDiplome = await FormationStatsRepository.first({ code_certification: "10000002" });
         assert.deepEqual(omit(newDiplome, "_id"), {
           code_certification: "10000002",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000002",
           libelle: "LIBELLE",
           uai: "1234567",
@@ -1440,6 +1458,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await FormationStatsRepository.first({ code_certification: "10000001" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000001",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000001",
           libelle: "BAC PRO BATIMENT",
           uai: "1234567",
@@ -1536,6 +1555,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await FormationStatsRepository.first({ code_certification: "10000001" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000001",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000001",
           libelle: "BAC PRO BATIMENT",
           uai: "1234567",
@@ -1632,6 +1652,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await FormationStatsRepository.first({ code_certification: "10000001" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000001",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000001",
           libelle: "LIBELLE",
           uai: "1234567",
@@ -1738,6 +1759,7 @@ describe("computeContinuumStats", () => {
         const oldDiplome = await FormationStatsRepository.first({ code_certification: "10000002" });
         assert.deepEqual(omit(oldDiplome, "_id"), {
           code_certification: "10000002",
+          code_certification_type: "cfd",
           code_formation_diplome: "10000002",
           libelle: "BAC PRO BATIMENT",
           uai: "1234567",
@@ -1817,6 +1839,7 @@ describe("computeContinuumStats", () => {
       const oldDiplome = await FormationStatsRepository.first({ code_certification: "10000001", uai: "1234567" });
       assert.deepEqual(omit(oldDiplome, "_id"), {
         code_certification: "10000001",
+        code_certification_type: "cfd",
         code_formation_diplome: "10000001",
         libelle: "BAC PRO BATIMENT",
         uai: "1234567",
@@ -1846,6 +1869,7 @@ describe("computeContinuumStats", () => {
       const newDiplome = await FormationStatsRepository.first({ code_certification: "10000003", uai: "1234567" });
       assert.deepEqual(omit(newDiplome, "_id"), {
         code_certification: "10000003",
+        code_certification_type: "cfd",
         code_formation_diplome: "10000003",
         libelle: "BAC PRO BATIMENT",
         uai: "1234567",
@@ -1878,6 +1902,7 @@ describe("computeContinuumStats", () => {
       });
       assert.deepEqual(omit(oldDiplomeOtherRegion, "_id"), {
         code_certification: "10000001",
+        code_certification_type: "cfd",
         code_formation_diplome: "10000001",
         libelle: "LIBELLE",
         uai: "1200000",
@@ -1910,6 +1935,7 @@ describe("computeContinuumStats", () => {
       });
       assert.deepEqual(omit(newDiplomeOtherRegion, "_id"), {
         code_certification: "10000003",
+        code_certification_type: "cfd",
         code_formation_diplome: "10000003",
         libelle: "LIBELLE",
         uai: "1200000",

@@ -5,6 +5,7 @@ import * as certificationsStatsDescriptor from "./certificationsStats.js";
 import * as metricsDescriptor from "./metrics.js";
 import * as bcnDescriptor from "./bcn.js";
 import * as bcnMefDescriptor from "./bcn_mef.js";
+import * as bcnSiseDescriptor from "./bcn_sise.js";
 import * as cfdRomesDescriptor from "./cfdRomes.js";
 import * as romeDescriptor from "./rome.js";
 import * as romeMetierDescriptor from "./romeMetier.js";
@@ -23,6 +24,7 @@ export function getCollectionDescriptors() {
     metricsDescriptor,
     bcnDescriptor,
     bcnMefDescriptor,
+    bcnSiseDescriptor,
     cfdRomesDescriptor,
     romeDescriptor,
     romeMetierDescriptor,
@@ -59,6 +61,10 @@ export function bcn() {
 
 export function bcnMef() {
   return dbCollection(bcnMefDescriptor.name);
+}
+
+export function bcnSise() {
+  return dbCollection(bcnSiseDescriptor.name);
 }
 
 export function cfdRomes() {

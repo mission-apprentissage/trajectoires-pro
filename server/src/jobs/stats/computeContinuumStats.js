@@ -32,7 +32,13 @@ const statCollections = {
 
 function streamStats(statName) {
   return compose(
-    getCollectionForStats(statName).find({}).sort({ code_certification: 1 }).stream(),
+    // Pas de continuum pour les données du supérieur
+    getCollectionForStats(statName)
+      .find({
+        filiere: { $ne: "superieur" },
+      })
+      .sort({ code_certification: 1 })
+      .stream(),
     transformData((data) => ({
       data,
       statName,

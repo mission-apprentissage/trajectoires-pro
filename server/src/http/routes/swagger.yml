@@ -6,8 +6,8 @@ info:
 
     Les diverses routes permettent de récupérer ces données : 
 
-    - pour une **formation / certification,** à partir d’un code MEFSTAT11, pour la voie scolaire, ou d’un code formation diplôme (CFD), pour la voie apprentissage.
-    - pour une **formation / certification au sein d’un établissement,** à partir d’un code MEFSTAT11 ou CFD et d’un code UAI (Unité Administrative Immatriculée).
+    - pour une **formation / certification,** à partir d’un code MEFSTAT11, pour la voie scolaire, d’un code formation diplôme (CFD), pour la voie apprentissage ou d’un code SISE (système d'information statistique des étudiants), pour le supérieur.
+    - pour une **formation / certification au sein d’un établissement,** à partir d’un code MEFSTAT11 CFD ou SISE et d’un code UAI (Unité Administrative Immatriculée).
 
     L’API permet en outre de récupérer plusieurs de ces éléments à la fois, et propose divers filtres, par exemple pour récupérer les données à la maille régionale ou académique.
 
@@ -490,8 +490,12 @@ components:
         Permet de filtrer la recherche avec un ou plusieurs codes de certification séparés par des virgules ou des |.
 
         Un code certification peut-être :
-          * un code formation diplome (CFD) pour la voie apprentissage
-          * un code MEFSTAT11 pour la voie professionnelle
+          * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
+          Exemple: "CFD:12345678"
+          * un code MEFSTAT11 pour la voie professionnelle, précédé de "MEFSTAT11:"<br />
+          Exemple: "MEFSTAT11:12345678910"
+          * un code SISE pour le supérieur, précédé de "SISE:"<br />
+          Exemple: "SISE:1234567"
       schema:
         type: string
 
@@ -655,6 +659,11 @@ components:
         type: string
         pattern: "^[0-9]{7}[A-Z]{1}$"
         example: "0060033D"
+      examples:
+        scolaire/apprentissage:
+          value: "0060033D"
+        superieur:
+          value: "0062205P"
 
     code_region:
       name: code_region
@@ -693,13 +702,23 @@ components:
       name: code_certification
       description: | 
        Un code certification peut-être :
-          * un code formation diplome (CFD) pour la voie apprentissage
-          * un code MEFSTAT11 pour la voie professionnelle
+          * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
+          Exemple: "CFD:12345678"
+          * un code MEFSTAT11 pour la voie professionnelle, précédé de "MEFSTAT11:"<br />
+          Exemple: "MEFSTAT11:12345678910"
+          * un code SISE pour le supérieur, précédé de "SISE:"<br />
+          Exemple: "SISE:1234567"
       in: path
       required: true
       schema:
         type: string
-        example: "32221031409"
+      examples:
+        scolaire:
+          value: "MEFSTAT11:32221031409"
+        apprentissage:
+          value: "CFD:32031409"
+        superieur:
+          value: "SISE:2400019"
 
     codes_certifications:
       name: codes_certifications
@@ -707,8 +726,12 @@ components:
         Un ou plusieurs codes de certification séparés par des virgules ou des |.
 
         Un code certification peut-être :
-            * un code formation diplome (CFD) pour la voie apprentissage
-            * un code MEFSTAT11 pour la voie professionnelle
+          * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
+          Exemple: "CFD:12345678"
+          * un code MEFSTAT11 pour la voie professionnelle, précédé de "MEFSTAT11:"<br />
+          Exemple: "MEFSTAT11:12345678910"
+          * un code SISE pour le supérieur, précédé de "SISE:"<br />
+          Exemple: "SISE:1234567"
       in: path
       required: true
       schema:
@@ -723,8 +746,12 @@ components:
         Plusieurs codes de certification séparés par des virgules ou des |.
 
         Un code certification peut-être :
-          * un code formation diplome (CFD) pour la voie apprentissage
-          * un code MEFSTAT11 pour la voie professionnelle
+          * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
+          Exemple: "CFD:12345678"
+          * un code MEFSTAT11 pour la voie professionnelle, précédé de "MEFSTAT11:"<br />
+          Exemple: "MEFSTAT11:12345678910"
+          * un code SISE pour le supérieur, précédé de "SISE:"<br />
+          Exemple: "SISE:1234567"
       schema:
         type: string
         example: "32221031409|32221033001|23110022133|01033410|44633521"
@@ -996,6 +1023,8 @@ components:
         Les taux retournés sont :
           * null quand les effectifs (nb_annee_term) sont < 20
           * absent si l'on ne peut pas les calculer (données manquantes)
+
+        /!\ Pour le supérieur, nb_annee_term correspond au nombre de diplomés uniquement
       required:
         - uai
         - millesime
@@ -1032,6 +1061,9 @@ components:
           type: number
         nb_annee_term:
           type: number
+        nb_diplome:
+          type: number
+          description: Uniquement pour le supérieur
         nb_poursuite_etudes:
           type: number
         nb_en_emploi_24_mois:

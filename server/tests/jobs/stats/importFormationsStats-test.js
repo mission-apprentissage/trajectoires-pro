@@ -76,6 +76,7 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(found, {
       uai: "0751234J",
       code_certification: "12345678",
+      code_certification_type: "cfd",
       code_formation_diplome: "12345678",
       libelle: "BAC PRO BATIMENT",
       millesime: "2018_2019",
@@ -140,6 +141,7 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(found, {
       uai: "0751234J",
       code_certification: "12345678900",
+      code_certification_type: "mef11",
       code_formation_diplome: "12345678",
       libelle: "BAC PRO BATIMENT",
       millesime: "2018_2019",

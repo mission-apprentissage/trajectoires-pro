@@ -10,7 +10,7 @@ import { importBCNMEF } from "./jobs/bcn/importBCNMEF.js";
 import { importBCNContinuum } from "./jobs/bcn/importBCNContinuum.js";
 import { computeBCNMEFContinuum } from "./jobs/bcn/computeBCNMEFContinuum.js";
 import { importLibelle } from "./jobs/bcn/importLibelle.js";
-import { importStats } from "./jobs/stats/importStats.js";
+import { importStats, importSupStats } from "./jobs/stats/importStats.js";
 import { importCfdRomes } from "./jobs/romes/importCfdRomes.js";
 import { importRomes } from "./jobs/romes/importRomes.js";
 import { importCfdMetiers } from "./jobs/romes/importCfdMetiers.js";
@@ -22,10 +22,12 @@ import { asArray } from "./common/utils/stringUtils.js";
 import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
 import { computeUAI } from "./jobs/stats/computeUAI.js";
 import * as UserJob from "./jobs/user/user.js";
+import { importBCNSise } from "./jobs/bcn/importBCNSise.js";
 
 async function importBCNCommand() {
   const statsBCN = await importBCN();
   const statsMef = await importBCNMEF();
+  const statsSise = await importBCNSise();
   const statsContinuum = await importBCNContinuum();
   const statsMefContinuum = await computeBCNMEFContinuum();
   const statsBCNLibelle = await importLibelle();
@@ -33,6 +35,7 @@ async function importBCNCommand() {
   return {
     statsBCN,
     statsMef,
+    statsSise,
     statsContinuum,
     statsMefContinuum,
     statsBCNLibelle,
@@ -93,6 +96,21 @@ cli
     runScript(() => {
       const millesimes = options.millesime ? [options.millesime] : null;
       return importStats({ stats, millesimes });
+    });
+  });
+
+cli
+  .command("importSupStats")
+  .description("Importe les données statistiques de l'API InserSup")
+  .argument("[stats]", "Le nom des stats à importer (formations)", asArray)
+  .option(
+    "--millesime [millesime]",
+    "Spécifie un millésime à importer (attention les millésimes nationales et formations/regionales sont différents"
+  )
+  .action((stats, options) => {
+    runScript(() => {
+      const millesimes = options.millesime ? [options.millesime] : null;
+      return importSupStats({ stats, millesimes });
     });
   });
 
