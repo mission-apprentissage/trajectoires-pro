@@ -128,6 +128,7 @@ describe("statsNames", () => {
         taux_en_emploi_24_mois: null,
         taux_en_emploi_6_mois: null,
         taux_en_formation: null,
+        formation_fermee: false,
         _meta: {
           messages: [
             `Les taux ne peuvent pas être affichés car il n'y a pas assez d'élèves pour fournir une information fiable.`,
@@ -161,6 +162,7 @@ describe("statsNames", () => {
         taux_en_emploi_24_mois: 20,
         taux_en_emploi_6_mois: 20,
         taux_en_formation: 50,
+        formation_fermee: false,
       });
     });
   });

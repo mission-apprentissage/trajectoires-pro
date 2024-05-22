@@ -80,6 +80,7 @@ describe("formationsRoutes", () => {
             taux_autres_12_mois: 14,
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
+            formation_fermee: false,
             region: { code: "11", nom: "Île-de-France" },
             academie: {
               code: "01",
@@ -567,6 +568,7 @@ describe("formationsRoutes", () => {
         taux_autres_12_mois: 14,
         taux_autres_18_mois: 15,
         taux_autres_24_mois: 16,
+        formation_fermee: false,
         region: { code: "11", nom: "Île-de-France" },
         academie: {
           code: "01",
@@ -581,6 +583,73 @@ describe("formationsRoutes", () => {
           details:
             "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) dispensée par l'établissement 0751234J, pour le millesime 2018_2019",
         },
+      });
+    });
+
+    it("Vérifie que l'on renvoi l'information si la formation est fermée", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({
+        uai: "0751234J",
+        filiere: "apprentissage",
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        millesime: "2018_2019",
+        date_fermeture: new Date("2010-01-01T00:00:00.000Z"),
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/formations/0751234J-12345678`);
+
+      assert.strictEqual(response.status, 200);
+      assert.deepInclude(response.data, {
+        uai: "0751234J",
+        filiere: "apprentissage",
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        millesime: "2018_2019",
+        formation_fermee: true,
+      });
+    });
+
+    it("Vérifie que l'on renvoi l'information si la formation est ouverte", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({
+        uai: "0751234J",
+        filiere: "apprentissage",
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        millesime: "2018_2019",
+        date_fermeture: new Date(Date.now() + 24 * 3600),
+      });
+
+      // Sans date de fermeture
+      await insertFormationsStats({
+        uai: "0751234J",
+        filiere: "apprentissage",
+        code_certification: "12345679",
+        code_formation_diplome: "12345679",
+        millesime: "2018_2019",
+      });
+
+      const responseWithDate = await httpClient.get(`/api/inserjeunes/formations/0751234J-12345678`);
+      assert.strictEqual(responseWithDate.status, 200);
+      assert.deepInclude(responseWithDate.data, {
+        uai: "0751234J",
+        filiere: "apprentissage",
+        code_certification: "12345678",
+        code_formation_diplome: "12345678",
+        millesime: "2018_2019",
+        formation_fermee: false,
+      });
+
+      const responseWithoutDate = await httpClient.get(`/api/inserjeunes/formations/0751234J-12345679`);
+      assert.strictEqual(responseWithoutDate.status, 200);
+      assert.deepInclude(responseWithoutDate.data, {
+        uai: "0751234J",
+        filiere: "apprentissage",
+        code_certification: "12345679",
+        code_formation_diplome: "12345679",
+        millesime: "2018_2019",
+        formation_fermee: false,
       });
     });
 

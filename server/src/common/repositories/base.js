@@ -136,6 +136,7 @@ export class StatsRepository extends MongoRepository {
             millesime: { $first: "$millesime" },
             diplome: { $first: "$diplome" },
             diplomes: { $addToSet: "$diplome" },
+            dates_fermeture: { $addToSet: "$date_fermeture" },
             ...(query["region.code"] ? { region: { $first: "$region" } } : {}),
             ...Stats.getStats(Stats.VALEURS, (statName) => ({
               $push: $field(statName),
@@ -162,6 +163,10 @@ export class StatsRepository extends MongoRepository {
             diplome: {
               $cond: [{ $gt: [{ $size: "$diplomes" }, 1] }, "$$REMOVE", "$diplome"],
             },
+            date_fermeture: {
+              $cond: [{ $gt: [{ $size: "$dates_fermeture" }, 1] }, "$$REMOVE", { $first: "$dates_fermeture" }],
+            },
+            dates_fermeture: "$$REMOVE",
             diplomes: "$$REMOVE",
             code_formation_diplome: {
               $cond: [{ $eq: [{ $size: "$codes_formation_diplome" }, 1] }, "$code_formation_diplome", "$$REMOVE"],

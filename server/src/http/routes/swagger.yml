@@ -846,6 +846,12 @@ components:
         libelle_ancien:
           description: "Ancien libellé de la certification (disponible en cas de changement de nom)"
           type: string
+        date_fermeture:
+          description: "Date de fermeture de la formation (si elle existe)"
+          type: string
+        formation_fermee:
+          description: "Booléen qui permet de savoir si la certification est fermée"
+          type: boolean
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
         diplome:
@@ -928,6 +934,12 @@ components:
         libelle_ancien:
           description: "Ancien libellé de la certification (disponible en cas de changement de nom)"
           type: string
+        date_fermeture:
+          description: "Date de fermeture de la formation (si elle existe)"
+          type: string
+        formation_fermee:
+          description: "Booléen qui permet de savoir si la certification est fermée"
+          type: boolean
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
         nb_sortant:
@@ -1008,6 +1020,12 @@ components:
         libelle_ancien:
           description: "Ancien libellé de la certification (disponible en cas de changement de nom)"
           type: string
+        date_fermeture:
+          description: "Date de fermeture de la formation (si elle existe)"
+          type: string
+        formation_fermee:
+          description: "Booléen qui permet de savoir si la certification est fermée"
+          type: boolean
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
         nb_sortant:
@@ -1125,6 +1143,12 @@ components:
               type: string
             libelle:
               type: string
+        date_fermeture:
+          description: "Date de fermeture de la formation (si elle existe). Présent uniquement si il n'y a qu'un seul CFD."
+          type: string
+        formation_fermee:
+          description: "Booléen qui permet de savoir si la certification est fermée.  Présent uniquement si il n'y a qu'un seul CFD."
+          type: boolean
         nb_sortant:
           type: number
         nb_annee_term:
