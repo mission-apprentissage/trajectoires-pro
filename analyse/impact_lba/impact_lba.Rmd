@@ -1,15 +1,3 @@
----
-title: "Impact LBA - Mai 2024"
-subtitle: "Document de travail"
-date: "Mai 2024"
-output: 
-    html_document:
-      keep_md: yes
-      toc: true
-      toc_float:
-        toc_collapsed: true
----
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,warning = FALSE,error = FALSE,message = FALSE)
 
