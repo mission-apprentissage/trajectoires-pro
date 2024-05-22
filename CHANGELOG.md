@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.17.2...v1.18.0) (2024-05-22)
+
+
+### Features
+
+* formations fermeture ([#243](https://github.com/mission-apprentissage/trajectoires-pro/issues/243)) ([6b31909](https://github.com/mission-apprentissage/trajectoires-pro/commit/6b31909c124aa612562b6916955a63342c8cd7ec))
+
 ## [1.17.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.17.1...v1.17.2) (2024-04-23)
 
 
