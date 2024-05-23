@@ -81,7 +81,7 @@ describe("formationsRoutes", () => {
             taux_autres_12_mois: 14,
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
-            formationFermee: false,
+            formation_fermee: false,
             region: { code: "11", nom: "Île-de-France" },
             academie: {
               code: "01",
@@ -586,7 +586,7 @@ describe("formationsRoutes", () => {
         taux_autres_12_mois: 14,
         taux_autres_18_mois: 15,
         taux_autres_24_mois: 16,
-        formationFermee: false,
+        formation_fermee: false,
         region: { code: "11", nom: "Île-de-France" },
         academie: {
           code: "01",
@@ -653,7 +653,7 @@ describe("formationsRoutes", () => {
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         millesime: "2018_2019",
-        formationFermee: true,
+        formation_fermee: true,
       });
     });
 
@@ -685,7 +685,7 @@ describe("formationsRoutes", () => {
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         millesime: "2018_2019",
-        formationFermee: false,
+        formation_fermee: false,
       });
 
       const responseWithoutDate = await httpClient.get(`/api/inserjeunes/formations/0751234J-12345679`);
@@ -696,7 +696,7 @@ describe("formationsRoutes", () => {
         code_certification: "12345679",
         code_formation_diplome: "12345679",
         millesime: "2018_2019",
-        formationFermee: false,
+        formation_fermee: false,
       });
     });
 

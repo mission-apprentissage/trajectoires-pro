@@ -84,7 +84,7 @@ describe("regionalesRoutes", () => {
             taux_autres_12_mois: 14,
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
-            formationFermee: false,
+            formation_fermee: false,
             donnee_source: {
               code_certification: "12345678",
               type: "self",
@@ -490,7 +490,7 @@ describe("regionalesRoutes", () => {
             taux_autres_12_mois: 14,
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
-            formationFermee: false,
+            formation_fermee: false,
             donnee_source: {
               code_certification: "12345678",
               type: "self",
@@ -568,7 +568,7 @@ describe("regionalesRoutes", () => {
             taux_autres_12_mois: 14,
             taux_autres_18_mois: 15,
             taux_autres_24_mois: 16,
-            formationFermee: false,
+            formation_fermee: false,
             donnee_source: {
               code_certification: "12345678",
               type: "self",
@@ -642,7 +642,7 @@ describe("regionalesRoutes", () => {
         taux_autres_12_mois: 14,
         taux_autres_18_mois: 15,
         taux_autres_24_mois: 16,
-        formationFermee: false,
+        formation_fermee: false,
         region: { code: "11", nom: "Île-de-France" },
         donnee_source: {
           code_certification: "12345678",
@@ -701,7 +701,7 @@ describe("regionalesRoutes", () => {
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         filiere: "apprentissage",
-        formationFermee: true,
+        formation_fermee: true,
       });
     });
 
@@ -732,7 +732,7 @@ describe("regionalesRoutes", () => {
         code_certification: "12345678",
         code_formation_diplome: "12345678",
         filiere: "apprentissage",
-        formationFermee: false,
+        formation_fermee: false,
       });
 
       const responseWithoutDate = await httpClient.get(`/api/inserjeunes/regionales/11/certifications/12345679`);
@@ -742,7 +742,7 @@ describe("regionalesRoutes", () => {
         code_certification: "12345679",
         code_formation_diplome: "12345679",
         filiere: "apprentissage",
-        formationFermee: false,
+        formation_fermee: false,
       });
     });
 
@@ -858,7 +858,7 @@ describe("regionalesRoutes", () => {
           taux_autres_12_mois: 70,
           taux_autres_18_mois: 70,
           taux_autres_24_mois: 70,
-          formationFermee: false,
+          formation_fermee: false,
         },
         pro: {
           codes_certifications: ["23830024202"],
@@ -892,7 +892,7 @@ describe("regionalesRoutes", () => {
           taux_autres_12_mois: 70,
           taux_autres_18_mois: 70,
           taux_autres_24_mois: 70,
-          formationFermee: false,
+          formation_fermee: false,
         },
       });
     });
@@ -1441,7 +1441,7 @@ describe("regionalesRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
-            formationFermee: false,
+            formation_fermee: false,
           },
           pro: {
             codes_certifications: ["23830024202"],
@@ -1476,7 +1476,7 @@ describe("regionalesRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
-            formationFermee: false,
+            formation_fermee: false,
           },
         });
       });
@@ -1549,7 +1549,7 @@ describe("regionalesRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
-            formationFermee: false,
+            formation_fermee: false,
           },
           pro: {
             codes_certifications: ["23830024202"],
@@ -1583,7 +1583,7 @@ describe("regionalesRoutes", () => {
             taux_autres_12_mois: 70,
             taux_autres_18_mois: 70,
             taux_autres_24_mois: 70,
-            formationFermee: false,
+            formation_fermee: false,
           },
         });
       });
