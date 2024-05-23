@@ -9,6 +9,7 @@ import {
   regionalesStats,
   metrics,
   bcnMef,
+  bcnSise,
   cfdMetiers,
   cfdRomes,
   romeMetier,
@@ -272,6 +273,37 @@ export function insertBCNMEF(custom = {}) {
         date_intervention: new Date(),
         libelle_edition: "libelle edition",
         commentaire: "commentaire",
+        _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
+      },
+      custom
+    )
+  );
+}
+
+export function insertBCNSise(custom = {}) {
+  const diplome_sise = custom?.diplome_sise || faker.helpers.replaceSymbols("#######");
+  return bcnSise().insertOne(
+    merge(
+      {},
+      {
+        diplome_sise: diplome_sise,
+        type_diplome_sise: "XD",
+        libelle_intitule_1: "METIERS DE L'ENSEIGNEMENT",
+        libelle_intitule_2: "METIERS DE L'ENSEIGNEMENT 2",
+        groupe_specialite: "333",
+        lettre_specialite: "T",
+        secteur_disciplinaire_sise: "34",
+        cite_domaine_formation: "141",
+        date_ouverture: new Date(),
+        date_fermeture: new Date(),
+        date_intervention: new Date(),
+        definitif: "0",
+        cite_domaine_detaille: "0110",
+        secteur_discipl_detail_sise: "34",
+        diplome: {
+          code: "6",
+          libelle: "MAST ENS",
+        },
         _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
       },
       custom

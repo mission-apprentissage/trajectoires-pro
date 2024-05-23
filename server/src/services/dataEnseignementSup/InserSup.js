@@ -99,6 +99,10 @@ class InserSup {
           };
         }, null);
 
+        if (statsMerged.promo.length !== 2) {
+          return null;
+        }
+
         // Remove value that not exist on both millesime
         statsMerged.nb_en_emploi = mapValues(statsMerged.nb_en_emploi, (v) => {
           if (v.length !== 2 || v.some((v) => v === null)) {

@@ -28,7 +28,7 @@ export async function importFormationsSupStats(options = {}) {
 
   // Set a default retry for the InserJeunes API
   const insersupOptions = merge({ apiOptions: { retry: { retries: 5 } } }, options.insersupOptions || {});
-  const insersup = options.insersupOptions || new InserSup(insersupOptions);
+  const insersup = options.insersup || new InserSup(insersupOptions);
   const millesimes = options.millesimes || getMillesimesFormationsSup();
 
   function handleError(e, context) {
