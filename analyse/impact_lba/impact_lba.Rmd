@@ -19,6 +19,8 @@ library(rpart)
 library(rpart.plot)
 library(knitr)
 library(kableExtra)
+library(cowplot)
+
 
 source("../../../../0- data/.env")
 
@@ -312,6 +314,7 @@ nb_formations <- stats_lba_cle_rdv %>%
     filter(Presence=="2023-2024") %>% 
     distinct(`Cle Ministere Educatif`) %>% 
     nrow()
+
 ```
 
 ## Les questions
@@ -336,9 +339,10 @@ Les formations présentes en 2023 sont utilisées comme groupe témoin. Avant le
 -   Le taux en emploi à 6 mois  
 -   Le taux en formation  
 
-`r nb_formations` formations sont concernées par les demandes de rendez-vous selon les critères détaillés ci-dessus.
+`r nb_formations` formations sont concernées par les demandes de rendez-vous selon les critères détaillés ci-dessus. 
 
 ## Quelques statistiques descriptives 
+
 
 ### Visites sur la période
 
@@ -417,6 +421,56 @@ stats_lba_cle_rdv %>%
  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
   kable_paper()
 ```
+
+### Les formations ayant au moins une visite sur LBA
+
+```{r}
+temp_visites <- stats_lba_cle_rdv %>% 
+  filter(Presence=="2023-2024") %>% 
+  select(`Cle Ministere Educatif`,`2023 - visiteurs`,`2024 - visiteurs`) %>% 
+  pivot_longer(cols = contains(" - visiteurs")) %>% 
+  filter(value!=0) %>% 
+  group_by(name) %>% 
+  summarise(nb=n()) %>% 
+  mutate(part=scales::percent(nb/nb_formations),
+         name=str_remove(name," - visiteurs")) %>% 
+  setNames(c("Période","Nombre de formations ayant au moins une visite sur LBA","Part de formations ayant au moins une visite sur LBA"))
+
+```
+
+En 2023, `r as.numeric(temp_visites[which(temp_visites$Période=="2023"),"Nombre de formations ayant au moins une visite sur LBA"])` de ces formations étaient concernées par une visite sur LBA (`r as.character(temp_visites[which(temp_visites$Période=="2023"),"Part de formations ayant au moins une visite sur LBA"])` des formations). En 2024, `r as.numeric(temp_visites[which(temp_visites$Période=="2024"),"Nombre de formations ayant au moins une visite sur LBA"])` formations ont eu au moins une visite sur LBA sur la période d'analyse (`r as.character(temp_visites[which(temp_visites$Période=="2024"),"Part de formations ayant au moins une visite sur LBA"])` des formations), soit une hausse des formations concernées par au moins une visite de `r scales::percent(as.numeric(temp_visites[which(temp_visites$Période=="2024"),"Nombre de formations ayant au moins une visite sur LBA"])/as.numeric(temp_visites[which(temp_visites$Période=="2023"),"Nombre de formations ayant au moins une visite sur LBA"])-1)` entre les deux périodes d'analyse. 
+
+```{r}
+temp_visites %>% 
+ kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
+  kable_paper()
+
+```
+
+### Les formations ayant au moins un rendez-vous sur LBA
+
+```{r}
+temp_rdv <- stats_lba_cle_rdv %>% 
+  filter(Presence=="2023-2024") %>% 
+  select(`Cle Ministere Educatif`,`2023 - RDV`,`2024 - RDV`) %>% 
+  pivot_longer(cols = contains(" - RDV")) %>% 
+  filter(value!=0) %>% 
+  group_by(name) %>% 
+  summarise(nb=n()) %>% 
+  mutate(part=scales::percent(nb/nb_formations),
+         name=str_remove(name," - RDV")) %>% 
+  setNames(c("Période","Nombre de formations ayant au moins un rendez-vous sur LBA","Part de formations ayant au moins un rendez-vous sur LBA"))
+```
+
+En 2023, `r as.numeric(temp_rdv[which(temp_rdv$Période=="2023"),"Nombre de formations ayant au moins un rendez-vous sur LBA"])` de ces formations étaient concernées par une demande de rendez-vous sur LBA(`r as.character(temp_rdv[which(temp_rdv$Période=="2023"),"Part de formations ayant au moins un rendez-vous sur LBA"])` des formations). En 2024, `r as.numeric(temp_rdv[which(temp_rdv$Période=="2024"),"Nombre de formations ayant au moins un rendez-vous sur LBA"])` formations ont reçu au moins une demande de rendez-vous sur LBA sur la période d'analyse (`r as.character(temp_rdv[which(temp_rdv$Période=="2024"),"Part de formations ayant au moins un rendez-vous sur LBA"])` des formations), soit une hausse des formations concernées par au moins une demande de rendez-vous sur LBA de `r scales::percent(as.numeric(temp_rdv[which(temp_rdv$Période=="2024"),"Nombre de formations ayant au moins un rendez-vous sur LBA"])/as.numeric(temp_rdv[which(temp_rdv$Période=="2023"),"Nombre de formations ayant au moins un rendez-vous sur LBA"])-1)` entre les deux périodes d'analyse. 
+
+```{r}
+temp_rdv %>% 
+ kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
+  kable_paper()
+
+```
+
 
 ## Lien avec l'affichage des données IJ
 
@@ -717,8 +771,137 @@ stats_lba_cle_rdv <- stats_lba_cle_rdv %>%
 
 #### Heatmap
 
+##### Par tranche de 5%
+
+###### Demandes de rendez-vous pour 1000 visites
+
+```{r}
+stats_lba_cle_rdv %>% 
+  filter(Presence=="2023-2024",affichage_ij_2024) %>% 
+  mutate(
+    group_taux_en_emploi_6_mois=cut(taux_en_emploi_6_mois,seq(0,100,5),include.lowest = TRUE),
+    group_taux_en_formation=cut(taux_en_formation,seq(0,100,5),include.lowest = TRUE)
+  ) %>% 
+  group_by(group_taux_en_emploi_6_mois,group_taux_en_formation) %>%
+  summarise(
+    `2024 - visiteurs`=sum(`2024 - visiteurs`,na.rm = T),
+    `2024 - RDV`=sum(`2024 - RDV`,na.rm = T)
+  ) %>% 
+  mutate(
+    `2024 - RDV/visiteur`=`2024 - RDV`/`2024 - visiteurs`*1000
+  ) %>% 
+  ggplot(aes(x=group_taux_en_emploi_6_mois,y=group_taux_en_formation,fill = `2024 - RDV/visiteur`,
+             label=round(`2024 - RDV/visiteur`)))+
+  geom_tile()+
+  scale_fill_gradient2(low = "#4682B4", 
+                       mid = "#FFFFFF",
+                       high = "#FF0000", 
+                       midpoint = 57,
+                       space = "Lab",
+                       na.value = "grey50", guide = "colourbar")+
+  geom_text()+
+  theme(legend.position="none",
+        axis.text.x = element_text(angle=35,vjust=0.5))+
+  labs(x="Taux en emploi à 6 mois",y="Taux en formation",
+       title = "Nombre de demandes de rendez-vous pour 1000 visites\nen fonction du taux en emploi à 6 mois et du taux en formation",
+       subtitle="En 2024")
+
+```
+
+###### Nombre de formations
+
+```{r}
+stats_lba_cle_rdv %>% 
+  filter(Presence=="2023-2024",affichage_ij_2024) %>% 
+  mutate(
+    group_taux_en_emploi_6_mois=cut(taux_en_emploi_6_mois,seq(0,100,5),include.lowest = TRUE),
+    group_taux_en_formation=cut(taux_en_formation,seq(0,100,5),include.lowest = TRUE)
+  ) %>% 
+  group_by(group_taux_en_emploi_6_mois,group_taux_en_formation) %>%
+  summarise(
+    "Nombre de formations"=n()
+  ) %>% 
+  ggplot(aes(x=group_taux_en_emploi_6_mois,y=group_taux_en_formation,fill = `Nombre de formations`,
+             label=round(`Nombre de formations`)))+
+  geom_tile()+
+  scale_fill_gradient2(low = "#4682B4", 
+                       mid = "#FFFFFF",
+                       high = "#FF0000", 
+                       midpoint = 57,
+                       space = "Lab",
+                       na.value = "grey50", guide = "colourbar")+
+  geom_text()+
+  theme(legend.position="none",
+        axis.text.x = element_text(angle=35,vjust=0.5))+
+  labs(x="Taux en emploi à 6 mois",y="Taux en formation",
+       title = "Nombre de formations\nen fonction du taux en emploi à 6 mois et du taux en formation",
+       subtitle="En 2024")
+```
+
+```{r}
+# graphiques <- stats_lba_cle_rdv %>% 
+#   filter(Presence=="2023-2024",affichage_ij_2024) %>% 
+#   mutate(
+#     group_taux_en_emploi_6_mois=cut(taux_en_emploi_6_mois,seq(0,100,5),include.lowest = TRUE),
+#     group_taux_en_formation=cut(taux_en_formation,seq(0,100,5),include.lowest = TRUE)
+#   ) %>% 
+#   group_by(group_taux_en_emploi_6_mois,group_taux_en_formation) %>%
+#   summarise(
+#     `2024 - visiteurs`=sum(`2024 - visiteurs`,na.rm = T),
+#     `2024 - RDV`=sum(`2024 - RDV`,na.rm = T),
+#     "Nombre de formations"=n()
+#   ) %>% 
+#   mutate(
+#     `2024 - RDV/visiteur`=`2024 - RDV`/`2024 - visiteurs`*1000
+#   ) %>% 
+#   select(-`2024 - visiteurs`,-`2024 - RDV`) %>% 
+#   pivot_longer(cols = c(`Nombre de formations`,`2024 - RDV/visiteur`)) %>% 
+#   ungroup() %>% 
+#   group_split(name) %>% 
+#   map(
+#     ~ggplot(.,aes(x=group_taux_en_emploi_6_mois,y=group_taux_en_formation,fill = value,
+#                 label=round(value)))+
+#       geom_tile()+
+#       scale_fill_gradient2(low = "#4682B4", 
+#                            mid = "#FFFFFF",
+#                            high = "#FF0000", 
+#                            midpoint = mean(.$value),
+#                            space = "Lab",
+#                            na.value = "grey50", guide = "colourbar")+
+#       geom_text()+
+#       theme(legend.position="none",
+#             axis.text.x = element_text(angle=35,vjust=0.5))+
+#       labs(x="Taux en emploi à 6 mois",y="Taux en formation",
+#            # title = "Nombre de demandes de rendez-vous pour 1000 visites\nen fonction du taux en emploi à 6 mois et du taux en formation"
+#            )
+#   ) 
+# 
+# plots<- plot_grid(graphiques[[1]]+
+#                     labs(title = "Rendez-vous pour 1000 visites") , 
+#                   graphiques[[2]]+
+#                     theme(axis.title.y = element_blank(),
+#                           axis.text.y = element_blank(),
+#                           axis.ticks.y = element_blank())+
+#                     labs(title = "Nombre de formations"),
+#                   align = "h", rel_widths = c(1.2, 1))
+# 
+# 
+# title <- ggdraw() + 
+#   draw_label("Demandes de rendez-vous en fonction du taux en emploi à 6 mois et du taux en formation",
+#              fontfamily = "Avenir", size = 14,
+#              x = 0, hjust = 0) +
+#   theme(plot.margin = margin(0, 0, 0, 7))
+# 
+# plot_grid(title, plots, ncol = 1,
+#           rel_heights = c(0.1, 1))
+
+
+```
+
 
 ##### Par tranche de 10%
+
+###### Demandes de rendez-vous pour 1000 visites
 
 ```{r}
 stats_lba_cle_rdv %>% 
@@ -748,11 +931,47 @@ stats_lba_cle_rdv %>%
   theme(legend.position="none",
         axis.text.x = element_text(angle=35,vjust=0.5))+
   labs(x="Taux en emploi à 6 mois",y="Taux en formation",
-       title = "Nombre de demandes de rendez-vous pour 1000 visites\nen fonction du taux en emploi à 6 mois et du taux en formation")
+       title = "Nombre de demandes de rendez-vous pour 1000 visites\nen fonction du taux en emploi à 6 mois et du taux en formation",
+       subtitle="En 2024")
 
 ```
 
+###### Nombre de formations
+
+```{r}
+stats_lba_cle_rdv %>% 
+  filter(Presence=="2023-2024",affichage_ij_2024) %>% 
+  mutate(
+    group_taux_en_emploi_6_mois=cut(taux_en_emploi_6_mois,seq(0,100,10),include.lowest = TRUE),
+    group_taux_en_formation=cut(taux_en_formation,seq(0,100,10),include.lowest = TRUE)
+  ) %>% 
+  group_by(group_taux_en_emploi_6_mois,group_taux_en_formation) %>%
+  summarise(
+    "Nombre de formations"=n()
+  ) %>% 
+  ggplot(aes(x=group_taux_en_emploi_6_mois,y=group_taux_en_formation,fill = `Nombre de formations`,
+             label=round(`Nombre de formations`)))+
+  geom_tile()+
+  scale_fill_gradient2(low = "#4682B4", 
+                       mid = "#FFFFFF",
+                       high = "#FF0000", 
+                       midpoint = 57,
+                       space = "Lab",
+                       na.value = "grey50", guide = "colourbar")+
+  geom_text()+
+  theme(legend.position="none",
+        axis.text.x = element_text(angle=35,vjust=0.5))+
+  labs(x="Taux en emploi à 6 mois",y="Taux en formation",
+       title = "Nombre de formations\nen fonction du taux en emploi à 6 mois et du taux en formation",
+       subtitle="En 2024")
+```
+
+
+
 ##### Par les seuils déterminés par l'arbre de décision
+
+###### Demandes de rendez-vous pour 1000 visites
+
 
 ```{r}
 stats_lba_cle_rdv %>% 
@@ -782,8 +1001,39 @@ stats_lba_cle_rdv %>%
   theme(legend.position="none",
         axis.text.x = element_text(angle=35,vjust=0.5))+
   labs(x="Taux en emploi à 6 mois",y="Taux en formation",
-       title = "Nombre de demandes de rendez-vous pour 1000 visites\nen fonction du taux en emploi à 6 mois et du taux en formation")
+       title = "Nombre de demandes de rendez-vous pour 1000 visites\nen fonction du taux en emploi à 6 mois et du taux en formation",
+       subtitle="En 2024")
 
+```
+
+###### Nombre de formations
+
+```{r}
+stats_lba_cle_rdv %>% 
+  filter(Presence=="2023-2024",affichage_ij_2024) %>% 
+  mutate(
+    group_taux_en_emploi_6_mois=cut(taux_en_emploi_6_mois,c(0,57,81,100),include.lowest = TRUE),
+    group_taux_en_formation=cut(taux_en_formation,c(0,15,23,100),include.lowest = TRUE)
+  )  %>% 
+  group_by(group_taux_en_emploi_6_mois,group_taux_en_formation) %>%
+  summarise(
+    "Nombre de formations"=n()
+  ) %>% 
+  ggplot(aes(x=group_taux_en_emploi_6_mois,y=group_taux_en_formation,fill = `Nombre de formations`,
+             label=round(`Nombre de formations`)))+
+  geom_tile()+
+  scale_fill_gradient2(low = "#4682B4", 
+                       mid = "#FFFFFF",
+                       high = "#FF0000", 
+                       midpoint = 57,
+                       space = "Lab",
+                       na.value = "grey50", guide = "colourbar")+
+  geom_text()+
+  theme(legend.position="none",
+        axis.text.x = element_text(angle=35,vjust=0.5))+
+  labs(x="Taux en emploi à 6 mois",y="Taux en formation",
+       title = "Nombre de formations\nen fonction du taux en emploi à 6 mois et du taux en formation",
+       subtitle="En 2024")
 ```
 
 #### Synthèse
@@ -799,7 +1049,7 @@ stats_lba_cle_rdv %>%
 
 
 ```{r}
-temp <-stats_lba_cle_rdv %>% 
+temp <- stats_lba_cle_rdv %>% 
   filter(Presence=="2023-2024",affichage_ij_2024 )  %>% 
   select(`2023 - RDV`, `2024 - RDV`,type_formation ,group_taux_en_emploi_6_mois_en_formation,type_formation) %>% 
   pivot_longer(cols = c(`2023 - RDV` ,`2024 - RDV`),names_to = "Periode",values_to = "RDV") %>% 
@@ -855,16 +1105,35 @@ temp <-stats_lba_cle_rdv %>%
       ) %>% 
       select(group_taux_en_emploi_6_mois_en_formation      ,`2023 - RDV pour 1000 visites`,`2024 - RDV pour 1000 visites`,Evolution_rdv_pour_1000_visites)%>%
       rename(
-             "Groupe de taux de devenir favorable"=group_taux_en_emploi_6_mois_en_formation),
-      by=c("Groupe de taux de devenir favorable")
+        "Groupe de taux de devenir favorable"=group_taux_en_emploi_6_mois_en_formation),
+    by=c("Groupe de taux de devenir favorable")
+  ) %>% 
+  left_join(
+    stats_lba_cle_rdv %>% 
+      filter(Presence=="2023-2024",affichage_ij_2024) %>%  
+      select(`Cle Ministere Educatif`,group_taux_en_emploi_6_mois_en_formation,`2023 - RDV`,`2024 - RDV`)  %>% 
+      pivot_longer(cols = contains(" - RDV")) %>% 
+      filter(value!=0) %>% 
+      group_by(name,group_taux_en_emploi_6_mois_en_formation) %>% 
+      summarise(nb=n()) %>% 
+      mutate(name=str_replace(name," - RDV"," - formations avec au moins 1 RDV")) %>% 
+      pivot_wider(names_from = name,values_from = nb) %>% 
+      ungroup() %>% 
+      rename("Groupe de taux de devenir favorable"=group_taux_en_emploi_6_mois_en_formation) %>%
+      mutate(
+        Evolution=case_when(
+          .[[length(.)]]>.[[length(.)-1]] ~ paste0("+",scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))),
+          T~scales::percent(((.[[length(.)]]/.[[length(.)-1]])-1))
+        )
+      ),
+    by=c("Groupe de taux de devenir favorable")
   )
 
-
 temp  %>% 
-  setNames(c("Groupe de taux en emploi et en formation",rep(c('2023', '2024',"Evolution"), 3))) %>% 
+  setNames(c("Groupe de taux en emploi et en formation",rep(c('2023', '2024',"Evolution"), 4))) %>% 
   kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>% 
   kable_paper() %>% 
-  add_header_above(c(" " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3))
+  add_header_above(c(" " = 1, "Demandes de rdv" = 3, "Visites"=3,"Demandes de rdv pour 1000 visites"=3,"Formation ayant reçu au moins une demande de rdv"=3))
 
 
 ```
