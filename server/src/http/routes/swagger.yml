@@ -6,8 +6,8 @@ info:
 
     Les diverses routes permettent de récupérer ces données : 
 
-    - pour une **formation / certification,** à partir d’un code MEFSTAT11, pour la voie scolaire, d’un code formation diplôme (CFD), pour la voie apprentissage ou d’un code SISE (système d'information statistique des étudiants), pour le supérieur.
-    - pour une **formation / certification au sein d’un établissement,** à partir d’un code MEFSTAT11 CFD ou SISE et d’un code UAI (Unité Administrative Immatriculée).
+    - pour une **formation / certification,** à partir d’un code MEFSTAT11, pour la voie scolaire ou d’un code formation diplôme (CFD), pour la voie apprentissage.
+    - pour une **formation / certification au sein d’un établissement,** à partir d’un code UAI (Unité Administrative Immatriculée) et d’un code MEFSTAT11 (voie scolaire), CFD (code formation diplôme, pour la voie apprentissage) ou d’un code SISE (système d'information statistique des étudiants, pour le supérieur).
 
     L’API permet en outre de récupérer plusieurs de ces éléments à la fois, et propose divers filtres, par exemple pour récupérer les données à la maille régionale ou académique.
 
@@ -361,7 +361,7 @@ paths:
         - $ref: "#/components/parameters/regions"
         - $ref: "#/components/parameters/academies"
         - $ref: "#/components/parameters/millesimesFormation"
-        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/code_certifications_with_sise"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
       responses:
@@ -386,7 +386,7 @@ paths:
         - $ref: "#/components/parameters/regions"
         - $ref: "#/components/parameters/academies"
         - $ref: "#/components/parameters/millesimesFormation"
-        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/code_certifications_with_sise"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
       responses:
@@ -403,8 +403,8 @@ paths:
     get:
       description: Obtenir des statistiques d'une formation
       parameters:
-        - $ref: "#/components/parameters/uai"
-        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/uai_with_sise"
+        - $ref: "#/components/parameters/code_certification_with_sise"
         - $ref: "#/components/parameters/millesimePeriode"
       responses:
         200:
@@ -420,8 +420,8 @@ paths:
     get:
       description: Génère une image SVG (widget) avec les statistiques d'une formation
       parameters:
-        - $ref: "#/components/parameters/uai"
-        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/uai_with_sise"
+        - $ref: "#/components/parameters/code_certification_with_sise"
         - $ref: "#/components/parameters/millesimePeriode"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
@@ -442,8 +442,8 @@ paths:
       security:
         - BearerAuth: [ ]
       parameters:
-        - $ref: "#/components/parameters/uai"
-        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/uai_with_sise"
+        - $ref: "#/components/parameters/code_certification_with_sise"
         - $ref: "#/components/parameters/millesimePeriode"
       responses:
         200:
@@ -492,7 +492,21 @@ components:
         Un code certification peut-être :
           * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
           Exemple: "CFD:12345678"
-          * un code MEFSTAT11 pour la voie professionnelle, précédé de "MEFSTAT11:"<br />
+          * un code MEFSTAT11 pour la voie scolaire, précédé de "MEFSTAT11:"<br />
+          Exemple: "MEFSTAT11:12345678910"
+      schema:
+        type: string
+
+    code_certifications_with_sise:
+      name: code_certifications
+      in: query
+      description: |
+        Permet de filtrer la recherche avec un ou plusieurs codes de certification séparés par des virgules ou des |.
+
+        Un code certification peut-être :
+          * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
+          Exemple: "CFD:12345678"
+          * un code MEFSTAT11 pour la voie scolaire, précédé de "MEFSTAT11:"<br />
           Exemple: "MEFSTAT11:12345678910"
           * un code SISE pour le supérieur, précédé de "SISE:"<br />
           Exemple: "SISE:1234567"
@@ -659,6 +673,15 @@ components:
         type: string
         pattern: "^[0-9]{7}[A-Z]{1}$"
         example: "0060033D"
+
+    uai_with_sise:
+      name: uai
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: "^[0-9]{7}[A-Z]{1}$"
+        example: "0060033D"
       examples:
         scolaire/apprentissage:
           value: "0060033D"
@@ -704,7 +727,25 @@ components:
        Un code certification peut-être :
           * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
           Exemple: "CFD:12345678"
-          * un code MEFSTAT11 pour la voie professionnelle, précédé de "MEFSTAT11:"<br />
+          * un code MEFSTAT11 pour la voie scolaire, précédé de "MEFSTAT11:"<br />
+          Exemple: "MEFSTAT11:12345678910"
+      in: path
+      required: true
+      schema:
+        type: string
+      examples:
+        scolaire:
+          value: "MEFSTAT11:32221031409"
+        apprentissage:
+          value: "CFD:32031409"
+
+    code_certification_with_sise:
+      name: code_certification
+      description: | 
+       Un code certification peut-être :
+          * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
+          Exemple: "CFD:12345678"
+          * un code MEFSTAT11 pour la voie scolaire, précédé de "MEFSTAT11:"<br />
           Exemple: "MEFSTAT11:12345678910"
           * un code SISE pour le supérieur, précédé de "SISE:"<br />
           Exemple: "SISE:1234567"
@@ -728,7 +769,23 @@ components:
         Un code certification peut-être :
           * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
           Exemple: "CFD:12345678"
-          * un code MEFSTAT11 pour la voie professionnelle, précédé de "MEFSTAT11:"<br />
+          * un code MEFSTAT11 pour la voie scolaire, précédé de "MEFSTAT11:"<br />
+          Exemple: "MEFSTAT11:12345678910"
+      in: path
+      required: true
+      schema:
+        type: string
+        example: "32221031409"
+
+    codes_certifications_with_sise:
+      name: codes_certifications
+      description: | 
+        Un ou plusieurs codes de certification séparés par des virgules ou des |.
+
+        Un code certification peut-être :
+          * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
+          Exemple: "CFD:12345678"
+          * un code MEFSTAT11 pour la voie scolaire, précédé de "MEFSTAT11:"<br />
           Exemple: "MEFSTAT11:12345678910"
           * un code SISE pour le supérieur, précédé de "SISE:"<br />
           Exemple: "SISE:1234567"
@@ -748,13 +805,11 @@ components:
         Un code certification peut-être :
           * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
           Exemple: "CFD:12345678"
-          * un code MEFSTAT11 pour la voie professionnelle, précédé de "MEFSTAT11:"<br />
+          * un code MEFSTAT11 pour la voie scolaire, précédé de "MEFSTAT11:"<br />
           Exemple: "MEFSTAT11:12345678910"
-          * un code SISE pour le supérieur, précédé de "SISE:"<br />
-          Exemple: "SISE:1234567"
       schema:
         type: string
-        example: "32221031409|32221033001|23110022133|01033410|44633521"
+        example: "MEFSTAT11:32221031409|MEFSTAT11:32221033001|MEFSTAT11:23110022133|CFD:01033410|CFD:44633521"
 
     ext:
       name: ext
@@ -1499,3 +1554,5 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
+
+  

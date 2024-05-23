@@ -70,7 +70,7 @@ const customJoi = Joi.extend(
     type: "codesCertification",
     base: joi.arrayOf().items(joi.codeCertification().required()).single().default([]),
     messages: {
-      "codes_certification.invalid": "{{#label}} must have the type (CFD/MEF11 or SISE)",
+      "codes_certification.invalid": "{{#label}} must have the type CFD, MEFSTAT11 or SISE",
     },
     validate(value, helpers) {
       const errors = value.some((v) => {

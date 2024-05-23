@@ -762,7 +762,7 @@ describe("certificationsRoutes", () => {
               label: "codes_certifications",
               value: ["INVALIDE"],
             },
-            message: '"codes_certifications" must have the type (CFD/MEF11 or SISE)',
+            message: '"codes_certifications" must have the type CFD, MEFSTAT11 or SISE',
             path: ["codes_certifications"],
             type: "codes_certification.invalid",
           },
