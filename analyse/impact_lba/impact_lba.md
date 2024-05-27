@@ -7,7 +7,6 @@ output:
       toc: true
       toc_float:
         toc_collapsed: true
-knit: (function(inputFile, encoding) { rmarkdown::render(inputFile, encoding = encoding, output_file = paste0(dirname(inputFile),'/README.md')) })
 
                     
 ---
@@ -400,7 +399,7 @@ Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes
 *   Le taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%.  
 
 
-![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](impact_lba_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 
 #### Heatmap
@@ -409,11 +408,11 @@ Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes
 
 ###### Demandes de rendez-vous pour 1000 visites
 
-![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-12-1.png)<!-- -->
+![](impact_lba_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
 ###### Nombre de formations
 
-![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-13-1.png)<!-- -->
+![](impact_lba_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
 
 
@@ -422,11 +421,11 @@ Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes
 
 ###### Demandes de rendez-vous pour 1000 visites
 
-![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](impact_lba_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
 
 ###### Nombre de formations
 
-![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](impact_lba_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
 
 
@@ -435,11 +434,11 @@ Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes
 ###### Demandes de rendez-vous pour 1000 visites
 
 
-![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-17-1.png)<!-- -->
+![](impact_lba_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
 
 ###### Nombre de formations
 
-![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-18-1.png)<!-- -->
+![](impact_lba_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
 
 #### Synthèse
 
@@ -528,7 +527,7 @@ Un taux de devenir favorable faible (Q25: premier quartile) correspond à une va
 
 L'arbre de décision suivant tend à montrer que les utilisateurs demandent plus de rendez-vous lorsque le taux de devenir favorable est compris entre 73 et 83%.
 
-![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-20-1.png)<!-- -->
+![](impact_lba_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
 
 -->
 
