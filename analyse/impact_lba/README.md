@@ -1,3 +1,18 @@
+---
+title: "Impact LBA - Mai 2024"
+subtitle: "Document de travail - Mai 2024"
+output: 
+    html_document:
+      keep_md: yes
+      toc: true
+      toc_float:
+        toc_collapsed: true
+knit: (function(inputFile, encoding) { rmarkdown::render(inputFile, encoding = encoding, output_file = paste0(dirname(inputFile),'/README.md')) })
+
+                    
+---
+
+
 
 ## Les questions
 
@@ -21,9 +36,10 @@ Les formations présentes en 2023 sont utilisées comme groupe témoin. Avant le
 -   Le taux en emploi à 6 mois  
 -   Le taux en formation  
 
-19873 formations sont concernées par les demandes de rendez-vous selon les critères détaillés ci-dessus.
+19873 formations sont concernées par les demandes de rendez-vous selon les critères détaillés ci-dessus. 
 
 ## Quelques statistiques descriptives 
+
 
 ### Visites sur la période
 
@@ -93,6 +109,63 @@ Pour ces formations, on constate une baisse de  64% du nombre de demandes de ren
   </tr>
 </tbody>
 </table>
+
+### Les formations ayant au moins une visite sur LBA
+
+
+
+En 2023, 9938 de ces formations étaient concernées par une visite sur LBA (50% des formations). En 2024, 1.8214\times 10^{4} formations ont eu au moins une visite sur LBA sur la période d'analyse (92% des formations), soit une hausse des formations concernées par au moins une visite de 83% entre les deux périodes d'analyse. 
+
+<table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Période </th>
+   <th style="text-align:right;"> Nombre de formations ayant au moins une visite sur LBA </th>
+   <th style="text-align:left;"> Part de formations ayant au moins une visite sur LBA </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 2023 </td>
+   <td style="text-align:right;"> 9 938 </td>
+   <td style="text-align:left;"> 50% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2024 </td>
+   <td style="text-align:right;"> 18 214 </td>
+   <td style="text-align:left;"> 92% </td>
+  </tr>
+</tbody>
+</table>
+
+### Les formations ayant au moins un rendez-vous sur LBA
+
+
+
+En 2023, 2121 de ces formations étaient concernées par une demande de rendez-vous sur LBA(10.7% des formations). En 2024, 3446 formations ont reçu au moins une demande de rendez-vous sur LBA sur la période d'analyse (17.3% des formations), soit une hausse des formations concernées par au moins une demande de rendez-vous sur LBA de 62% entre les deux périodes d'analyse. 
+
+<table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Période </th>
+   <th style="text-align:right;"> Nombre de formations ayant au moins un rendez-vous sur LBA </th>
+   <th style="text-align:left;"> Part de formations ayant au moins un rendez-vous sur LBA </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 2023 </td>
+   <td style="text-align:right;"> 2 121 </td>
+   <td style="text-align:left;"> 10.7% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2024 </td>
+   <td style="text-align:right;"> 3 446 </td>
+   <td style="text-align:left;"> 17.3% </td>
+  </tr>
+</tbody>
+</table>
+
 
 ## Lien avec l'affichage des données IJ
 
@@ -327,19 +400,46 @@ Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes
 *   Le taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81%.  
 
 
-![](impact_lba_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 
 #### Heatmap
 
+##### Par tranche de 5%
+
+###### Demandes de rendez-vous pour 1000 visites
+
+![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-12-1.png)<!-- -->
+
+###### Nombre de formations
+
+![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-13-1.png)<!-- -->
+
+
+
 
 ##### Par tranche de 10%
 
-![](impact_lba_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+###### Demandes de rendez-vous pour 1000 visites
+
+![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-15-1.png)<!-- -->
+
+###### Nombre de formations
+
+![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-16-1.png)<!-- -->
+
+
 
 ##### Par les seuils déterminés par l'arbre de décision
 
-![](impact_lba_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+###### Demandes de rendez-vous pour 1000 visites
+
+
+![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-17-1.png)<!-- -->
+
+###### Nombre de formations
+
+![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-18-1.png)<!-- -->
 
 #### Synthèse
 
@@ -360,9 +460,13 @@ Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes
 <th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">Demandes de rdv</div></th>
 <th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">Visites</div></th>
 <th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">Demandes de rdv pour 1000 visites</div></th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">Formation ayant reçu au moins une demande de rdv</div></th>
 </tr>
   <tr>
    <th style="text-align:left;"> Groupe de taux en emploi et en formation </th>
+   <th style="text-align:right;"> 2023 </th>
+   <th style="text-align:right;"> 2024 </th>
+   <th style="text-align:left;"> Evolution </th>
    <th style="text-align:right;"> 2023 </th>
    <th style="text-align:right;"> 2024 </th>
    <th style="text-align:left;"> Evolution </th>
@@ -386,6 +490,9 @@ Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes
    <td style="text-align:right;"> 82 </td>
    <td style="text-align:right;"> 72 </td>
    <td style="text-align:left;"> -12% </td>
+   <td style="text-align:right;"> 119 </td>
+   <td style="text-align:right;"> 327 </td>
+   <td style="text-align:left;"> +175% </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Taux de devenir "plutôt plus favorable": Taux en empoi à 6 mois &gt;= 81%, taux en formation &gt;= 23 ou taux en formation est compris entre 15 et 23% et taux en emploi à 6 mois est compris entre 57 et 81% </td>
@@ -398,6 +505,9 @@ Ainsi, l'arbre de décision ci-dessous tend à montrer que le nombre de demandes
    <td style="text-align:right;"> 211 </td>
    <td style="text-align:right;"> 61 </td>
    <td style="text-align:left;"> -71% </td>
+   <td style="text-align:right;"> 1 497 </td>
+   <td style="text-align:right;"> 1 697 </td>
+   <td style="text-align:left;"> +13% </td>
   </tr>
 </tbody>
 </table>
@@ -418,7 +528,7 @@ Un taux de devenir favorable faible (Q25: premier quartile) correspond à une va
 
 L'arbre de décision suivant tend à montrer que les utilisateurs demandent plus de rendez-vous lorsque le taux de devenir favorable est compris entre 73 et 83%.
 
-![](impact_lba_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](C:\Users\arnau\D-SIDD~1\ARNAUD~1\0_beta\1-EXPO~1\GROUPE~2\TRAJEC~1\analyse\IMPACT~1\README~1/figure-html/unnamed-chunk-20-1.png)<!-- -->
 
 -->
 
