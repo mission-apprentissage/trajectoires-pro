@@ -36,7 +36,7 @@ catalogue_affelnet_SLA_2023_renseigne <- expo_mef_catalogue_partenaire(catalogue
 stats_catalogue_affelnet_SLA_2023 <- expo_mef_stats_catalogue_partenaire(catalogue_partenaire_renseigne = catalogue_affelnet_SLA_2023_renseigne)
 
 stats_catalogue_affelnet_SLA_2023 %>% 
-  mutate_at(vars(contains("Part ")),scales::percent,accuracy=0.1) %>% 
+  mutate_at(vars(`Part du  catalogue`,`Couverture - Ensemble`,`Couverture - Hors familles de métiers`,`Couverture - Familles de métiers`,`Non couvert`,`Dont sous le seuil de 20 élèves`),scales::percent,accuracy=0.1) %>%
   kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
   kable_paper()
 ```
