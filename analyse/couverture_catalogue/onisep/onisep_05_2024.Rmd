@@ -266,7 +266,7 @@ stats_catalogue_onisep <- expo_mef_stats_catalogue_partenaire(catalogue_partenai
 stats_catalogue_onisep%>%
   mutate_all(replace_na,0) %>% 
   mutate_at(vars(4:length(.)),as.numeric) %>% 
-  mutate_at(vars(contains("Part ")),scales::percent,accuracy=0.1) %>% 
+  mutate_at(vars(`Part du  catalogue`,`Couverture - Ensemble`,`Couverture - Hors familles de métiers`,`Couverture - Familles de métiers`,`Non couvert`,`Dont sous le seuil de 20 élèves`),scales::percent,accuracy=0.1) %>%
   kableExtra::kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
   kableExtra::kable_paper()
 
