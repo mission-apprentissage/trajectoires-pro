@@ -42,10 +42,9 @@ stats_catalogue_onisep <- expo_mef_stats_catalogue_partenaire(catalogue_partenai
 stats_catalogue_onisep$stats_catalogue_partenaire %>%
   mutate_all(replace_na,0) %>% 
   mutate_at(vars(4:length(.)),as.numeric) %>% 
-    mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
-  DT::datatable(options = list(dom = 't',pageLength = 10000),rownames = F)
-  # kableExtra::kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
-  # kableExtra::kable_paper()
+  mutate_at(vars(contains("Part ")),scales::percent,accuracy=0.1) %>% 
+  kableExtra::kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
+  kableExtra::kable_paper()
 
 ```
 
