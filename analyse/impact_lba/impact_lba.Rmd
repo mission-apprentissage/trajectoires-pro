@@ -7,7 +7,6 @@ output:
       toc: true
       toc_float:
         toc_collapsed: true
-knit: (function(inputFile, encoding) { rmarkdown::render(inputFile, encoding = encoding, output_file = paste0(dirname(inputFile),'/README.md')) })
 
                     
 ---
