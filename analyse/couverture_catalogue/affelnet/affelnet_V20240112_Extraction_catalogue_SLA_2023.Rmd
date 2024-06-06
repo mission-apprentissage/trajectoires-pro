@@ -161,7 +161,7 @@ ensemble_data_formationsStats <-  formation_catalogue_apprentissage_long_comp %>
   )
 
 ### Insersup ----
-fr_esr_insersup <- read_excel(file.path(chemin_racine_data,"insersup/fr-esr-insersup.xlsx"))
+fr_esr_insersup <- read_excel(file.path(chemin_racine_data,"SSM/SIES/2023/insersup/fr-esr-insersup.xlsx"))
 
 # Base InserJeunes ----
 

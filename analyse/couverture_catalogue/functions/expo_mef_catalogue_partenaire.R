@@ -89,7 +89,7 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source){
 
 expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
   stats_catalogue_partenaire <- catalogue_partenaire_renseigne %>%
-    distinct(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
+    select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
     ungroup() %>% 
     group_by(type_formation,libelle_type_diplome,Filiere) %>% 
     summarise("Nombre de formations"=n()) %>% 
@@ -97,7 +97,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     mutate("Part du  catalogue"=prop.table(`Nombre de formations`)) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
-        distinct(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
+        select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
         filter(famillemetiers=="Famille de métiers") %>% 
         group_by(type_formation,libelle_type_diplome,Filiere) %>% 
         summarise("Famille de métiers"=n()) %>% 
@@ -151,13 +151,13 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) 
   
   stats_catalogue_partenaire_globale <- catalogue_partenaire_renseigne %>%
-    distinct(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
+    select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
     summarise("Nombre de formations"=n()) %>% 
     mutate("Part du  catalogue"=prop.table(`Nombre de formations`),
            type_formation="Total",libelle_type_diplome="Total",Filiere="Total") %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
-        distinct(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
+        select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
         filter(famillemetiers=="Famille de métiers") %>% 
         summarise("Famille de métiers"=n()) %>% 
         mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total") ,
