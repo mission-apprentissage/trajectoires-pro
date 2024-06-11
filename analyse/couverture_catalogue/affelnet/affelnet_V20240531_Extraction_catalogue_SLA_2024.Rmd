@@ -12,240 +12,16 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,warning = FALSE,error = FALSE,message = FALSE)
 
-# Chargement des librairies ----
-library(tidyverse)
-library(readxl)
-library(jsonlite)
-library(knitr)
-library(kableExtra)
-
-chemin_racine_data <- "../../../../../0- data" 
-
-# Données ----
-## Données BCN ----
-n_mef <- read_csv2(file.path(chemin_racine_data,"n_mef_.csv"))
-n_formation_diplome <- read_delim(file.path(chemin_racine_data,"BCN/n_formation_diplome_.csv"),delim = ";", escape_double = FALSE, trim_ws = TRUE)
-n_niveau_formation_diplome <- read_csv2(file.path(chemin_racine_data,"BCN/n_niveau_formation_diplome_.csv"))
-
-## Données IJ pour analyse de la couverture ----
-### Etablissements ----
-data_meta_formationsStats_init <- read_csv(file.path(chemin_racine_data,"Donnees IJ/metabase/production/FormationsStats.csv"))
-
-data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
-  setNames(names(.) %>%
-             str_to_lower() %>%
-             str_replace_all(" ", "_"))
-
-data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
-  bind_cols(  str_split_fixed(
-    data_meta_formationsStats_init$donnee_source,
-    pattern = ",",
-    n = 2
-  ) %>%
-    as_tibble() %>%
-    mutate(
-      V1 = str_remove(V1, "\\{:code_certification "),
-      V2 = str_remove(V2, " :type "),
-      V2 = str_remove(V2, "\\}")
-                      ) %>%  
-    setNames(c(
-      "code_certification_source", "type_source"
-    ))) %>%
-  bind_cols(
-    str_split_fixed(
-      data_meta_formationsStats_init$diplome,
-      pattern = ",",
-      n = 2
-    )%>%
-      as_tibble() %>%
-      mutate(
-        V1 = str_remove(V1, "\\{:code "),
-        # V1 = str_remove(V1, "\""),
-        V2 = str_remove(V2, " :libelle "),
-        V2 = str_remove(V2, "\\}")
-      ) %>%
-      setNames(c(
-        "niveau_diplome", "libelle_type_diplome"
-      ))
-  ) %>%
-  mutate(
-    "Couverture Taux En Emploi 6 Mois" = ifelse(is.na(taux_en_emploi_6_mois), F, T),
-    "Couverture Taux Autres 6 Mois" = ifelse(is.na(taux_autres_6_mois), F, T),
-    "Couverture Taux En poursuite" = ifelse(is.na(taux_en_formation), F, T)
-  ) %>%
-  distinct(
-    code_certification ,
-    code_formation_diplome,
-    uai,
-    type_source,
-    filiere,
-    millesime,
-    niveau_diplome,
-    libelle_type_diplome,
-    nb_annee_term,
-    nb_en_emploi_6_mois,
-    nb_poursuite_etudes,
-    taux_en_emploi_6_mois,
-    taux_autres_6_mois,
-    taux_en_formation,
-    `Couverture Taux En Emploi 6 Mois`,
-    `Couverture Taux Autres 6 Mois`,
-    `Couverture Taux En poursuite`
-  ) %>%
-  mutate(presence_ij = T,
-         Avant_apres_continuum = case_when(
-           nb_annee_term < 20 ~ "Sous le seuil de 20 élèves",
-           type_source %in% c("self","nouvelle") ~ "Avant continuum",
-           type_source == "ancienne" ~ "Apres continuum"
-         ),
-         millesime=str_sub(millesime,-4),
-         Couverture=case_when(
-           millesime == max(millesime) & str_detect(Avant_apres_continuum, "continuum") ~ "Couvert",
-           Avant_apres_continuum =="Avant continuum" ~ "Couvert",
-           Avant_apres_continuum =="Apres continuum" ~ "Non couvert",
-           T~Avant_apres_continuum
-         )
-  )  %>%
-  left_join(n_formation_diplome %>%
-              select(FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME),
-            by=c("code_formation_diplome" ="FORMATION_DIPLOME")
-            ) %>%
-  left_join(
-    n_niveau_formation_diplome %>%
-      select(NIVEAU_FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP),
-    by="NIVEAU_FORMATION_DIPLOME"
-  ) %>%
-  mutate(id_unique=1:n())
-
-
-formation_catalogue_apprentissage <- read_csv2(file.path(chemin_racine_data,"RCO/formation_2024-01-11T11 35 57.905Z.csv"))
-
-formation_catalogue_apprentissage <- formation_catalogue_apprentissage %>%
-  mutate_all(str_remove_all,"=\"") %>%
-  mutate_all(str_remove_all,"\"")
-
-
-formation_catalogue_apprentissage_long <- formation_catalogue_apprentissage %>%
-  # filter(`Statut Affelnet`!="non publiable en l'etat") %>%
-  distinct(`UAI Responsable`,`UAI formation`,`UAI formateur`,`Code du diplome ou du titre suivant la nomenclature de l'Education nationale (CodeEN)`,`Clé ministere educatif`) %>%
-  pivot_longer(cols = contains("Uai"),names_to = "Type UAI",values_to = "UAI",values_drop_na = TRUE)
-
-
-formation_catalogue_apprentissage_long_comp <- formation_catalogue_apprentissage_long %>%
-  left_join(
-    data_meta_formationsStats_init %>%
-      filter(
-        filiere == "apprentissage",
-        millesime == "2022"
-      ),
-    by=c("UAI"="uai","Code du diplome ou du titre suivant la nomenclature de l'Education nationale (CodeEN)"="code_certification")
-  ) %>%
-  filter(!is.na(type_source))
-
-formation_catalogue_apprentissage_long_comp <- formation_catalogue_apprentissage_long_comp %>%
-  mutate(`Type UAI`=factor(`Type UAI`,levels=c("UAI formation","UAI formateur","UAI Responsable"))) %>%
-  group_by(UAI,`Code du diplome ou du titre suivant la nomenclature de l'Education nationale (CodeEN)`) %>%
-  filter(as.numeric(`Type UAI`)==min(as.numeric(`Type UAI`))) %>%
-  ungroup() %>%
-  rename(code_certification=`Code du diplome ou du titre suivant la nomenclature de l'Education nationale (CodeEN)`)
-
-
-ensemble_data_formationsStats <-  formation_catalogue_apprentissage_long_comp %>%
-  bind_rows(
-    data_meta_formationsStats_init %>%
-      filter(
-        filiere == "pro",
-        millesime == "2022"
-      ) %>%
-      rename(UAI=uai)
-  )
-
-### Insersup ----
-fr_esr_insersup <- read_excel(file.path(chemin_racine_data,"SSM/SIES/2023/insersup/fr-esr-insersup.xlsx"))
-
-# Base InserJeunes ----
-
-stats_InserJeunes <- data_meta_formationsStats_init %>% 
-  filter(type_source%in%c("self","ancienne"),millesime==2022) %>%
-  mutate(
-    type_formation=case_when(
-      as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%0:4 ~ "Avant le bac",
-      as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%5:8 ~ "Après le bac",
-      
-      niveau_diplome%in%0:4 ~ "Avant le bac",
-      niveau_diplome%in%5:8 ~ "Après le bac"
-      
-    ),
-    type_formation=factor(type_formation,levels=c("Avant le bac","Après le bac")),
-    libelle_type_diplome=case_when(
-      str_detect(libelle_type_diplome,"DIP3-CNAM")~"Titre professionnel homologué",
-      str_detect(libelle_type_diplome,"TH3")~"Titre professionnel homologué",
-    str_detect(libelle_type_diplome,"TH4")~"Titre professionnel homologué",
-    str_detect(libelle_type_diplome,"TH5")~"Titre professionnel homologué",
-    str_detect(libelle_type_diplome,"DIV-2")~"Autres diplômes",
-    str_detect(libelle_type_diplome,"DIV-3")~"Autres diplômes",
-    str_detect(libelle_type_diplome,"DIV-4")~"Autres diplômes",
-    str_detect(libelle_type_diplome,"DIV-5")~"Autres diplômes",
-    str_detect(libelle_type_diplome,"BPA")~"BPA",
-    str_detect(libelle_type_diplome,"CSA")~"CSA",
-    str_detect(libelle_type_diplome,"CS")~"CS",
-    str_detect(libelle_type_diplome,"ASSIMI.BTS")~"BTS",
-    
-    T~libelle_type_diplome
-  ),
-    filiere=ifelse(filiere=="pro","Scolaire",filiere)
-  )  %>% 
-  filter(libelle_type_diplome!="Autres diplômes") %>% 
-  group_by(type_formation,libelle_type_diplome,filiere) %>% 
-  summarise(presence=n())  %>% 
-  mutate(filiere=str_to_title(filiere)) %>% 
-  pivot_wider(names_from = filiere,values_from = presence) %>% 
-  mutate_all(replace_na,0) %>%   
-  rename(
-    "Avant/après bac"=type_formation,
-    "Type diplôme"=libelle_type_diplome
-  ) %>% 
-  ungroup() %>% 
-  mutate(
-    Volume=Scolaire + Apprentissage,
-    "Part base"=prop.table(Volume),
-    Base="InserJeunes"
-  ) 
-
-
-# Base InserSup ----
-
-stats_Insersup <- fr_esr_insersup %>% 
-  filter(str_detect(`Année(s) d'obtention du diplôme prise(s) en compte`,"2021"),`Code UAI de l'établissement`!="UNIV",`Code du diplôme SISE`!="all") %>% 
-  distinct(type_diplome,`Code du diplôme SISE`,`Code UAI de l'établissement`) %>% 
-  mutate(`Avant/après bac`="Après le bac",
-         type_diplome=case_when(
-           type_diplome=="licence_pro"~"Licence pro",
-           type_diplome=="master_LMD"~"Master LMD",
-           type_diplome=="master_MEEF"~"Master MEEF"
-         )
-         ) %>% 
-  rename(`Type diplôme`=type_diplome) %>% 
-  group_by(`Type diplôme`,`Avant/après bac`) %>% 
-  summarise(
-    Volume=n()
-  ) %>% 
-  ungroup() %>% 
-  mutate(
-    "Part base"=prop.table(Volume),
-    Base="InserSup"
-  )
-
-source("../functions/expo_mef_catalogue_partenaire.R")
-
-famillemetiers_2024 <- read_excel(file.path(chemin_racine_data,"affelnet/2024/2024 - Familles de métiers- MANQUE cybersécurité.xlsx"),
-                                  sheet = "2024 ok")
+source("../prepa_data_init.R")
 
 ```
 
 ## Affelnet
 
 **Catalogue Affelnet 2024 V20240531_Extraction_catalogue_SLA_2024**: [Lien vers le catalogue](https://docs.google.com/spreadsheets/d/1i3URB63eaiQJ9UfteY4_PULom_I5f1wK/edit#gid=397487575)
+
+### Nombre de formations
+
 
 ```{r}
 ### 20240531 - Extraction catalogue SLA 2024----
@@ -264,9 +40,25 @@ stats_catalogue_affelnet_SLA_2024 <- expo_mef_stats_catalogue_partenaire(catalog
 
 
 
-stats_catalogue_affelnet_SLA_2024 %>% 
-  mutate_at(vars(`Part du  catalogue`,`Couverture - Ensemble`,`Couverture - Hors familles de métiers`,`Couverture - Familles de métiers`,`Non couvert`,`Dont sous le seuil de 20 élèves`),scales::percent,accuracy=0.1) %>%
-  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
-  kable_paper()
+stats_catalogue_affelnet_SLA_2024$stats_catalogue_partenaire %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(4:length(.)),as.numeric) %>% 
+    mutate_at(vars(`Part du  catalogue`,`Couverture - Hors familles de métiers`,`Couverture - Familles de métiers`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  DT::datatable(options = list(dom = 't',pageLength = 10000),rownames = F)
+  # kableExtra::kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
+  # kableExtra::kable_paper()
 ```
+
+### Nombre d'élèves en année terminale
+
+```{r}
+stats_catalogue_affelnet_SLA_2024$stats_catalogue_partenaire_effectifs_temp %>%
+  select(-`Nombre d'élèves à la rentrée`) %>% 
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(4:length(.)),as.numeric) %>% 
+    mutate_at(vars(`Part du  catalogue`,`Couverture - Hors familles de métiers`,`Couverture - Familles de métiers`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  DT::datatable(options = list(dom = 't',pageLength = 10000),rownames = F)
+
+```
+
 
