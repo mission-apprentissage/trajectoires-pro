@@ -103,7 +103,7 @@ describe("importFormationsSupStats", () => {
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
   });
 
-  it("Vérifie qu'on agrège les stats si elles sont disponible par millesime", async () => {
+  it("Vérifie que l'on agrège pas les stats si elles sont disponibles par millesime", async () => {
     const formations = await Fixtures.FormationsInserSup(false);
     await stubApi("0062205P", "2020_2021", formations);
 
@@ -120,58 +120,80 @@ describe("importFormationsSupStats", () => {
     });
 
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
-    assert.deepStrictEqual(found, {
-      uai: "0062205P",
-      code_certification: "2500249",
-      code_certification_type: "sise",
-      libelle: "METIERS DE L'ENSEIGNEMENT",
-      millesime: "2020_2021",
-      filiere: "superieur",
-      date_fermeture: new Date("2023-01-01T00:00:00.000Z"),
-      nb_annee_term: 272,
-      nb_diplome: 272,
-      nb_en_emploi_12_mois: 195,
-      nb_en_emploi_18_mois: 211,
-      nb_en_emploi_6_mois: 188,
-      nb_poursuite_etudes: 35,
-      nb_sortant: 237,
-      taux_autres_12_mois: 15,
-      taux_autres_18_mois: 9,
-      taux_autres_6_mois: 18,
-      taux_en_emploi_12_mois: 72,
-      taux_en_emploi_18_mois: 78,
-      taux_en_emploi_6_mois: 69,
-      taux_en_formation: 13,
-      diplome: {
-        code: "6",
-        libelle: "MAST ENS",
-      },
-      region: {
-        code: "93",
-        nom: "Provence-Alpes-Côte d'Azur",
-      },
-      academie: { code: "23", nom: "Nice" },
-      donnee_source: {
-        code_certification: "2500249",
-        type: "self",
-      },
-      _meta: {
-        insersup: {
-          discipline: "Sciences humaines et sociales",
-          domaine_disciplinaire: "Sciences humaines et sociales",
-          etablissement_actuel_libelle: "Université Côte d'Azur",
-          etablissement_libelle: "Université Côte d'Azur",
-          secteur_disciplinaire: "Sciences de l'éducation",
-          type_diplome: "Master MEEF",
-        },
-        created_on: new Date("2023-01-01T00:00:00.000Z"),
-        updated_on: new Date("2023-01-01T00:00:00.000Z"),
-        date_import: new Date("2023-01-01T00:00:00.000Z"),
-      },
-    });
+    assert.deepStrictEqual(found, null);
 
-    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
+    assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 0 });
   });
+
+  // it("Vérifie qu'on agrège les stats si elles sont disponible par millesime", async () => {
+  //   const formations = await Fixtures.FormationsInserSup(false);
+  //   await stubApi("0062205P", "2020_2021", formations);
+
+  //   await insertBCNSise({
+  //     diplome_sise: "2500249",
+  //   });
+
+  //   await insertAcceEtablissement({
+  //     numero_uai: "0062205P",
+  //   });
+
+  //   const stats = await importFormationsSupStats({
+  //     parameters: [{ millesime: "2020_2021" }],
+  //   });
+
+  //   const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
+  //   assert.deepStrictEqual(found, {
+  //     uai: "0062205P",
+  //     code_certification: "2500249",
+  //     code_certification_type: "sise",
+  //     libelle: "METIERS DE L'ENSEIGNEMENT",
+  //     millesime: "2020_2021",
+  //     filiere: "superieur",
+  //     date_fermeture: new Date("2023-01-01T00:00:00.000Z"),
+  //     nb_annee_term: 272,
+  //     nb_diplome: 272,
+  //     nb_en_emploi_12_mois: 195,
+  //     nb_en_emploi_18_mois: 211,
+  //     nb_en_emploi_6_mois: 188,
+  //     nb_poursuite_etudes: 35,
+  //     nb_sortant: 237,
+  //     taux_autres_12_mois: 15,
+  //     taux_autres_18_mois: 9,
+  //     taux_autres_6_mois: 18,
+  //     taux_en_emploi_12_mois: 72,
+  //     taux_en_emploi_18_mois: 78,
+  //     taux_en_emploi_6_mois: 69,
+  //     taux_en_formation: 13,
+  //     diplome: {
+  //       code: "6",
+  //       libelle: "MAST ENS",
+  //     },
+  //     region: {
+  //       code: "93",
+  //       nom: "Provence-Alpes-Côte d'Azur",
+  //     },
+  //     academie: { code: "23", nom: "Nice" },
+  //     donnee_source: {
+  //       code_certification: "2500249",
+  //       type: "self",
+  //     },
+  //     _meta: {
+  //       insersup: {
+  //         discipline: "Sciences humaines et sociales",
+  //         domaine_disciplinaire: "Sciences humaines et sociales",
+  //         etablissement_actuel_libelle: "Université Côte d'Azur",
+  //         etablissement_libelle: "Université Côte d'Azur",
+  //         secteur_disciplinaire: "Sciences de l'éducation",
+  //         type_diplome: "Master MEEF",
+  //       },
+  //       created_on: new Date("2023-01-01T00:00:00.000Z"),
+  //       updated_on: new Date("2023-01-01T00:00:00.000Z"),
+  //       date_import: new Date("2023-01-01T00:00:00.000Z"),
+  //     },
+  //   });
+
+  //   assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
+  // });
 
   it("Vérifie qu'on n'agrège pas les stats si elles ne sont disponible que pour un millesime", async () => {
     const formations = await Fixtures.FormationsInserSupInvalid();

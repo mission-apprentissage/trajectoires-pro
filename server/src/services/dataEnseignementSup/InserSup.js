@@ -1,5 +1,5 @@
 import { Readable } from "stream";
-import { mapValues, mergeWith } from "lodash-es";
+import { mapValues } from "lodash-es";
 import { DataEnseignementSupApi } from "./DataEnseignementSupApi.js";
 import { transformData, filterData, accumulateData, flattenArray, oleoduc, writeData } from "oleoduc";
 
@@ -76,42 +76,44 @@ class InserSup {
         if (stats[millesime]) {
           return stats[millesime];
         }
+        // We don't want to aggregate when stats are only available by millesimes for now
+        return null;
 
-        const statsMerged = Object.values(stats).reduce((acc, stat) => {
-          if (!acc) {
-            return {
-              ...stat,
-              nb_en_emploi: mapValues(stat.nb_en_emploi, (v) => [v]),
-            };
-          }
+        // const statsMerged = Object.values(stats).reduce((acc, stat) => {
+        //   if (!acc) {
+        //     return {
+        //       ...stat,
+        //       nb_en_emploi: mapValues(stat.nb_en_emploi, (v) => [v]),
+        //     };
+        //   }
 
-          return {
-            ...acc,
-            promo: [...acc.promo, ...stat.promo],
-            nb_poursuivants: acc.nb_poursuivants + stat.nb_poursuivants,
-            nb_sortants: acc.nb_sortants + stat.nb_sortants,
-            nb_diplomes: acc.nb_diplomes + stat.nb_diplomes,
-            nb_en_emploi: mergeWith(
-              acc.nb_en_emploi,
-              mapValues(stat.nb_en_emploi, (v) => [v]),
-              (objValue, srcValue) => objValue.concat(srcValue)
-            ),
-          };
-        }, null);
+        //   return {
+        //     ...acc,
+        //     promo: [...acc.promo, ...stat.promo],
+        //     nb_poursuivants: acc.nb_poursuivants + stat.nb_poursuivants,
+        //     nb_sortants: acc.nb_sortants + stat.nb_sortants,
+        //     nb_diplomes: acc.nb_diplomes + stat.nb_diplomes,
+        //     nb_en_emploi: mergeWith(
+        //       acc.nb_en_emploi,
+        //       mapValues(stat.nb_en_emploi, (v) => [v]),
+        //       (objValue, srcValue) => objValue.concat(srcValue)
+        //     ),
+        //   };
+        // }, null);
 
-        if (statsMerged.promo.length !== 2) {
-          return null;
-        }
+        // if (statsMerged.promo.length !== 2) {
+        //   return null;
+        // }
 
-        // Remove value that not exist on both millesime
-        statsMerged.nb_en_emploi = mapValues(statsMerged.nb_en_emploi, (v) => {
-          if (v.length !== 2 || v.some((v) => v === null)) {
-            return null;
-          }
-          return v.reduce((s, v) => s + v, 0);
-        });
+        // // Remove value that not exist on both millesime
+        // statsMerged.nb_en_emploi = mapValues(statsMerged.nb_en_emploi, (v) => {
+        //   if (v.length !== 2 || v.some((v) => v === null)) {
+        //     return null;
+        //   }
+        //   return v.reduce((s, v) => s + v, 0);
+        // });
 
-        return statsMerged;
+        // return statsMerged;
       }),
       // Format data
       transformData((stats) => {
