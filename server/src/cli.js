@@ -139,6 +139,7 @@ cli
         importBCN: await importBCNCommand(),
         importEtablissements: await importEtablissements(),
         importStats: await importStats(),
+        importSupStats: await importSupStats(),
         computeContinuumStats: await computeContinuumStats(),
         importCatalogueApprentissage: await importCAFormations(),
         computeUAI: await computeUAI(),
