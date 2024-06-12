@@ -20,7 +20,7 @@ export function formatPortesOuvertes(etablissement: Etablissement) {
   if (!journeesPortesOuvertes.dates || journeesPortesOuvertes.dates.length === 0) {
     return {
       ended: false,
-      str: `En savoir plus sur les journées portes ouvertes ${journeesPortesOuvertes.details}`,
+      str: `En savoir plus sur les journées portes ouvertes`,
     };
   }
 
