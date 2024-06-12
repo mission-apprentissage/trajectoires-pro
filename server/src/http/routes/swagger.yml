@@ -775,7 +775,12 @@ components:
       required: true
       schema:
         type: string
-        example: "32221031409"
+      examples:
+        scolaire:
+          value: "MEFSTAT11:32221031409"
+        apprentissage:
+          value: "CFD:32031409"
+
 
     codes_certifications_with_sise:
       name: codes_certifications
@@ -793,7 +798,7 @@ components:
       required: true
       schema:
         type: string
-        example: "32221031409"
+        example: "SISE:32221031409"
 
     multiple_codes_certifications:
       name: codes_certifications
