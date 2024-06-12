@@ -4,6 +4,9 @@ import * as API from "../index";
 import { FormationTag } from "#/types/formation";
 import { tryCatch } from "#/app/utils/routeUtils";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const getSchema = object({
   longitude: number().min(-180).max(180).required(),
   latitude: number().min(-90).max(90).required(),
