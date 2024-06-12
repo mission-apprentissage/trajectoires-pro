@@ -6,7 +6,7 @@ export function parseJourneesPortesOuvertes(journeesPortesOuvertes) {
   const dateHourFormat = dateFormat + " " + hourFormat;
 
   const defaultMatch = (rule, str) => str.match(rule.regex);
-  const optionalRegex = "( \\([^\\)]+\\))?( voir [^\\s]+)?";
+  const optionalRegex = "(?: en virtuel)?( \\([^\\)]+\\))?( voir [^\\s]+)?";
   const rules = {
     date: {
       regex: `^le ([0-9]{2}/[0-9]{2}/[0-9]{4})${optionalRegex}$`,
@@ -36,6 +36,46 @@ export function parseJourneesPortesOuvertes(journeesPortesOuvertes) {
               from: moment(match[1] + " " + match[2], dateHourFormat).toDate(),
               to: moment(match[1] + " " + match[3], dateHourFormat).toDate(),
               ...(match[4] ? { details: match[4].trim() } : {}),
+              fullDay: false,
+            },
+          ],
+        };
+      },
+    },
+
+    period: {
+      regex: `^du ([0-9]{2}/[0-9]{2}/[0-9]{4}) au ([0-9]{2}/[0-9]{2}/[0-9]{4})${optionalRegex}$`,
+      match: defaultMatch,
+      transform: (rule, str) => {
+        const match = str.match(rule.regex);
+        return {
+          dates: [
+            {
+              from: moment(match[1], dateHourFormat).startOf("day").toDate(),
+              to: moment(match[2], dateHourFormat).endOf("day").toDate(),
+              ...(match[3] ? { details: match[3].trim() } : {}),
+              fullDay: true,
+            },
+          ],
+        };
+      },
+    },
+
+    periodHour: {
+      regex: `^du ([0-9]{2}/[0-9]{2}/[0-9]{4}) au ([0-9]{2}/[0-9]{2}/[0-9]{4}) de ([0-9]{2}h[0-9]{2}) à ([0-9]{2}h[0-9]{2})${optionalRegex}$`,
+      match: defaultMatch,
+      transform: (rule, str) => {
+        const match = str.match(rule.regex);
+        return {
+          dates: [
+            {
+              from: moment(match[1] + " " + match[3], dateHourFormat)
+                .startOf("day")
+                .toDate(),
+              to: moment(match[2] + " " + match[4], dateHourFormat)
+                .endOf("day")
+                .toDate(),
+              ...(match[5] ? { details: match[5].trim() } : {}),
               fullDay: false,
             },
           ],
