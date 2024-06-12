@@ -4,10 +4,13 @@ import { fr } from "@codegouvfr/react-dsfr";
 import { Etablissement } from "#/types/formation";
 import moment from "moment";
 import "moment/locale/fr";
+import MockDate from "mockdate";
 
 moment.locale("fr");
 
 export function formatPortesOuvertes(etablissement: Etablissement) {
+  // TODO: remove after review
+  MockDate.set("2024-01-01");
   const journeesPortesOuvertes = etablissement.journeesPortesOuvertes;
   if (!journeesPortesOuvertes) {
     return null;
@@ -17,13 +20,12 @@ export function formatPortesOuvertes(etablissement: Etablissement) {
   if (!journeesPortesOuvertes.dates || journeesPortesOuvertes.dates.length === 0) {
     return {
       ended: false,
-      str: `Portes ouvertes le ${journeesPortesOuvertes.details}`,
+      str: `En savoir plus sur les journées portes ouvertes ${journeesPortesOuvertes.details}`,
     };
   }
 
   // Date
   // TODO : gérer les détails, les dates à trou, etc...
-  // TODO: porte ouverte deja passé
   let strPortesOuvertes = "";
   let ended = true;
   let first = true;
@@ -34,14 +36,25 @@ export function formatPortesOuvertes(etablissement: Etablissement) {
 
     if (date.from > currentDate || date.to > currentDate) {
       ended = false;
-      strPortesOuvertes +=
-        (!first ? ", " : "Portes ouvertes le ") +
-        moment(date.from).format("DD MMMM YYYY") +
-        (date.details ? ` ${date.details}` : "");
-      first = false;
+
+      // Period
+      if (!moment(date.from).isSame(date.to, "day")) {
+        // Day
+        strPortesOuvertes +=
+          (!first ? ", du " : "Portes ouvertes du ") +
+          moment(date.from).format("DD MMMM YYYY") +
+          " au " +
+          moment(date.to).format("DD MMMM YYYY");
+        first = false;
+      } else {
+        // Day
+        strPortesOuvertes += (!first ? ", le " : "Portes ouvertes le ") + moment(date.from).format("DD MMMM YYYY");
+        first = false;
+      }
     }
   }
 
+  MockDate.reset();
   return {
     ended,
     str: ended ? `Portes ouvertes déjà passées` : `${strPortesOuvertes}`,
