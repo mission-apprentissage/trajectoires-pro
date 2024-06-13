@@ -405,7 +405,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/uai_with_sise"
         - $ref: "#/components/parameters/code_certification_with_sise"
-        - $ref: "#/components/parameters/millesimePeriode"
+        - $ref: "#/components/parameters/millesimeFormationPeriode"
       responses:
         200:
           $ref: "#/components/responses/FormationResponse"
@@ -422,7 +422,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/uai_with_sise"
         - $ref: "#/components/parameters/code_certification_with_sise"
-        - $ref: "#/components/parameters/millesimePeriode"
+        - $ref: "#/components/parameters/millesimeFormationPeriode"
         - $ref: "#/components/parameters/direction"
         - $ref: "#/components/parameters/theme"
         - $ref: "#/components/parameters/imageOnError"
@@ -444,7 +444,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/uai_with_sise"
         - $ref: "#/components/parameters/code_certification_with_sise"
-        - $ref: "#/components/parameters/millesimePeriode"
+        - $ref: "#/components/parameters/millesimeFormationPeriode"
       responses:
         200:
           $ref: "#/components/responses/FormationWidgetResponse"
@@ -478,7 +478,7 @@ components:
       in: query
       description: |
         Permet de filtrer la recherche avec un ou plusieurs millesimes séparés par des virgules.
-        * Les millesimes des formations sont des périodes (ex: 2020_2021)
+        * Les millesimes au niveau établissement sont des périodes (ex: 2020_2021)
         * Retourne les données du dernier millésime si le champ est vide
       schema:
         type: string
@@ -613,6 +613,17 @@ components:
       in: query
       description: |
         Les millesimes au niveau régional sont des périodes (ex: 2020_2021).
+
+        Retourne les données du dernier millésime si le champ est vide.
+      required: false
+      schema:
+        type: string
+
+    millesimeFormationPeriode:
+      name: millesime
+      in: query
+      description: |
+        Les millesimes au niveau établissement sont des périodes (ex: 2020_2021).
 
         Retourne les données du dernier millésime si le champ est vide.
       required: false
