@@ -9,6 +9,11 @@ chemin_racine_data <- "../../../../../0- data"
 
 # Données ----
 
+## Données BCN ----
+n_mef <- read_csv2(file.path(chemin_racine_data,"n_mef_.csv"))
+n_formation_diplome <- read_delim(file.path(chemin_racine_data,"BCN/n_formation_diplome_.csv"),delim = ";", escape_double = FALSE, trim_ws = TRUE)
+n_niveau_formation_diplome <- read_csv2(file.path(chemin_racine_data,"BCN/n_niveau_formation_diplome_.csv"))
+
 ## CertifInfos
 
 opendata_certif_info <- data.table::fread(file.path(chemin_racine_data,"Certif_Infos/opendata-certifinfo-13032024.csv"),
@@ -43,10 +48,77 @@ effectifs_rentree_simpli <- fr_en_lycee_pro_effectifs_niveau_sexe_mef %>%
       mutate(Filiere="superieur")
   )
 
-## Données BCN ----
-n_mef <- read_csv2(file.path(chemin_racine_data,"n_mef_.csv"))
-n_formation_diplome <- read_delim(file.path(chemin_racine_data,"BCN/n_formation_diplome_.csv"),delim = ";", escape_double = FALSE, trim_ws = TRUE)
-n_niveau_formation_diplome <- read_csv2(file.path(chemin_racine_data,"BCN/n_niveau_formation_diplome_.csv"))
+## Voeux plateformes d' affectation ----
+
+voeux_affelnet <- data.table::fread(file.path(chemin_racine_data,"affelnet/2023/attractivite_capacite_2023.csv"),encoding = "Latin-1")
+
+# Demandes tous vœux
+# Nombre de voeux affectes
+
+voeux_affelnet_simpli <- voeux_affelnet %>% 
+  as_tibble() %>% 
+  left_join(
+    n_mef %>% 
+      select(MEF_STAT_11,FORMATION_DIPLOME),
+    by=c("MEF STAT 11"="MEF_STAT_11")
+  ) %>% 
+  group_by(`Etablissement d'accueil`,`MEF STAT 11`,`Statut Offre de formation`,FORMATION_DIPLOME) %>% 
+  summarise(`Nombre de voeux affectes`=sum(`Affectés tous vœux`,na.rm = T),
+            `Demandes tous vœux`=sum(`Demandes tous vœux`,na.rm=T)) %>%  
+  ungroup() %>% 
+  setNames(c("UAI","MEFSTAT11","Filiere","FORMATION_DIPLOME","Nombre de voeux affectes","Demandes tous voeux")) %>% 
+  filter(MEFSTAT11!="") %>% 
+  mutate(Filiere=ifelse(Filiere=="ST","Scolaire","Apprentissage"))
+
+
+voeux_parcoursup <- data.table::fread(file.path(chemin_racine_data,"SSM/SIES/2023/fr-esr-parcoursup.csv"))
+
+catalogue_parcoursup_2023 <- read_excel(file.path(chemin_racine_data,"parcoursup/2023/listeFormationsInserJeunes_finSession2023_avecNbDemandeEnPlus.xls"))
+catalogue_parcoursup_2024 <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/listesFormationsInsertJeunes_toutesFormations_020224.xls"))
+#voe_tot
+#acc_tot
+
+voeux_parcoursup_simpli <- voeux_parcoursup %>% 
+  as_tibble() %>% 
+  filter(session==2023) %>% 
+  select(cod_uai,voe_tot,acc_tot,cod_aff_form,lien_form_psup,lib_for_voe_ins) %>% 
+  left_join(
+    catalogue_parcoursup_2024 %>% 
+      select(contains("uai"),CODEFORMATION,LIBFORMATION,CODEMEF,CODECFD,CODEFORMATIONINSCRIPTION,CODEFORMATIONACCUEIL,APPRENTISSAGEOUSCOLAIRE,ID_RCO),
+    by=c("cod_aff_form"="CODEFORMATIONACCUEIL")
+  ) %>% 
+  select(cod_uai,voe_tot,acc_tot,cod_aff_form,lien_form_psup,lib_for_voe_ins,CODEMEF,CODECFD,APPRENTISSAGEOUSCOLAIRE,ID_RCO) %>% 
+  filter(!is.na(APPRENTISSAGEOUSCOLAIRE)) %>% 
+  bind_rows(
+    voeux_parcoursup %>% 
+      as_tibble() %>% 
+      filter(session==2023) %>% 
+      select(cod_uai,voe_tot,acc_tot,cod_aff_form,lien_form_psup,lib_for_voe_ins) %>% 
+      left_join(
+        catalogue_parcoursup_2024 %>% 
+          select(contains("uai"),CODEFORMATION,LIBFORMATION,CODEMEF,CODECFD,CODEFORMATIONINSCRIPTION,CODEFORMATIONACCUEIL,APPRENTISSAGEOUSCOLAIRE,ID_RCO),
+        by=c("cod_aff_form"="CODEFORMATIONACCUEIL")
+      ) %>% 
+      select(cod_uai,voe_tot,acc_tot,cod_aff_form,lien_form_psup,lib_for_voe_ins,CODEMEF,CODECFD,APPRENTISSAGEOUSCOLAIRE,ID_RCO) %>% 
+      filter(is.na(APPRENTISSAGEOUSCOLAIRE)) %>% 
+      select(cod_uai,voe_tot,acc_tot,cod_aff_form,lien_form_psup,lib_for_voe_ins) %>% 
+      left_join(
+        catalogue_parcoursup_2023 %>% 
+          select(contains("uai"),CODEFORMATION,LIBFORMATION,CODEMEF,CODECFD,CODEFORMATIONINSCRIPTION,CODEFORMATIONACCUEIL,APPRENTISSAGEOUSCOLAIRE,ID_RCO),
+        by=c("cod_aff_form"="CODEFORMATIONACCUEIL")
+      )   
+  ) %>% 
+  distinct(cod_uai,CODEMEF,APPRENTISSAGEOUSCOLAIRE,CODECFD,acc_tot,voe_tot) %>% 
+  setNames(c("UAI","MEFSTAT11","Filiere","FORMATION_DIPLOME","Nombre de voeux affectes","Demandes tous voeux")) 
+
+
+voeux_parcoursup_affelnet_simpli_2023 <- voeux_parcoursup_simpli %>% 
+  bind_rows(voeux_affelnet_simpli) %>% 
+  mutate(code_certification=ifelse(Filiere=="Scolaire",MEFSTAT11,FORMATION_DIPLOME)) %>% 
+  distinct(UAI,code_certification,Filiere,`Nombre de voeux affectes`,`Demandes tous voeux`) 
+
+
+
 
 ## Données IJ pour analyse de la couverture ----
 ### Etablissements ----

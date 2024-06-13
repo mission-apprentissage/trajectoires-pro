@@ -35,12 +35,16 @@ affelnet_simpli <- Affelnet_20240570_Extraction_catalogue_SLA_2024 %>%
 catalogue_affelnet_SLA_2024_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = affelnet_simpli,type_source = "affelnet")
 stats_catalogue_affelnet_SLA_2024 <- expo_mef_stats_catalogue_partenaire(catalogue_partenaire_renseigne = catalogue_affelnet_SLA_2024_renseigne)
 
-stats_catalogue_affelnet_SLA_2024 %>% 
-  mutate_at(vars(`Part du  catalogue`,`Couverture - Ensemble`,`Couverture - Hors familles de métiers`,`Couverture - Familles de métiers`,`Non couvert`,`Dont sous le seuil de 20 élèves`),scales::percent,accuracy=0.1) %>%
-  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
-  kable_paper()
+stats_catalogue_affelnet_SLA_2024$stats_catalogue_partenaire %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(4:length(.)),as.numeric) %>% 
+    mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  DT::datatable(options = list(dom = 't',pageLength = 10000),rownames = F)
+  # kableExtra::kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
+  # kableExtra::kable_paper()
 ```
 
+<!--
 ### Nombre d'élèves en année terminale
 
 ```{r}
@@ -48,7 +52,20 @@ stats_catalogue_affelnet_SLA_2024$stats_catalogue_partenaire_effectifs_temp %>%
   select(-`Nombre d'élèves à la rentrée`) %>% 
   mutate_all(replace_na,0) %>% 
   mutate_at(vars(4:length(.)),as.numeric) %>% 
-    mutate_at(vars(`Part du  catalogue`,`Couverture - Hors familles de métiers`,`Couverture - Familles de métiers`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+    mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  DT::datatable(options = list(dom = 't',pageLength = 10000),rownames = F)
+
+```
+
+-->
+
+### Nombre de voeux émis
+
+```{r}
+stats_catalogue_affelnet_SLA_2024$stats_catalogue_partenaire_voeux %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(4:length(.)),as.numeric) %>% 
+    mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
   DT::datatable(options = list(dom = 't',pageLength = 10000),rownames = F)
 
 ```
