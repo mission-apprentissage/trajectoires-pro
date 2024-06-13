@@ -7,7 +7,7 @@ const logger = getLoggerWithContext("query");
 export const FORMATION_TAG = {
   inserjeunes: {
     tags: ["pour_travailler_rapidement", "pour_continuer_des_etudes"],
-    create: ({ thresholdEnEmploi, thresholdEnEtude } = { thresholdEnEmploi: 40, thresholdEnEtude: 60 }) => {
+    create: ({ thresholdEnEmploi, thresholdEnEtude } = { thresholdEnEmploi: 31, thresholdEnEtude: 64 }) => {
       return createInserJeunesTag({ thresholdEnEmploi, thresholdEnEtude });
     },
   },
