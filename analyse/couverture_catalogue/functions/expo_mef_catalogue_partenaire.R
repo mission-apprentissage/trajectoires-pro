@@ -199,18 +199,41 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     summarise("Nombre de formations"=n()) %>% 
     ungroup() %>% 
     mutate("Part du  catalogue"=prop.table(`Nombre de formations`)) %>% 
+    # left_join(
+    #   catalogue_partenaire_renseigne %>%
+    #     select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
+    #     filter(famillemetiers=="Famille de métiers") %>% 
+    #     group_by(type_formation,libelle_type_diplome,Filiere) %>% 
+    #     summarise("Famille de métiers"=n()) %>% 
+    #     ungroup() ,
+    #   by=c("type_formation","libelle_type_diplome","Filiere")) %>% 
+    # mutate(`Famille de métiers`=replace_na(`Famille de métiers`,0))  
+    # left_join(
+    #   catalogue_partenaire_renseigne %>% 
+    #     mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
+    #     group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
+    #     summarise("Nombre de formations"=n()) %>% 
+    #     ungroup() %>% 
+    #     left_join(
+    #       catalogue_partenaire_renseigne %>% 
+    #         mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
+    #         filter(Couvert)%>%   
+    #         group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
+    #         summarise("Nombre de formations couvertes"=n()),
+    #       by=c("type_formation","libelle_type_diplome","Filiere","famillemetiers")
+    #     ) %>% 
+    #     mutate(
+    #       `Nombre de formations couvertes`=replace_na(`Nombre de formations couvertes`,0),
+    #       Couverture=`Nombre de formations couvertes`/`Nombre de formations`
+    #     ) %>% 
+    #     select(-contains("Nombre de formations")) %>% 
+    #     mutate(famillemetiers=ifelse(famillemetiers=="Hors famille de métiers","Couverture - Hors familles de métiers","Couverture - Familles de métiers")) %>% 
+    #     pivot_wider(names_from = famillemetiers,values_from = `Couverture`),
+    #   by=c("type_formation","libelle_type_diplome","Filiere")
+    # ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
         select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
-        filter(famillemetiers=="Famille de métiers") %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere) %>% 
-        summarise("Famille de métiers"=n()) %>% 
-        ungroup() ,
-      by=c("type_formation","libelle_type_diplome","Filiere")) %>% 
-    mutate(`Famille de métiers`=replace_na(`Famille de métiers`,0)) %>% 
-    left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
         group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
         summarise(`Nombre de formations`=n()) %>% 
         ungroup() %>% 
@@ -226,9 +249,25 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
           `Nombre de formations couvertes`=replace_na(`Nombre de formations couvertes`,0),
           Couverture=`Nombre de formations couvertes`/`Nombre de formations`
         ) %>% 
-        select(-contains("Nombre de formations")) %>% 
-        mutate(famillemetiers=ifelse(famillemetiers=="Hors famille de métiers","Couverture - Hors familles de métiers","Couverture - Familles de métiers")) %>% 
-        pivot_wider(names_from = famillemetiers,values_from = `Couverture`),
+        pivot_longer(
+          cols = c(`Nombre de formations`,`Nombre de formations couvertes`,Couverture)
+        ) %>% 
+        mutate(
+          name=case_when(
+            name == "Nombre de formations" ~ paste0(famillemetiers," (nb)"),
+            name == "Nombre de formations couvertes" ~ paste0(famillemetiers," - Formations couvertes (nb)"),
+            name == "Couverture" ~ paste0(famillemetiers," - Formations couvertes (%)")
+          )
+        ) %>% 
+        select(-famillemetiers) %>% 
+        mutate(
+          name=factor(name,levels=c("Famille de métiers (nb)", 
+                                    "Famille de métiers - Formations couvertes (nb)", "Famille de métiers - Formations couvertes (%)",
+                                    "Hors famille de métiers (nb)", "Hors famille de métiers - Formations couvertes (nb)",
+                                    "Hors famille de métiers - Formations couvertes (%)"
+          ))
+        ) %>% 
+        pivot_wider(names_from = name,values_from = value),
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
@@ -296,14 +335,6 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     left_join(
       catalogue_partenaire_renseigne %>%
         select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
-        filter(famillemetiers=="Famille de métiers") %>% 
-        summarise("Famille de métiers"=n()) %>% 
-        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total") ,
-      by=c("type_formation","libelle_type_diplome","Filiere")) %>% 
-    mutate(`Famille de métiers`=replace_na(`Famille de métiers`,0)) %>% 
-    left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
         group_by(famillemetiers) %>% 
         summarise(`Nombre de formations`=n()) %>% 
         ungroup() %>% 
@@ -318,11 +349,27 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         mutate(
           `Nombre de formations couvertes`=replace_na(`Nombre de formations couvertes`,0),
           Couverture=`Nombre de formations couvertes`/`Nombre de formations`
-        )%>% 
-        select(-contains("Nombre de formations")) %>% 
-        mutate(famillemetiers=ifelse(famillemetiers=="Hors famille de métiers","Couverture - Hors familles de métiers","Couverture - Familles de métiers")) %>% 
-        pivot_wider(names_from = famillemetiers,values_from = `Couverture`) %>% 
-        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total") ,
+        ) %>% 
+        pivot_longer(
+          cols = c(`Nombre de formations`,`Nombre de formations couvertes`,Couverture)
+        ) %>% 
+        mutate(
+          name=case_when(
+            name == "Nombre de formations" ~ paste0(famillemetiers," (nb)"),
+            name == "Nombre de formations couvertes" ~ paste0(famillemetiers," - Formations couvertes (nb)"),
+            name == "Couverture" ~ paste0(famillemetiers," - Formations couvertes (%)")
+          )
+        ) %>% 
+        select(-famillemetiers) %>% 
+        mutate(
+          name=factor(name,levels=c("Famille de métiers (nb)", 
+                                    "Famille de métiers - Formations couvertes (nb)", "Famille de métiers - Formations couvertes (%)",
+                                    "Hors famille de métiers (nb)", "Hors famille de métiers - Formations couvertes (nb)",
+                                    "Hors famille de métiers - Formations couvertes (%)"
+          ))
+        ) %>% 
+        pivot_wider(names_from = name,values_from = value) %>% 
+        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>%
     left_join(
@@ -522,35 +569,58 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) 
   
   
+  ## Synthese ----
   
   
   stats_catalogue_partenaire_temp <- stats_catalogue_partenaire %>% 
     bind_rows(stats_catalogue_partenaire_globale) 
   
   col_to_add <- setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
-                          "Part du  catalogue", "Famille de métiers", "Couvert", "Couverture - Hors familles de métiers", 
-                          "Couverture - Familles de métiers", "Non couvert", "Sous le seuil de 20 élèves"),
+                          "Part du  catalogue", "Couvert (nb)", "Couvert (%)",  "Famille de métiers (nb)", 
+                          "Famille de métiers - Formations couvertes (nb)", "Famille de métiers - Formations couvertes (%)",
+                          "Hors famille de métiers (nb)", "Hors famille de métiers - Formations couvertes (nb)",
+                          "Hors famille de métiers - Formations couvertes (%)", "Non couvert (nb)", "Non couvert (%)", 
+                          "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
+                          "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
+                          "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
+                          "Non couvert - Territoires non couverts (nb)","Non couvert - Territoires non couverts (%)",
+                          "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)"),
                         names(stats_catalogue_partenaire_temp)
   )
   if(length(col_to_add)>0){
     
     stats_catalogue_partenaire_temp <- stats_catalogue_partenaire_temp %>% 
-    bind_cols(
-      map(setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
-                    "Part du  catalogue", "Famille de métiers", "Couvert", "Couverture - Hors familles de métiers", 
-                    "Couverture - Familles de métiers", "Non couvert", "Sous le seuil de 20 élèves"),
-                  names(stats_catalogue_partenaire_temp)
-      ),function(x){
-        tibble(!!sym(x):=rep(NA,nrow(stats_catalogue_partenaire_temp)))
-      }) %>% 
-        reduce(bind_cols)    
-    )  
+      bind_cols(
+        map(setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
+                      "Part du  catalogue", "Couvert (nb)", "Couvert (%)",  "Famille de métiers (nb)", 
+                      "Famille de métiers - Formations couvertes (nb)", "Famille de métiers - Formations couvertes (%)",
+                      "Hors famille de métiers (nb)", "Hors famille de métiers - Formations couvertes (nb)",
+                      "Hors famille de métiers - Formations couvertes (%)", "Non couvert (nb)", "Non couvert (%)", 
+                      "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
+                      "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
+                      "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
+                      "Non couvert - Territoires non couverts (nb)","Non couvert - Territoires non couverts (%)",
+                      "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)"),
+                    names(stats_catalogue_partenaire_temp)
+        ),function(x){
+          tibble(!!sym(x):=rep(NA,nrow(stats_catalogue_partenaire_temp)))
+        }) %>% 
+          reduce(bind_cols)    
+      )  
   } 
+  
   
   stats_catalogue_partenaire <- stats_catalogue_partenaire_temp %>% 
     select(c("type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
-             "Part du  catalogue", "Famille de métiers", "Couvert", "Couverture - Hors familles de métiers", 
-             "Couverture - Familles de métiers", "Non couvert", "Sous le seuil de 20 élèves")
+             "Part du  catalogue", "Couvert (nb)", "Couvert (%)",  "Famille de métiers (nb)", 
+             "Famille de métiers - Formations couvertes (nb)", "Famille de métiers - Formations couvertes (%)",
+             "Hors famille de métiers (nb)", "Hors famille de métiers - Formations couvertes (nb)",
+             "Hors famille de métiers - Formations couvertes (%)", "Non couvert (nb)", "Non couvert (%)", 
+             "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
+             "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
+             "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
+             "Non couvert - Territoires non couverts (nb)","Non couvert - Territoires non couverts (%)",
+             "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)")
     ) %>%  
     rename(
       "Avant/après bac"=type_formation,
@@ -697,21 +767,11 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         ) %>% 
         select(-famillemetiers) %>% 
         mutate(
-          name=factor(name,
-                      levels=c("Famille de métiers (nb)", 
-                               "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
-                               "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
-                               "Hors famille de métiers - Effectifs couverts (%)"
-                      ),
-                      labels=c("Formations associées à une famille de métiers (nb)", 
-                               "Formations associées à une famille de métiers - Effectifs couverts (nb)", 
-                               "Formations associées à une famille de métiers - Effectifs couverts (%)",
-                               "Formations non associées à une famille de métiers (nb)", 
-                               "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
-                               "Formations non associées à une famille de métiers - Effectifs couverts (%)"
-                      )
-          )
-
+          name=factor(name,levels=c("Famille de métiers (nb)", 
+                                    "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
+                                    "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
+                                    "Hors famille de métiers - Effectifs couverts (%)"
+          ))
         ) %>% 
         pivot_wider(names_from = name,values_from = value) ,
       by=c("type_formation","libelle_type_diplome","Filiere")
@@ -1079,21 +1139,11 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         ) %>% 
         select(-famillemetiers) %>% 
         mutate(
-          name=factor(name,
-                      levels=c("Famille de métiers (nb)", 
-                               "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
-                               "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
-                               "Hors famille de métiers - Effectifs couverts (%)"
-                      ),
-                      labels=c("Formations associées à une famille de métiers (nb)", 
-                               "Formations associées à une famille de métiers - Effectifs couverts (nb)", 
-                               "Formations associées à une famille de métiers - Effectifs couverts (%)",
-                               "Formations non associées à une famille de métiers (nb)", 
-                               "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
-                               "Formations non associées à une famille de métiers - Effectifs couverts (%)"
-                      )
-          )
-
+          name=factor(name,levels=c("Famille de métiers (nb)", 
+                                    "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
+                                    "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
+                                    "Hors famille de métiers - Effectifs couverts (%)"
+          ))
         ) %>% 
         pivot_wider(names_from = name,values_from = value) %>% 
         mutate(
@@ -1343,14 +1393,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
   
   col_to_add_effectifs <- setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Nombre d'élèves à la rentrée","Nombre d'élèves en année terminale", 
                                     "Part du  catalogue", "Couvert (nb)", "Couvert (%)",
-                                    
-                                    "Formations associées à une famille de métiers (nb)", 
-                                    "Formations associées à une famille de métiers - Effectifs couverts (nb)", 
-                                    "Formations associées à une famille de métiers - Effectifs couverts (%)",
-                                    "Formations non associées à une famille de métiers (nb)", 
-                                    "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
-                                    "Formations non associées à une famille de métiers - Effectifs couverts (%)",
-                                    
+                                    "Famille de métiers (nb)","Famille de métiers - Effectifs couverts (nb)","Famille de métiers - Effectifs couverts (%)",
+                                    "Hors famille de métiers (nb)","Hors famille de métiers - Effectifs couverts (nb)","Hors famille de métiers - Effectifs couverts (%)",
                                     "Non couvert (nb)", "Non couvert (%)", 
                                     "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
                                     "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
@@ -1366,14 +1410,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       bind_cols(
         map(setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Nombre d'élèves à la rentrée","Nombre d'élèves en année terminale", 
                       "Part du  catalogue", "Couvert (nb)", "Couvert (%)",
-                      
-                      "Formations associées à une famille de métiers (nb)", 
-                      "Formations associées à une famille de métiers - Effectifs couverts (nb)", 
-                      "Formations associées à une famille de métiers - Effectifs couverts (%)",
-                      "Formations non associées à une famille de métiers (nb)", 
-                      "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
-                      "Formations non associées à une famille de métiers - Effectifs couverts (%)",
-                      
+                      "Famille de métiers (nb)","Famille de métiers - Effectifs couverts (nb)","Famille de métiers - Effectifs couverts (%)",
+                      "Hors famille de métiers (nb)","Hors famille de métiers - Effectifs couverts (nb)","Hors famille de métiers - Effectifs couverts (%)",
                       "Non couvert (nb)", "Non couvert (%)", 
                       "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
                       "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
@@ -1396,14 +1434,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
   stats_catalogue_partenaire_effectifs_temp <- stats_catalogue_partenaire_effectifs_temp %>% 
     select(c("type_formation", "libelle_type_diplome", "Filiere", "Nombre d'élèves à la rentrée","Nombre d'élèves en année terminale", 
              "Part du  catalogue", "Couvert (nb)", "Couvert (%)",
-             
-             "Formations non associées à une famille de métiers (nb)", 
-             "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
-             "Formations non associées à une famille de métiers - Effectifs couverts (%)",
-             "Formations associées à une famille de métiers (nb)", 
-             "Formations associées à une famille de métiers - Effectifs couverts (nb)", 
-             "Formations associées à une famille de métiers - Effectifs couverts (%)",
-             
+             "Famille de métiers (nb)","Famille de métiers - Effectifs couverts (nb)","Famille de métiers - Effectifs couverts (%)",
+             "Hors famille de métiers (nb)","Hors famille de métiers - Effectifs couverts (nb)","Hors famille de métiers - Effectifs couverts (%)",
              "Non couvert (nb)", "Non couvert (%)", 
              "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
              "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
@@ -1433,9 +1465,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     select(-code_certification)
   
-  # catalogue_partenaire_renseigne %>% 
-  #   filter(Filiere=="Apprentissage") %>% 
-  #   select(UAI,MEFSTAT11,FORMATION_DIPLOME,`Nombre de voeux affectes`,`Demandes tous voeux`)
+  catalogue_partenaire_renseigne %>% 
+    filter(Filiere=="Apprentissage") %>% 
+    select(UAI,MEFSTAT11,FORMATION_DIPLOME,`Nombre de voeux affectes`,`Demandes tous voeux`)
   
   stats_catalogue_partenaire_voeux <- catalogue_partenaire_renseigne %>%
     ungroup() %>% 
@@ -1472,21 +1504,11 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         ) %>% 
         select(-famillemetiers) %>% 
         mutate(
-          name=factor(name,
-                      levels=c("Famille de métiers (nb)", 
-                               "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
-                               "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
-                               "Hors famille de métiers - Effectifs couverts (%)"
-                      ),
-                      labels=c("Formations associées à une famille de métiers (nb)", 
-                               "Formations associées à une famille de métiers - Effectifs couverts (nb)", 
-                               "Formations associées à une famille de métiers - Effectifs couverts (%)",
-                               "Formations non associées à une famille de métiers (nb)", 
-                               "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
-                               "Formations non associées à une famille de métiers - Effectifs couverts (%)"
-                      )
-          )
-
+          name=factor(name,levels=c("Famille de métiers (nb)", 
+                                    "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
+                                    "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
+                                    "Hors famille de métiers - Effectifs couverts (%)"
+          ))
         ) %>% 
         pivot_wider(names_from = name,values_from = value),
       by=c("type_formation","libelle_type_diplome","Filiere")
@@ -1723,20 +1745,11 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         ) %>% 
         select(-famillemetiers) %>% 
         mutate(
-          name=factor(name,
-                      levels=c("Famille de métiers (nb)", 
-                               "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
-                               "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
-                               "Hors famille de métiers - Effectifs couverts (%)"
-                      ),
-                      labels=c("Formations associées à une famille de métiers (nb)", 
-                               "Formations associées à une famille de métiers - Effectifs couverts (nb)", 
-                               "Formations associées à une famille de métiers - Effectifs couverts (%)",
-                               "Formations non associées à une famille de métiers (nb)", 
-                               "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
-                               "Formations non associées à une famille de métiers - Effectifs couverts (%)"
-                      )
-          )
+          name=factor(name,levels=c("Famille de métiers (nb)", 
+                                    "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
+                                    "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
+                                    "Hors famille de métiers - Effectifs couverts (%)"
+          ))
         ) %>% 
         pivot_wider(names_from = name,values_from = value)
     )  %>% 
@@ -1937,19 +1950,10 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     bind_rows(stats_catalogue_partenaire_globale_voeux) 
   
   col_to_add <- setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Effectifs", 
-                          "Part du  catalogue", "Couvert (nb)", "Couvert (%)", 
-                          
-                          
-                          "Formations associées à une famille de métiers (nb)", 
-                          "Formations associées à une famille de métiers - Effectifs couverts (nb)", 
-                          "Formations associées à une famille de métiers - Effectifs couverts (%)",
-                          "Formations non associées à une famille de métiers (nb)", 
-                          "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
-                          "Formations non associées à une famille de métiers - Effectifs couverts (%)",
-                          
-                          
-                          "Non couvert (nb)", "Non couvert (%)", 
-
+                          "Part du  catalogue", "Couvert (nb)", "Couvert (%)",  "Famille de métiers (nb)", 
+                          "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
+                          "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
+                          "Hors famille de métiers - Effectifs couverts (%)", "Non couvert (nb)", "Non couvert (%)", 
                           "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
                           "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
                           "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
@@ -1963,19 +1967,10 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     stats_catalogue_partenaire_voeux_temp <- stats_catalogue_partenaire_voeux_temp %>% 
       bind_cols(
         map(setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Effectifs", 
-                      "Part du  catalogue", "Couvert (nb)", "Couvert (%)", 
-                      
-                      
-                      "Formations associées à une famille de métiers (nb)", 
-                      "Formations associées à une famille de métiers - Effectifs couverts (nb)", 
-                      "Formations associées à une famille de métiers - Effectifs couverts (%)",
-                      "Formations non associées à une famille de métiers (nb)", 
-                      "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
-                      "Formations non associées à une famille de métiers - Effectifs couverts (%)",
-                      
-                      
-                      "Non couvert (nb)", "Non couvert (%)", 
-
+                      "Part du  catalogue", "Couvert (nb)", "Couvert (%)",  "Famille de métiers (nb)", 
+                      "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
+                      "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
+                      "Hors famille de métiers - Effectifs couverts (%)", "Non couvert (nb)", "Non couvert (%)", 
                       "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
                       "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
                       "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
@@ -1990,24 +1985,12 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
   } 
   
   
-  stats_catalogue_partenaire_voeux_temp <- stats_catalogue_partenaire_voeux_temp %>% 
-    select(-contains("(%)")) %>%
-    mutate_at(vars(contains("(nb)")),.funs = list(pct=~./`Effectifs`)) %>%  
-    setNames(str_replace(names(.),pattern = "\\(nb\\)_pct",replacement = "(%)"))
-  
   stats_catalogue_partenaire_voeux <- stats_catalogue_partenaire_voeux_temp %>% 
     select(c("type_formation", "libelle_type_diplome", "Filiere", "Effectifs", 
-             "Part du  catalogue", "Couvert (nb)", "Couvert (%)",  
-             
-             "Formations non associées à une famille de métiers (nb)", 
-             "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
-             "Formations non associées à une famille de métiers - Effectifs couverts (%)",
-             "Formations associées à une famille de métiers (nb)", 
-             "Formations associées à une famille de métiers - Effectifs couverts (nb)", 
-             "Formations associées à une famille de métiers - Effectifs couverts (%)",
-             
-             "Non couvert (nb)", "Non couvert (%)", 
-
+             "Part du  catalogue", "Couvert (nb)", "Couvert (%)",  "Famille de métiers (nb)", 
+             "Famille de métiers - Effectifs couverts (nb)", "Famille de métiers - Effectifs couverts (%)",
+             "Hors famille de métiers (nb)", "Hors famille de métiers - Effectifs couverts (nb)",
+             "Hors famille de métiers - Effectifs couverts (%)", "Non couvert (nb)", "Non couvert (%)", 
              "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
              "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
              "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
@@ -2020,10 +2003,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       "Couverture - Ensemble (nb)"=`Couvert (nb)`,
       "Couverture - Ensemble (%)"=`Couvert (%)`,
       "Dont sous le seuil de 20 élèves (nb)"=`Sous le seuil de 20 élèves (nb)`,
-      "Dont sous le seuil de 20 élèves (%)"=`Sous le seuil de 20 élèves (%)`,
-      !!sym(var_effectifs):=Effectifs
+      "Dont sous le seuil de 20 élèves (%)"=`Sous le seuil de 20 élèves (%)`
     )
-  
   
   return(list(stats_catalogue_partenaire=stats_catalogue_partenaire,stats_catalogue_partenaire_effectifs_temp=stats_catalogue_partenaire_effectifs_temp,stats_catalogue_partenaire_voeux=stats_catalogue_partenaire_voeux))
 }
