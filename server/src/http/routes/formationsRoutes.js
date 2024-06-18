@@ -4,7 +4,6 @@ import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import Joi from "joi";
 import moment from "moment";
 import Boom from "boom";
-import { flatten } from "lodash-es";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
 import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src/http/utils/responseUtils.js";
@@ -33,8 +32,7 @@ import {
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
 import { getFormations, getDistanceFilter, getTimeFilter } from "#src/queries/getFormations.js";
-import { FORMATION_TAG } from "#src/queries/formationTag.js";
-
+import { FORMATION_TAG } from "#src/common/constants/formationEtablissement.js";
 import FormationEtablissement from "#src/common/repositories/formationEtablissement.js";
 import Etablissement from "#src/common/repositories/etablissement.js";
 import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
@@ -343,7 +341,7 @@ export default () => {
           timeLimit: Joi.number().min(0).max(7200).default(null),
           tag: Joi.string()
             .empty("")
-            .valid(...flatten(Object.values(FORMATION_TAG).map((t) => t.tags)))
+            .valid(...Object.values(FORMATION_TAG))
             .default(null),
           ...validators.codesDiplome(),
           ...validators.pagination({ items_par_page: 100 }),

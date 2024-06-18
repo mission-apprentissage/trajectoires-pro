@@ -1,6 +1,6 @@
 import { oleoduc, writeData, transformData, mergeStreams, concatStreams, compose, filterData } from "oleoduc";
 import moment from "moment";
-import { omit } from "lodash-es";
+import { omit, pick } from "lodash-es";
 import { upsert } from "#src/common/db/mongodb.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
@@ -86,7 +86,7 @@ export async function importFormationEtablissement(options = {}) {
     writeData(
       async (data) => {
         try {
-          const res = await upsert(formationEtablissement(), omit(data, ["mef11", "millesime"]), {
+          const res = await upsert(formationEtablissement(), pick(data, ["uai", "cfd", "voie", "codeDispositif"]), {
             $setOnInsert: {
               "_meta.date_import": new Date(),
               "_meta.created_on": new Date(),

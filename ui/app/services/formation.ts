@@ -16,4 +16,11 @@ export const FORMATION_TAG: { tag: FormationTag; libelle: string; color: string;
     bgColor: "var(--info-975-75)",
     icon: "fr-icon-book-2-fill",
   },
+  {
+    tag: FormationTag.ADMISSION_FACILE,
+    libelle: "AVEC UNE ADMISSION FACILE",
+    color: "var(--info-425-625)",
+    bgColor: "var(--info-975-75)",
+    icon: "fr-icon-cup-line",
+  },
 ];

@@ -49,8 +49,6 @@ async function getBcn(cfd, duree) {
   const bcnMef = await streamToArray(
     await BCNMefRepository.find({
       formation_diplome: cfd,
-      duree_dispositif: duree,
-      annee_dispositif: duree,
     })
   );
 
@@ -60,8 +58,15 @@ async function getBcn(cfd, duree) {
   }
 
   if (bcnMef.length > 1) {
-    logger.error(`Plusieurs MEF corespondent à la formation cfd : ${cfd}, durée : ${duree} ans`);
-    return {};
+    // If there is many results, only keep the corresponding duration
+    const bcnMefFiltered = bcnMef.filter((data) => data.duree_dispositif === duree && data.annee_dispositif === duree);
+
+    if (bcnMefFiltered.length > 1) {
+      logger.error(`Plusieurs MEF corespondent à la formation cfd : ${cfd}, durée : ${duree} ans`);
+      return {};
+    }
+
+    return { bcn, bcnMef: bcnMefFiltered };
   }
 
   return { bcn, bcnMef };

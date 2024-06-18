@@ -95,12 +95,23 @@ const config = {
   },
   acce: {
     files: {
+      // https://dep.adc.education.fr/acce/extract.php
       etablissements: path.join(getDirname(import.meta.url), "../data/", "acce_etablissements.csv"),
     },
   },
   educationGouv: {
     files: {
       constatRentree: path.join(getDirname(import.meta.url), "../data/", "educationGouv/constatRentree2023.csv"),
+    },
+  },
+  orion: {
+    files: {
+      // https://orion-recette.inserjeunes.beta.gouv.fr/api/etablissements?order=asc&limit=1000000&withAnneeCommune=true
+      exportEtablissements: path.join(
+        getDirname(import.meta.url),
+        "../data/orion/",
+        "etablissement_export_rentree_2023.csv"
+      ),
     },
   },
   millesimes: {
