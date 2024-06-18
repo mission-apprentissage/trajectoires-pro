@@ -25,6 +25,8 @@ import { asArray } from "./common/utils/stringUtils.js";
 import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
 import { computeUAI } from "./jobs/stats/computeUAI.js";
 import * as UserJob from "./jobs/user/user.js";
+import { importIndicateurEntree } from "./jobs/formations/importIndicateurEntree.js";
+import { computeFormationTag } from "./jobs/formations/tag/computeFormationTag.js";
 
 async function importBCNCommand() {
   const statsBCN = await importBCN();
@@ -112,7 +114,13 @@ cli
   .command("importFormationEtablissement")
   .description("Importe les formations dans les établissements")
   .action(() => {
-    runScript(importFormationEtablissement);
+    runScript(async () => {
+      return {
+        importFormationEtablissement: await importFormationEtablissement(),
+        importIndicateurEntree: await importIndicateurEntree(),
+        computeFormationTag: await computeFormationTag(),
+      };
+    });
   });
 
 cli

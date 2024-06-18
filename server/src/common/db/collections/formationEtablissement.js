@@ -1,4 +1,5 @@
-import { object, objectId, string, arrayOf, enumOf } from "./jsonSchema/jsonSchemaTypes.js";
+import { FORMATION_TAG } from "#src/common/constants/formationEtablissement.js";
+import { object, objectId, string, arrayOf, enumOf, number } from "./jsonSchema/jsonSchemaTypes.js";
 import { metaSchema, metaImportSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "formationEtablissement";
@@ -17,6 +18,17 @@ export function schema() {
       mef11: string(),
       voie: enumOf(["scolaire", "apprentissage"]),
       millesime: arrayOf(string()),
+      tags: arrayOf(enumOf(Object.values(FORMATION_TAG))),
+      indicateurEntree: object(
+        {
+          rentreeScolaire: string(),
+          capacite: number(),
+          premiersVoeux: number(),
+          effectifs: number(),
+          tauxPression: number(),
+        },
+        {}
+      ),
       _meta: metaSchema([metaImportSchema()]),
     },
     {

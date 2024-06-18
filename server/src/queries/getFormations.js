@@ -1,6 +1,6 @@
 import { flatMap } from "lodash-es";
 import { etablissement } from "#src/common/db/collections/collections.js";
-import { createTags, filterTag } from "./formationTag.js";
+import { filterTag } from "./formationTag.js";
 //import { dbCollection } from "#src/common/db/mongodb.js";
 
 export function testTimeFilter({ coordinate }) {
@@ -195,8 +195,6 @@ export async function getFormations(
         ...(codesDiplome.length > 0 ? { "bcn.diplome.code": { $in: codesDiplome } } : {}),
       },
     },
-    // Create tag
-    ...createTags(),
     ...filterTag(tag),
     ...flatMap(filtersFormation),
     {
