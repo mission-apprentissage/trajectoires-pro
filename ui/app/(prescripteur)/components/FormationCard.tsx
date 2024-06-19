@@ -46,6 +46,7 @@ export default function FormationCard({
         onMouseLeave: () => onMouseLeave && onMouseLeave(),
       }}
       link={`/details/${key}?latitude=${latitude}&longitude=${longitude}&${getUrlParams()}`}
+      linkTarget="_blank"
     >
       <Typography style={{ marginBottom: fr.spacing("3v") }} variant="subtitle2">
         {bcn.libelle_long}

@@ -11,9 +11,16 @@ export interface CardProps {
   children?: JSX.Element | JSX.Element[];
   className?: string;
   link?: string;
+  linkTarget?: string;
   selected?: boolean;
   actionProps?: CardActionAreaProps;
 }
+
+const StyledLink = styled(Link)`
+  &[target="_blank"]::after {
+    content: none;
+  }
+`;
 
 function BaseCard({ title, children, className }: CardProps) {
   return (
@@ -24,13 +31,13 @@ function BaseCard({ title, children, className }: CardProps) {
   );
 }
 
-export function Card({ title, link, children, className, actionProps }: CardProps) {
+export function Card({ title, link, linkTarget, children, className, actionProps }: CardProps) {
   return link ? (
-    <Link href={link}>
+    <StyledLink href={link} target={linkTarget}>
       <CardActionArea {...actionProps} className={className}>
         <BaseCard title={title}>{children}</BaseCard>
       </CardActionArea>
-    </Link>
+    </StyledLink>
   ) : (
     <BaseCard title={title} className={className}>
       {children}
