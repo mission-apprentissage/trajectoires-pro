@@ -52,7 +52,7 @@ export default function SearchFormationForm({
                 render={(form) => <DistanceField error={errors?.distance} form={form} />}
               />
             </Grid>
-            <Grid item md={2} sm={2} xs={6}>
+            <Grid item md={2} sm={2} xs={6} style={{ display: "none" }}>
               <Controller
                 name="time"
                 control={control}
