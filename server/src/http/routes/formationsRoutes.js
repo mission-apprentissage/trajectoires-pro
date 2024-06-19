@@ -36,6 +36,7 @@ import { FORMATION_TAG } from "#src/common/constants/formationEtablissement.js";
 import FormationEtablissement from "#src/common/repositories/formationEtablissement.js";
 import Etablissement from "#src/common/repositories/etablissement.js";
 import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
+import * as Cache from "#src/common/cache.js";
 
 async function formationStats({ uai, codeCertificationWithType, millesime }) {
   const { type, code_certification } = codeCertificationWithType;
@@ -354,15 +355,18 @@ export default () => {
       let filtersEtablissement = [];
 
       if (timeLimit) {
-        const buckets = [7200, 3600, 1800, 900];
+        const buckets = [7200, 5400, 3600, 1800, 900];
         const graphHopperApi = new GraphHopperApi();
         try {
-          const isochroneBuckets = await graphHopperApi.fetchIsochronePTBuckets({
+          const graphHopperParameter = {
             point: `${latitude},${longitude}`,
-            departureTime: moment().set("hour", 7).set("minute", 0).toDate(),
+            departureTime: moment().set({ hour: 7, minute: 0, second: 0, millisecond: 0 }).toDate(),
             buckets: buckets.filter((b) => b <= timeLimit),
             reverse_flow: true,
-          });
+          };
+          const isochroneBuckets = await Cache.getOrSet(JSON.stringify(graphHopperParameter), () =>
+            graphHopperApi.fetchIsochronePTBuckets(graphHopperParameter)
+          );
 
           filtersEtablissement.push(getTimeFilter({ coordinate: { longitude, latitude }, isochroneBuckets }));
           //  filter = testTimeFilter({ coordinate: { longitude, latitude } });
