@@ -84,7 +84,7 @@ describe("statsNames", () => {
     assert.deepStrictEqual(description, {
       titre: "Certification 12345, établissement 0751234J",
       details:
-        "Données InserJeunes pour la certification 12345 (BAC filière pro) dispensée par l'établissement 0751234J, pour le millesime 2019",
+        "Données InserJeunes pour la certification 12345 (BAC filière pro) dispensée par l'établissement 0751234J, pour le millésime 2019",
     });
   });
 
@@ -98,7 +98,7 @@ describe("statsNames", () => {
 
     assert.deepStrictEqual(description, {
       titre: "Certification 12345",
-      details: "Données InserJeunes pour la certification 12345 (BAC filière pro) pour le millesime 2019",
+      details: "Données InserJeunes pour la certification 12345 (BAC filière pro) pour le millésime 2019",
     });
   });
 

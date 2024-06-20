@@ -211,7 +211,7 @@ export function buildDescriptionFiliere(pro, apprentissage) {
       cfds.length === 1 ? `Certification ${validFiliere.code_formation_diplome}` : `Certifications ${cfds.join(", ")}`,
     details: `Données InserJeunes pour ${certificationText} ${cfds.join(", ")} (${descriptionFiliere.join(
       " et "
-    )}) pour le millesime ${validFiliere.millesime}${
+    )}) pour le millésime ${validFiliere.millesime}${
       validFiliere.region ? ` et la région ${validFiliere.region.nom}` : ""
     }`,
   };
@@ -226,7 +226,7 @@ export function buildDescription(stats) {
       `Données ${filiere === "superieur" ? "InserSup" : "InserJeunes"} pour la certification ${code_certification} (${
         diplome.libelle
       } filière ${filiere})` +
-      `${uai ? ` dispensée par l'établissement ${uai},` : ""} pour le millesime ${millesime}${
+      `${uai ? ` dispensée par l'établissement ${uai},` : ""} pour le millésime ${millesime}${
         !uai && region ? ` et la région ${region.nom}` : ""
       }`,
   };

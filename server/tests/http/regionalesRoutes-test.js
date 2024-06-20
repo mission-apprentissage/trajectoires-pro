@@ -651,7 +651,7 @@ describe("regionalesRoutes", () => {
         _meta: {
           titre: "Certification 12345678",
           details:
-            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millesime 2018_2019 et la région Île-de-France",
+            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millésime 2018_2019 et la région Île-de-France",
         },
       });
     });

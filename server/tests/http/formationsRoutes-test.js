@@ -599,7 +599,7 @@ describe("formationsRoutes", () => {
         _meta: {
           titre: "Certification 12345678, établissement 0751234J",
           details:
-            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) dispensée par l'établissement 0751234J, pour le millesime 2018_2019",
+            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) dispensée par l'établissement 0751234J, pour le millésime 2018_2019",
         },
       });
     });

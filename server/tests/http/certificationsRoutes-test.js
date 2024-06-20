@@ -476,7 +476,7 @@ describe("certificationsRoutes", () => {
         _meta: {
           titre: "Certification 12345678",
           details:
-            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millesime 2020",
+            "Données InserJeunes pour la certification 12345678 (BAC filière apprentissage) pour le millésime 2020",
         },
       });
     });
