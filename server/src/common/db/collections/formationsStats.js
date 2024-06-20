@@ -3,7 +3,7 @@ import * as Stats from "./jsonSchema/statsSchema.js";
 import { regionSchema } from "./jsonSchema/regionSchema.js";
 import { academieSchema } from "./jsonSchema/academieSchema.js";
 import * as Continuum from "./jsonSchema/continuumSchema.js";
-import { metaSchema, metaIJSchema } from "./jsonSchema/metaSchema.js";
+import { metaSchema, metaIJSchema, metaInserSupSchema } from "./jsonSchema/metaSchema.js";
 import * as Certification from "./jsonSchema/certificationSchema.js";
 
 export const name = "formationsStats";
@@ -36,7 +36,7 @@ export function schema() {
       ...Certification.fields(),
       ...Stats.fields(),
       ...Continuum.fields(),
-      _meta: metaSchema([metaIJSchema()]),
+      _meta: metaSchema([metaIJSchema(), metaInserSupSchema()]),
     },
     {
       required: ["uai", "millesime", "region", "academie", ...Certification.required(), ...Continuum.required()],

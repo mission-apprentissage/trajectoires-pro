@@ -55,7 +55,7 @@ async function computeUAIBase(millesime, result, handleError) {
       const { uai, code_formation_diplome, millesime, filiere } = stats;
 
       // Le lieu de formation, le formateur et le gestionnaire sont identiques pour la voie scolaire
-      if (filiere === "pro") {
+      if (filiere !== "apprentissage") {
         return {
           uai: stats.uai,
           uai_type: "lieu_formation",

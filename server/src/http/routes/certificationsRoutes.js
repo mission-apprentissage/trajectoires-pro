@@ -5,8 +5,8 @@ import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import * as validators from "#src/http/utils/validators.js";
-import { arrayOf, validate } from "#src/http/utils/validators.js";
-import { formatMillesime } from "#src/http/utils/formatters.js";
+import { validate } from "#src/http/utils/validators.js";
+import { formatCodesCertifications, formatMillesime } from "#src/http/utils/formatters.js";
 import {
   addCsvHeaders,
   addJsonHeaders,
@@ -73,7 +73,8 @@ export default () => {
         { ...req.query, ...req.params },
         {
           ...validators.statsList([getLastMillesimes()]),
-        }
+        },
+        { code_certifications: formatCodesCertifications }
       );
 
       let { find, pagination } = await CertificationsRepository.findAndPaginate(
@@ -119,11 +120,13 @@ export default () => {
       const { codes_certifications, millesime, vue, ...options } = await validate(
         { ...req.params, ...req.query },
         {
-          codes_certifications: arrayOf(Joi.string().required()).default([]).min(1),
+          ...validators.codesCertifications(),
+          ...validators.universe(),
           millesime: Joi.string().default(getLastMillesimes()),
           ...validators.vues(),
           ...validators.svg(),
-        }
+        },
+        { codes_certifications: formatCodesCertifications }
       );
 
       if (vue === "filieres" || codes_certifications.length > 1) {
@@ -158,11 +161,13 @@ export default () => {
         { ...req.params, ...req.query },
         {
           hash: Joi.string(),
-          codes_certifications: arrayOf(Joi.string().required()).default([]).min(1),
+          ...validators.codesCertifications(),
+          ...validators.universe(),
           millesime: Joi.string().default(getLastMillesimes()),
           ...validators.vues(),
           ...validators.widget("stats"),
-        }
+        },
+        { codes_certifications: formatCodesCertifications }
       );
 
       try {
@@ -225,11 +230,13 @@ export default () => {
       const { theme, millesime, vue } = await validate(
         { ...req.params, ...req.query },
         {
-          codes_certifications: arrayOf(Joi.string().required()).default([]).min(1),
+          ...validators.codesCertifications(),
+          ...validators.universe(),
           millesime: Joi.string().default(null),
           ...validators.vues(),
           ...validators.widget("stats"),
-        }
+        },
+        { codes_certifications: formatCodesCertifications }
       );
 
       const widget = getIframe({

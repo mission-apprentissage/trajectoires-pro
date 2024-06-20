@@ -1,9 +1,30 @@
 import Joi from "joi";
+import { mapValues } from "lodash-es";
 import { getRegions, findRegionByCodePostal, getAcademies } from "#src/services/regions.js";
 import { formatArrayParameters } from "./formatters.js";
 import { WIDGETS } from "#src/services/widget/widget.js";
 
 const UAI_PATTERN = /^[0-9]{7}[A-Z]{1}$/;
+export const CFD_PATTERN = /^(?:CFD:)?([0-9]{8})$/;
+export const MEF11_PATTERN = /^(?:MEFSTAT11:)?([0-9]{11})$/;
+export const SISE_PATTERN = /^SISE:([0-9]{7})$/;
+export const CODE_CERTIFICATION_PATTERNS = [
+  {
+    type: "cfd",
+    filiere: "apprentissage",
+    pattern: CFD_PATTERN,
+  },
+  {
+    type: "mef11",
+    filiere: "pro",
+    pattern: MEF11_PATTERN,
+  },
+  {
+    type: "sise",
+    filiere: "superieur",
+    pattern: SISE_PATTERN,
+  },
+];
 
 const customJoi = Joi.extend(
   (joi) => ({
@@ -30,6 +51,34 @@ const customJoi = Joi.extend(
 
       return { value: region, errors: !region ? helpers.error("postal_code.invalid") : null };
     },
+  }),
+
+  (joi) => ({
+    type: "codeCertification",
+    base: joi.string(),
+    messages: {
+      "code_certification.invalid": "{{#label}} must be a valid certification code.",
+    },
+    // eslint-disable-next-line no-unused-vars
+    coerce(value, helpers) {
+      const errors = ![CFD_PATTERN, MEF11_PATTERN, SISE_PATTERN].some((r) => r.test(value));
+      return { value: value, errors: errors ? helpers.error("code_certification.invalid") : null };
+    },
+  }),
+
+  (joi) => ({
+    type: "codesCertification",
+    base: joi.arrayOf().items(joi.codeCertification().required()).single().default([]),
+    messages: {
+      "codes_certification.invalid": "{{#label}} must have the type CFD, MEFSTAT11 or SISE",
+    },
+    validate(value, helpers) {
+      const errors = value.some((v) => {
+        return ![CFD_PATTERN, MEF11_PATTERN, SISE_PATTERN].some((r) => r.test(v));
+      });
+
+      return { value, errors: errors ? helpers.error("codes_certification.invalid") : null };
+    },
   })
 );
 
@@ -46,6 +95,37 @@ export function uai() {
 export function uais() {
   return {
     uais: arrayOf(Joi.string().pattern(UAI_PATTERN).required()).default([]),
+  };
+}
+
+export function universe(key = "codes_certifications") {
+  return {
+    universe: Joi.when(key, {
+      switch: [
+        {
+          is: Joi.array().items(
+            Joi.alternatives().try(Joi.string().pattern(CFD_PATTERN), Joi.string().pattern(MEF11_PATTERN))
+          ),
+          then: Joi.string().valid("secondaire").default("secondaire"),
+        },
+        {
+          is: Joi.array().items(Joi.string().pattern(SISE_PATTERN)),
+          then: Joi.string().valid("superieur").default("superieur"),
+        },
+      ],
+    }),
+  };
+}
+
+export function codeCertification() {
+  return {
+    code_certification: customJoi.codeCertification().required(),
+  };
+}
+
+export function codesCertifications() {
+  return {
+    codes_certifications: customJoi.codesCertification().min(1),
   };
 }
 
@@ -116,12 +196,14 @@ export function vues() {
 export function statsList(defaultMillesimes = []) {
   return {
     millesimes: arrayOf(Joi.string().required()).default(defaultMillesimes),
-    code_certifications: arrayOf(Joi.string().required()).default([]),
+    code_certifications: customJoi.codesCertification(),
+    ...universe("code_certifications"),
     ...exports(),
     ...pagination(),
   };
 }
 
-export function validate(obj, validators) {
-  return Joi.object(validators).validateAsync(obj, { abortEarly: false });
+export async function validate(obj, validators, formatters = {}) {
+  const parameters = await Joi.object(validators).validateAsync(obj, { abortEarly: false });
+  return mapValues(parameters, (parameter, key) => (formatters[key] ? formatters[key](parameter) : parameter));
 }

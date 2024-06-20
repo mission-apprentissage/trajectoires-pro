@@ -25,6 +25,25 @@ export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "DEVENIR_part_poursuite_etudes",
 ];
 
+export const INSERSUP_STATS_NAMES = [
+  "nb_annee_term",
+  "nb_en_emploi_24_mois",
+  "nb_en_emploi_18_mois",
+  "nb_en_emploi_12_mois",
+  "nb_en_emploi_6_mois",
+  "nb_poursuite_etudes",
+  "nb_sortant",
+  "nb_diplome",
+];
+export const INSERSUP_META = [
+  "etablissement_libelle",
+  "etablissement_actuel_libelle",
+  "type_diplome",
+  "domaine_disciplinaire",
+  "secteur_disciplinaire",
+  "discipline",
+];
+
 export const CUSTOM_STATS_NAMES = [
   "taux_en_formation",
   "taux_en_emploi_24_mois",
@@ -53,8 +72,16 @@ export function getMillesimesFormations() {
   return config.millesimes.formations;
 }
 
+export function getMillesimesFormationsSup() {
+  return config.millesimes.formationsSup;
+}
+
 export function getLastMillesimesFormations() {
   return config.millesimes.formations[config.millesimes.formations.length - 1];
+}
+
+export function getLastMillesimesFormationsSup() {
+  return config.millesimes.formationsSup[config.millesimes.formationsSup.length - 1];
 }
 
 export function getMillesimesRegionales() {
@@ -196,7 +223,9 @@ export function buildDescription(stats) {
   return {
     titre: `Certification ${code_certification}${uai ? `, établissement ${uai}` : ""}`,
     details:
-      `Données InserJeunes pour la certification ${code_certification} (${diplome.libelle} filière ${filiere})` +
+      `Données ${filiere === "superieur" ? "InserSup" : "InserJeunes"} pour la certification ${code_certification} (${
+        diplome.libelle
+      } filière ${filiere})` +
       `${uai ? ` dispensée par l'établissement ${uai},` : ""} pour le millesime ${millesime}${
         !uai && region ? ` et la région ${region.nom}` : ""
       }`,

@@ -7,8 +7,8 @@ const ANCIENS_NIVEAUX_MAPPER = {
   5: "3", // CAP
   4: "4", // BAC
   3: "5", // BTS
-  2: "6", // LIC
-  1: "7", // MASTER
+  2: "6", // LIC Ou Maitrise
+  1: "7", // Master ou Doctorat
   0: "0", //Mention complémentaire
 };
 
@@ -46,6 +46,46 @@ export async function getNiveauxDiplome(options) {
   );
 
   return niveauxDiplome;
+}
+
+export function getDiplomeSup(typeDiplomeSise, typesDiplome) {
+  if (!typeDiplomeSise) {
+    return null;
+  }
+
+  const typeDiplome = typesDiplome.find(({ typeDiplome }) => typeDiplome === typeDiplomeSise);
+  if (!typeDiplome) {
+    return null;
+  }
+
+  const code = ANCIENS_NIVEAUX_MAPPER[typeDiplome.niveau];
+  const libelle = typeDiplome.libelle_court;
+  if (!code || !libelle) {
+    return null;
+  }
+
+  return {
+    code: code,
+    libelle: libelle,
+  };
+}
+
+export async function getTypeDiplomeSise(options) {
+  const typesDiplome = [];
+
+  await oleoduc(
+    await getBCNTable("N_TYPE_DIPLOME_SISE", options),
+    writeData((data) => {
+      typesDiplome.push({
+        typeDiplome: data["TYPE_DIPLOME_SISE"],
+        niveau: data["NIVEAU_INTERMINISTERIEL"],
+        libelle_court: data["LIBELLE_COURT"],
+        libelle: data["LIBELLE_LONG"],
+      });
+    })
+  );
+
+  return typesDiplome;
 }
 
 export async function getBCNTable(tableName, options = {}) {

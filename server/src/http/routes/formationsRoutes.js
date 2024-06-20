@@ -5,11 +5,20 @@ import Joi from "joi";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
 import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src/http/utils/responseUtils.js";
-import { formatMillesime } from "#src/http/utils/formatters.js";
+import {
+  formatMillesime,
+  formatCodesCertifications,
+  formatCodeCertificationWithType,
+} from "#src/http/utils/formatters.js";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
-import { getLastMillesimesFormations, transformDisplayStat } from "#src/common/stats.js";
+import {
+  getLastMillesimesFormations,
+  getLastMillesimesFormationsSup,
+  transformDisplayStat,
+} from "#src/common/stats.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
+import BCNSiseRepository from "#src/common/repositories/bcnSise.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
 import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
 import {
@@ -21,15 +30,21 @@ import {
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
 
-async function formationStats({ uai, code_certification, millesime }) {
+async function formationStats({ uai, codeCertificationWithType, millesime }) {
+  const { type, code_certification } = codeCertificationWithType;
+
   const result = await FormationStatsRepository.first({
     uai,
-    code_certification,
+    code_certification: code_certification,
     millesime: formatMillesime(millesime),
   });
 
   if (!result) {
-    const existFormation = await BCNRepository.exist({ code_certification });
+    const existFormation =
+      type === "sise"
+        ? await BCNSiseRepository.exist({ diplome_sise: code_certification })
+        : await BCNRepository.exist({ code_certification });
+
     if (!existFormation) {
       throw new ErrorFormationNotExist();
     }
@@ -39,7 +54,11 @@ async function formationStats({ uai, code_certification, millesime }) {
       throw new ErrorEtablissementNotExist();
     }
 
-    const exist = await FormationStatsRepository.exist({ uai, code_certification });
+    const exist = await FormationStatsRepository.exist({
+      uai,
+      code_certification,
+    });
+
     if (!exist) {
       throw new ErrorFormationNotFound();
     }
@@ -65,8 +84,9 @@ export default () => {
           ...validators.uais(),
           ...validators.regions(),
           ...validators.academies(),
-          ...validators.statsList([getLastMillesimesFormations()]),
-        }
+          ...validators.statsList([]),
+        },
+        { code_certifications: formatCodesCertifications }
       );
 
       let { find, pagination } = await FormationStatsRepository.findAndPaginate(
@@ -74,8 +94,18 @@ export default () => {
           uai: uais,
           region: regions,
           "academie.code": academies,
-          millesime: millesimes,
+
           code_certification: code_certifications,
+          ...(millesimes.length === 0
+            ? {
+                $or: [
+                  { filiere: "superieur", millesime: getLastMillesimesFormationsSup() },
+                  { filiere: { $ne: "superieur" }, millesime: getLastMillesimesFormations() },
+                ],
+              }
+            : {
+                millesime: millesimes,
+              }),
         },
         {
           limit: items_par_page,
@@ -119,19 +149,30 @@ export default () => {
     "/api/inserjeunes/formations/:uai-:code_certification.:ext?",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { uai, code_certification, millesime, ...options } = await validate(
+      const {
+        uai,
+        code_certification,
+        millesime: millesimeBase,
+        ...options
+      } = await validate(
         { ...req.params, ...req.query },
         {
           ...validators.uai(),
-          code_certification: Joi.string().required(),
-          millesime: Joi.string().default(getLastMillesimesFormations()),
+          ...validators.codeCertification(),
+          ...validators.universe(),
+          millesime: Joi.string().default(null),
           ...validators.svg(),
         }
       );
+      const codeCertificationWithType = formatCodeCertificationWithType(code_certification);
+      const millesime =
+        millesimeBase ||
+        (codeCertificationWithType.filiere === "superieur" && getLastMillesimesFormationsSup()) ||
+        getLastMillesimesFormations();
 
       return sendImageOnError(
         async () => {
-          const stats = await formationStats({ uai, code_certification, millesime });
+          const stats = await formationStats({ uai, codeCertificationWithType, millesime });
           return sendStats("formation", stats, res, options);
         },
         res,
@@ -145,19 +186,31 @@ export default () => {
     "/api/inserjeunes/formations/:uai-:code_certification/widget/:hash",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { hash, theme, uai, code_certification, millesime } = await validate(
+      const {
+        hash,
+        theme,
+        uai,
+        code_certification,
+        millesime: millesimeBase,
+      } = await validate(
         { ...req.params, ...req.query },
         {
           hash: Joi.string(),
           ...validators.uai(),
-          code_certification: Joi.string().required(),
-          millesime: Joi.string().default(getLastMillesimesFormations()),
+          ...validators.codeCertification(),
+          millesime: Joi.string().default(""),
           ...validators.widget("stats"),
         }
       );
 
+      const codeCertificationWithType = formatCodeCertificationWithType(code_certification);
+      const millesime =
+        millesimeBase ||
+        (codeCertificationWithType.filiere === "superieur" && getLastMillesimesFormationsSup()) ||
+        getLastMillesimesFormations();
+
       try {
-        const stats = await formationStats({ uai, code_certification, millesime });
+        const stats = await formationStats({ uai, codeCertificationWithType, millesime });
         const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
         const data = await formatDataWidget({ stats, millesime, etablissement });
 
@@ -202,7 +255,7 @@ export default () => {
         { ...req.params, ...req.query },
         {
           ...validators.uai(),
-          code_certification: Joi.string().required(),
+          ...validators.codeCertification(),
           millesime: Joi.string().default(null),
           ...validators.widget("stats"),
         }

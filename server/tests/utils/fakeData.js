@@ -9,6 +9,7 @@ import {
   regionalesStats,
   metrics,
   bcnMef,
+  bcnSise,
   cfdMetiers,
   cfdRomes,
   romeMetier,
@@ -31,12 +32,16 @@ export function createCodeRome() {
 
 export function insertCertificationsStats(custom = {}, withStat = true) {
   const code_certification = custom?.code_certification || generateCodeCertification("4");
+  const code_certification_type =
+    code_certification.length === 11 ? "mef11" : code_certification.length === 7 ? "sise" : "cfd";
+
   return certificationsStats().insertOne(
     merge(
       {},
       {
         millesime: "2020",
         code_certification: code_certification,
+        code_certification_type,
         code_formation_diplome: createCodeFormationDiplome(),
         libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },
@@ -59,6 +64,9 @@ export function insertCertificationsStats(custom = {}, withStat = true) {
 
 export function insertRegionalesStats(custom = {}, withStat = true) {
   const code_certification = custom?.code_certification || generateCodeCertification("4");
+  const code_certification_type =
+    code_certification.length === 11 ? "mef11" : code_certification.length === 7 ? "sise" : "cfd";
+
   return regionalesStats().insertOne(
     merge(
       {},
@@ -67,6 +75,7 @@ export function insertRegionalesStats(custom = {}, withStat = true) {
         millesime: "2018_2019",
         filiere: "apprentissage",
         code_certification,
+        code_certification_type,
         code_formation_diplome: createCodeFormationDiplome(),
         libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },
@@ -88,6 +97,9 @@ export function insertRegionalesStats(custom = {}, withStat = true) {
 
 export function insertFormationsStats(custom = {}, withStat = true) {
   const code_certification = custom?.code_certification || generateCodeCertification("4");
+  const code_certification_type =
+    code_certification.length === 11 ? "mef11" : code_certification.length === 7 ? "sise" : "cfd";
+
   return formationsStats().insertOne(
     merge(
       {},
@@ -96,6 +108,7 @@ export function insertFormationsStats(custom = {}, withStat = true) {
         millesime: "2018_2019",
         filiere: "apprentissage",
         code_certification,
+        code_certification_type,
         code_formation_diplome: createCodeFormationDiplome(),
         libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },
@@ -260,6 +273,37 @@ export function insertBCNMEF(custom = {}) {
         date_intervention: new Date(),
         libelle_edition: "libelle edition",
         commentaire: "commentaire",
+        _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
+      },
+      custom
+    )
+  );
+}
+
+export function insertBCNSise(custom = {}) {
+  const diplome_sise = custom?.diplome_sise || faker.helpers.replaceSymbols("#######");
+  return bcnSise().insertOne(
+    merge(
+      {},
+      {
+        diplome_sise: diplome_sise,
+        type_diplome_sise: "XD",
+        libelle_intitule_1: "METIERS DE L'ENSEIGNEMENT",
+        libelle_intitule_2: "METIERS DE L'ENSEIGNEMENT 2",
+        groupe_specialite: "333",
+        lettre_specialite: "T",
+        secteur_disciplinaire_sise: "34",
+        cite_domaine_formation: "141",
+        date_ouverture: new Date(),
+        date_fermeture: new Date(),
+        date_intervention: new Date(),
+        definitif: "0",
+        cite_domaine_detaille: "0110",
+        secteur_discipl_detail_sise: "34",
+        diplome: {
+          code: "6",
+          libelle: "MAST ENS",
+        },
         _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
       },
       custom

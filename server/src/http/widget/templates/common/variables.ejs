@@ -19,8 +19,8 @@ isMillesimePeriode = millesime && millesime.length == 9 ? true : false;
 millesimePart = millesime ? millesime.split('_') : [""];
 millesimeLastYear = isMillesimePeriode ? parseInt(millesimePart[1]) : parseInt(millesimePart[0]);
 millesimeText = isMillesimePeriode ? millesimePart.join(' à ') : millesime;
-about=`*Données issues du dispositif InserJeunes${millesime ? ' promotion ' + millesimeText : ''}`;
-about_short=[`*Données issues du dispositif InserJeunes`, `${millesime ? ' promotion ' + millesimeText : ''}`];
+about=`*Données issues du dispositif ${filiere === "superieur" ? "InserSup": "InserJeunes"}${millesime ? ' promotion ' + millesimeText : ''}`;
+about_short=[`*Données issues du dispositif ${filiere === "superieur" ? "InserSup": "InserJeunes"}`, `${millesime ? ' promotion ' + millesimeText : ''}`];
 
 title=[`Que deviennent les`, `apprenants après cette`, `formation ?`];
 

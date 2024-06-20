@@ -1,5 +1,5 @@
 import { merge } from "lodash-es";
-import { date, integer, object } from "./jsonSchemaTypes.js";
+import { date, integer, object, string } from "./jsonSchemaTypes.js";
 
 export function metaImportSchema() {
   return object(
@@ -23,6 +23,23 @@ export function metaIJSchema() {
         DEVENIR_part_autre_situation_6_mois: integer(),
         DEVENIR_part_en_emploi_6_mois: integer(),
         DEVENIR_part_poursuite_etudes: integer(),
+      }),
+    },
+    { required: ["date_import"] }
+  );
+}
+
+export function metaInserSupSchema() {
+  return object(
+    {
+      date_import: date(),
+      insersup: object({
+        etablissement_libelle: string(),
+        etablissement_actuel_libelle: string(),
+        type_diplome: string(),
+        domaine_disciplinaire: string(),
+        secteur_disciplinaire: string(),
+        discipline: string(),
       }),
     },
     { required: ["date_import"] }

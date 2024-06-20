@@ -356,7 +356,7 @@
     <% } %>
 
     <div class="card-footer">
-      Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html">InserJeunes</a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur ces indicateurs.</a>
+      Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html"><%= data.filiere === "superieur" ? "InserSup" : "InserJeunes" %></a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur ces indicateurs.</a>
     </div>
   </div>
 </body>

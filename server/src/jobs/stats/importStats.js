@@ -1,8 +1,10 @@
 import { InserJeunes } from "#src/services/inserjeunes/InserJeunes.js";
 import { promiseAllProps } from "#src/common/utils/asyncUtils.js";
 import { importFormationsStats } from "./importFormationsStats.js";
+import { importFormationsSupStats } from "./importFormationsSupStats.js";
 import { importCertificationsStats } from "./importCertificationsStats.js";
 import { importRegionalesStats } from "./importRegionalesStats.js";
+import { InserSup } from "#src/services/dataEnseignementSup/InserSup.js";
 
 export async function importStats(options = {}) {
   let stats = options.stats || ["certifications", "formations", "regionales"];
@@ -18,5 +20,17 @@ export async function importStats(options = {}) {
       : {}),
     ...(stats.includes("formations") ? { formations: importFormationsStats({ inserjeunes, millesimes }) } : {}),
     ...(stats.includes("regionales") ? { regionales: importRegionalesStats({ inserjeunes, millesimes }) } : {}),
+  });
+}
+
+export async function importSupStats(options = {}) {
+  let stats = options.stats || ["formations"];
+  let millesimes = options.millesimes || null;
+
+  const insersupOptions = { apiOptions: { retry: { retries: 5 } } };
+  const insersup = new InserSup(insersupOptions); //Permet de partager le rate limiter entre les deux imports
+
+  return promiseAllProps({
+    ...(stats.includes("formations") ? { formations: importFormationsSupStats({ insersup, millesimes }) } : {}),
   });
 }

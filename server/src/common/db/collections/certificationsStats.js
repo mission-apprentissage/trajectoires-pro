@@ -1,5 +1,5 @@
 import { object, objectId, string } from "./jsonSchema/jsonSchemaTypes.js";
-import { metaSchema, metaIJSchema } from "./jsonSchema/metaSchema.js";
+import { metaSchema, metaIJSchema, metaInserSupSchema } from "./jsonSchema/metaSchema.js";
 import * as Stats from "./jsonSchema/statsSchema.js";
 import * as Continuum from "./jsonSchema/continuumSchema.js";
 import * as Certification from "./jsonSchema/certificationSchema.js";
@@ -18,7 +18,7 @@ export function schema() {
       ...Certification.fields(),
       ...Stats.fields(),
       ...Continuum.fields(),
-      _meta: metaSchema([metaIJSchema()]),
+      _meta: metaSchema([metaIJSchema(), metaInserSupSchema()]),
     },
     {
       required: ["millesime", ...Certification.required(), ...Continuum.required()],

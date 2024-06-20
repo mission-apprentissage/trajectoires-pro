@@ -53,6 +53,7 @@ export async function sendStats(type, stats, res, options = {}) {
       type,
       {
         stats: prepareStatsForWidget(stats),
+        filiere: stats.filiere,
         description,
         millesime: stats.millesime,
         region: stats.region,

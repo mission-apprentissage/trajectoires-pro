@@ -2,10 +2,10 @@
 
 <svg width="328" height="600" viewBox="0 0 328 600" fill="none" xmlns="http://www.w3.org/2000/svg">
   
-    <title>Certification 1022105, établissement 0751234J</title>
+    <title>Certification 10221058, établissement 0751234J</title>
 
 
-    <desc>Données InserJeunes pour la certification 1022105 (BAC filière apprentissage) dispensée par l'établissement 0751234J, pour le millesime 2018_2019</desc>
+    <desc>Données InserJeunes pour la certification 10221058 (BAC filière apprentissage) dispensée par l'établissement 0751234J, pour le millesime 2018_2019</desc>
 
 
   <defs>
@@ -93,15 +93,11 @@
         <svg x="0" y="10" class="block">
           <rect width="308" height="170" />
           
-          <text class="number">
-            <tspan x="154" y="55">25%</tspan>
-          </text>
           <text class="description">
-            <tspan x="154" y="90">sont inscrits en formation</tspan>
-          </text>
-          <text class="details">
-            <tspan x="154" y="115">(Formation supérieure,redoublants,</tspan>
-            <tspan x="154" y="135">changement de filière)</tspan>
+            <tspan x="154" y="55">Nous sommes désolés mais le</tspan>
+            <tspan x="154" y="75"> taux des inscrits en formation</tspan>
+            <tspan x="154" y="95">n’est pas disponible pour le</tspan>
+            <tspan x="154" y="115">le moment.</tspan>
           </text>
           
         </svg>
@@ -124,16 +120,10 @@
         <svg x="0" y="370" class="block">
           <rect width="308" height="170" />
           
-          <text class="number">
-            <tspan x="154" y="55">12%</tspan>
-          </text>
           <text class="description">
-            <tspan x="154" y="90">sont dans d’autres cas</tspan>
-          </text>
-          <text class="details">
-            <tspan x="154" y="115">(Recherche d’emploi, service</tspan>
-            <tspan x="154" y="135">civique, à l’étranger, statut</tspan>
-            <tspan x="154" y="155">indépendant, etc.)</tspan>
+            <tspan x="154" y="65">Nous sommes désolés mais le taux</tspan>
+            <tspan x="154" y="85"> concernant les autres cas n’est pas</tspan>
+            <tspan x="154" y="105"> disponible pour le moment.</tspan>
           </text>
           
         </svg>

@@ -70,6 +70,7 @@ describe("importCertificationsStats", () => {
       filiere: "apprentissage",
       nb_en_emploi_6_mois: 6,
       code_certification: "12345678",
+      code_certification_type: "cfd",
       code_formation_diplome: "12345678",
       libelle: "BAC PRO BATIMENT",
       diplome: {
@@ -119,6 +120,7 @@ describe("importCertificationsStats", () => {
       filiere: "pro",
       millesime: "2020",
       code_certification: "12345678900",
+      code_certification_type: "mef11",
       code_formation_diplome: "12345678",
       libelle: "BAC PRO BATIMENT",
       nb_en_emploi_6_mois: 6,
