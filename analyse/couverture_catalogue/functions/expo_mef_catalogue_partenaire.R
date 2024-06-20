@@ -90,6 +90,146 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source){
     left_join(catalogue_partenaire_renseigne,
               by=c("UAI","MEFSTAT11","Filiere"))
   
+  
+  catalogue_partenaire_renseigne <- catalogue_partenaire_renseigne  %>% 
+    mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
+           Sous_seuil=map_lgl(data,~any(.$Couverture=="Sous le seuil de 20 élèves")),
+           Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
+    ) %>% 
+    mutate(
+      Couverture=case_when(
+        Couvert~"Couvert",
+        Sous_seuil~"Sous le seuil de 20 élèves",
+        TRUE~"Non couvert"
+      )
+    ) %>% 
+    select(-Couvert,-Sous_seuil,-Non_couvert) %>% 
+    mutate(
+      type_uai_lieu_formation=map_lgl(data,~any(.$uai_donnee_type=="lieu_formation")),
+      type_uai_formateur=map_lgl(data,~any(.$uai_donnee_type=="formateur")),
+      type_uai_gestionnaire=map_lgl(data,~any(.$uai_donnee_type=="gestionnaire")),
+      type_uai_inconnu=map_lgl(data,~any(.$uai_donnee_type=="inconnu"))
+    ) %>% 
+    mutate(
+      type_uai=case_when(
+        type_uai_lieu_formation ~"UAI Lieu formation - Couvert + sous le seuil",
+        type_uai_formateur~"UAI Formateur - Couvert + sous le seuil",
+        type_uai_gestionnaire~"UAI Gestionnaire - Couvert + sous le seuil",
+        type_uai_inconnu~"Inconnu",
+        TRUE~"Non couvert"
+      )
+    ) %>% 
+    select(-type_uai_lieu_formation,-type_uai_formateur,-type_uai_gestionnaire,-type_uai_inconnu) %>% 
+    left_join(
+      catalogue_partenaire_renseigne %>% 
+        unnest() %>%
+        left_join(
+          opendata_certif_info %>%
+            filter(!is.na(Code_Scolarité)) %>%
+            distinct(Code_Scolarité,valideur,certificateur),
+          by=c("FORMATION_DIPLOME_annee_terminale"="Code_Scolarité")
+        ) %>% 
+        mutate(
+          certificateur_annee_terminale=case_when(
+            str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
+            str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
+            str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
+            # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
+            certificateur==""~NA,
+            T~certificateur
+          ),
+          valideur_annee_terminale=case_when(
+            str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
+            str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
+            str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
+            # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
+            valideur==""~NA,
+            T~valideur
+          )
+        ) %>% 
+        distinct(UAI, MEFSTAT11, Filiere, famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
+        left_join(
+          opendata_certif_info %>% 
+            filter(!is.na(Code_Scolarité)) %>% 
+            distinct(Code_Scolarité,valideur,certificateur),
+          by=c("FORMATION_DIPLOME"="Code_Scolarité")
+        ) %>% 
+        mutate(
+          certificateur=case_when(
+            str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
+            str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
+            str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
+            # Filiere=="Scolaire"~"Ministère de l'éducation nationale"
+            certificateur==""~NA,
+            T~certificateur
+          ),
+          certificateur=case_when(
+            !is.na(certificateur)~certificateur,
+            T~certificateur_annee_terminale
+          ),
+          valideur=case_when(
+            str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
+            str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
+            str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
+            # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
+            valideur==""~NA,
+            T~valideur
+          ),
+          valideur=case_when(
+            !is.na(valideur)~valideur,
+            T~valideur_annee_terminale
+          ),
+          certificateur_valideur=case_when(
+            !is.na(certificateur)~certificateur,
+            T~valideur
+          ),
+          certificateur_valideur_simpli=case_when(
+            str_detect(certificateur_valideur,"Ministère de l'agriculture")|str_detect(certificateur_valideur,"Ministère de l'éducation nationale")~"Ministère de l'éducation nationale ou Ministère de l'agriculture",
+            T~"Autres ministères certificateurs"
+          ),
+          certificateur_valideur_simpli=factor(certificateur_valideur_simpli,levels = c("Ministère de l'éducation nationale ou Ministère de l'agriculture","Autres ministères certificateurs"))
+        ) %>% 
+        group_by(UAI,MEFSTAT11, Filiere) %>% 
+        filter(as.numeric(certificateur_valideur_simpli)==min(as.numeric(certificateur_valideur_simpli)))%>% 
+        distinct(UAI, MEFSTAT11, Filiere, certificateur_valideur_simpli),
+      by=c("UAI", "MEFSTAT11", "Filiere")
+    ) %>% 
+    left_join(
+      ACCE_UAI %>% 
+        distinct(numero_uai,academie),
+      by=c("UAI"="numero_uai")
+    ) %>% 
+    mutate(
+      type_territoire = case_when(
+        str_sub(academie,1,1)=="4"~"Territoire mal couvert",
+        T ~ "Territoire normalement couvert"
+      )
+    ) %>% 
+    select(-academie) %>% 
+    left_join(
+      n_formation_diplome %>% 
+        mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
+        distinct(FORMATION_DIPLOME,Nouvelle_formation),
+      by="FORMATION_DIPLOME"
+    ) %>%  
+    left_join(
+      ACCE_UAI %>% 
+        distinct(numero_uai) %>% 
+        mutate(presence_UAI_ACCE=T),
+      by=c("UAI"="numero_uai")
+    ) %>%
+    left_join(
+      opendata_certif_info %>% 
+        filter(!is.na(Code_Scolarité)) %>% 
+        distinct(Code_Scolarité) %>% 
+        mutate(presence_Code_Scolarité_certif_info=T),
+      by=c("FORMATION_DIPLOME"="Code_Scolarité")
+    )  %>% 
+    mutate(scope=case_when(
+      (!is.na(presence_UAI_ACCE) & !(!Nouvelle_formation & is.na(presence_Code_Scolarité_certif_info)) & !Nouvelle_formation & type_territoire !="Territoire mal couvert"& certificateur_valideur_simpli=="Ministère de l'éducation nationale ou Ministère de l'agriculture")~T,
+      T~F)
+    )
+  
   return(catalogue_partenaire_renseigne)
 } 
 
@@ -104,38 +244,6 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     summarise("Nombre de formations"=n()) %>% 
     ungroup() %>% 
     mutate("Part du  catalogue"=prop.table(`Nombre de formations`)) %>% 
-    # left_join(
-    #   catalogue_partenaire_renseigne %>%
-    #     select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
-    #     filter(famillemetiers=="Famille de métiers") %>% 
-    #     group_by(type_formation,libelle_type_diplome,Filiere) %>% 
-    #     summarise("Famille de métiers"=n()) %>% 
-    #     ungroup() ,
-    #   by=c("type_formation","libelle_type_diplome","Filiere")) %>% 
-    # mutate(`Famille de métiers`=replace_na(`Famille de métiers`,0))  
-    # left_join(
-    #   catalogue_partenaire_renseigne %>% 
-    #     mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
-    #     group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
-    #     summarise("Nombre de formations"=n()) %>% 
-    #     ungroup() %>% 
-    #     left_join(
-    #       catalogue_partenaire_renseigne %>% 
-    #         mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
-    #         filter(Couvert)%>%   
-    #         group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
-    #         summarise("Nombre de formations couvertes"=n()),
-    #       by=c("type_formation","libelle_type_diplome","Filiere","famillemetiers")
-    #     ) %>% 
-    #     mutate(
-    #       `Nombre de formations couvertes`=replace_na(`Nombre de formations couvertes`,0),
-    #       Couverture=`Nombre de formations couvertes`/`Nombre de formations`
-    #     ) %>% 
-    #     select(-contains("Nombre de formations")) %>% 
-    #     mutate(famillemetiers=ifelse(famillemetiers=="Hors famille de métiers","Couverture - Hors familles de métiers","Couverture - Familles de métiers")) %>% 
-    #     pivot_wider(names_from = famillemetiers,values_from = `Couverture`),
-    #   by=c("type_formation","libelle_type_diplome","Filiere")
-    # ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
         select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
@@ -144,8 +252,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         ungroup() %>% 
         left_join(
           catalogue_partenaire_renseigne %>% 
-            mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
-            filter(Couvert)%>%   
+            filter(Couverture=="Couvert")%>%   
             group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
             summarise("Nombre de formations couvertes"=n()),
           by=c("type_formation","libelle_type_diplome","Filiere","famillemetiers")
@@ -186,17 +293,6 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-               Sous_seuil=map_lgl(data,~any(.$Couverture=="Sous le seuil de 20 élèves")),
-               Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        mutate(
-          Couverture=case_when(
-            Couvert~"Couvert",
-            Sous_seuil~"Sous le seuil de 20 élèves",
-            TRUE~"Non couvert"
-          )
-        ) %>% 
         group_by(type_formation,libelle_type_diplome,Filiere,Couverture) %>% 
         summarise(nb=n()) %>% 
         mutate(part=prop.table(nb)) %>% 
@@ -213,21 +309,6 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(catalogue_partenaire_renseigne %>% 
-                mutate(
-                  type_uai_lieu_formation=map_lgl(data,~any(.$uai_donnee_type=="lieu_formation")),
-                  type_uai_formateur=map_lgl(data,~any(.$uai_donnee_type=="formateur")),
-                  type_uai_gestionnaire=map_lgl(data,~any(.$uai_donnee_type=="gestionnaire")),
-                  type_uai_inconnu=map_lgl(data,~any(.$uai_donnee_type=="inconnu"))
-                ) %>% 
-                mutate(
-                  type_uai=case_when(
-                    type_uai_lieu_formation ~"UAI Lieu formation - Couvert + sous le seuil",
-                    type_uai_formateur~"UAI Formateur - Couvert + sous le seuil",
-                    type_uai_gestionnaire~"UAI Gestionnaire - Couvert + sous le seuil",
-                    type_uai_inconnu~"Inconnu",
-                    TRUE~"Non couvert"
-                  )
-                ) %>% 
                 filter(type_uai!="Non couvert") %>% 
                 group_by(type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
                 summarise(nb=n()) %>% 
@@ -244,88 +325,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          catalogue_partenaire_renseigne %>% 
-            mutate(
-              Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-            ) %>%
-            filter(Non_couvert) %>% 
-            unnest() %>%
-            left_join(
-              opendata_certif_info %>%
-                filter(!is.na(Code_Scolarité)) %>%
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME_annee_terminale"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur_annee_terminale=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              valideur_annee_terminale=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              )
-            ) %>% 
-            distinct(UAI, MEFSTAT11, Filiere, famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
-            left_join(
-              opendata_certif_info %>% 
-                filter(!is.na(Code_Scolarité)) %>% 
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale"
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              certificateur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~certificateur_annee_terminale
-              ),
-              valideur=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              ),
-              valideur=case_when(
-                !is.na(valideur)~valideur,
-                T~valideur_annee_terminale
-              ),
-              certificateur_valideur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~valideur
-              ),
-              certificateur_valideur_simpli=case_when(
-                str_detect(certificateur_valideur,"Ministère de l'agriculture")|str_detect(certificateur_valideur,"Ministère de l'éducation nationale")~"Ministère de l'éducation nationale ou Ministère de l'agriculture",
-                T~"Autres ministères certificateurs"
-              ),
-              certificateur_valideur_simpli=factor(certificateur_valideur_simpli,levels = c("Ministère de l'éducation nationale ou Ministère de l'agriculture","Autres ministères certificateurs"))
-            ) %>% 
-            group_by(UAI,MEFSTAT11, Filiere) %>% 
-            filter(as.numeric(certificateur_valideur_simpli)==min(as.numeric(certificateur_valideur_simpli)))%>% 
-            distinct(UAI, MEFSTAT11, Filiere, certificateur_valideur_simpli),
-          by=c("UAI", "MEFSTAT11", "Filiere")
-        ) %>% 
+        filter(Couverture=="Non couvert") %>% 
         filter(certificateur_valideur_simpli!="Ministère de l'éducation nationale ou Ministère de l'agriculture") %>% 
         group_by(type_formation,libelle_type_diplome,Filiere) %>% 
         summarise(nb=n()) %>% 
@@ -336,17 +336,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai,academie,academie_libe),
-          by=c("UAI"="numero_uai")
-        ) %>% 
-        filter(str_sub(academie,1,1)=="4") %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        filter(Couverture=="Non couvert") %>% 
+        filter(type_territoire!="Territoire normalement couvert") %>% 
+        group_by(type_formation,libelle_type_diplome,Filiere) %>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
@@ -355,16 +347,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+        filter(Couverture=="Non couvert") %>% 
         filter(Nouvelle_formation) %>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=n()) %>% 
@@ -375,16 +358,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai) %>% 
-            mutate(presence_UAI_ACCE=T),
-          by=c("UAI"="numero_uai")
-        ) %>% 
+        filter(Couverture=="Non couvert") %>% 
         filter(is.na(presence_UAI_ACCE))%>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=n()) %>% 
@@ -395,24 +369,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>%
-        filter(Non_couvert)  %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+        filter(Couverture=="Non couvert") %>% 
         filter(!Nouvelle_formation) %>%   
-        left_join(
-          opendata_certif_info %>% 
-            filter(!is.na(Code_Scolarité)) %>% 
-            distinct(Code_Scolarité) %>% 
-            mutate(presence_Code_Scolarité_certif_info=T),
-          by=c("FORMATION_DIPLOME"="Code_Scolarité")
-        ) %>% 
         filter(is.na(presence_Code_Scolarité_certif_info))%>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=n()) %>% 
@@ -421,13 +379,27 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
           "Non couvert - code certif inconnu (nb)"=nb),
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
+    left_join(
+      catalogue_partenaire_renseigne %>%
+        filter(Couverture=="Non couvert") %>%
+        filter(scope) %>% 
+        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        summarise(nb=n()) %>% 
+        mutate_all(replace_na,0,) %>% 
+        rename(
+          "Non couvert - sans raison évidente (nb)"=nb),
+      by=c("type_formation","libelle_type_diplome","Filiere")
+    ) %>% 
     mutate(
       `Non couvert - Autres ministères certificateurs (%)`=`Non couvert - Autres ministères certificateurs (nb)`/`Non couvert (nb)`,
       `Non couvert - Territoires non couverts (%)`=`Non couvert - Territoires non couverts (nb)`/`Non couvert (nb)`,
       `Non couvert - Nouvelles formations (%)`=`Non couvert - Nouvelles formations (nb)`/`Non couvert (nb)`,
       `Non couvert - UAI inconnu (%)`=`Non couvert - UAI inconnu (nb)`/`Non couvert (nb)`,
-      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`
+      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`,
+      `Non couvert - sans raison évidente (%)`=`Non couvert - sans raison évidente (nb)`/`Non couvert (nb)`
     ) 
+  
+  
   
   
   ##stats_catalogue_partenaire_globale----
@@ -437,37 +409,6 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     summarise("Nombre de formations"=n()) %>% 
     mutate("Part du  catalogue"=prop.table(`Nombre de formations`),
            type_formation="Total",libelle_type_diplome="Total",Filiere="Total") %>% 
-    # left_join(
-    #   catalogue_partenaire_renseigne %>%
-    #     select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
-    #     filter(famillemetiers=="Famille de métiers") %>% 
-    #     summarise("Famille de métiers"=n()) %>% 
-    #     mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total") ,
-    #   by=c("type_formation","libelle_type_diplome","Filiere")) %>% 
-    # mutate(`Famille de métiers`=replace_na(`Famille de métiers`,0)) %>% 
-    # left_join(
-    #   catalogue_partenaire_renseigne %>% 
-    #     mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
-    #     group_by(famillemetiers) %>% 
-    #     summarise("Nombre de formations"=n()) %>% 
-    #     left_join(
-    #       catalogue_partenaire_renseigne %>% 
-    #         mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
-    #         filter(Couvert)%>%   
-    #         group_by(famillemetiers) %>% 
-    #         summarise("Nombre de formations couvertes"=n()),
-    #       by="famillemetiers"
-    #     ) %>% 
-    #     mutate(
-    #       `Nombre de formations couvertes`=replace_na(`Nombre de formations couvertes`,0),
-    #       Couverture=`Nombre de formations couvertes`/`Nombre de formations`
-    #     )%>% 
-    #     select(-contains("Nombre de formations")) %>% 
-    #     mutate(famillemetiers=ifelse(famillemetiers=="Hors famille de métiers","Couverture - Hors familles de métiers","Couverture - Familles de métiers")) %>% 
-    #     pivot_wider(names_from = famillemetiers,values_from = `Couverture`) %>% 
-    #     mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total") ,
-    #   by=c("type_formation","libelle_type_diplome","Filiere")
-    # ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
         select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
@@ -476,8 +417,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         ungroup() %>% 
         left_join(
           catalogue_partenaire_renseigne %>% 
-            mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
-            filter(Couvert)%>%   
+            filter(Couverture=="Couvert") %>% 
             group_by(famillemetiers) %>% 
             summarise("Nombre de formations couvertes"=n()),
           by=c("famillemetiers")
@@ -519,17 +459,6 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>%
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-               Sous_seuil=map_lgl(data,~any(.$Couverture=="Sous le seuil de 20 élèves")),
-               Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        mutate(
-          Couverture=case_when(
-            Couvert~"Couvert",
-            Sous_seuil~"Sous le seuil de 20 élèves",
-            TRUE~"Non couvert"
-          )
-        ) %>% 
         group_by(Couverture) %>%
         summarise(nb=n()) %>% 
         mutate(part=prop.table(nb)) %>% 
@@ -548,21 +477,6 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(
-          type_uai_lieu_formation=map_lgl(data,~any(.$uai_donnee_type=="lieu_formation")),
-          type_uai_formateur=map_lgl(data,~any(.$uai_donnee_type=="formateur")),
-          type_uai_gestionnaire=map_lgl(data,~any(.$uai_donnee_type=="gestionnaire")),
-          type_uai_inconnu=map_lgl(data,~any(.$uai_donnee_type=="inconnu"))
-        ) %>% 
-        mutate(
-          type_uai=case_when(
-            type_uai_lieu_formation ~"UAI Lieu formation - Couvert + sous le seuil",
-            type_uai_formateur~"UAI Formateur - Couvert + sous le seuil",
-            type_uai_gestionnaire~"UAI Gestionnaire - Couvert + sous le seuil",
-            type_uai_inconnu~"Inconnu",
-            TRUE~"Non couvert"
-          )
-        ) %>% 
         filter(type_uai!="Non couvert") %>% 
         group_by(type_uai) %>%
         summarise(nb=n())  %>% 
@@ -580,88 +494,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          catalogue_partenaire_renseigne %>% 
-            mutate(
-              Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-            ) %>%
-            filter(Non_couvert) %>% 
-            unnest() %>%
-            left_join(
-              opendata_certif_info %>%
-                filter(!is.na(Code_Scolarité)) %>%
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME_annee_terminale"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur_annee_terminale=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              valideur_annee_terminale=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              )
-            ) %>% 
-            distinct(UAI, MEFSTAT11, Filiere, famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
-            left_join(
-              opendata_certif_info %>% 
-                filter(!is.na(Code_Scolarité)) %>% 
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale"
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              certificateur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~certificateur_annee_terminale
-              ),
-              valideur=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              ),
-              valideur=case_when(
-                !is.na(valideur)~valideur,
-                T~valideur_annee_terminale
-              ),
-              certificateur_valideur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~valideur
-              ),
-              certificateur_valideur_simpli=case_when(
-                str_detect(certificateur_valideur,"Ministère de l'agriculture")|str_detect(certificateur_valideur,"Ministère de l'éducation nationale")~"Ministère de l'éducation nationale ou Ministère de l'agriculture",
-                T~"Autres ministères certificateurs"
-              ),
-              certificateur_valideur_simpli=factor(certificateur_valideur_simpli,levels = c("Ministère de l'éducation nationale ou Ministère de l'agriculture","Autres ministères certificateurs"))
-            ) %>% 
-            group_by(UAI,MEFSTAT11, Filiere) %>% 
-            filter(as.numeric(certificateur_valideur_simpli)==min(as.numeric(certificateur_valideur_simpli)))%>% 
-            distinct(UAI, MEFSTAT11, Filiere, certificateur_valideur_simpli),
-          by=c("UAI", "MEFSTAT11", "Filiere")
-        ) %>% 
+        filter(Couverture=="Non couvert") %>% 
         filter(certificateur_valideur_simpli!="Ministère de l'éducation nationale ou Ministère de l'agriculture") %>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -671,22 +504,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai,academie,academie_libe),
-          by=c("UAI"="numero_uai")
-        ) %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere,academie ) %>% 
+        filter(Couverture=="Non couvert") %>% 
+        filter(type_territoire=="Territoire mal couvert") %>% 
         summarise(nb=n()) %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>%
-        mutate(part=prop.table(nb)) %>% 
-        filter(str_sub(academie,1,1)=="4") %>% 
-        ungroup() %>% 
-        summarise(nb=sum(nb)) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Territoires non couverts (nb)"=nb) %>% 
@@ -695,16 +515,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+        filter(Couverture=="Non couvert") %>% 
         filter(Nouvelle_formation) %>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -713,19 +524,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
-    
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai) %>% 
-            mutate(presence_UAI_ACCE=T),
-          by=c("UAI"="numero_uai")
-        ) %>% 
+        filter(Couverture=="Non couvert") %>% 
         filter(is.na(presence_UAI_ACCE))%>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -736,24 +537,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>%
-        filter(Non_couvert)  %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+        filter(Couverture=="Non couvert") %>% 
         filter(!Nouvelle_formation) %>%   
-        left_join(
-          opendata_certif_info %>% 
-            filter(!is.na(Code_Scolarité)) %>% 
-            distinct(Code_Scolarité) %>% 
-            mutate(presence_Code_Scolarité_certif_info=T),
-          by=c("FORMATION_DIPLOME"="Code_Scolarité")
-        ) %>% 
         filter(is.na(presence_Code_Scolarité_certif_info))%>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -762,13 +547,28 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
+    left_join(
+      catalogue_partenaire_renseigne %>%
+        filter(Couverture=="Non couvert") %>%
+        filter(scope) %>% 
+        summarise(nb=n()) %>% 
+        mutate_all(replace_na,0,) %>% 
+        rename(
+          "Non couvert - sans raison évidente (nb)"=nb)%>% 
+        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+      by=c("type_formation","libelle_type_diplome","Filiere")
+    ) %>% 
     mutate(
       `Non couvert - Autres ministères certificateurs (%)`=`Non couvert - Autres ministères certificateurs (nb)`/`Non couvert (nb)`,
       `Non couvert - Territoires non couverts (%)`=`Non couvert - Territoires non couverts (nb)`/`Non couvert (nb)`,
       `Non couvert - Nouvelles formations (%)`=`Non couvert - Nouvelles formations (nb)`/`Non couvert (nb)`,
       `Non couvert - UAI inconnu (%)`=`Non couvert - UAI inconnu (nb)`/`Non couvert (nb)`,
-      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`
+      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`,
+      `Non couvert - sans raison évidente (%)`=`Non couvert - sans raison évidente (nb)`/`Non couvert (nb)`
+      
     ) 
+  
+  
   
   
   ## Synthese ----
@@ -795,7 +595,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
                           "Non couvert - Territoires non couverts (nb)","Non couvert - Territoires non couverts (%)",
                           "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
                           "Non couvert - UAI inconnu (nb)", "Non couvert - UAI inconnu (%)",
-                          "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)"),
+                          "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)",
+                          "Non couvert - sans raison évidente (nb)","Non couvert - sans raison évidente (%)"),
                         names(stats_catalogue_partenaire_temp)
   )
   
@@ -821,7 +622,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
                       "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
                       
                       "Non couvert - UAI inconnu (nb)", "Non couvert - UAI inconnu (%)",
-                      "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)"),
+                      "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)",
+                      "Non couvert - sans raison évidente (nb)","Non couvert - sans raison évidente (%)"),
                     names(stats_catalogue_partenaire_temp)
         ),function(x){
           tibble(!!sym(x):=rep(NA,nrow(stats_catalogue_partenaire_temp)))
@@ -836,66 +638,59 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     setNames(str_replace(names(.),pattern = "\\(nb\\)_pct",replacement = "(%)"))
   
   stats_catalogue_partenaire <- stats_catalogue_partenaire_temp %>% 
-    select(c("type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
-             "Part du  catalogue", "Couvert (nb)", "Couvert (%)",  
-             
-             "Formations non associées à une famille de métiers (nb)", 
-             "Formations non associées à une famille de métiers - Formations couvertes (nb)",
-             "Formations non associées à une famille de métiers - Formations couvertes (%)",
-             "Formations associées à une famille de métiers (nb)", 
-             "Formations associées à une famille de métiers - Formations couvertes (nb)", 
-             "Formations associées à une famille de métiers - Formations couvertes (%)",
-             
-             "Non couvert (nb)", "Non couvert (%)", 
-             "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
-             "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
-             "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
-             "Non couvert - Territoires non couverts (nb)","Non couvert - Territoires non couverts (%)",
-             "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
-             
-             "Non couvert - UAI inconnu (nb)", "Non couvert - UAI inconnu (%)",
-             "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)")
-    ) %>%  
+    select(
+      c("type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
+        "Part du  catalogue", 
+        "Formations non associées à une famille de métiers (nb)", 
+        "Formations associées à une famille de métiers (nb)", 
+        
+        "Couvert (nb)", "Couvert (%)", 
+        
+        "Formations non associées à une famille de métiers - Formations couvertes (nb)", 
+        "Formations non associées à une famille de métiers - Formations couvertes (%)", 
+        "Formations associées à une famille de métiers - Formations couvertes (nb)", 
+        "Formations associées à une famille de métiers - Formations couvertes (%)", 
+        
+        "Non couvert (nb)", "Non couvert (%)", 
+        
+        "Sous le seuil de 20 élèves (nb)", 
+        "Sous le seuil de 20 élèves (%)", 
+        "Non couvert - Nouvelles formations (nb)", 
+        "Non couvert - Nouvelles formations (%)", 
+        
+        # "UAI Formateur - Couvert + sous le seuil (nb)", 
+        # "UAI Formateur - Couvert + sous le seuil (%)", 
+        # "UAI Gestionnaire - Couvert + sous le seuil (nb)", 
+        # "UAI Gestionnaire - Couvert + sous le seuil (%)", 
+        # "UAI Lieu formation - Couvert + sous le seuil (nb)", 
+        # "UAI Lieu formation - Couvert + sous le seuil (%)", 
+        
+        
+        
+        "Non couvert - code certif inconnu (nb)", 
+        "Non couvert - code certif inconnu (%)", 
+        "Non couvert - Autres ministères certificateurs (nb)", 
+        "Non couvert - Autres ministères certificateurs (%)", 
+        "Non couvert - UAI inconnu (nb)", 
+        "Non couvert - UAI inconnu (%)", 
+        "Non couvert - Territoires non couverts (nb)", 
+        "Non couvert - Territoires non couverts (%)",
+        "Non couvert - sans raison évidente (nb)","Non couvert - sans raison évidente (%)"
+      )
+    ) %>% 
     rename(
       "Avant/après bac"=type_formation,
       "Type diplôme"=libelle_type_diplome,
-      "Couverture - Ensemble (nb)"=`Couvert (nb)`,
-      "Couverture - Ensemble (%)"=`Couvert (%)`,
+      "Couverture (nb)"=`Couvert (nb)`,
+      "Couverture (%)"=`Couvert (%)`,
       "Dont sous le seuil de 20 élèves (nb)"=`Sous le seuil de 20 élèves (nb)`,
-      "Dont sous le seuil de 20 élèves (%)"=`Sous le seuil de 20 élèves (%)`
+      "Dont sous le seuil de 20 élèves (%)"=`Sous le seuil de 20 élèves (%)`,
+      "Territoires mal couverts (nb)"="Non couvert - Territoires non couverts (nb)", 
+      "Territoires mal couverts (%)"="Non couvert - Territoires non couverts (%)" 
     ) %>% 
-    select(
-      c("Avant/après bac", "Type diplôme", "Filiere", "Nombre de formations", "Part du  catalogue", "Couverture - Ensemble (nb)","Couverture - Ensemble (%)", 
-        "Non couvert (nb)", "Non couvert (%)",  
-        
-        "Dont sous le seuil de 20 élèves (nb)", 
-        "Dont sous le seuil de 20 élèves (%)", 
-        
-        "Non couvert - Nouvelles formations (nb)", 
-        "Non couvert - Nouvelles formations (%)",
-        
-        "UAI Formateur - Couvert + sous le seuil (nb)", 
-        "UAI Formateur - Couvert + sous le seuil (%)", 
-        "UAI Gestionnaire - Couvert + sous le seuil (nb)", 
-        "UAI Gestionnaire - Couvert + sous le seuil (%)", 
-        "UAI Lieu formation - Couvert + sous le seuil (nb)", 
-        "UAI Lieu formation - Couvert + sous le seuil (%)",
-        
-        "Formations non associées à une famille de métiers (nb)", 
-        "Formations non associées à une famille de métiers - Formations couvertes (nb)", 
-        "Formations non associées à une famille de métiers - Formations couvertes (%)", 
-        "Formations associées à une famille de métiers (nb)", "Formations associées à une famille de métiers - Formations couvertes (nb)", 
-        "Formations associées à une famille de métiers - Formations couvertes (%)", 
-        
-        "Non couvert - code certif inconnu (nb)",
-        "Non couvert - code certif inconnu (%)",
-        "Non couvert - Autres ministères certificateurs (nb)", 
-        "Non couvert - Autres ministères certificateurs (%)", 
-        
-        "Non couvert - UAI inconnu (nb)", 
-        "Non couvert - UAI inconnu (%)",
-        "Non couvert - Territoires non couverts (nb)", 
-        "Non couvert - Territoires non couverts (%)")
+    mutate(
+      `Avant/après bac`=ifelse(`Avant/après bac`=="Avant le bac","Avant","Après"),
+      Filiere=ifelse(Filiere=="Scolaire","Sco.","App.")
     )
   
   
@@ -904,119 +699,44 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
   #Stats effectifs ----
   ##stats_catalogue_partenaire_effectifs ----
   
-  
-  
-  stats_catalogue_partenaire_effectifs <- catalogue_partenaire_renseigne %>% 
-    select(UAI,MEFSTAT11,FORMATION_DIPLOME,type_formation,libelle_type_diplome,Filiere) %>% 
+  catalogue_partenaire_renseigne_effectifs <- catalogue_partenaire_renseigne %>% 
     mutate(code_certification=ifelse(Filiere=="Scolaire",MEFSTAT11,FORMATION_DIPLOME )) %>% 
     left_join(
       effectifs_rentree_simpli,
       by=c("UAI","code_certification","Filiere")
     ) %>% 
     select(-code_certification) %>% 
+    mutate(nb_annee_term =map_dbl(data,function(df){
+      if(length(df$nb_annee_term)>1){
+        sum(df$nb_annee_term,na.rm = T)
+      }else{
+        df$nb_annee_term 
+      }   
+    })
+    ) 
+  
+  
+  
+  
+  stats_catalogue_partenaire_effectifs <- catalogue_partenaire_renseigne_effectifs %>% 
     group_by(type_formation,libelle_type_diplome,Filiere) %>% 
     summarise("Nombre d'élèves à la rentrée"=sum(effectif_rentree,na.rm = T)) %>% 
     ungroup() %>% 
     left_join(
-      catalogue_partenaire_renseigne %>%
-        mutate(nb_annee_term =map_dbl(data,function(df){
-          if(length(df$nb_annee_term)>1){
-            sum(df$nb_annee_term,na.rm = T)
-          }else{
-            df$nb_annee_term 
-          }   
-        })
-        ) %>% 
-        select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome,nb_annee_term) %>% 
-        ungroup() %>% 
+      catalogue_partenaire_renseigne_effectifs %>%
         group_by(type_formation,libelle_type_diplome,Filiere) %>% 
         summarise("Nombre d'élèves en année terminale"=sum(nb_annee_term,na.rm = T)) %>% 
         ungroup() %>% 
         mutate("Part du  catalogue"=prop.table(`Nombre d'élèves en année terminale`)),
       by=c("type_formation","libelle_type_diplome","Filiere")) %>% 
-    # left_join(
-    #   catalogue_partenaire_renseigne %>%
-    #     mutate(nb_annee_term =map_dbl(data,function(df){
-    #       if(length(df$nb_annee_term)>1){
-    #         sum(df$nb_annee_term,na.rm = T)
-    #       }else{
-    #         df$nb_annee_term 
-    #       }   
-    #     })) %>% 
-    #     select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome,nb_annee_term) %>% 
-    #     filter(famillemetiers=="Famille de métiers") %>% 
-    #     group_by(type_formation,libelle_type_diplome,Filiere) %>% 
-    #     summarise("Famille de métiers"=sum(nb_annee_term,na.rm = T)) %>% 
-    #     ungroup() ,
-    #   by=c("type_formation","libelle_type_diplome","Filiere")) %>% 
-    # mutate(`Famille de métiers`=replace_na(`Famille de métiers`,0)) %>% 
-    # left_join(
-    #   catalogue_partenaire_renseigne %>% 
-    #     mutate(
-    #       Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-    #       nb_annee_term =map_dbl(data,function(df){
-    #         if(length(df$nb_annee_term)>1){
-    #           sum(df$nb_annee_term,na.rm = T)
-    #         }else{
-    #           df$nb_annee_term 
-    #         }   
-    #       })) %>% 
-    #     group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
-    #     summarise("Nombre d'élèves en année terminale"=sum(nb_annee_term,na.rm = T)) %>% 
-    #     ungroup() %>% 
-    #     left_join(
-    #       catalogue_partenaire_renseigne %>% 
-    #         mutate(
-    #           Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-    #           nb_annee_term =map_dbl(data,function(df){
-    #             if(length(df$nb_annee_term)>1){
-    #               sum(df$nb_annee_term,na.rm = T)
-    #             }else{
-    #               df$nb_annee_term 
-    #             }   
-    #           })) %>% 
-    #         filter(Couvert)%>%   
-    #         group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
-    #         summarise("Nombre d'élèves en année terminale couverts"=sum(nb_annee_term,na.rm = T)),
-    #       by=c("type_formation","libelle_type_diplome","Filiere","famillemetiers")
-    #     ) %>% 
-    #     mutate(
-    #       `Nombre d'élèves en année terminale couverts`=replace_na(`Nombre d'élèves en année terminale couverts`,0),
-    #       Couverture=`Nombre d'élèves en année terminale couverts`/`Nombre d'élèves en année terminale`
-    #     ) %>% 
-    #     select(-contains("Nombre d'élèves en année terminale")) %>% 
-    #     mutate(famillemetiers=ifelse(famillemetiers=="Hors famille de métiers","Couverture - Hors familles de métiers","Couverture - Familles de métiers")) %>% 
-    #     pivot_wider(names_from = famillemetiers,values_from = `Couverture`),
-    #   by=c("type_formation","libelle_type_diplome","Filiere")
-    # ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>%
-        mutate(nb_annee_term =map_dbl(data,function(df){
-          if(length(df$nb_annee_term)>1){
-            sum(df$nb_annee_term,na.rm = T)
-          }else{
-            df$nb_annee_term 
-          }   
-        })
-        ) %>% 
-        select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome,nb_annee_term) %>% 
-        ungroup() %>% 
+      catalogue_partenaire_renseigne_effectifs %>%
         group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
         summarise("Nombre de formations"=sum(nb_annee_term,na.rm = T)) %>% 
         ungroup() %>% 
         left_join(
-          catalogue_partenaire_renseigne %>% 
-            mutate(
-              Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-              nb_annee_term =map_dbl(data,function(df){
-                if(length(df$nb_annee_term)>1){
-                  sum(df$nb_annee_term,na.rm = T)
-                }else{
-                  df$nb_annee_term 
-                }   
-              })
-            ) %>% 
-            filter(Couvert)%>%   
+          catalogue_partenaire_renseigne_effectifs %>% 
+            filter(Couverture=="Couvert")%>%   
             group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
             summarise("Nombre de formations couvertes"=sum(nb_annee_term,na.rm = T)),
           by=c("type_formation","libelle_type_diplome","Filiere","famillemetiers")
@@ -1056,25 +776,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-               Sous_seuil=map_lgl(data,~any(.$Couverture=="Sous le seuil de 20 élèves")),
-               Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-               nb_annee_term =map_dbl(data,function(df){
-                 if(length(df$nb_annee_term)>1){
-                   sum(df$nb_annee_term,na.rm = T)
-                 }else{
-                   df$nb_annee_term 
-                 }   
-               })
-        ) %>% 
-        mutate(
-          Couverture=case_when(
-            Couvert~"Couvert",
-            Sous_seuil~"Sous le seuil de 20 élèves",
-            TRUE~"Non couvert"
-          )
-        ) %>% 
+      catalogue_partenaire_renseigne_effectifs %>% 
         group_by(type_formation,libelle_type_diplome,Filiere,Couverture) %>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
         mutate(part=prop.table(nb)) %>% 
@@ -1091,29 +793,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          type_uai_lieu_formation=map_lgl(data,~any(.$uai_donnee_type=="lieu_formation")),
-          type_uai_formateur=map_lgl(data,~any(.$uai_donnee_type=="formateur")),
-          type_uai_gestionnaire=map_lgl(data,~any(.$uai_donnee_type=="gestionnaire")),
-          type_uai_inconnu=map_lgl(data,~any(.$uai_donnee_type=="inconnu")),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>% 
-        mutate(
-          type_uai=case_when(
-            type_uai_lieu_formation ~"UAI Lieu formation - Couvert + sous le seuil",
-            type_uai_formateur~"UAI Formateur - Couvert + sous le seuil",
-            type_uai_gestionnaire~"UAI Gestionnaire - Couvert + sous le seuil",
-            type_uai_inconnu~"Inconnu",
-            TRUE~"Non couvert"
-          )
-        ) %>% 
+      catalogue_partenaire_renseigne_effectifs %>% 
         filter(type_uai!="Non couvert") %>% 
         group_by(type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
@@ -1129,96 +809,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>%
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          catalogue_partenaire_renseigne %>% 
-            mutate(
-              Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-            ) %>%
-            filter(Non_couvert) %>% 
-            unnest() %>%
-            left_join(
-              opendata_certif_info %>%
-                filter(!is.na(Code_Scolarité)) %>%
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME_annee_terminale"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur_annee_terminale=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              valideur_annee_terminale=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              )
-            ) %>% 
-            distinct(UAI, MEFSTAT11, Filiere, famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
-            left_join(
-              opendata_certif_info %>% 
-                filter(!is.na(Code_Scolarité)) %>% 
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale"
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              certificateur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~certificateur_annee_terminale
-              ),
-              valideur=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              ),
-              valideur=case_when(
-                !is.na(valideur)~valideur,
-                T~valideur_annee_terminale
-              ),
-              certificateur_valideur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~valideur
-              ),
-              certificateur_valideur_simpli=case_when(
-                str_detect(certificateur_valideur,"Ministère de l'agriculture")|str_detect(certificateur_valideur,"Ministère de l'éducation nationale")~"Ministère de l'éducation nationale ou Ministère de l'agriculture",
-                T~"Autres ministères certificateurs"
-              ),
-              certificateur_valideur_simpli=factor(certificateur_valideur_simpli,levels = c("Ministère de l'éducation nationale ou Ministère de l'agriculture","Autres ministères certificateurs"))
-            ) %>% 
-            group_by(UAI,MEFSTAT11, Filiere) %>% 
-            filter(as.numeric(certificateur_valideur_simpli)==min(as.numeric(certificateur_valideur_simpli)))%>% 
-            distinct(UAI, MEFSTAT11, Filiere, certificateur_valideur_simpli),
-          by=c("UAI", "MEFSTAT11", "Filiere")
-        ) %>% 
+      catalogue_partenaire_renseigne_effectifs %>%
+        filter(Couverture=="Non couvert")%>%   
         filter(certificateur_valideur_simpli!="Ministère de l'éducation nationale ou Ministère de l'agriculture") %>% 
         group_by(type_formation,libelle_type_diplome,Filiere) %>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
@@ -1228,24 +820,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai,academie,academie_libe),
-          by=c("UAI"="numero_uai")
-        ) %>% 
-        filter(str_sub(academie,1,1)=="4") %>% 
+      catalogue_partenaire_renseigne_effectifs %>% 
+        filter(Couverture=="Non couvert")%>%   
+        filter(type_territoire=="Territoire mal couvert") %>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -1254,24 +831,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+      catalogue_partenaire_renseigne_effectifs %>% 
+        filter(Couverture=="Non couvert")%>%   
         filter(Nouvelle_formation) %>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
@@ -1281,24 +842,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>%
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai) %>% 
-            mutate(presence_UAI_ACCE=T),
-          by=c("UAI"="numero_uai")
-        ) %>% 
+      catalogue_partenaire_renseigne_effectifs %>% 
+        filter(Couverture=="Non couvert")%>%   
         filter(is.na(presence_UAI_ACCE))%>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
@@ -1308,32 +853,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>%
-        filter(Non_couvert)  %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+      catalogue_partenaire_renseigne_effectifs %>% 
+        filter(Couverture=="Non couvert")%>%   
         filter(!Nouvelle_formation) %>%   
-        left_join(
-          opendata_certif_info %>% 
-            filter(!is.na(Code_Scolarité)) %>% 
-            distinct(Code_Scolarité) %>% 
-            mutate(presence_Code_Scolarité_certif_info=T),
-          by=c("FORMATION_DIPLOME"="Code_Scolarité")
-        ) %>% 
         filter(is.na(presence_Code_Scolarité_certif_info))%>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
@@ -1342,126 +864,49 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
           "Non couvert - code certif inconnu (nb)"=nb),
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
+    left_join(
+      catalogue_partenaire_renseigne_effectifs %>%
+        filter(Couverture=="Non couvert") %>%
+        filter(scope) %>% 
+        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
+        mutate_all(replace_na,0,) %>% 
+        rename(
+          "Non couvert - sans raison évidente (nb)"=nb),
+      by=c("type_formation","libelle_type_diplome","Filiere")
+    ) %>% 
     mutate(
       `Non couvert - Autres ministères certificateurs (%)`=`Non couvert - Autres ministères certificateurs (nb)`/`Non couvert (nb)`,
       `Non couvert - Territoires non couverts (%)`=`Non couvert - Territoires non couverts (nb)`/`Non couvert (nb)`,
       `Non couvert - Nouvelles formations (%)`=`Non couvert - Nouvelles formations (nb)`/`Non couvert (nb)`,
       `Non couvert - UAI inconnu (%)`=`Non couvert - UAI inconnu (nb)`/`Non couvert (nb)`,
-      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`
+      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`,
+      `Non couvert - sans raison évidente (%)`=`Non couvert - sans raison évidente (nb)`/`Non couvert (nb)`
     ) 
-  
-  
   
   
   ##stats_catalogue_partenaire_globale_effectifs----
   
   
   
-  stats_catalogue_partenaire_globale_effectifs <- catalogue_partenaire_renseigne %>% 
-    select(UAI,MEFSTAT11,FORMATION_DIPLOME,type_formation,libelle_type_diplome,Filiere) %>% 
-    mutate(code_certification=ifelse(Filiere=="Scolaire",MEFSTAT11,FORMATION_DIPLOME )) %>% 
-    left_join(
-      effectifs_rentree_simpli,
-      by=c("UAI","code_certification","Filiere")
-    ) %>% 
-    select(-code_certification) %>% 
+  stats_catalogue_partenaire_globale_effectifs  <- catalogue_partenaire_renseigne_effectifs %>% 
     summarise("Nombre d'élèves à la rentrée"=sum(effectif_rentree,na.rm = T)) %>% 
     ungroup() %>% 
     mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total") %>% 
     left_join(
-      catalogue_partenaire_renseigne %>%
-        mutate(nb_annee_term =map_dbl(data,function(df){
-          if(length(df$nb_annee_term)>1){
-            sum(df$nb_annee_term,na.rm = T)
-          }else{
-            df$nb_annee_term 
-          }   
-        })
-        ) %>% 
-        select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome,nb_annee_term) %>% 
+      catalogue_partenaire_renseigne_effectifs %>%
         summarise("Nombre d'élèves en année terminale"=sum(nb_annee_term,na.rm = T)) %>% 
         mutate("Part du  catalogue"=prop.table(`Nombre d'élèves en année terminale`),
                type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
       by=c("type_formation","libelle_type_diplome","Filiere")) %>%
-    # left_join(
-    #   catalogue_partenaire_renseigne %>%
-    #     mutate(nb_annee_term =map_dbl(data,function(df){
-    #       if(length(df$nb_annee_term)>1){
-    #         sum(df$nb_annee_term,na.rm = T)
-    #       }else{
-    #         df$nb_annee_term 
-    #       }   
-    #     })) %>% 
-    #     filter(famillemetiers=="Famille de métiers") %>% 
-    #     summarise("Famille de métiers"=n()) %>% 
-    #     mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total") ,
-    #   by=c("type_formation","libelle_type_diplome","Filiere")) %>% 
-    # mutate(`Famille de métiers`=replace_na(`Famille de métiers`,0)) %>% 
-    # left_join(
-    #   catalogue_partenaire_renseigne %>% 
-    #     mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-    #            nb_annee_term =map_dbl(data,function(df){
-    #              if(length(df$nb_annee_term)>1){
-    #                sum(df$nb_annee_term,na.rm = T)
-    #              }else{
-    #                df$nb_annee_term 
-    #              }   
-    #            })) %>% 
-    #     group_by(famillemetiers) %>% 
-    #     summarise("Nombre d'élèves en année terminale"=sum(nb_annee_term,na.rm = T))%>% 
-    #     left_join(
-    #       catalogue_partenaire_renseigne %>% 
-    #         mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-    #                nb_annee_term =map_dbl(data,function(df){
-    #                  if(length(df$nb_annee_term)>1){
-    #                    sum(df$nb_annee_term,na.rm = T)
-    #                  }else{
-    #                    df$nb_annee_term 
-    #                  }   
-    #                })) %>% 
-    #         filter(Couvert)%>%   
-    #         group_by(famillemetiers) %>% 
-    #         summarise("Nombre d'élèves en année terminale couverts"=sum(nb_annee_term,na.rm = T)),
-    #       by="famillemetiers"
-    #     ) %>% 
-    #     mutate(
-    #       `Nombre d'élèves en année terminale couverts`=replace_na(`Nombre d'élèves en année terminale couverts`,0),
-    #       Couverture=`Nombre d'élèves en année terminale couverts`/`Nombre d'élèves en année terminale`
-    #     )%>% 
-    #     select(-contains("Nombre d'élèves en année terminale")) %>% 
-    #     mutate(famillemetiers=ifelse(famillemetiers=="Hors famille de métiers","Couverture - Hors familles de métiers","Couverture - Familles de métiers")) %>% 
-    #     pivot_wider(names_from = famillemetiers,values_from = `Couverture`) %>% 
-    #     mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total") ,
-    #   by=c("type_formation","libelle_type_diplome","Filiere")
-    # ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>%
-        mutate(nb_annee_term =map_dbl(data,function(df){
-          if(length(df$nb_annee_term)>1){
-            sum(df$nb_annee_term,na.rm = T)
-          }else{
-            df$nb_annee_term 
-          }   
-        })
-        ) %>% 
-        select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome,nb_annee_term) %>% 
-        ungroup() %>% 
+      catalogue_partenaire_renseigne_effectifs %>%
         group_by(famillemetiers) %>% 
         summarise("Nombre de formations"=sum(nb_annee_term,na.rm = T)) %>% 
         ungroup() %>% 
         left_join(
-          catalogue_partenaire_renseigne %>% 
-            mutate(
-              Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-              nb_annee_term =map_dbl(data,function(df){
-                if(length(df$nb_annee_term)>1){
-                  sum(df$nb_annee_term,na.rm = T)
-                }else{
-                  df$nb_annee_term 
-                }   
-              })
-            ) %>% 
-            filter(Couvert)%>%   
+          catalogue_partenaire_renseigne_effectifs %>% 
+            filter(Couverture=="Couvert")%>%   
             group_by(famillemetiers) %>% 
             summarise("Nombre de formations couvertes"=sum(nb_annee_term,na.rm = T)),
           by=c("famillemetiers")
@@ -1504,25 +949,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-               Sous_seuil=map_lgl(data,~any(.$Couverture=="Sous le seuil de 20 élèves")),
-               Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-               nb_annee_term =map_dbl(data,function(df){
-                 if(length(df$nb_annee_term)>1){
-                   sum(df$nb_annee_term,na.rm = T)
-                 }else{
-                   df$nb_annee_term 
-                 }   
-               })
-        ) %>% 
-        mutate(
-          Couverture=case_when(
-            Couvert~"Couvert",
-            Sous_seuil~"Sous le seuil de 20 élèves",
-            TRUE~"Non couvert"
-          )
-        ) %>% 
+      catalogue_partenaire_renseigne_effectifs %>% 
         group_by(Couverture) %>%
         summarise(nb=sum(nb_annee_term,na.rm = T))  %>% 
         mutate(part=prop.table(nb)) %>% 
@@ -1540,29 +967,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          type_uai_lieu_formation=map_lgl(data,~any(.$uai_donnee_type=="lieu_formation")),
-          type_uai_formateur=map_lgl(data,~any(.$uai_donnee_type=="formateur")),
-          type_uai_gestionnaire=map_lgl(data,~any(.$uai_donnee_type=="gestionnaire")),
-          type_uai_inconnu=map_lgl(data,~any(.$uai_donnee_type=="inconnu")),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>% 
-        mutate(
-          type_uai=case_when(
-            type_uai_lieu_formation ~"UAI Lieu formation - Couvert + sous le seuil",
-            type_uai_formateur~"UAI Formateur - Couvert + sous le seuil",
-            type_uai_gestionnaire~"UAI Gestionnaire - Couvert + sous le seuil",
-            type_uai_inconnu~"Inconnu",
-            TRUE~"Non couvert"
-          )
-        ) %>% 
+      catalogue_partenaire_renseigne_effectifs %>% 
         filter(type_uai!="Non couvert") %>% 
         group_by(type_uai) %>%
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
@@ -1579,96 +984,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>%
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          catalogue_partenaire_renseigne %>% 
-            mutate(
-              Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-            ) %>%
-            filter(Non_couvert) %>% 
-            unnest() %>%
-            left_join(
-              opendata_certif_info %>%
-                filter(!is.na(Code_Scolarité)) %>%
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME_annee_terminale"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur_annee_terminale=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              valideur_annee_terminale=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              )
-            ) %>% 
-            distinct(UAI, MEFSTAT11, Filiere, famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
-            left_join(
-              opendata_certif_info %>% 
-                filter(!is.na(Code_Scolarité)) %>% 
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale"
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              certificateur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~certificateur_annee_terminale
-              ),
-              valideur=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              ),
-              valideur=case_when(
-                !is.na(valideur)~valideur,
-                T~valideur_annee_terminale
-              ),
-              certificateur_valideur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~valideur
-              ),
-              certificateur_valideur_simpli=case_when(
-                str_detect(certificateur_valideur,"Ministère de l'agriculture")|str_detect(certificateur_valideur,"Ministère de l'éducation nationale")~"Ministère de l'éducation nationale ou Ministère de l'agriculture",
-                T~"Autres ministères certificateurs"
-              ),
-              certificateur_valideur_simpli=factor(certificateur_valideur_simpli,levels = c("Ministère de l'éducation nationale ou Ministère de l'agriculture","Autres ministères certificateurs"))
-            ) %>% 
-            group_by(UAI,MEFSTAT11, Filiere) %>% 
-            filter(as.numeric(certificateur_valideur_simpli)==min(as.numeric(certificateur_valideur_simpli)))%>% 
-            distinct(UAI, MEFSTAT11, Filiere, certificateur_valideur_simpli),
-          by=c("UAI", "MEFSTAT11", "Filiere")
-        ) %>% 
+      catalogue_partenaire_renseigne_effectifs %>%
+        filter(Couverture== "Non_couvert") %>% 
         filter(certificateur_valideur_simpli!="Ministère de l'éducation nationale ou Ministère de l'agriculture") %>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -1678,24 +995,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai,academie,academie_libe),
-          by=c("UAI"="numero_uai")
-        ) %>% 
-        filter(str_sub(academie,1,1)=="4") %>% 
+      catalogue_partenaire_renseigne_effectifs %>% 
+        filter(Couverture== "Non couvert") %>% 
+        filter(type_territoire=="Territoire mal couvert") %>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
@@ -1704,24 +1006,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+      catalogue_partenaire_renseigne_effectifs %>% 
+        filter(Couverture== "Non couvert") %>% 
         filter(Nouvelle_formation) %>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -1731,24 +1017,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai) %>% 
-            mutate(presence_UAI_ACCE=T),
-          by=c("UAI"="numero_uai")
-        ) %>% 
+      catalogue_partenaire_renseigne_effectifs %>% 
+        filter(Couverture== "Non couvert") %>% 
         filter(is.na(presence_UAI_ACCE))%>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -1758,32 +1028,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-          nb_annee_term =map_dbl(data,function(df){
-            if(length(df$nb_annee_term)>1){
-              sum(df$nb_annee_term,na.rm = T)
-            }else{
-              df$nb_annee_term 
-            }   
-          })
-        ) %>%
-        filter(Non_couvert)  %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+      catalogue_partenaire_renseigne_effectifs %>% 
+        filter(Couverture== "Non couvert") %>% 
         filter(!Nouvelle_formation) %>%   
-        left_join(
-          opendata_certif_info %>% 
-            filter(!is.na(Code_Scolarité)) %>% 
-            distinct(Code_Scolarité) %>% 
-            mutate(presence_Code_Scolarité_certif_info=T),
-          by=c("FORMATION_DIPLOME"="Code_Scolarité")
-        ) %>% 
         filter(is.na(presence_Code_Scolarité_certif_info))%>% 
         summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -1792,15 +1039,25 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
+    left_join(
+      catalogue_partenaire_renseigne_effectifs %>%
+        filter(Couverture=="Non couvert") %>%
+        filter(scope) %>% 
+        summarise(nb=sum(nb_annee_term,na.rm = T)) %>% 
+        mutate_all(replace_na,0,) %>% 
+        rename(
+          "Non couvert - sans raison évidente (nb)"=nb) %>% 
+        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+      by=c("type_formation","libelle_type_diplome","Filiere")
+    ) %>% 
     mutate(
       `Non couvert - Autres ministères certificateurs (%)`=`Non couvert - Autres ministères certificateurs (nb)`/`Non couvert (nb)`,
       `Non couvert - Territoires non couverts (%)`=`Non couvert - Territoires non couverts (nb)`/`Non couvert (nb)`,
       `Non couvert - Nouvelles formations (%)`=`Non couvert - Nouvelles formations (nb)`/`Non couvert (nb)`,
       `Non couvert - UAI inconnu (%)`=`Non couvert - UAI inconnu (nb)`/`Non couvert (nb)`,
-      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`
+      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`,
+      `Non couvert - sans raison évidente (%)`=`Non couvert - sans raison évidente (nb)`/`Non couvert (nb)`
     )     
-  
-  
   
   
   ##Synthese----
@@ -1826,7 +1083,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
                                     "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
                                     
                                     "Non couvert - UAI inconnu (nb)", "Non couvert - UAI inconnu (%)",
-                                    "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)"),
+                                    "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)",
+                                    "Non couvert - sans raison évidente (nb)","Non couvert - sans raison évidente (%)"),
                                   names(stats_catalogue_partenaire_effectifs_temp)
   )
   
@@ -1852,7 +1110,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
                       "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
                       
                       "Non couvert - UAI inconnu (nb)", "Non couvert - UAI inconnu (%)",
-                      "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)"),
+                      "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)",
+                      "Non couvert - sans raison évidente (nb)","Non couvert - sans raison évidente (%)"),
                     names(stats_catalogue_partenaire_effectifs_temp)
         ),function(x){
           tibble(!!sym(x):=rep(NA,nrow(stats_catalogue_partenaire_effectifs_temp)))
@@ -1867,52 +1126,65 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     setNames(str_replace(names(.),pattern = "\\(nb\\)_pct",replacement = "(%)"))
   
   stats_catalogue_partenaire_effectifs_temp <- stats_catalogue_partenaire_effectifs_temp %>% 
-    rename(
-      "Avant/après bac"=type_formation,
-      "Type diplôme"=libelle_type_diplome,
-      "Couverture - Ensemble (nb)"=`Couvert (nb)`,
-      "Couverture - Ensemble (%)"=`Couvert (%)`,
-      "Dont sous le seuil de 20 élèves (nb)"=`Sous le seuil de 20 élèves (nb)`,
-      "Dont sous le seuil de 20 élèves (%)"=`Sous le seuil de 20 élèves (%)`
-    ) %>% 
     select(
-      c("Avant/après bac", "Type diplôme", "Filiere", 
+      c("type_formation", "libelle_type_diplome", "Filiere", 
+        
         "Nombre d'élèves à la rentrée",
         "Nombre d'élèves en année terminale", 
         
-        "Part du  catalogue", "Couverture - Ensemble (nb)","Couverture - Ensemble (%)", 
-        "Non couvert (nb)", "Non couvert (%)",  
-        
-        "Dont sous le seuil de 20 élèves (nb)", 
-        "Dont sous le seuil de 20 élèves (%)", 
-        
-        "Non couvert - Nouvelles formations (nb)", 
-        "Non couvert - Nouvelles formations (%)",
-        
-        "UAI Formateur - Couvert + sous le seuil (nb)", 
-        "UAI Formateur - Couvert + sous le seuil (%)", 
-        "UAI Gestionnaire - Couvert + sous le seuil (nb)", 
-        "UAI Gestionnaire - Couvert + sous le seuil (%)", 
-        "UAI Lieu formation - Couvert + sous le seuil (nb)", 
-        "UAI Lieu formation - Couvert + sous le seuil (%)",
-        
+        "Part du  catalogue", 
         "Formations non associées à une famille de métiers (nb)",
+        "Formations associées à une famille de métiers (nb)",
+        
+        "Couvert (nb)", "Couvert (%)", 
+        
         "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
         "Formations non associées à une famille de métiers - Effectifs couverts (%)",
-        "Formations associées à une famille de métiers (nb)",
         "Formations associées à une famille de métiers - Effectifs couverts (nb)",
         "Formations associées à une famille de métiers - Effectifs couverts (%)",
         
-        "Non couvert - code certif inconnu (nb)",
-        "Non couvert - code certif inconnu (%)",
+        "Non couvert (nb)", "Non couvert (%)", 
+        
+        "Sous le seuil de 20 élèves (nb)", 
+        "Sous le seuil de 20 élèves (%)", 
+        "Non couvert - Nouvelles formations (nb)", 
+        "Non couvert - Nouvelles formations (%)", 
+        
+        # "UAI Formateur - Couvert + sous le seuil (nb)", 
+        # "UAI Formateur - Couvert + sous le seuil (%)", 
+        # "UAI Gestionnaire - Couvert + sous le seuil (nb)", 
+        # "UAI Gestionnaire - Couvert + sous le seuil (%)", 
+        # "UAI Lieu formation - Couvert + sous le seuil (nb)", 
+        # "UAI Lieu formation - Couvert + sous le seuil (%)", 
+        
+        
+        
+        "Non couvert - code certif inconnu (nb)", 
+        "Non couvert - code certif inconnu (%)", 
         "Non couvert - Autres ministères certificateurs (nb)", 
         "Non couvert - Autres ministères certificateurs (%)", 
-        
         "Non couvert - UAI inconnu (nb)", 
-        "Non couvert - UAI inconnu (%)",
+        "Non couvert - UAI inconnu (%)", 
         "Non couvert - Territoires non couverts (nb)", 
-        "Non couvert - Territoires non couverts (%)")
+        "Non couvert - Territoires non couverts (%)",
+        "Non couvert - sans raison évidente (nb)","Non couvert - sans raison évidente (%)"
+      )
+    ) %>% 
+    rename(
+      "Avant/après bac"=type_formation,
+      "Type diplôme"=libelle_type_diplome,
+      "Couverture (nb)"=`Couvert (nb)`,
+      "Couverture (%)"=`Couvert (%)`,
+      "Dont sous le seuil de 20 élèves (nb)"=`Sous le seuil de 20 élèves (nb)`,
+      "Dont sous le seuil de 20 élèves (%)"=`Sous le seuil de 20 élèves (%)`,
+      "Territoires mal couverts (nb)"="Non couvert - Territoires non couverts (nb)", 
+      "Territoires mal couverts (%)"="Non couvert - Territoires non couverts (%)" 
+    ) %>% 
+    mutate(
+      `Avant/après bac`=ifelse(`Avant/après bac`=="Avant le bac","Avant","Après"),
+      Filiere=ifelse(Filiere=="Scolaire","Sco.","App.")
     )
+  
   
   
   #Stats voeux ----
@@ -1920,7 +1192,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
   
   var_effectifs <- "Demandes tous voeux"
   
-  catalogue_partenaire_renseigne <- catalogue_partenaire_renseigne %>% 
+  catalogue_partenaire_renseigne_voeux <- catalogue_partenaire_renseigne %>% 
     mutate(code_certification=ifelse(Filiere=="Scolaire",MEFSTAT11,FORMATION_DIPLOME )) %>% 
     left_join(
       voeux_parcoursup_affelnet_simpli_2023,
@@ -1928,25 +1200,21 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
     ) %>% 
     select(-code_certification)
   
-  # catalogue_partenaire_renseigne %>% 
-  #   filter(Filiere=="Apprentissage") %>% 
-  #   select(UAI,MEFSTAT11,FORMATION_DIPLOME,`Nombre de voeux affectes`,`Demandes tous voeux`)
   
-  stats_catalogue_partenaire_voeux <- catalogue_partenaire_renseigne %>%
+  stats_catalogue_partenaire_voeux <- catalogue_partenaire_renseigne_voeux %>%
     ungroup() %>% 
     group_by(type_formation,libelle_type_diplome,Filiere) %>% 
     summarise(Effectifs=sum(!!sym(var_effectifs),na.rm=T)) %>% 
     ungroup() %>% 
     mutate("Part du  catalogue"=prop.table(Effectifs)) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>%
+      catalogue_partenaire_renseigne_voeux %>%
         group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
         summarise(Effectifs=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         ungroup() %>% 
         left_join(
-          catalogue_partenaire_renseigne %>% 
-            mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
-            filter(Couvert)%>%   
+          catalogue_partenaire_renseigne_voeux %>% 
+            filter(Couverture =="Couvert")%>%   
             group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
             summarise("Effectifs couverts"=sum(!!sym(var_effectifs),na.rm=T)),
           by=c("type_formation","libelle_type_diplome","Filiere","famillemetiers")
@@ -1986,18 +1254,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-               Sous_seuil=map_lgl(data,~any(.$Couverture=="Sous le seuil de 20 élèves")),
-               Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        mutate(
-          Couverture=case_when(
-            Couvert~"Couvert",
-            Sous_seuil~"Sous le seuil de 20 élèves",
-            TRUE~"Non couvert"
-          )
-        ) %>% 
+      catalogue_partenaire_renseigne_voeux %>% 
         group_by(type_formation,libelle_type_diplome,Filiere,Couverture) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate(part=prop.table(nb)) %>% 
@@ -2013,22 +1270,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
                `Non couvert (%)`=`Non couvert (%)`+`Sous le seuil de 20 élèves (%)`),
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
-    left_join(catalogue_partenaire_renseigne %>% 
-                mutate(
-                  type_uai_lieu_formation=map_lgl(data,~any(.$uai_donnee_type=="lieu_formation")),
-                  type_uai_formateur=map_lgl(data,~any(.$uai_donnee_type=="formateur")),
-                  type_uai_gestionnaire=map_lgl(data,~any(.$uai_donnee_type=="gestionnaire")),
-                  type_uai_inconnu=map_lgl(data,~any(.$uai_donnee_type=="inconnu"))
-                ) %>% 
-                mutate(
-                  type_uai=case_when(
-                    type_uai_lieu_formation ~"UAI Lieu formation - Couvert + sous le seuil",
-                    type_uai_formateur~"UAI Formateur - Couvert + sous le seuil",
-                    type_uai_gestionnaire~"UAI Gestionnaire - Couvert + sous le seuil",
-                    type_uai_inconnu~"Inconnu",
-                    TRUE~"Non couvert"
-                  )
-                ) %>% 
+    left_join(catalogue_partenaire_renseigne_voeux %>% 
                 filter(type_uai!="Non couvert") %>% 
                 group_by(type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
                 summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
@@ -2044,89 +1286,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
               by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>%
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          catalogue_partenaire_renseigne %>% 
-            mutate(
-              Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-            ) %>%
-            filter(Non_couvert) %>% 
-            unnest() %>%
-            left_join(
-              opendata_certif_info %>%
-                filter(!is.na(Code_Scolarité)) %>%
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME_annee_terminale"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur_annee_terminale=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              valideur_annee_terminale=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              )
-            ) %>% 
-            distinct(UAI, MEFSTAT11, Filiere, famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
-            left_join(
-              opendata_certif_info %>% 
-                filter(!is.na(Code_Scolarité)) %>% 
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale"
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              certificateur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~certificateur_annee_terminale
-              ),
-              valideur=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              ),
-              valideur=case_when(
-                !is.na(valideur)~valideur,
-                T~valideur_annee_terminale
-              ),
-              certificateur_valideur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~valideur
-              ),
-              certificateur_valideur_simpli=case_when(
-                str_detect(certificateur_valideur,"Ministère de l'agriculture")|str_detect(certificateur_valideur,"Ministère de l'éducation nationale")~"Ministère de l'éducation nationale ou Ministère de l'agriculture",
-                T~"Autres ministères certificateurs"
-              ),
-              certificateur_valideur_simpli=factor(certificateur_valideur_simpli,levels = c("Ministère de l'éducation nationale ou Ministère de l'agriculture","Autres ministères certificateurs"))
-            ) %>% 
-            group_by(UAI,MEFSTAT11, Filiere) %>% 
-            filter(as.numeric(certificateur_valideur_simpli)==min(as.numeric(certificateur_valideur_simpli)))%>% 
-            distinct(UAI, MEFSTAT11, Filiere, certificateur_valideur_simpli),
-          by=c("UAI", "MEFSTAT11", "Filiere")
-        ) %>% 
+      catalogue_partenaire_renseigne_voeux %>%
+        filter(Couverture =="Non couvert")%>%   
         filter(certificateur_valideur_simpli!="Ministère de l'éducation nationale ou Ministère de l'agriculture") %>% 
         group_by(type_formation,libelle_type_diplome,Filiere) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
@@ -2136,17 +1297,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai,academie,academie_libe),
-          by=c("UAI"="numero_uai")
-        ) %>% 
-        filter(str_sub(academie,1,1)=="4") %>% 
+      catalogue_partenaire_renseigne_voeux %>% 
+        filter(Couverture =="Non couvert")%>%   
+        filter(type_territoire=="Territoire mal couvert") %>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -2155,17 +1308,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+      catalogue_partenaire_renseigne_voeux %>% 
+        filter(Couverture =="Non couvert")%>%   
         filter(Nouvelle_formation) %>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
@@ -2175,17 +1319,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai) %>% 
-            mutate(presence_UAI_ACCE=T),
-          by=c("UAI"="numero_uai")
-        ) %>% 
+      catalogue_partenaire_renseigne_voeux %>% 
+        filter(Couverture =="Non couvert")%>%   
         filter(is.na(presence_UAI_ACCE))%>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
@@ -2195,25 +1330,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>%
-        filter(Non_couvert)  %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+      catalogue_partenaire_renseigne_voeux %>% 
+        filter(Couverture =="Non couvert")%>%   
         filter(!Nouvelle_formation) %>%   
-        left_join(
-          opendata_certif_info %>% 
-            filter(!is.na(Code_Scolarité)) %>% 
-            distinct(Code_Scolarité) %>% 
-            mutate(presence_Code_Scolarité_certif_info=T),
-          by=c("FORMATION_DIPLOME"="Code_Scolarité")
-        ) %>% 
         filter(is.na(presence_Code_Scolarité_certif_info))%>% 
         group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
@@ -2222,32 +1341,43 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
           "Non couvert - code certif inconnu (nb)"=nb),
       by=c("type_formation","libelle_type_diplome","Filiere")
     ) %>% 
+    left_join(
+      catalogue_partenaire_renseigne_voeux %>%
+        filter(Couverture=="Non couvert") %>%
+        filter(scope) %>% 
+        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
+        mutate_all(replace_na,0,) %>% 
+        rename(
+          "Non couvert - sans raison évidente (nb)"=nb),
+      by=c("type_formation","libelle_type_diplome","Filiere")
+    ) %>% 
     mutate(
       `Non couvert - Autres ministères certificateurs (%)`=`Non couvert - Autres ministères certificateurs (nb)`/`Non couvert (nb)`,
       `Non couvert - Territoires non couverts (%)`=`Non couvert - Territoires non couverts (nb)`/`Non couvert (nb)`,
       `Non couvert - Nouvelles formations (%)`=`Non couvert - Nouvelles formations (nb)`/`Non couvert (nb)`,
       `Non couvert - UAI inconnu (%)`=`Non couvert - UAI inconnu (nb)`/`Non couvert (nb)`,
-      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`
+      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`,
+      `Non couvert - sans raison évidente (%)`=`Non couvert - sans raison évidente (nb)`/`Non couvert (nb)`
     )     
   
   
   
   ##stats_catalogue_partenaire_globale----
   
-  stats_catalogue_partenaire_globale_voeux <- catalogue_partenaire_renseigne %>%
+  stats_catalogue_partenaire_globale_voeux <- catalogue_partenaire_renseigne_voeux %>%
     ungroup() %>% 
     summarise(Effectifs=sum(!!sym(var_effectifs),na.rm=T)) %>% 
     ungroup() %>% 
     mutate("Part du  catalogue"=prop.table(Effectifs)) %>% 
     bind_cols(
-      catalogue_partenaire_renseigne %>%
+      catalogue_partenaire_renseigne_voeux %>%
         group_by(famillemetiers) %>% 
         summarise(Effectifs=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         ungroup() %>% 
         left_join(
-          catalogue_partenaire_renseigne %>% 
-            mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert"))) %>% 
-            filter(Couvert)%>%   
+          catalogue_partenaire_renseigne_voeux %>% 
+            filter(Couverture =="Couvert")%>%   
             group_by(famillemetiers) %>% 
             summarise("Effectifs couverts"=sum(!!sym(var_effectifs),na.rm=T)),
           by=c("famillemetiers")
@@ -2286,18 +1416,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         pivot_wider(names_from = name,values_from = value)
     )  %>% 
     bind_cols(
-      catalogue_partenaire_renseigne %>% 
-        mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
-               Sous_seuil=map_lgl(data,~any(.$Couverture=="Sous le seuil de 20 élèves")),
-               Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        mutate(
-          Couverture=case_when(
-            Couvert~"Couvert",
-            Sous_seuil~"Sous le seuil de 20 élèves",
-            TRUE~"Non couvert"
-          )
-        ) %>% 
+      catalogue_partenaire_renseigne_voeux %>% 
         group_by(Couverture) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate(part=prop.table(nb)) %>% 
@@ -2312,22 +1431,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
         mutate(`Non couvert (nb)`=`Non couvert (nb)`+`Sous le seuil de 20 élèves (nb)`,
                `Non couvert (%)`=`Non couvert (%)`+`Sous le seuil de 20 élèves (%)`)
     ) %>%  
-    bind_cols(catalogue_partenaire_renseigne %>% 
-                mutate(
-                  type_uai_lieu_formation=map_lgl(data,~any(.$uai_donnee_type=="lieu_formation")),
-                  type_uai_formateur=map_lgl(data,~any(.$uai_donnee_type=="formateur")),
-                  type_uai_gestionnaire=map_lgl(data,~any(.$uai_donnee_type=="gestionnaire")),
-                  type_uai_inconnu=map_lgl(data,~any(.$uai_donnee_type=="inconnu"))
-                ) %>% 
-                mutate(
-                  type_uai=case_when(
-                    type_uai_lieu_formation ~"UAI Lieu formation - Couvert + sous le seuil",
-                    type_uai_formateur~"UAI Formateur - Couvert + sous le seuil",
-                    type_uai_gestionnaire~"UAI Gestionnaire - Couvert + sous le seuil",
-                    type_uai_inconnu~"Inconnu",
-                    TRUE~"Non couvert"
-                  )
-                ) %>% 
+    bind_cols(catalogue_partenaire_renseigne_voeux %>% 
                 filter(type_uai!="Non couvert") %>% 
                 group_by(type_uai) %>% 
                 summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
@@ -2342,89 +1446,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
                 mutate_all(replace_na,0,)
     ) %>% 
     bind_cols(
-      catalogue_partenaire_renseigne %>%
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          catalogue_partenaire_renseigne %>% 
-            mutate(
-              Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-            ) %>%
-            filter(Non_couvert) %>% 
-            unnest() %>%
-            left_join(
-              opendata_certif_info %>%
-                filter(!is.na(Code_Scolarité)) %>%
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME_annee_terminale"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur_annee_terminale=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              valideur_annee_terminale=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              )
-            ) %>% 
-            distinct(UAI, MEFSTAT11, Filiere, famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
-            left_join(
-              opendata_certif_info %>% 
-                filter(!is.na(Code_Scolarité)) %>% 
-                distinct(Code_Scolarité,valideur,certificateur),
-              by=c("FORMATION_DIPLOME"="Code_Scolarité")
-            ) %>% 
-            mutate(
-              certificateur=case_when(
-                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale"
-                certificateur==""~NA,
-                T~certificateur
-              ),
-              certificateur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~certificateur_annee_terminale
-              ),
-              valideur=case_when(
-                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
-                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
-                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
-                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
-                valideur==""~NA,
-                T~valideur
-              ),
-              valideur=case_when(
-                !is.na(valideur)~valideur,
-                T~valideur_annee_terminale
-              ),
-              certificateur_valideur=case_when(
-                !is.na(certificateur)~certificateur,
-                T~valideur
-              ),
-              certificateur_valideur_simpli=case_when(
-                str_detect(certificateur_valideur,"Ministère de l'agriculture")|str_detect(certificateur_valideur,"Ministère de l'éducation nationale")~"Ministère de l'éducation nationale ou Ministère de l'agriculture",
-                T~"Autres ministères certificateurs"
-              ),
-              certificateur_valideur_simpli=factor(certificateur_valideur_simpli,levels = c("Ministère de l'éducation nationale ou Ministère de l'agriculture","Autres ministères certificateurs"))
-            ) %>% 
-            group_by(UAI,MEFSTAT11, Filiere) %>% 
-            filter(as.numeric(certificateur_valideur_simpli)==min(as.numeric(certificateur_valideur_simpli)))%>% 
-            distinct(UAI, MEFSTAT11, Filiere, certificateur_valideur_simpli),
-          by=c("UAI", "MEFSTAT11", "Filiere")
-        ) %>% 
+      catalogue_partenaire_renseigne_voeux %>%
+        filter(Couverture =="Non couvert")%>%   
         filter(certificateur_valideur_simpli!="Ministère de l'éducation nationale ou Ministère de l'agriculture") %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -2432,34 +1455,17 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
           "Non couvert - Autres ministères certificateurs (nb)"=nb)
     ) %>% 
     bind_cols(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai,academie,academie_libe),
-          by=c("UAI"="numero_uai")
-        ) %>% 
-        filter(str_sub(academie,1,1)=="4") %>% 
+      catalogue_partenaire_renseigne_voeux %>% 
+        filter(Couverture =="Non couvert")%>%   
+        filter(type_territoire=="Territoire mal couvert") %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Territoires non couverts (nb)"=nb)
     ) %>% 
     bind_cols(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>% 
-        filter(Non_couvert) %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+      catalogue_partenaire_renseigne_voeux %>% 
+        filter(Couverture =="Non couvert")%>%   
         filter(Nouvelle_formation) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -2467,17 +1473,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
           "Non couvert - Nouvelles formations (nb)"=nb)
     ) %>% 
     bind_cols(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture))),
-        ) %>%
-        filter(Non_couvert) %>% 
-        left_join(
-          ACCE_UAI %>% 
-            distinct(numero_uai) %>% 
-            mutate(presence_UAI_ACCE=T),
-          by=c("UAI"="numero_uai")
-        ) %>% 
+      catalogue_partenaire_renseigne_voeux %>% 
+        filter(Couverture =="Non couvert")%>%   
         filter(is.na(presence_UAI_ACCE))%>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
@@ -2485,40 +1482,33 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
           "Non couvert - UAI inconnu (nb)"=nb)
     ) %>% 
     bind_cols(
-      catalogue_partenaire_renseigne %>% 
-        mutate(
-          Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
-        ) %>%
-        filter(Non_couvert)  %>% 
-        left_join(
-          n_formation_diplome %>% 
-            mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
-            distinct(FORMATION_DIPLOME,Nouvelle_formation),
-          by="FORMATION_DIPLOME"
-        )  %>%
+      catalogue_partenaire_renseigne_voeux %>% 
+        filter(Couverture =="Non couvert")%>%   
         filter(!Nouvelle_formation) %>%   
-        left_join(
-          opendata_certif_info %>% 
-            filter(!is.na(Code_Scolarité)) %>% 
-            distinct(Code_Scolarité) %>% 
-            mutate(presence_Code_Scolarité_certif_info=T),
-          by=c("FORMATION_DIPLOME"="Code_Scolarité")
-        ) %>% 
         filter(is.na(presence_Code_Scolarité_certif_info))%>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - code certif inconnu (nb)"=nb)
     ) %>% 
+    bind_cols(
+      catalogue_partenaire_renseigne_voeux %>%
+        filter(Couverture=="Non couvert") %>%
+        filter(scope) %>% 
+        summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
+        mutate_all(replace_na,0,) %>% 
+        rename(
+          "Non couvert - sans raison évidente (nb)"=nb)
+    ) %>% 
     mutate(
       `Non couvert - Autres ministères certificateurs (%)`=`Non couvert - Autres ministères certificateurs (nb)`/`Non couvert (nb)`,
       `Non couvert - Territoires non couverts (%)`=`Non couvert - Territoires non couverts (nb)`/`Non couvert (nb)`,
       `Non couvert - Nouvelles formations (%)`=`Non couvert - Nouvelles formations (nb)`/`Non couvert (nb)`,
       `Non couvert - UAI inconnu (%)`=`Non couvert - UAI inconnu (nb)`/`Non couvert (nb)`,
-      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`
+      `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`,
+      `Non couvert - sans raison évidente (%)`=`Non couvert - sans raison évidente (nb)`/`Non couvert (nb)`
     ) %>% 
     mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total")
-  
   
   
   ## Synthese ----
@@ -2547,7 +1537,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
                           "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
                           
                           "Non couvert - UAI inconnu (nb)", "Non couvert - UAI inconnu (%)",
-                          "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)"),
+                          "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)",
+                          "Non couvert - sans raison évidente (nb)","Non couvert - sans raison évidente (%)"),
                         names(stats_catalogue_partenaire_voeux_temp)
   )
   
@@ -2575,7 +1566,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
                       "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
                       
                       "Non couvert - UAI inconnu (nb)", "Non couvert - UAI inconnu (%)",
-                      "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)"),
+                      "Non couvert - code certif inconnu (nb)","Non couvert - code certif inconnu (%)",
+                      "Non couvert - sans raison évidente (nb)","Non couvert - sans raison évidente (%)"),
                     names(stats_catalogue_partenaire_voeux_temp)
         ),function(x){
           tibble(!!sym(x):=rep(NA,nrow(stats_catalogue_partenaire_voeux_temp)))
@@ -2592,50 +1584,63 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
   
   stats_catalogue_partenaire_voeux <- stats_catalogue_partenaire_voeux_temp %>% 
     select(
-      c("type_formation", "libelle_type_diplome", "Filiere", "Effectifs", 
+      c("type_formation", "libelle_type_diplome", "Filiere", 
         
-        "Part du  catalogue", "Couvert (nb)", "Couvert (%)",
-        "Non couvert (nb)", "Non couvert (%)",  
+        "Effectifs", 
         
-        "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)", 
-        
-        "Non couvert - Nouvelles formations (nb)", 
-        "Non couvert - Nouvelles formations (%)",
-        
-        "UAI Formateur - Couvert + sous le seuil (nb)", 
-        "UAI Formateur - Couvert + sous le seuil (%)", 
-        "UAI Gestionnaire - Couvert + sous le seuil (nb)", 
-        "UAI Gestionnaire - Couvert + sous le seuil (%)", 
-        "UAI Lieu formation - Couvert + sous le seuil (nb)", 
-        "UAI Lieu formation - Couvert + sous le seuil (%)",
-        
+        "Part du  catalogue", 
         "Formations non associées à une famille de métiers (nb)",
+        "Formations associées à une famille de métiers (nb)",
+        
+        "Couvert (nb)", "Couvert (%)", 
+        
         "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
         "Formations non associées à une famille de métiers - Effectifs couverts (%)",
-        "Formations associées à une famille de métiers (nb)",
         "Formations associées à une famille de métiers - Effectifs couverts (nb)",
         "Formations associées à une famille de métiers - Effectifs couverts (%)",
         
-        "Non couvert - code certif inconnu (nb)",
-        "Non couvert - code certif inconnu (%)",
+        "Non couvert (nb)", "Non couvert (%)", 
+        
+        "Sous le seuil de 20 élèves (nb)", 
+        "Sous le seuil de 20 élèves (%)", 
+        "Non couvert - Nouvelles formations (nb)", 
+        "Non couvert - Nouvelles formations (%)", 
+        
+        # "UAI Formateur - Couvert + sous le seuil (nb)", 
+        # "UAI Formateur - Couvert + sous le seuil (%)", 
+        # "UAI Gestionnaire - Couvert + sous le seuil (nb)", 
+        # "UAI Gestionnaire - Couvert + sous le seuil (%)", 
+        # "UAI Lieu formation - Couvert + sous le seuil (nb)", 
+        # "UAI Lieu formation - Couvert + sous le seuil (%)", 
+        
+        
+        
+        "Non couvert - code certif inconnu (nb)", 
+        "Non couvert - code certif inconnu (%)", 
         "Non couvert - Autres ministères certificateurs (nb)", 
         "Non couvert - Autres ministères certificateurs (%)", 
-        
         "Non couvert - UAI inconnu (nb)", 
-        "Non couvert - UAI inconnu (%)",
+        "Non couvert - UAI inconnu (%)", 
         "Non couvert - Territoires non couverts (nb)", 
-        "Non couvert - Territoires non couverts (%)")
+        "Non couvert - Territoires non couverts (%)",
+        "Non couvert - sans raison évidente (nb)","Non couvert - sans raison évidente (%)"
+      )
     ) %>% 
     rename(
       "Avant/après bac"=type_formation,
       "Type diplôme"=libelle_type_diplome,
-      "Couverture - Ensemble (nb)"=`Couvert (nb)`,
-      "Couverture - Ensemble (%)"=`Couvert (%)`,
+      "Couverture (nb)"=`Couvert (nb)`,
+      "Couverture (%)"=`Couvert (%)`,
       "Dont sous le seuil de 20 élèves (nb)"=`Sous le seuil de 20 élèves (nb)`,
       "Dont sous le seuil de 20 élèves (%)"=`Sous le seuil de 20 élèves (%)`,
+      "Territoires mal couverts (nb)"="Non couvert - Territoires non couverts (nb)", 
+      "Territoires mal couverts (%)"="Non couvert - Territoires non couverts (%)",
       !!sym(var_effectifs):=Effectifs
-    ) 
-  
+    ) %>% 
+    mutate(
+      `Avant/après bac`=ifelse(`Avant/après bac`=="Avant le bac","Avant","Après"),
+      Filiere=ifelse(Filiere=="Scolaire","Sco.","App.")
+    )
   
   return(list(stats_catalogue_partenaire=stats_catalogue_partenaire,stats_catalogue_partenaire_effectifs_temp=stats_catalogue_partenaire_effectifs_temp,stats_catalogue_partenaire_voeux=stats_catalogue_partenaire_voeux))
 }
