@@ -21,6 +21,9 @@ source("../prepa_data_init.R")
 **Catalogue Onisep V20240515**: [Lien vers le catalogue](https://drive.google.com/drive/folders/1cPL9B2uvz2bn2j2I6bXPPS2jaXAm_g9_)
 
 
+*Dernière mise à jour : `r format(Sys.time(), '%d/%m/%Y')`* 
+
+
 ### Nombre de formations
 
 ```{r}
@@ -62,10 +65,12 @@ sketch <- htmltools::withTags(table(
 
 
 datatable(dt_header,
-          extensions = c('FixedColumns','FixedHeader'),
+          extensions = c('FixedColumns','FixedHeader','Buttons'),
           container = sketch, 
-          options = list(dom = 't',pageLength = 10000,scrollX = TRUE,
-                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE),rownames = F)
+          options = list(dom = 'Bt', pageLength = 10000,scrollX = TRUE,
+                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE,
+                             buttons = c('copy', 'csv', 'excel')
+                         ),rownames = F)
 
 # stats_catalogue_onisep$stats_catalogue_partenaire %>%
 #   mutate_all(replace_na,0) %>% 
@@ -126,10 +131,12 @@ sketch <- htmltools::withTags(table(
 
 
 datatable(dt_header,
-          extensions = c('FixedColumns','FixedHeader'),
+          extensions = c('FixedColumns','FixedHeader','Buttons'),
           container = sketch, 
-          options = list(dom = 't',pageLength = 10000,scrollX = TRUE,
-                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE),rownames = F)
+          options = list(dom = 'Bt', pageLength = 10000,scrollX = TRUE,
+                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE,
+                             buttons = c('copy', 'csv', 'excel')
+                         ),rownames = F)
 
 ```
 

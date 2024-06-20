@@ -6,7 +6,6 @@ output:
       toc: true
       toc_float:
         toc_collapsed: true
-
 ---
 
 ```{r setup, include=FALSE}
@@ -20,6 +19,9 @@ source("../prepa_data_init.R")
 ## Affelnet
 
 **Catalogue Affelnet 2023 V20240112_Extraction_catalogue_SLA_2023**: [Lien vers le catalogue](https://docs.google.com/spreadsheets/d/100miT_jBPQuXo-rA0HnGWX0v2W84Po9m/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true)
+
+*Dernière mise à jour : `r format(Sys.time(), '%d/%m/%Y')`* 
+
 
 ### Nombre de formations
 
@@ -66,13 +68,15 @@ sketch <- htmltools::withTags(table(
 
 
 datatable(dt_header,
-          extensions = c('FixedColumns','FixedHeader'),
+          extensions = c('FixedColumns','FixedHeader','Buttons'),
           container = sketch, 
-          options = list(dom = 't',pageLength = 10000,scrollX = TRUE,
-                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE),rownames = F)
+          options = list(dom = 'Bt', pageLength = 10000,scrollX = TRUE,
+                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE,
+                             buttons = c('copy', 'csv', 'excel')
+                         ),rownames = F)
 ```
 
-
+````{=html}
 <!--
 
 ### Nombre d'élèves en année terminale
@@ -88,6 +92,7 @@ stats_catalogue_affelnet_SLA_2023$stats_catalogue_partenaire_effectifs_temp %>%
 ```
 
 -->
+````
 
 ### Nombre de voeux émis
 
@@ -122,9 +127,10 @@ sketch <- htmltools::withTags(table(
 
 
 datatable(dt_header,
-          extensions = c('FixedColumns','FixedHeader'),
+          extensions = c('FixedColumns','FixedHeader','Buttons'),
           container = sketch, 
-          options = list(dom = 't',pageLength = 10000,scrollX = TRUE,
-                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE),rownames = F)
+          options = list(dom = 'Bt',pageLength = 10000,scrollX = TRUE,
+                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE,
+                             buttons = c('copy', 'csv', 'excel')
+                         ),rownames = F)
 ```
-

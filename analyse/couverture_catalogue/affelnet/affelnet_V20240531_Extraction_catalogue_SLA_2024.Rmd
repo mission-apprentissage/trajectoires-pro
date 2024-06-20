@@ -20,6 +20,9 @@ source("../prepa_data_init.R")
 
 **Catalogue Affelnet 2024 V20240531_Extraction_catalogue_SLA_2024**: [Lien vers le catalogue](https://docs.google.com/spreadsheets/d/1i3URB63eaiQJ9UfteY4_PULom_I5f1wK/edit#gid=397487575)
 
+*Dernière mise à jour : `r format(Sys.time(), '%d/%m/%Y')`* 
+
+
 ### Nombre de formations
 
 
@@ -71,10 +74,12 @@ sketch <- htmltools::withTags(table(
 
 
 datatable(dt_header,
-          extensions = c('FixedColumns','FixedHeader'),
+          extensions = c('FixedColumns','FixedHeader','Buttons'),
           container = sketch, 
-          options = list(dom = 't',pageLength = 10000,scrollX = TRUE,
-                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE),rownames = F)
+          options = list(dom = 'Bt', pageLength = 10000,scrollX = TRUE,
+                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE,
+                             buttons = c('copy', 'csv', 'excel')
+                         ),rownames = F)
 ```
 
 <!--
@@ -124,10 +129,12 @@ sketch <- htmltools::withTags(table(
 
 
 datatable(dt_header,
-          extensions = c('FixedColumns','FixedHeader'),
+          extensions = c('FixedColumns','FixedHeader','Buttons'),
           container = sketch, 
-          options = list(dom = 't',pageLength = 10000,scrollX = TRUE,
-                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE),rownames = F)
+          options = list(dom = 'Bt', pageLength = 10000,scrollX = TRUE,
+                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE,
+                             buttons = c('copy', 'csv', 'excel')
+                         ),rownames = F)
 
 
 ```
