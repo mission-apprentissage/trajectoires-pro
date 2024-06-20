@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.18.0...v1.19.0) (2024-06-20)
+
+
+### Features
+
+* prefix des codes et données du supérieur ([#245](https://github.com/mission-apprentissage/trajectoires-pro/issues/245)) ([fa6edba](https://github.com/mission-apprentissage/trajectoires-pro/commit/fa6edbae97f39c2600008104f416698a7b0d0ff5))
+
 # [1.18.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.17.2...v1.18.0) (2024-05-22)
 
 
