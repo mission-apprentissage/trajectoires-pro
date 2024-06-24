@@ -50,7 +50,9 @@ export default function useGetFormations({
       );
     },
     getNextPageParam: (lastPage, pages) => {
-      return !lastPage.pagination || lastPage.pagination.nombre_de_page === lastPage.pagination.page
+      return lastPage.pagination.nombre_de_page === 0 ||
+        !lastPage.pagination ||
+        lastPage.pagination.nombre_de_page === lastPage.pagination.page
         ? undefined
         : lastPage.pagination.page + 1;
     },
