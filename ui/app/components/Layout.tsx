@@ -45,6 +45,7 @@ export default function Layout({
                 flexDirection: "column",
                 width: "100%",
                 margin: "auto",
+                backgroundColor: "#fff",
               }}
             >
               {children}
