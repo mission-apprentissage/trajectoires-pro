@@ -6,7 +6,7 @@ library(knitr)
 library(kableExtra)
 library(DT)
 
-chemin_racine_data <- "../../../../../0- data" 
+chemin_racine_data <- "../../../../0- data" 
 
 # Données ----
 
@@ -331,7 +331,7 @@ stats_Insersup <- fr_esr_insersup %>%
     Base="InserSup"
   )
 
-source("../functions/expo_mef_catalogue_partenaire.R")
+source("functions/expo_mef_catalogue_partenaire.R")
 
 famillemetiers_2024 <- read_excel(file.path(chemin_racine_data,"affelnet/2024/2024 - Familles de métiers- MANQUE cybersécurité.xlsx"),
                                   sheet = "2024 ok")
