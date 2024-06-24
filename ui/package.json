@@ -15,7 +15,7 @@
     "coverage": "jest --ci --coverage"
   },
   "dependencies": {
-    "@codegouvfr/react-dsfr": "^0.63.2",
+    "@codegouvfr/react-dsfr": "^1.9.20",
     "@emotion/css": "^11.11.2",
     "@emotion/react": "^11.11.1",
     "@emotion/server": "^11.11.0",

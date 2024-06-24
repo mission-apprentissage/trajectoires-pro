@@ -21,7 +21,7 @@ export async function computeIndicateurEntree(
     return [];
   }
 
-  if (tauxPression > thresholdTauxPression) {
+  if (tauxPression >= thresholdTauxPression) {
     return [];
   }
 

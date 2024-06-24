@@ -22,7 +22,7 @@ const COMPUTE_FORMATION_TAG = {
   },
   indicateurEntree: {
     tags: [FORMATION_TAG.ADMISSION_FACILE],
-    compute: async (formation, { thresholdTauxPression } = { thresholdTauxPression: 0.53 }) => {
+    compute: async (formation, { thresholdTauxPression } = { thresholdTauxPression: 1 }) => {
       return computeIndicateurEntree(formation, { thresholdTauxPression });
     },
   },
