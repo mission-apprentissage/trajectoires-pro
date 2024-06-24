@@ -344,12 +344,13 @@
   dependencies:
     react "^18.0"
 
-"@codegouvfr/react-dsfr@^0.63.2":
-  version "0.63.2"
-  resolved "https://registry.yarnpkg.com/@codegouvfr/react-dsfr/-/react-dsfr-0.63.2.tgz#61e9ccfabfc177507bc1028a1d74100627c898fe"
-  integrity sha512-WWZ/9ltzao6wAqs/m0xcorMEygQAo+frU557u2Py/KA5rpndTwrIGlZ6hnssalfmwo+9hJkzdijZvR6DAKl7JA==
+"@codegouvfr/react-dsfr@^1.9.20":
+  version "1.9.20"
+  resolved "https://registry.yarnpkg.com/@codegouvfr/react-dsfr/-/react-dsfr-1.9.20.tgz#6c495d55140cbebf506cae983b601c846303ae61"
+  integrity sha512-Q4W4K0ZZZtC5ogVmrNXGTkbkeordoNGHVl+w1Msz3zLwk5FZNVZt+/lAaeKZ/j+4rMbVzAEB9ggQe4FohSBnag==
   dependencies:
     tsafe "^1.6.3"
+    yargs-parser "^21.1.1"
 
 "@emotion/babel-plugin@^11.11.0":
   version "11.11.0"

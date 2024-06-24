@@ -1,15 +1,18 @@
 "use client";
 import Header from "@codegouvfr/react-dsfr/Header";
+import { Badge } from "@codegouvfr/react-dsfr/Badge";
 import { makeStyles } from "tss-react/dsfr";
 
 export default function CustomHeader({
   title,
   tagline,
   quickAccessItems,
+  withBetaTag = true,
 }: {
   title: string;
   tagline?: string;
   quickAccessItems?: JSX.Element[];
+  withBetaTag?: boolean;
 }) {
   const { classes, cx } = useStyles();
 
@@ -23,7 +26,19 @@ export default function CustomHeader({
           FRANÇAISE
         </>
       }
-      serviceTitle={title}
+      serviceTitle={
+        <>
+          {title}
+          {withBetaTag ? (
+            <>
+              {" "}
+              <Badge as="span" noIcon severity="success">
+                Beta
+              </Badge>
+            </>
+          ) : null}
+        </>
+      }
       serviceTagline={tagline}
       homeLinkProps={{
         href: "/",

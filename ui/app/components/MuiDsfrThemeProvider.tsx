@@ -11,7 +11,7 @@ declare module "@mui/material/styles" {
 }
 
 const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
-  augmentMuiTheme: ({ nonAugmentedMuiTheme, frColorTheme }) => {
+  augmentMuiTheme: ({ nonAugmentedMuiTheme, isDark }) => {
     return {
       ...merge(nonAugmentedMuiTheme, {
         typography: {
@@ -26,7 +26,7 @@ const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
         },
       }),
       custom: {
-        isDarkModeEnabled: frColorTheme.isDark,
+        isDarkModeEnabled: isDark,
       },
     };
   },
