@@ -154,8 +154,28 @@ export default function ResearchFormationsResult({
 
           {!formations?.length ? (
             <InformationCard>
-              <Typograhpy variant="subtitle1">Il n’y pas de formation proche de ton secteur de rechercher </Typograhpy>
-              <Typograhpy>Mais ne te décourage pas il y a plein de solutions pour toi : </Typograhpy>
+              <Typograhpy variant="subtitle1">
+                Nous n’avons pas trouvé de formation proche correspondant à cette recherche
+              </Typograhpy>
+              <Typograhpy>
+                Attention, cet outil est un prototype destiné à être testé en Île-de-France et en Bretagne. En dehors de
+                ces régions, le service proposé sera incomplet et dégradé lors de cette phase d’expérimentation.
+              </Typograhpy>
+              <br />
+              <Typograhpy>De plus, la liste des formations renvoyées peut être incomplète car : </Typograhpy>
+              <ul>
+                <li>certaines formations ne sont pas encore référencées,</li>
+                <li>
+                  toutes les modalités de transport ne sont pas encore intégrées (notamment les transports scolaires).
+                </li>
+              </ul>
+              <br />
+              <Typograhpy>
+                Nous vous invitons donc à compléter votre recherche sur Onisep.fr, la plateforme d’orientation de votre
+                région, les sites des établissements, etc.
+              </Typograhpy>
+              <br />
+              <Typograhpy>Bonne recherche !</Typograhpy>
             </InformationCard>
           ) : (
             <Grid container spacing={4}>
