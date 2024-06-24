@@ -43,6 +43,7 @@ export default function RootLayout({ title, children }: { title: string; childre
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
+          backgroundColor: "#fff",
         }}
       >
         {children}
