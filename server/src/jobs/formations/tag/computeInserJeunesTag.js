@@ -23,6 +23,7 @@ export async function computeInserJeunesTag(
   const formationsStats = await FormationStatsRepository.first({
     millesime: getLastMillesimesFormations(),
     nb_annee_term: { $gte: MIN_ELEVES_THRESHOLD },
+    uai: formation.uai,
     code_certification: formation.voie === "scolaire" ? formation.mef11 : formation.cfd,
   });
 

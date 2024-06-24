@@ -7,7 +7,7 @@ export const FORMATION_TAG: { tag: FormationTag; libelle: string; color: string;
     libelle: "POUR TRAVAILLER RAPIDEMENT",
     color: "#18753c",
     bgColor: "var(--success-975-75)",
-    icon: "fr-icon-shopping-cart-2-fill",
+    icon: "ri-briefcase-4-fill",
   },
   {
     tag: FormationTag.POUR_CONTINUER_DES_ETUDES,
@@ -18,9 +18,9 @@ export const FORMATION_TAG: { tag: FormationTag; libelle: string; color: string;
   },
   {
     tag: FormationTag.ADMISSION_FACILE,
-    libelle: "AVEC UNE ADMISSION FACILE",
+    libelle: "ADMISSION FACILE",
     color: "var(--warning-425-625)",
     bgColor: "var(--warning-975-75)",
-    icon: "fr-icon-cup-line",
+    icon: "ri-door-open-fill",
   },
 ];
