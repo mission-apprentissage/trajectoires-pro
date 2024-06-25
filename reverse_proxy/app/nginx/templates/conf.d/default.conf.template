@@ -6,6 +6,13 @@ map $http_upgrade $connection_upgrade {
     '' close;
 }
 
+map $http_host $robots {
+    default "";
+    "~*recette" "noindex, nofollow, nosnippet, noarchive";
+    "~*sandbox" "noindex, nofollow, nosnippet, noarchive";
+}
+
+
 server {
     listen 443 ssl default_server;
     ssl_reject_handshake on;
