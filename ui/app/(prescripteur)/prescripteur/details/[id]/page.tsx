@@ -65,7 +65,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
           item
           xs={12}
           className={css`
-            top: -${stickyHeaderSize ? stickyHeaderSize.height : 0}px;
+            top: -2rem;
             position: sticky;
           `}
         >
