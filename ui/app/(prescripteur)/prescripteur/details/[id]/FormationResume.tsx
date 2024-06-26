@@ -26,7 +26,7 @@ function FormationResumeBlock({
         {title}
       </Typography>
 
-      <Stack direction={{ sm: "column", md: "column" }} spacing={fr.spacing("2v")}>
+      <Stack direction={{ sm: "column", md: "column" }} spacing={{ xs: fr.spacing("2v"), sm: fr.spacing("2v") }}>
         {children}
       </Stack>
     </>
