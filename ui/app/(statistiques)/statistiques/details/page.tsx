@@ -3,7 +3,7 @@ import "server-only";
 import * as Metabase from "#/app/(statistiques)/statistiques/api/metabase";
 import MetabaseIframe from "#/app/components/MetabaseIframe";
 import Container from "#/app/components/Container";
-import { Typograhpy } from "../../../components/MaterialUINext";
+import { Typography } from "../../../components/MaterialUINext";
 import { MetabaseConfig } from "../../../../types/metabase";
 import Config from "#/app/(statistiques)/statistiques/config";
 
@@ -28,11 +28,11 @@ export default async function Page({
 
   return (
     <>
-      <Typograhpy variant="h3">{"Statistiques du projet Exposition d'InserJeunes"}</Typograhpy>
-      <Typograhpy variant="body1">{""}</Typograhpy>
+      <Typography variant="h3">{"Statistiques du projet Exposition d'InserJeunes"}</Typography>
+      <Typography variant="body1">{""}</Typography>
 
       <Container variant="subContent" maxWidth={false}>
-        <Typograhpy variant="h4">{consumer}</Typograhpy>
+        <Typography variant="h4">{consumer}</Typography>
         <MetabaseIframe url={iframeStatsUrl} />
       </Container>
     </>

@@ -2,6 +2,7 @@ import { isNil } from "lodash-es";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
 import { getLastMillesimesFormations } from "#src/common/stats.js";
 import { FORMATION_TAG } from "#src/common/constants/formationEtablissement.js";
+import { MIN_ELEVES_THRESHOLD } from "#src/common/constants/inserjeunes.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 
 const logger = getLoggerWithContext("import");
@@ -13,8 +14,6 @@ export async function computeInserJeunesTag(
     thresholdEnEtude: null,
   }
 ) {
-  const MIN_ELEVES_THRESHOLD = 20;
-
   if (isNil(thresholdEnEmploi) || isNil(thresholdEnEtude)) {
     logger.error("Seuil en emploi ou en étude non défini");
     return null;

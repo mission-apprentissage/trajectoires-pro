@@ -2,12 +2,12 @@
 import React, { Suspense, useMemo, useState } from "react";
 import { css } from "@emotion/css";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
-import { Typograhpy, Grid } from "../../components/MaterialUINext";
+import { Typography, Grid } from "../../components/MaterialUINext";
 import InformationCard from "#/app/components/InformationCard";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import Button from "#/app/components/Button";
-import FormationCard from "../components/FormationCard";
+import FormationCard from "./FormationCard";
 import ClientSideScrollRestorer from "#/app/components/ClientSideScrollRestorer";
 import dynamic from "next/dynamic";
 import { Formation, FormationTag } from "#/types/formation";
@@ -20,7 +20,7 @@ const FormationsMap = dynamic(() => import("#/app/(prescripteur)/components/Form
   ssr: false,
 });
 
-function FormationAllTagsWithParams({ selected }: { selected?: FormationTag | null }) {
+function FormationsFilterTag({ selected }: { selected?: FormationTag | null }) {
   const { params, updateParams } = useFormationsSearch();
 
   return (
@@ -149,20 +149,20 @@ export default function ResearchFormationsResult({
           `}
         >
           <Stack direction="row" useFlexGap flexWrap="wrap" spacing={2} style={{ marginBottom: fr.spacing("5v") }}>
-            <FormationAllTagsWithParams selected={tag} />
+            <FormationsFilterTag selected={tag} />
           </Stack>
 
           {!formations?.length ? (
             <InformationCard>
-              <Typograhpy variant="subtitle1">
+              <Typography variant="subtitle1">
                 Nous n’avons pas trouvé de formation proche correspondant à cette recherche
-              </Typograhpy>
-              <Typograhpy>
+              </Typography>
+              <Typography>
                 Attention, cet outil est un prototype destiné à être testé en Île-de-France et en Bretagne. En dehors de
                 ces régions, le service proposé sera incomplet et dégradé lors de cette phase d’expérimentation.
-              </Typograhpy>
+              </Typography>
               <br />
-              <Typograhpy>De plus, la liste des formations renvoyées peut être incomplète car : </Typograhpy>
+              <Typography>De plus, la liste des formations renvoyées peut être incomplète car : </Typography>
               <ul>
                 <li>certaines formations ne sont pas encore référencées,</li>
                 <li>
@@ -170,12 +170,12 @@ export default function ResearchFormationsResult({
                 </li>
               </ul>
               <br />
-              <Typograhpy>
+              <Typography>
                 Nous vous invitons donc à compléter votre recherche sur Onisep.fr, la plateforme d’orientation de votre
                 région, les sites des établissements, etc.
-              </Typograhpy>
+              </Typography>
               <br />
-              <Typograhpy>Bonne recherche !</Typograhpy>
+              <Typography>Bonne recherche !</Typography>
             </InformationCard>
           ) : (
             <Grid container spacing={4}>

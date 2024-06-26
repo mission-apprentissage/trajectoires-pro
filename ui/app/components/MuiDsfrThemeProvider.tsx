@@ -16,12 +16,18 @@ const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
       ...merge(nonAugmentedMuiTheme, {
         typography: {
           subtitle1: {
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: 700,
           },
           subtitle2: {
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: 700,
+          },
+          subtitle3: {
+            fontSize: 18,
+          },
+          body1: {
+            fontSize: 18,
           },
         },
       }),

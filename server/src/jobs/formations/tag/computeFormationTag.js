@@ -4,7 +4,12 @@ import { updateOne } from "#src/common/db/mongodb.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { formationEtablissement } from "#src/common/db/collections/collections.js";
 import FormationEtablissementRepository from "#src/common/repositories/formationEtablissement.js";
-import { FORMATION_TAG } from "#src/common/constants/formationEtablissement.js";
+import {
+  FORMATION_TAG,
+  THRESHOLD_TAUX_PRESSION,
+  THRESHOLD_EN_EMPLOI,
+  THRESHOLD_EN_ETUDE,
+} from "#src/common/constants/formationEtablissement.js";
 import { computeInserJeunesTag } from "./computeInserJeunesTag.js";
 import { computeIndicateurEntree } from "./computeIndicateurEntree.js";
 
@@ -15,14 +20,17 @@ const COMPUTE_FORMATION_TAG = {
     tags: [FORMATION_TAG.POUR_TRAVAILLER_RAPIDEMENT, FORMATION_TAG.POUR_CONTINUER_DES_ETUDES],
     compute: async (
       formation,
-      { thresholdEnEmploi, thresholdEnEtude } = { thresholdEnEmploi: 31, thresholdEnEtude: 64 }
+      { thresholdEnEmploi, thresholdEnEtude } = {
+        thresholdEnEmploi: THRESHOLD_EN_EMPLOI[0],
+        thresholdEnEtude: THRESHOLD_EN_ETUDE[0],
+      }
     ) => {
       return computeInserJeunesTag(formation, { thresholdEnEmploi, thresholdEnEtude });
     },
   },
   indicateurEntree: {
     tags: [FORMATION_TAG.ADMISSION_FACILE],
-    compute: async (formation, { thresholdTauxPression } = { thresholdTauxPression: 1 }) => {
+    compute: async (formation, { thresholdTauxPression } = { thresholdTauxPression: THRESHOLD_TAUX_PRESSION[0] }) => {
       return computeIndicateurEntree(formation, { thresholdTauxPression });
     },
   },

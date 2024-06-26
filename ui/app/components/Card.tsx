@@ -2,9 +2,9 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import styled from "@emotion/styled";
 import Link from "next/link";
-import { Box, Container, Typograhpy } from "./MaterialUINext";
+import { Box, Container, Typography } from "./MaterialUINext";
 import { isNil } from "lodash-es";
-import { CardActionArea, CardActionAreaProps, Grid, Stack, Typography } from "@mui/material";
+import { CardActionArea, CardActionAreaProps } from "@mui/material";
 
 export interface CardProps {
   title?: string | JSX.Element | null;
@@ -25,7 +25,7 @@ const StyledLink = styled(Link)`
 function BaseCard({ title, children, className }: CardProps) {
   return (
     <Box className={className}>
-      {title && (typeof title === "string" ? <Typograhpy variant="h4">{title}</Typograhpy> : title)}
+      {title && (typeof title === "string" ? <Typography variant="h4">{title}</Typography> : title)}
       <Container style={{ padding: fr.spacing("3v") }}>{children}</Container>
     </Box>
   );

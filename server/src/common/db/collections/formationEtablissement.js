@@ -29,6 +29,12 @@ export function schema() {
         },
         {}
       ),
+      indicateurPoursuite: object({
+        millesime: string(),
+        taux_en_emploi_6_mois: number(),
+        taux_en_formation: number(),
+        taux_autres_6_mois: number(),
+      }),
       _meta: metaSchema([metaImportSchema()]),
     },
     {

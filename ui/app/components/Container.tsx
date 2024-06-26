@@ -27,6 +27,18 @@ export default styled(Container)<ContainerProps>`
   padding-bottom: ${({ nopadding }) => (nopadding ? "0" : fr.spacing("3w"))};
   padding-left: ${({ nopadding }) => (nopadding ? "0" : fr.spacing("5w"))};
   padding-right: ${({ nopadding }) => (nopadding ? "0" : fr.spacing("5w"))};
+
+  ${({ theme, nopadding }) => {
+    if (!theme?.breakpoints) {
+      return ``;
+    }
+
+    return `${theme.breakpoints.down("md")} {
+      padding-left: ${nopadding ? "0" : fr.spacing("1w")};
+      padding-right: ${nopadding ? "0" : fr.spacing("1w")};
+    }`;
+  }}
+
   ${({ variant }) => {
     switch (variant) {
       case "content":
