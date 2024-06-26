@@ -19,6 +19,7 @@ export default function TimeField({
         defaultValue={value}
         onInputChange={(e, v) => onChange(v)}
         onChange={(e, v) => onChange(v)}
+        getOptionLabel={(option) => option.toString()}
         filterOptions={(x) => x}
         options={options}
         freeSolo
