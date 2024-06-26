@@ -9,7 +9,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { chunk, flatten } from "lodash-es";
 import { AutoSizer } from "react-virtualized";
-import { Typograhpy, Grid, Box } from "../../components/MaterialUINext";
+import { Typography, Grid, Box } from "../../components/MaterialUINext";
 import { BCNResearch } from "#/types/bcn";
 import { CertificationStat } from "#/types/certification";
 import { findRegionByCode } from "#/common/regions";
@@ -83,9 +83,9 @@ function Metrics({ metrics, millesimes }: { metrics: CertificationStat; millesim
         return (
           <Grid key={millesime} item xs={4}>
             <Grid item xs={12}>
-              <Typograhpy variant="h3"> Millesime : {currentMetric.millesime}</Typograhpy>
+              <Typography variant="h3"> Millesime : {currentMetric.millesime}</Typography>
               {currentMetric.donnee_source && currentMetric.donnee_source.type !== "self" ? (
-                <Typograhpy variant="h3"> Source : {currentMetric.donnee_source.code_certification}</Typograhpy>
+                <Typography variant="h3"> Source : {currentMetric.donnee_source.code_certification}</Typography>
               ) : (
                 <></>
               )}
@@ -96,10 +96,10 @@ function Metrics({ metrics, millesimes }: { metrics: CertificationStat; millesim
                   <Grid key={index} item xs={12}>
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
-                        <Typograhpy variant="body1">{k}</Typograhpy>
+                        <Typography variant="body1">{k}</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Typograhpy variant="body1">{currentMetric[k]}</Typograhpy>
+                        <Typography variant="body1">{currentMetric[k]}</Typography>
                       </Grid>
                     </Grid>
                   </Grid>

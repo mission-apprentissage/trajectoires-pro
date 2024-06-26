@@ -52,18 +52,18 @@ export default function FormationsMap({
             {/* <Popup>{etablissement.libelle}</Popup>
             <Tooltip>
               <div style={{ width: "300px" }}>
-                <Typograhpy sx={{ whiteSpace: "pre-line" }} variant="subtitle1">
+                <Typography sx={{ whiteSpace: "pre-line" }} variant="subtitle1">
                   {etablissement.libelle}
-                </Typograhpy>
+                </Typography>
                 {etablissement.accessTime && (
-                  <Typograhpy variant="body1">
+                  <Typography variant="body1">
                     A moins de {Math.round(etablissement.accessTime / 60)} minutes
-                  </Typograhpy>
+                  </Typography>
                 )}
-                <Typograhpy variant="body1">{etablissement.address.street}</Typograhpy>
-                <Typograhpy variant="body1">
+                <Typography variant="body1">{etablissement.address.street}</Typography>
+                <Typography variant="body1">
                   {etablissement.address.postCode} {etablissement.address.city}
-                </Typograhpy>
+                </Typography>
               </div>
             </Tooltip> */}
           </Marker>
@@ -72,7 +72,7 @@ export default function FormationsMap({
 
       <Marker icon={LeafletHomeIcon} zIndexOffset={10000} position={[latitude, longitude]}>
         {/* <Tooltip>
-          <Typograhpy variant="subtitle1">Ma position</Typograhpy>
+          <Typography variant="subtitle1">Ma position</Typography>
         </Tooltip> */}
       </Marker>
     </Map>

@@ -1,45 +1,41 @@
 "use client";
 import React, { Suspense, useMemo } from "react";
+import { css } from "@emotion/css";
 import { useQuery } from "@tanstack/react-query";
-import { Typograhpy, Grid, Box } from "#/app/components/MaterialUINext";
+import { Typography, Grid } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
 import { getDistance } from "geolib";
 import { formation } from "#/app/api/exposition/formation/query";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import { useSearchParams } from "next/navigation";
-import { Etablissement, Formation, FormationDetail } from "#/types/formation";
-import { TagApprentissage } from "../../../components/FormationCard";
+import useResizeObserver from "@react-hook/resize-observer";
+import { Formation } from "#/types/formation";
 import Divider from "#/app/components/Divider";
 import Card from "#/app/components/Card";
-import EtablissementCard from "../../../components/EtablissementCard";
-import SearchHeader from "#/app/(prescripteur)/components/SearchHeader";
+import PortesOuvertesHeader from "./PortesOuvertesHeader";
+import WidgetInserJeunes from "#/app/(prescripteur)/components/WidgetInserJeunes";
+import FormationResume from "./FormationResume";
 
-function WidgetInserJeunes({ etablissement, formation }: { etablissement: Etablissement; formation: FormationDetail }) {
-  const WIDGET_HASH = process.env.NEXT_PUBLIC_EXPOSITION_WIDGET_HASH;
-  const API_URL = process.env.NEXT_PUBLIC_EXPOSITION_API_BASE_URL || "";
-  const HOST = API_URL.split("/").slice(0, 3).join("/");
+const useSize = (target: React.RefObject<HTMLElement>) => {
+  const [size, setSize] = React.useState<DOMRect>();
 
-  const code = formation.voie === "apprentissage" ? formation.cfd : formation.mef11;
+  React.useLayoutEffect(() => {
+    target.current && setSize(target.current.getBoundingClientRect());
+  }, [target]);
 
-  const widgetCode = `<iframe onLoad="!function(i){window.addEventListener('message',function(t){'${HOST}'!==t.origin||isNaN(t.data)||(i.style.height=t.data+'px')},!1)}(this);" style="width: 100%; height: 0;" 
-  src="${API_URL}/inserjeunes/formations/${etablissement.uai}-${code}/widget/${WIDGET_HASH}?noTitle=true&responsiveWidth=28em"
-   scrolling="no" frameBorder="0"></iframe>`;
+  // Where the magic happens
+  useResizeObserver(target, (entry) => setSize(entry.contentRect));
+  return size;
+};
 
-  return (
-    <>
-      <Typograhpy align="center" style={{ color: "var(--blue-france-sun-113-625)" }} variant="h6">
-        Les élèves 6 mois après la formation
-      </Typograhpy>
-      <div dangerouslySetInnerHTML={{ __html: widgetCode }}></div>
-    </>
-  );
-}
-
-function FormationResult({ formation: { formation, etablissement, bcn } }: { formation: Formation }) {
+function FormationDetails({ formation: { formation, etablissement, bcn } }: { formation: Formation }) {
   const searchParams = useSearchParams();
   const longitude = searchParams.get("longitude");
   const latitude = searchParams.get("latitude");
+
+  const refHeader = React.useRef<HTMLElement>(null);
+  const stickyHeaderSize = useSize(refHeader);
 
   const distance = useMemo(() => {
     if (!latitude || !longitude) {
@@ -62,23 +58,51 @@ function FormationResult({ formation: { formation, etablissement, bcn } }: { for
   return (
     <Container style={{ marginTop: fr.spacing("5v") }} maxWidth={"xl"}>
       <Grid container spacing={2}>
-        <Grid item md={7}>
-          <Typograhpy variant="h4" style={{ marginBottom: fr.spacing("3v") }}>
-            {bcn.libelle_long}
-          </Typograhpy>
-          {distance !== null && (
-            <Grid container>
-              <Grid item xs={6}>
-                <Typograhpy
-                  variant="subtitle2"
-                  style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
-                >
-                  <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
-                  {(distance / 1000).toFixed(2)} km
-                </Typograhpy>
-              </Grid>
-              <Grid item xs={6}>
+        <Grid item xs={12}>
+          <PortesOuvertesHeader etablissement={etablissement} />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          className={css`
+            top: -${stickyHeaderSize ? stickyHeaderSize.height : 0}px;
+            position: sticky;
+          `}
+        >
+          <Container maxWidth={false}>
+            <Typography
+              className={css`
+                top: 0;
+                position: sticky;
+                background-color: #fff;
+                z-index: 10;
+              `}
+              ref={refHeader}
+              variant="h1"
+              style={{ marginBottom: fr.spacing("3v") }}
+            >
+              {bcn.libelle_long}
+            </Typography>
+            <Typography variant="h5" style={{ marginBottom: fr.spacing("3v") }}>
+              <i className={fr.cx("fr-icon-map-pin-2-line")} style={{ marginRight: fr.spacing("1w") }} />
+              {etablissement.libelle}
+              {etablissement?.onisep?.id ? (
                 <a
+                  style={{ marginLeft: fr.spacing("3v") }}
+                  href={`https://www.onisep.fr/http/redirection/etablissement/slug/${etablissement.onisep.id}`}
+                  target="_blank"
+                ></a>
+              ) : null}
+            </Typography>
+            {distance !== null && (
+              <Typography
+                variant="subtitle2"
+                style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
+              >
+                <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
+                {(distance / 1000).toFixed(2)} km
+                <a
+                  style={{ marginLeft: fr.spacing("3v") }}
                   href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
                     latitude + "," + longitude
                   )}&destination=${encodeURIComponent(address)}`}
@@ -86,25 +110,38 @@ function FormationResult({ formation: { formation, etablissement, bcn } }: { for
                 >
                   Voir le trajet
                 </a>
-              </Grid>
-              {/* TODO: AJOUTER TEMPS DE TRAJET */}
-            </Grid>
-          )}
-          <Box>
-            <TagApprentissage formationDetail={formation} />
-          </Box>
+              </Typography>
+            )}
+          </Container>
         </Grid>
-        <Grid item md={5}>
-          <EtablissementCard etablissement={etablissement} />
+
+        <Grid
+          item
+          md={12}
+          className={css`
+            top: ${stickyHeaderSize ? stickyHeaderSize.height : 0}px;
+            position: sticky;
+            background-color: #fff;
+            padding-bottom: 5px;
+          `}
+        >
+          <Divider variant="middle" style={{ marginTop: 0, marginBottom: 0 }} />
+          <FormationResume etablissement={etablissement} formation={formation} />
+          <Divider
+            variant="middle"
+            style={{
+              marginBottom: 0,
+            }}
+          />
         </Grid>
-      </Grid>
-      <Divider variant="middle" />
-      <Grid container spacing={3}>
-        <Grid item md={7}>
+        <Grid item md={12}>
           <Card title="À quoi ressemble une journée ?"></Card>
         </Grid>
-        <Grid item md={5}>
+        <Grid item md={12}>
           <Card title="À quoi ressemble la vie en sortie de cette formation ?">
+            <Typography align="center" style={{ color: "var(--blue-france-sun-113-625)" }} variant="h6">
+              Les élèves 6 mois après la formation
+            </Typography>
             <WidgetInserJeunes etablissement={etablissement} formation={formation} />
           </Card>
         </Grid>
@@ -132,13 +169,12 @@ function ResearchFormationResult({ id }: { id: string }) {
     return <>Formation not found</>;
   }
 
-  return <FormationResult formation={data} />;
+  return <FormationDetails formation={data} />;
 }
 
 export default function Page({ params }: { params: { id: string } }) {
   return (
     <>
-      <SearchHeader />
       <Suspense>
         <ResearchFormationResult id={params.id} />
       </Suspense>

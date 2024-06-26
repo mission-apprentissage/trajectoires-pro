@@ -12,7 +12,25 @@ export const formationTagSchema: yup.StringSchema<FormationTag> = yup
   .oneOf(Object.values(FormationTag))
   .required();
 
-export type FormationDetail = { tags: FormationTag[] } & Record<string, any>;
+type IndicateurEntree = {
+  rentreeScolaire: string;
+  capacite?: number;
+  premiersVoeux?: number;
+  tauxPression?: number;
+};
+
+type IndicateurPoursuite = {
+  millesime: string;
+  taux_en_emploi_6_mois?: number;
+  taux_en_formation?: number;
+  taux_autres_6_mois?: number;
+};
+
+export type FormationDetail = {
+  tags: FormationTag[];
+  indicateurEntree?: IndicateurEntree;
+  indicateurPoursuite?: IndicateurPoursuite;
+} & Record<string, any>;
 
 type JourneesPortesOuverteDate = {
   from: Date;
@@ -42,6 +60,22 @@ export const formationSchema: yup.ObjectSchema<Formation> = yup.object({
     .concat(
       yup.object().shape({
         tags: yup.array(yup.string().oneOf(Object.values(FormationTag)).required()).required(),
+        indicateurEntree: yup
+          .object({
+            rentreeScolaire: yup.string().required(),
+            capacite: yup.number(),
+            premiersVoeux: yup.number(),
+            tauxPression: yup.number(),
+          })
+          .default(undefined),
+        indicateurPoursuite: yup
+          .object({
+            millesime: yup.string().required(),
+            taux_en_emploi_6_mois: yup.number(),
+            taux_en_formation: yup.number(),
+            taux_autres_6_mois: yup.number(),
+          })
+          .default(undefined),
       })
     )
     .required(),

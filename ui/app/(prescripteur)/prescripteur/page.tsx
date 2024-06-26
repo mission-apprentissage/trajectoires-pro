@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import FormationsSearchProvider, { useFormationsSearch } from "../context/FormationsSearchContext";
 import SearchHeader from "../components/SearchHeader";
 
-function SearchResult() {
+function ResearchFormationsParameter() {
   const { params } = useFormationsSearch();
   const { address, distance = 10, time = 15, tag } = params ?? {};
 
@@ -53,7 +53,7 @@ export default function Page() {
       <SearchHeader />
       <Suspense>
         <FormationsSearchProvider>
-          <SearchResult />
+          <ResearchFormationsParameter />
         </FormationsSearchProvider>
       </Suspense>
     </>

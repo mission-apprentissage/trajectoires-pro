@@ -1,5 +1,5 @@
 import { oleoduc, writeData, transformData, compose, filterData } from "oleoduc";
-import { isNil, pick } from "lodash-es";
+import { isNil } from "lodash-es";
 import { updateOne } from "#src/common/db/mongodb.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
@@ -81,7 +81,7 @@ export async function importIndicateurEntree(options = {}) {
         try {
           const res = await updateOne(
             formationEtablissement(),
-            pick(formation, ["uai", "cfd", "voie", "codeDispositif"]),
+            { _id: formation._id },
             {
               $set: {
                 indicateurEntree: omitNil(indicateurEntree),

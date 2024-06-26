@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Typograhpy } from "#/app/components/MaterialUINext";
+import { Typography } from "#/app/components/MaterialUINext";
 import { fr } from "@codegouvfr/react-dsfr";
 import { FormationTag } from "#/types/formation";
 import Tag from "#/app/components/Tag";
@@ -17,7 +17,7 @@ export default function FormationAllTags({
     return (
       <Tag
         key={"tag_" + tagElt.tag}
-        variant="white"
+        variant="button-white"
         style={{ ...(selected === tagElt.tag ? { backgroundColor: "var(--background-default-grey-active)" } : {}) }}
         nativeButtonProps={{
           onClick: function () {
@@ -29,9 +29,9 @@ export default function FormationAllTags({
           style={{ color: "white", background: tagElt.color, marginRight: fr.spacing("2v") }}
           className={"circle-icon fr-icon--sm " + fr.cx(tagElt.icon)}
         ></i>
-        <Typograhpy color={tagElt.color} variant="subtitle1">
+        <Typography color={tagElt.color} variant="subtitle1">
           {tagElt.libelle}
-        </Typograhpy>
+        </Typography>
       </Tag>
     );
   });

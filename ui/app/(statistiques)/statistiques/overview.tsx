@@ -1,4 +1,4 @@
-import { Typograhpy, Stack } from "#/app/components/MaterialUINext";
+import { Typography, Stack } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
 import Item from "#/app/components/Item";
 import { fr } from "@codegouvfr/react-dsfr";
@@ -9,9 +9,9 @@ function BlockCouverture({ couvertures, nom, type }: { couvertures: any; nom: st
 
   return (
     <>
-      <Typograhpy variant="body2" sx={{ marginBottom: fr.spacing("2v"), fontWeight: "bold" }}>
+      <Typography variant="body2" sx={{ marginBottom: fr.spacing("2v"), fontWeight: "bold" }}>
         {nom}
-      </Typograhpy>
+      </Typography>
 
       <Stack
         sx={{ backgroundColor: "var(--background-alt-grey-active)", padding: "1px", marginBottom: fr.spacing("4v") }}
@@ -19,28 +19,28 @@ function BlockCouverture({ couvertures, nom, type }: { couvertures: any; nom: st
         spacing={"1px"}
       >
         <Item>
-          <Typograhpy variant="h2">{couvertures?.couverte[type].toLocaleString("fr")}</Typograhpy>
-          <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
+          <Typography variant="h2">{couvertures?.couverte[type].toLocaleString("fr")}</Typography>
+          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
             {labelFormation} couvertes
-          </Typograhpy>
+          </Typography>
         </Item>
         <Item>
-          <Typograhpy variant="h2">{couvertures?.couverteVoiePro[type].toLocaleString("fr")}</Typograhpy>
-          <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
+          <Typography variant="h2">{couvertures?.couverteVoiePro[type].toLocaleString("fr")}</Typography>
+          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
             {labelFormation} en voie scolaire
-          </Typograhpy>
+          </Typography>
         </Item>
         <Item>
-          <Typograhpy variant="h2">{couvertures?.couverteApprentissage[type].toLocaleString("fr")}</Typograhpy>
-          <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
+          <Typography variant="h2">{couvertures?.couverteApprentissage[type].toLocaleString("fr")}</Typography>
+          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
             {labelFormation} en apprentissage
-          </Typograhpy>
+          </Typography>
         </Item>
         <Item>
-          <Typograhpy variant="h2">{Math.round(couvertures?.couverteBetween.count[type] * 100)}%</Typograhpy>
-          <Typograhpy variant="body1" sx={{ fontWeight: "bold", textAlign: "center" }}>
+          <Typography variant="h2">{Math.round(couvertures?.couverteBetween.count[type] * 100)}%</Typography>
+          <Typography variant="body1" sx={{ fontWeight: "bold", textAlign: "center" }}>
             Augmentation de la couverture depuis {couvertures?.couverteBetween.date}
-          </Typograhpy>
+          </Typography>
         </Item>
       </Stack>
     </>
@@ -57,9 +57,9 @@ export default async function Overview() {
         maxWidth={false}
         sx={{ marginBottom: fr.spacing("5v"), marginTop: fr.spacing("5v") }}
       >
-        <Typograhpy variant="h6" sx={{ marginBottom: fr.spacing("2v") }}>
+        <Typography variant="h6" sx={{ marginBottom: fr.spacing("2v") }}>
           Nos données
-        </Typograhpy>
+        </Typography>
 
         <BlockCouverture couvertures={couvertures} nom={"Au niveau national"} type={"national"} />
         <BlockCouverture couvertures={couvertures} nom={"Au niveau régional"} type={"regional"} />

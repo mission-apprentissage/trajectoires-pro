@@ -28,6 +28,7 @@ import * as UserJob from "./jobs/user/user.js";
 import { importBCNSise } from "./jobs/bcn/importBCNSise.js";
 import { importIndicateurEntree } from "./jobs/formations/importIndicateurEntree.js";
 import { computeFormationTag } from "./jobs/formations/tag/computeFormationTag.js";
+import { importIndicateurPoursuite } from "./jobs/formations/importIndicateurPoursuite.js";
 
 async function importBCNCommand() {
   const statsBCN = await importBCN();
@@ -121,6 +122,7 @@ cli
       return {
         importFormationEtablissement: await importFormationEtablissement(),
         importIndicateurEntree: await importIndicateurEntree(),
+        importIndicateurPoursuite: await importIndicateurPoursuite(),
         computeFormationTag: await computeFormationTag(),
       };
     });

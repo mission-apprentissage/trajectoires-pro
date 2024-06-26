@@ -4,15 +4,21 @@ import Tag from "#/app/components/Tag";
 import { fr } from "@codegouvfr/react-dsfr";
 import { Formation, FormationDetail } from "#/types/formation";
 import "moment/locale/fr";
-import { TagPortesOuvertes } from "./PortesOuvertes";
+import { TagPortesOuvertes } from "../components/PortesOuvertes";
 import Card from "#/app/components/Card";
-import FormationTags from "./FormationTags";
+import FormationTags from "../components/FormationTags";
 import { useFormationsSearch } from "../context/FormationsSearchContext";
 
 export function TagApprentissage({ formationDetail }: { formationDetail: FormationDetail }) {
   return (
     formationDetail.voie === "apprentissage" && (
-      <Tag square variant="yellow">
+      <Tag
+        square
+        variant="yellow"
+        style={{
+          fontWeight: 700,
+        }}
+      >
         {formationDetail.voie.toUpperCase()}
       </Tag>
     )

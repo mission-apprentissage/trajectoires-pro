@@ -1,4 +1,4 @@
-import { Typograhpy, Stack } from "#/app/components/MaterialUINext";
+import { Typography, Stack } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
 import Item from "#/app/components/Item";
 import { fr } from "@codegouvfr/react-dsfr";
@@ -23,9 +23,9 @@ export default async function Plateformes() {
   return (
     <>
       <Container variant="subContent" maxWidth={false}>
-        <Typograhpy variant="h6" sx={{ marginBottom: fr.spacing("2v") }}>
+        <Typography variant="h6" sx={{ marginBottom: fr.spacing("2v") }}>
           Nos partenaires
-        </Typograhpy>
+        </Typography>
 
         <Stack
           sx={{ backgroundColor: "var(--background-alt-grey-active)", padding: "1px" }}
@@ -33,22 +33,22 @@ export default async function Plateformes() {
           spacing={"1px"}
         >
           <Item>
-            <Typograhpy variant="h2">{plateformes?.production.length}</Typograhpy>
-            <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
+            <Typography variant="h2">{plateformes?.production.length}</Typography>
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               Plateformes utilisatrices
-            </Typograhpy>
+            </Typography>
           </Item>
           <Item>
-            <Typograhpy variant="h2">{plateformes?.waiting.length}</Typograhpy>
-            <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
+            <Typography variant="h2">{plateformes?.waiting.length}</Typography>
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               Plateformes candidates
-            </Typograhpy>
+            </Typography>
           </Item>
           <Item>
-            <Typograhpy variant="h2">{stats.views.toLocaleString("fr")}</Typograhpy>
-            <Typograhpy variant="body1" sx={{ fontWeight: "bold" }}>
+            <Typography variant="h2">{stats.views.toLocaleString("fr")}</Typography>
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               Appels API
-            </Typograhpy>
+            </Typography>
           </Item>
           <Item variant="empty"></Item>
         </Stack>

@@ -1,5 +1,5 @@
 import "server-only";
-import { Typograhpy } from "#/app/components/MaterialUINext";
+import { Typography } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
 import * as Metabase from "#/app/(statistiques)/statistiques/api/metabase";
 import MetabaseIframe from "#/app/components/MetabaseIframe";
@@ -17,17 +17,17 @@ export default async function Page() {
 
   return (
     <>
-      <Typograhpy variant="h2">{"Vue d'ensemble"}</Typograhpy>
-      <Typograhpy variant="body1">{""}</Typograhpy>
+      <Typography variant="h2">{"Vue d'ensemble"}</Typography>
+      <Typography variant="body1">{""}</Typography>
 
       <Overview />
 
       <Plateformes />
 
       <Container variant="subContent" maxWidth={false} sx={{ marginTop: fr.spacing("5v") }}>
-        <Typograhpy variant="h6" sx={{ marginBottom: fr.spacing("2v") }}>
+        <Typography variant="h6" sx={{ marginBottom: fr.spacing("2v") }}>
           {"Vues par région de formations"}
-        </Typograhpy>
+        </Typography>
         <MetabaseIframe title="Vue metabase des appels par région" height={"400"} url={iframeStatsRegion} />
       </Container>
     </>
