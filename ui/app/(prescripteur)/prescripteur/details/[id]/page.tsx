@@ -16,6 +16,7 @@ import Card from "#/app/components/Card";
 import PortesOuvertesHeader from "./PortesOuvertesHeader";
 import WidgetInserJeunes from "#/app/(prescripteur)/components/WidgetInserJeunes";
 import FormationResume from "./FormationResume";
+import WidgetSiriusEtablissement from "#/app/(prescripteur)/components/WidgetSiriusEtablissement";
 
 const useSize = (target: React.RefObject<HTMLElement>) => {
   const [size, setSize] = React.useState<DOMRect>();
@@ -135,7 +136,9 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
           />
         </Grid>
         <Grid item md={12}>
-          <Card title="À quoi ressemble une journée ?"></Card>
+          <Card title="À quoi ressemble une journée ?">
+            <WidgetSiriusEtablissement etablissement={etablissement} />
+          </Card>
         </Grid>
         <Grid item md={12}>
           <Card title="À quoi ressemble la vie en sortie de cette formation ?">
