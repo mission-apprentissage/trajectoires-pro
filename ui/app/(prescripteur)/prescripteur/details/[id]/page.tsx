@@ -1,6 +1,7 @@
 "use client";
 import React, { Suspense, useMemo } from "react";
 import { css } from "@emotion/css";
+import { useTheme } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Typography, Grid } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
@@ -35,6 +36,8 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
   const longitude = searchParams.get("longitude");
   const latitude = searchParams.get("latitude");
 
+  const theme = useTheme();
+
   const refHeader = React.useRef<HTMLElement>(null);
   const stickyHeaderSize = useSize(refHeader);
 
@@ -58,7 +61,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
 
   return (
     <Container style={{ marginTop: fr.spacing("5v") }} maxWidth={"xl"}>
-      <Grid container spacing={2}>
+      <Grid container>
         <Grid item xs={12}>
           <PortesOuvertesHeader etablissement={etablissement} />
         </Grid>
@@ -66,64 +69,58 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
           item
           xs={12}
           className={css`
-            top: -2rem;
+            top: 0;
             position: sticky;
+            background-color: #fff;
+            z-index: 100;
           `}
+          style={{ marginTop: fr.spacing("10v"), paddingLeft: fr.spacing("5v") }}
         >
-          <Container maxWidth={false}>
+          <Typography ref={refHeader} variant="h1" style={{ marginBottom: fr.spacing("3v") }}>
+            {bcn.libelle_long}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} style={{ paddingLeft: fr.spacing("5v") }}>
+          <Typography variant="h5" style={{ marginBottom: fr.spacing("3v") }}>
+            <i className={fr.cx("fr-icon-map-pin-2-line")} style={{ marginRight: fr.spacing("1w") }} />
+            {etablissement.libelle}
+            {etablissement?.onisep?.id ? (
+              <a
+                style={{ marginLeft: fr.spacing("3v") }}
+                href={`https://www.onisep.fr/http/redirection/etablissement/slug/${etablissement.onisep.id}`}
+                target="_blank"
+              ></a>
+            ) : null}
+          </Typography>
+          {distance !== null && (
             <Typography
-              className={css`
-                top: 0;
-                position: sticky;
-                background-color: #fff;
-                z-index: 10;
-              `}
-              ref={refHeader}
-              variant="h1"
-              style={{ marginBottom: fr.spacing("3v") }}
+              variant="subtitle2"
+              style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
             >
-              {bcn.libelle_long}
-            </Typography>
-            <Typography variant="h5" style={{ marginBottom: fr.spacing("3v") }}>
-              <i className={fr.cx("fr-icon-map-pin-2-line")} style={{ marginRight: fr.spacing("1w") }} />
-              {etablissement.libelle}
-              {etablissement?.onisep?.id ? (
-                <a
-                  style={{ marginLeft: fr.spacing("3v") }}
-                  href={`https://www.onisep.fr/http/redirection/etablissement/slug/${etablissement.onisep.id}`}
-                  target="_blank"
-                ></a>
-              ) : null}
-            </Typography>
-            {distance !== null && (
-              <Typography
-                variant="subtitle2"
-                style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
+              <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
+              {(distance / 1000).toFixed(2)} km
+              <a
+                style={{ marginLeft: fr.spacing("3v") }}
+                href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
+                  latitude + "," + longitude
+                )}&destination=${encodeURIComponent(address)}`}
+                target="_blank"
               >
-                <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
-                {(distance / 1000).toFixed(2)} km
-                <a
-                  style={{ marginLeft: fr.spacing("3v") }}
-                  href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-                    latitude + "," + longitude
-                  )}&destination=${encodeURIComponent(address)}`}
-                  target="_blank"
-                >
-                  Voir le trajet
-                </a>
-              </Typography>
-            )}
-          </Container>
+                Voir le trajet
+              </a>
+            </Typography>
+          )}
         </Grid>
 
         <Grid
           item
           md={12}
           className={css`
-            top: ${stickyHeaderSize ? stickyHeaderSize.height : 0}px;
-            position: sticky;
+            ${theme.breakpoints.up("md")} {
+              position: sticky;
+              top: ${stickyHeaderSize ? `calc(${stickyHeaderSize.height}px + ${fr.spacing("3v")})` : 0};
+            }
             background-color: #fff;
-            padding-bottom: 5px;
           `}
         >
           <Divider variant="middle" style={{ marginTop: 0, marginBottom: 0 }} />
@@ -135,12 +132,12 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
             }}
           />
         </Grid>
-        <Grid item md={12}>
+        <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
           <Card title="À quoi ressemble une journée ?">
             <WidgetSiriusEtablissement etablissement={etablissement} />
           </Card>
         </Grid>
-        <Grid item md={12}>
+        <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
           <Card title="À quoi ressemble la vie en sortie de cette formation ?">
             <Typography align="center" style={{ color: "var(--blue-france-sun-113-625)" }} variant="h6">
               Les élèves 6 mois après la formation

@@ -135,7 +135,7 @@ function FormationResumeBlockEtude({ formation }: { formation: FormationDetail }
       : "hard";
 
   return (
-    <FormationResumeBlock title={"Poursuite d'étude"} icon={"ri-sun-line"}>
+    <FormationResumeBlock title={"La poursuite d'étude"} icon={"ri-sun-line"}>
       <>
         {admissionLevel === "easy" && (
           <Tag square level="easy">
