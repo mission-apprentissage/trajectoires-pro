@@ -1,7 +1,7 @@
 "use client";
 import React, { Suspense, useMemo } from "react";
 import { css } from "@emotion/css";
-import { Stack, useTheme } from "@mui/material";
+import { CardActionArea, Stack, useTheme } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Typography, Grid } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
@@ -10,7 +10,6 @@ import { formation } from "#/app/api/exposition/formation/query";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import { useSearchParams } from "next/navigation";
-import useResizeObserver from "@react-hook/resize-observer";
 import { Formation } from "#/types/formation";
 import Divider from "#/app/components/Divider";
 import Card from "#/app/components/Card";
@@ -20,18 +19,8 @@ import FormationResume from "./FormationResume";
 import WidgetSiriusEtablissement from "#/app/(prescripteur)/components/WidgetSiriusEtablissement";
 import { TagStatut, TagDuree } from "#/app/components/Tag";
 import { TagApprentissage } from "../../FormationCard";
-
-const useSize = (target: React.RefObject<HTMLElement>) => {
-  const [size, setSize] = React.useState<DOMRect>();
-
-  React.useLayoutEffect(() => {
-    target.current && setSize(target.current.getBoundingClientRect());
-  }, [target]);
-
-  // Where the magic happens
-  useResizeObserver(target, (entry) => setSize(entry.contentRect));
-  return size;
-};
+import { useSize } from "#/app/(prescripteur)/hooks/useSize";
+import DialogMinistage from "#/app/(prescripteur)/components/DialogMinistage";
 
 function FormationDetails({ formation: { formation, etablissement, bcn } }: { formation: Formation }) {
   const searchParams = useSearchParams();
@@ -42,6 +31,8 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
 
   const refHeader = React.useRef<HTMLElement>(null);
   const stickyHeaderSize = useSize(refHeader);
+
+  const [openDialogMinistage, setOpenDialogMinistage] = React.useState(false);
 
   const distance = useMemo(() => {
     if (!latitude || !longitude) {
@@ -110,24 +101,50 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
                   <a style={{ marginLeft: fr.spacing("3v") }} href={etablissement.url} target="_blank"></a>
                 )}
               </Typography>
-              {distance !== null && (
-                <Typography
-                  variant="subtitle2"
-                  style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
-                >
-                  <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
-                  {(distance / 1000).toFixed(2)} km
-                  <a
-                    style={{ marginLeft: fr.spacing("3v") }}
-                    href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-                      latitude + "," + longitude
-                    )}&destination=${encodeURIComponent(address)}`}
-                    target="_blank"
+            </Grid>
+            <Grid item xs={12} style={{ paddingLeft: fr.spacing("5v"), marginBottom: fr.spacing("5v") }}>
+              <Grid container>
+                <Grid item xs={12} md={6}>
+                  {distance !== null && (
+                    <Typography
+                      variant="subtitle2"
+                      style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
+                    >
+                      <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
+                      {(distance / 1000).toFixed(2)} km
+                      <a
+                        style={{ marginLeft: fr.spacing("3v") }}
+                        href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
+                          latitude + "," + longitude
+                        )}&destination=${encodeURIComponent(address)}`}
+                        target="_blank"
+                      >
+                        Voir le trajet
+                      </a>
+                    </Typography>
+                  )}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CardActionArea
+                    onClick={() => setOpenDialogMinistage(true)}
+                    style={{ marginBottom: fr.spacing("4v") }}
                   >
-                    Voir le trajet
-                  </a>
-                </Typography>
-              )}
+                    <Card>
+                      <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625-hover)" }}>
+                        <i className={fr.cx("fr-icon-calendar-2-line")} style={{ marginRight: fr.spacing("1w") }} />
+                        Pensez aux visites et ministages
+                      </Typography>
+                    </Card>
+                  </CardActionArea>
+                  <DialogMinistage open={openDialogMinistage} onClose={() => setOpenDialogMinistage(false)} />
+                  {/* <Card>
+                    <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625)" }}>
+                      <i className={fr.cx("ri-profile-line")} style={{ marginRight: fr.spacing("1w") }} />
+                      Voir sur le site d’affectation (Affelnet)
+                    </Typography>
+                  </Card> */}
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
@@ -152,18 +169,22 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
             }}
           />
         </Grid>
-        <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
-          <Card title="À quoi ressemble une journée ?">
-            <WidgetSiriusEtablissement etablissement={etablissement} />
-          </Card>
-        </Grid>
-        <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
-          <Card title="À quoi ressemble la vie en sortie de cette formation ?">
-            <Typography align="center" style={{ color: "var(--blue-france-sun-113-625)" }} variant="h6">
-              Les élèves 6 mois après la formation
-            </Typography>
-            <WidgetInserJeunes etablissement={etablissement} formation={formation} />
-          </Card>
+        <Grid item xs={12} style={{ backgroundColor: "#fff", zIndex: 99 }}>
+          <Grid container>
+            <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
+              <Card title="À quoi ressemble une journée ?">
+                <WidgetSiriusEtablissement etablissement={etablissement} />
+              </Card>
+            </Grid>
+            <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
+              <Card title="À quoi ressemble la vie en sortie de cette formation ?">
+                <Typography align="center" style={{ color: "var(--blue-france-sun-113-625)" }} variant="h6">
+                  Les élèves 6 mois après la formation
+                </Typography>
+                <WidgetInserJeunes etablissement={etablissement} formation={formation} />
+              </Card>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Container>

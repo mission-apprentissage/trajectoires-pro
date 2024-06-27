@@ -4,6 +4,7 @@ import { getLoggerWithContext } from "#src/common/logger.js";
 import BCNMefRepository from "#src/common/repositories/bcnMef.js";
 import OnisepRawRepository from "#src/common/repositories/onisepRaw.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
+import { formatDuree } from "./importFormationEtablissement.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -130,6 +131,7 @@ export async function streamOnisepFormations({ stats }) {
         mef11: bcnMef && bcnMef[0] ? bcnMef[0].mef_stat_11 : null,
         voie: "scolaire",
         millesime: [data.millesime],
+        duree: formatDuree(duree),
       };
 
       return dataFormatted;
