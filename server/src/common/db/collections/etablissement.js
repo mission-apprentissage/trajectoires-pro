@@ -13,6 +13,9 @@ export function schema() {
       _id: objectId(),
       uai: string(),
       libelle: string(),
+      statut: string(),
+      statutDetail: string(),
+      url: string(),
       address: object({
         street: string(),
         postCode: string(),

@@ -12,6 +12,8 @@ import { streamOnisepFormations } from "./streamOnisepFormations.js";
 
 const logger = getLoggerWithContext("import");
 
+export const formatDuree = (duree) => duree + " an" + (duree !== "1" ? "s" : "");
+
 // eslint-disable-next-line no-unused-vars
 function streamConstatRentree({ constatRentreeFilePath, stats }) {
   return compose(
@@ -57,6 +59,7 @@ async function streamCAFormations({ stats }) {
         codeDispositif: "",
         voie: "apprentissage",
         millesime: data.periode.map((p) => moment(p).year().toString()),
+        duree: formatDuree(data.duree),
       };
 
       return dataFormatted;

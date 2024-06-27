@@ -16,6 +16,7 @@ export function schema() {
       cfd: string(),
       codeDispositif: string(),
       mef11: string(),
+      duree: string(),
       voie: enumOf(["scolaire", "apprentissage"]),
       millesime: arrayOf(string()),
       tags: arrayOf(enumOf(Object.values(FORMATION_TAG))),

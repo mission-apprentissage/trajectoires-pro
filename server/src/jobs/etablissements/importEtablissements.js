@@ -11,6 +11,40 @@ import { get } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
+function formatStatutEtablissement(statut) {
+  if (!statut) {
+    return { statut: null, statutDetail: null };
+  }
+
+  switch (statut.toLowerCase()) {
+    case "privé":
+      return { statut: "privé", statutDetail: null };
+    case "public":
+      return { statut: "public", statutDetail: null };
+    case "privé hors contrat":
+      return { statut: "privé", statutDetail: "hors contrat" };
+    case "privé reconnu par l'etat":
+      return { statut: "privé", statutDetail: "reconnu par l'Etat" };
+    case "privé sous contrat":
+      return { statut: "privé", statutDetail: "sous contrat" };
+    default:
+      logger.error(`Statut d'établissement "${statut}" inconnu`);
+      return { statut: null, statutDetail: null };
+  }
+}
+
+function formatUrl(url) {
+  if (!url) {
+    return null;
+  }
+
+  const urlTrimed = url.trim();
+  if (!urlTrimed.match(/^http(s)?:\/\//)) {
+    return "https://" + urlTrimed;
+  }
+  return urlTrimed;
+}
+
 export async function importEtablissements() {
   logger.info(`Importation des établissements`);
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
@@ -28,6 +62,9 @@ export async function importEtablissements() {
         formated: {
           uai: data.numero_uai,
           libelle: data.appellation_officielle,
+          // TODO: format url
+          url: formatUrl(data.site_web),
+          ...formatStatutEtablissement(data.secteur_public_prive_libe),
           address: {
             street: data.adresse_uai,
             postCode: data.code_postal_uai,
@@ -45,7 +82,9 @@ export async function importEtablissements() {
           "data.code_uai": formated.uai,
         });
 
-        const onisepFormated = {};
+        const onisepFormated = {
+          ...(onisepEtab ? formatStatutEtablissement(onisepEtab.data.statut) : {}),
+        };
         if (onisepEtab) {
           const idOnisep = onisepEtab.data.url_et_id_onisep
             ? get(onisepEtab.data.url_et_id_onisep.match(/ENS\.[0-9]+/), "0", null)
@@ -53,14 +92,28 @@ export async function importEtablissements() {
           onisepFormated["onisep"] = {
             id: idOnisep,
           };
+
           // Utilisation du libelle onisep de préférence
           if (onisepEtab.data.nom) {
             onisepFormated["libelle"] = onisepEtab.data.nom;
           }
 
+          if (!formated.url) {
+            onisepFormated["url"] = `https://www.onisep.fr/http/redirection/etablissement/slug/${idOnisep}`;
+          }
+
           const jPO = parseJourneesPortesOuvertes(onisepEtab.data.journees_portes_ouvertes);
           if (jPO) {
             onisepFormated["journeesPortesOuvertes"] = jPO;
+          }
+
+          // Some data are only available on ideo formation (TODO: demander à l'Onisep d'ajouter ces data dans l'idéo structure)
+          const onisepFormation = await OnisepRaw.first({
+            type: "ideoActionsFormationInitialeUniversLycee",
+            "data.ens_code_uai": formated.uai,
+          });
+          if (onisepFormation) {
+            onisepFormated["url"] = onisepFormation.data.ens_site_web;
           }
         }
 

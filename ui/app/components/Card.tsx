@@ -22,24 +22,26 @@ const StyledLink = styled(Link)`
   }
 `;
 
-function BaseCard({ title, children, className }: CardProps) {
+function BaseCard({ title, children, className, ...props }: CardProps) {
   return (
-    <Box className={className}>
+    <Box className={className} {...props}>
       {title && (typeof title === "string" ? <Typography variant="h4">{title}</Typography> : title)}
       <Container style={{ padding: fr.spacing("3v") }}>{children}</Container>
     </Box>
   );
 }
 
-export function Card({ title, link, linkTarget, children, className, actionProps }: CardProps) {
+export function Card({ title, link, linkTarget, children, className, actionProps, ...props }: CardProps) {
   return link ? (
     <StyledLink href={link} target={linkTarget}>
       <CardActionArea {...actionProps} className={className}>
-        <BaseCard title={title}>{children}</BaseCard>
+        <BaseCard {...props} title={title}>
+          {children}
+        </BaseCard>
       </CardActionArea>
     </StyledLink>
   ) : (
-    <BaseCard title={title} className={className}>
+    <BaseCard title={title} className={className} {...props}>
       {children}
     </BaseCard>
   );

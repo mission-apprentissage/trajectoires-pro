@@ -1,16 +1,10 @@
-import { string, number, object, enumOf, arrayOf } from "#src/common/db/collections/jsonSchema/jsonSchemaTypes.js";
+import { string } from "#src/common/db/collections/jsonSchema/jsonSchemaTypes.js";
 import * as MongoDB from "#src/common/db/mongodb.js";
 
-const name = "formationEtablissement";
+const name = "catalogueApprentissageFormations";
 const schema = {
   properties: {
     duree: string(),
-    indicateurPoursuite: object({
-      millesime: string(),
-      taux_en_emploi_6_mois: number(),
-      taux_en_formation: number(),
-      taux_autres_6_mois: number(),
-    }),
   },
 };
 

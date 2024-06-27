@@ -72,6 +72,7 @@ export function schema() {
       parcoursup_previous_statut: string(),
       affelnet_statut: string(),
       affelnet_previous_statut: string(),
+      duree: string(),
       _meta: metaSchema([metaImportSchema()]),
     },
     {
