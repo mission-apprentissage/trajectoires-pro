@@ -6,7 +6,7 @@ library(knitr)
 library(kableExtra)
 library(DT)
 
-chemin_racine_data <- "../../../../0- data" 
+# chemin_racine_data <- "../../../../0- data"
 
 # Données ----
 
