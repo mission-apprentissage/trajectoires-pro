@@ -11,7 +11,7 @@ export type TagProps = {
 } & DSFRBTagProps;
 
 // TODO: fix css order
-export default styled(Tag, {
+const TagStyled = styled(Tag, {
   shouldForwardProp: (prop) => !["variant", "square", "level"].includes(prop),
 })<TagProps>`
   &,
@@ -50,3 +50,17 @@ export default styled(Tag, {
     }}
   }
 `;
+
+export const TagStatut = styled(TagStyled)`
+  background-color: var(--info-950-100);
+  color: var(--blue-france-sun-113-625);
+  font-weight: 700;
+`;
+
+export const TagDuree = styled(TagStyled)`
+  background-color: var(--info-950-100);
+  color: var(--info-425-625);
+  font-weight: 700;
+`;
+
+export default TagStyled;
