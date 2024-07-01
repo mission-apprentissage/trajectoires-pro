@@ -57,7 +57,7 @@ export default function FormationsMap({
                 </Typography>
                 {etablissement.accessTime && (
                   <Typography variant="body1">
-                    A moins de {Math.round(etablissement.accessTime / 60)} minutes
+                    À moins de {Math.round(etablissement.accessTime / 60)} minutes
                   </Typography>
                 )}
                 <Typography variant="body1">{etablissement.address.street}</Typography>

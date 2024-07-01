@@ -142,7 +142,6 @@ export default function ResearchFormationsResult({
             padding: ${fr.spacing("5v")};
             z-index: 500;
             width: 100%;
-            box-shadow: 4px 0px 6px 0px #00000040;
             ${theme.breakpoints.up("lg")} {
               padding-left: ${fr.spacing("20v")};
             }
