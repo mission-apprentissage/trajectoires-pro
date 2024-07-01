@@ -113,6 +113,7 @@ describe("importFormations", () => {
           affelnet_previous_statut: "non publiable en l'état",
           affelnet_statut: "non publiable en l'état",
           periode: [new Date("2021-09-01T00:00:00.000Z")],
+          duree: "2",
         },
         {
           id: new ObjectId("5fc61896712d48a988137bf9"),
@@ -162,6 +163,7 @@ describe("importFormations", () => {
           affelnet_previous_statut: "non publiable en l'état",
           affelnet_statut: "non publiable en l'état",
           periode: [new Date("2021-09-01T00:00:00.000Z")],
+          duree: "2",
         },
       ]
     );
