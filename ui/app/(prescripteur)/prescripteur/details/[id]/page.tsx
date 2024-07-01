@@ -173,7 +173,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
           <Grid container>
             <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
               <Card title="À quoi ressemble une journée ?">
-                <WidgetSiriusEtablissement etablissement={etablissement} />
+                {formation.voie === "apprentissage" && <WidgetSiriusEtablissement etablissement={etablissement} />}
               </Card>
             </Grid>
             <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>

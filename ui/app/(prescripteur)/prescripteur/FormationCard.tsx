@@ -70,12 +70,12 @@ export default function FormationCard({
         <Grid item xs={10}>
           {etablissement.accessTime ? (
             <Typography variant="subtitle2" color={"var(--blue-france-sun-113-625)"}>
-              <i style={{ marginRight: fr.spacing("2v") }} className={fr.cx("fr-icon-bus-fill")} />A moins de{" "}
+              <i style={{ marginRight: fr.spacing("2v") }} className={fr.cx("fr-icon-bus-fill")} />À moins de{" "}
               {(etablissement.accessTime / 60).toFixed(0)} minutes
             </Typography>
           ) : (
             <Typography variant="subtitle2" color={"var(--blue-france-sun-113-625)"}>
-              <i style={{ marginRight: fr.spacing("2v") }} className={fr.cx("fr-icon-bus-fill")} />A{" "}
+              <i style={{ marginRight: fr.spacing("2v") }} className={fr.cx("fr-icon-bus-fill")} />À{" "}
               {(etablissement.distance / 1000).toFixed(2)} km
             </Typography>
           )}

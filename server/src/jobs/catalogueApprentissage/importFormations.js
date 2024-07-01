@@ -77,6 +77,7 @@ const FIELDS_TO_IMPORT = [
   "parcoursup_previous_statut",
   "affelnet_statut",
   "affelnet_previous_statut",
+  "duree",
 ];
 
 export async function importFormations(options = {}) {
