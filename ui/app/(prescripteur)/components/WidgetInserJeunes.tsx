@@ -15,13 +15,25 @@ export default function WidgetInserJeunes({
 
   const code = formation.voie === "apprentissage" ? formation.cfd : formation.mef11;
 
-  const widgetCode = `<iframe onLoad="!function(i){window.addEventListener('message',function(t){'${HOST}'!==t.origin||isNaN(t.data)||(i.style.height=t.data+'px')},!1)}(this);" style="width: 100%; height: 0;" 
-  src="${API_URL}/inserjeunes/formations/${etablissement.uai}-${code}/widget/${WIDGET_HASH}?noTitle=true&responsiveWidth=28em"
-   scrolling="no" frameBorder="0"></iframe>`;
-
   return (
     <>
-      <div dangerouslySetInnerHTML={{ __html: widgetCode }}></div>
+      <div>
+        <iframe
+          style={{ display: "block", margin: "0 auto", width: "100%", maxWidth: "650px", height: 0 }}
+          scrolling="no"
+          frameBorder="0"
+          src={`${API_URL}/inserjeunes/formations/${etablissement.uai}-${code}/widget/${WIDGET_HASH}?noTitle=true&responsiveWidth=28em`}
+          onLoad={(i) => {
+            window.addEventListener(
+              "message",
+              function (t) {
+                HOST !== t.origin || isNaN(t.data) || ((i.target as HTMLIFrameElement).style.height = t.data + "px");
+              },
+              !1
+            );
+          }}
+        ></iframe>
+      </div>
     </>
   );
 }
