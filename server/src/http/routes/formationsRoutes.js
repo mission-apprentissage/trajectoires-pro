@@ -2,7 +2,6 @@ import express from "express";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import Joi from "joi";
-import moment from "moment";
 import Boom from "boom";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
@@ -31,12 +30,11 @@ import {
 } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
-import { getFormations, getDistanceFilter, getTimeFilter } from "#src/queries/getFormations.js";
+import { getFormations, buildFiltersEtablissement, buildFiltersFormation } from "#src/queries/getFormations.js";
 import { FORMATION_TAG } from "#src/common/constants/formationEtablissement.js";
 import FormationEtablissement from "#src/common/repositories/formationEtablissement.js";
 import Etablissement from "#src/common/repositories/etablissement.js";
 import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
-import * as Cache from "#src/common/cache.js";
 
 async function formationStats({ uai, codeCertificationWithType, millesime }) {
   const { type, code_certification } = codeCertificationWithType;
@@ -333,54 +331,32 @@ export default () => {
     "/api/formations",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { longitude, latitude, distance, timeLimit, tag, codesDiplome, page, items_par_page } = await validate(
-        { ...req.query, ...req.params },
-        {
-          longitude: Joi.number().min(-180).max(180).required(),
-          latitude: Joi.number().min(-90).max(90).required(),
-          distance: Joi.number().min(0).max(100000).default(1000),
-          timeLimit: Joi.number().min(0).max(7200).default(null),
-          tag: Joi.string()
-            .empty("")
-            .valid(...Object.values(FORMATION_TAG))
-            .default(null),
-          ...validators.codesDiplome(),
-          ...validators.pagination({ items_par_page: 100 }),
-        }
-      );
+      const { longitude, latitude, distance, timeLimit, tag, codesDiplome, uais, cfds, page, items_par_page } =
+        await validate(
+          { ...req.query, ...req.params },
+          {
+            longitude: Joi.number().min(-180).max(180).default(null),
+            latitude: Joi.number().min(-90).max(90).default(null),
+            distance: Joi.number().min(0).max(100000).default(null),
+            timeLimit: Joi.number().min(0).max(7200).default(null),
+            tag: Joi.string()
+              .empty("")
+              .valid(...Object.values(FORMATION_TAG))
+              .default(null),
+            ...validators.codesDiplome(),
+            ...validators.uais(),
+            ...validators.cfds(),
+            ...validators.pagination({ items_par_page: 100 }),
+          }
+        );
 
       const year = new Date().getFullYear();
       const millesime = [(year - 1).toString(), year.toString()];
 
-      let filtersEtablissement = [];
-
-      if (timeLimit) {
-        const buckets = [7200, 5400, 3600, 1800, 900];
-        const graphHopperApi = new GraphHopperApi();
-        try {
-          const graphHopperParameter = {
-            point: `${latitude},${longitude}`,
-            departureTime: moment().set({ hour: 7, minute: 0, second: 0, millisecond: 0 }).toDate(),
-            buckets: buckets.filter((b) => b <= timeLimit),
-            reverse_flow: true,
-          };
-          const isochroneBuckets = await Cache.getOrSet(JSON.stringify(graphHopperParameter), () =>
-            graphHopperApi.fetchIsochronePTBuckets(graphHopperParameter)
-          );
-
-          filtersEtablissement.push(getTimeFilter({ coordinate: { longitude, latitude }, isochroneBuckets }));
-          //  filter = testTimeFilter({ coordinate: { longitude, latitude } });
-        } catch (err) {
-          console.error(err);
-          // TODO : gestion des erreurs de récupération de l'isochrone
-          filtersEtablissement.push(getDistanceFilter({ coordinate: { longitude, latitude }, maxDistance: distance }));
-        }
-      } else {
-        filtersEtablissement.push(getDistanceFilter({ coordinate: { longitude, latitude }, maxDistance: distance }));
-      }
+      const filtersEtablissement = await buildFiltersEtablissement({ timeLimit, distance, latitude, longitude, uais });
 
       // Formations filter
-      const filtersFormation = [];
+      const filtersFormation = await buildFiltersFormation({ cfds });
 
       const paginatedFormations = await getFormations(
         {
@@ -398,6 +374,34 @@ export default () => {
 
       addJsonHeaders(res);
       res.send(paginatedFormations);
+    })
+  );
+
+  // TODO: move in another route
+  router.get(
+    "/api/formation/route",
+    authMiddleware("public"),
+    tryCatch(async (req, res) => {
+      const { longitudeA, latitudeA, longitudeB, latitudeB } = await validate(
+        { ...req.query, ...req.params },
+        {
+          longitudeA: Joi.number().min(-180).max(180).required(),
+          latitudeA: Joi.number().min(-90).max(90).required(),
+          longitudeB: Joi.number().min(-180).max(180).required(),
+          latitudeB: Joi.number().min(-90).max(90).required(),
+        }
+      );
+
+      const graphHopperApi = new GraphHopperApi();
+
+      const graphHopperParameter = {
+        pointA: `${latitudeA},${longitudeA}`,
+        pointB: `${latitudeB},${longitudeB}`,
+      };
+      const route = await graphHopperApi.fetchRoute(graphHopperParameter);
+
+      addJsonHeaders(res);
+      res.send(route);
     })
   );
   return router;

@@ -10,15 +10,19 @@ export default function useGetFormations({
   distance,
   time,
   tag,
+  uais,
+  cfds,
   page,
   items_par_page = 100,
 }: {
-  latitude: number;
-  longitude: number;
-  distance: number;
-  time: number;
+  latitude?: number;
+  longitude?: number;
+  distance?: number;
+  time?: number;
   tag?: FormationTag | null;
-  page: number;
+  uais?: string[];
+  cfds?: string[];
+  page?: number;
   items_par_page?: number;
 }) {
   const {
@@ -33,7 +37,7 @@ export default function useGetFormations({
     cacheTime: Infinity,
     retry: false,
     //keepPreviousData: true,
-    queryKey: ["formations", latitude, longitude, distance, time, tag, page],
+    queryKey: ["formations", latitude, longitude, distance, time, tag, page, uais?.toString(), cfds?.toString()],
     queryFn: ({ pageParam, signal }) => {
       return formationsQuery(
         {
@@ -45,6 +49,8 @@ export default function useGetFormations({
           page: pageParam ?? 1,
           codesDiplome: ["3", "4"],
           items_par_page,
+          cfds,
+          uais,
         },
         { signal }
       );

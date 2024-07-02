@@ -1,7 +1,12 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { FieldValues } from "react-hook-form";
 import yup from "yup";
+import { mapValues, isNil, omitBy } from "lodash-es";
 import { Nullable } from "./types";
+
+export function paramsToString(params: Object): string {
+  return new URLSearchParams(mapValues(omitBy(params, isNil), (v) => v.toString())).toString();
+}
 
 export function searchParamsToObject<FormData extends FieldValues>(
   searchParams: ReadonlyURLSearchParams,

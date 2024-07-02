@@ -18,6 +18,46 @@ class GraphHopperApi extends RateLimitedApi {
     return config.graphHopper.api.baseUrl;
   }
 
+  async fetchRoute({
+    pointA, //"latitude,longitude"
+    pointB, //"latitude,longitude"
+    profile = "pt",
+    departureTime = new Date(),
+    pt_profile = false,
+    pt_access_profile = "foot",
+    pt_beta_access_time = 1,
+    pt_egress_profile = "foot",
+    pt_beta_egress_time = 1,
+    pt_profile_duration = "PT120M",
+    pt_limit_street_time = "PT120M",
+    pt_ignore_transfers = false,
+  }) {
+    //http://141.94.105.71:8989/route?point=44.544606%2C6.077989&point=44.540663044546385%2C6.091216108562817&pt.earliest_departure_time=2024-07-01T05%3A00%3A00Z&pt.arrive_by=true&locale=en-US&profile=pt&pt.profile=false&pt.access_profile=foot&pt.beta_access_time=1&pt.egress_profile=foot&pt.beta_egress_time=1&pt.profile_duration=PT120M&pt.limit_street_time=PT30M&pt.ignore_transfers=false
+    return this.execute(async () => {
+      const params = new URLSearchParams({
+        profile,
+        "pt.earliest_departure_time": departureTime.toISOString(),
+        "pt.profile": pt_profile,
+        "pt.access_profile": pt_access_profile,
+        "pt.beta_access_time": pt_beta_access_time,
+        "pt.egress_profile": pt_egress_profile,
+        "pt.beta_egress_time": pt_beta_egress_time,
+        "pt.profile_duration": pt_profile_duration,
+        "pt.limit_street_time": pt_limit_street_time,
+        "pt.ignore_transfers": pt_ignore_transfers,
+      });
+
+      console.error(`${GraphHopperApi.baseApiUrl}/route?${params}&point=${pointA}&point=${pointB}`);
+      const response = await fetchJsonWithRetry(
+        `${GraphHopperApi.baseApiUrl}/route?${params}&point=${pointA}&point=${pointB}`,
+        {},
+        { ...this.retry }
+      );
+
+      return response;
+    });
+  }
+
   async fetchIsochrone({
     point, // "latitude,longitude"
     profile = "pt",

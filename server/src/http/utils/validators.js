@@ -130,6 +130,12 @@ export function codesCertifications() {
   };
 }
 
+export function cfds() {
+  return {
+    cfds: arrayOf(Joi.string().pattern(CFD_PATTERN).required()).default([]),
+  };
+}
+
 export function codesDiplome() {
   return {
     codesDiplome: arrayOf(Joi.string().valid(...Object.values(ANCIENS_NIVEAUX_MAPPER))).default([]),

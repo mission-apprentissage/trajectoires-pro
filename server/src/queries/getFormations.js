@@ -1,7 +1,70 @@
 import { flatMap } from "lodash-es";
+import moment from "moment";
+import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
+import * as Cache from "#src/common/cache.js";
 import { etablissement } from "#src/common/db/collections/collections.js";
 import { filterTag } from "./formationTag.js";
 //import { dbCollection } from "#src/common/db/mongodb.js";
+
+export async function buildFiltersEtablissement({ timeLimit, distance, latitude, longitude, uais }) {
+  let filtersEtablissement = [];
+
+  if (uais.length > 0) {
+    filtersEtablissement.push({
+      $match: {
+        uai: { $in: uais },
+      },
+    });
+  }
+
+  if (latitude === null || longitude === null) {
+    return filtersEtablissement;
+  }
+
+  if (timeLimit) {
+    const buckets = [7200, 5400, 3600, 1800, 900];
+    const graphHopperApi = new GraphHopperApi();
+    try {
+      const graphHopperParameter = {
+        point: `${latitude},${longitude}`,
+        departureTime: moment().set({ hour: 7, minute: 0, second: 0, millisecond: 0 }).toDate(),
+        buckets: buckets.filter((b) => b <= timeLimit),
+        reverse_flow: true,
+      };
+      const isochroneBuckets = await Cache.getOrSet(JSON.stringify(graphHopperParameter), () =>
+        graphHopperApi.fetchIsochronePTBuckets(graphHopperParameter)
+      );
+
+      filtersEtablissement.push(getTimeFilter({ coordinate: { longitude, latitude }, isochroneBuckets }));
+      //  filter = testTimeFilter({ coordinate: { longitude, latitude } });
+    } catch (err) {
+      console.error(err);
+      // TODO : gestion des erreurs de récupération de l'isochrone
+      filtersEtablissement.push(getDistanceFilter({ coordinate: { longitude, latitude }, maxDistance: distance }));
+    }
+    return filtersEtablissement;
+  }
+
+  if (distance) {
+    filtersEtablissement.push(getDistanceFilter({ coordinate: { longitude, latitude }, maxDistance: distance }));
+  }
+
+  return filtersEtablissement;
+}
+
+export async function buildFiltersFormation({ cfds }) {
+  let filtersFormation = [];
+
+  if (cfds.length > 0) {
+    filtersFormation.push({
+      $match: {
+        "formation.cfd": { $in: cfds },
+      },
+    });
+  }
+
+  return filtersFormation;
+}
 
 export function testTimeFilter({ coordinate }) {
   return [

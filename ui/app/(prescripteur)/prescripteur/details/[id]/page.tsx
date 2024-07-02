@@ -7,10 +7,11 @@ import { Typography, Grid } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
 import { getDistance } from "geolib";
 import { formation } from "#/app/api/exposition/formation/query";
+import { formationRoute } from "#/app/api/exposition/formation/route/query";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import { useSearchParams } from "next/navigation";
-import { Formation } from "#/types/formation";
+import { Etablissement, Formation, FormationDetail, FormationVoie } from "#/types/formation";
 import Divider from "#/app/components/Divider";
 import Card from "#/app/components/Card";
 import PortesOuvertesHeader from "./PortesOuvertesHeader";
@@ -21,18 +22,44 @@ import { TagStatut, TagDuree } from "#/app/components/Tag";
 import { TagApprentissage } from "../../FormationCard";
 import { useSize } from "#/app/(prescripteur)/hooks/useSize";
 import DialogMinistage from "#/app/(prescripteur)/components/DialogMinistage";
+import useGetFormations from "#/app/(prescripteur)/hooks/useGetFormations";
 
-function FormationDetails({ formation: { formation, etablissement, bcn } }: { formation: Formation }) {
-  const searchParams = useSearchParams();
-  const longitude = searchParams.get("longitude");
-  const latitude = searchParams.get("latitude");
+function FormationDisponible({ formation }: { formation: FormationDetail }) {
+  const { isLoading, formations } = useGetFormations({
+    cfds: [formation.cfd],
+    uais: [formation.uai],
+  });
+  const formationAutreVoie =
+    formation.voie === FormationVoie.SCOLAIRE ? FormationVoie.APPRENTISSAGE : FormationVoie.SCOLAIRE;
 
-  const theme = useTheme();
+  if (isLoading) {
+    return <Loader />;
+  }
 
-  const refHeader = React.useRef<HTMLElement>(null);
-  const stickyHeaderSize = useSize(refHeader);
+  return (
+    formations.find(({ formation: f }) => f.voie === formationAutreVoie) && (
+      <Typography variant={"body2"} style={{ borderLeft: "4px solid #6A6AF4", paddingLeft: fr.spacing("8v") }}>
+        {formation.voie === FormationVoie.APPRENTISSAGE ? (
+          <>Cette formation est aussi disponible en voie scolaire, sans présence en entreprise.</>
+        ) : (
+          <>Cette formation est aussi disponible en alternance.</>
+        )}
+      </Typography>
+    )
+  );
+}
 
-  const [openDialogMinistage, setOpenDialogMinistage] = React.useState(false);
+function FormationRoute({
+  etablissement,
+  longitude,
+  latitude,
+}: {
+  etablissement: Etablissement;
+  longitude?: string | null;
+  latitude?: string | null;
+}) {
+  const address =
+    etablissement.address.street + ", " + etablissement.address.postCode + " " + etablissement.address.city;
 
   const distance = useMemo(() => {
     if (!latitude || !longitude) {
@@ -49,8 +76,82 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
     );
   }, [longitude, latitude, etablissement.coordinate.coordinates]);
 
-  const address =
-    etablissement.address.street + ", " + etablissement.address.postCode + " " + etablissement.address.city;
+  const { isLoading, isError, data } = useQuery({
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    retry: 0,
+    queryKey: [
+      "formation",
+      latitude,
+      longitude,
+      etablissement.coordinate.coordinates[1],
+      etablissement.coordinate.coordinates[0],
+    ],
+    queryFn: ({ signal }) => {
+      if (!latitude || !longitude) {
+        return null;
+      }
+
+      return formationRoute(
+        {
+          latitudeA: latitude,
+          longitudeA: longitude,
+          latitudeB: etablissement.coordinate.coordinates[1],
+          longitudeB: etablissement.coordinate.coordinates[0],
+        },
+        { signal }
+      );
+    },
+  });
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  return (
+    <>
+      <Typography
+        variant="subtitle2"
+        style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
+      >
+        {data?.paths && data?.paths[0] && (
+          <>
+            <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
+            {(data.paths[0].time / 1000 / 60).toFixed(0)} minutes
+          </>
+        )}
+        {!data?.paths && distance !== null && (
+          <>
+            <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
+            {(distance / 1000).toFixed(2)} km
+          </>
+        )}
+
+        <a
+          style={{ marginLeft: fr.spacing("3v") }}
+          href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
+            latitude + "," + longitude
+          )}&destination=${encodeURIComponent(address)}`}
+          target="_blank"
+        >
+          Voir le trajet
+        </a>
+      </Typography>
+    </>
+  );
+}
+
+function FormationDetails({ formation: { formation, etablissement, bcn } }: { formation: Formation }) {
+  const searchParams = useSearchParams();
+  const longitude = searchParams.get("longitude");
+  const latitude = searchParams.get("latitude");
+
+  const theme = useTheme();
+
+  const refHeader = React.useRef<HTMLElement>(null);
+  const stickyHeaderSize = useSize(refHeader);
+
+  const [openDialogMinistage, setOpenDialogMinistage] = React.useState(false);
 
   return (
     <Container style={{ marginTop: fr.spacing("5v") }} maxWidth={"xl"}>
@@ -105,29 +206,12 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
             <Grid item xs={12} style={{ paddingLeft: fr.spacing("5v"), marginBottom: fr.spacing("5v") }}>
               <Grid container>
                 <Grid item xs={12} md={6}>
-                  {distance !== null && (
-                    <Typography
-                      variant="subtitle2"
-                      style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
-                    >
-                      <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
-                      {(distance / 1000).toFixed(2)} km
-                      <a
-                        style={{ marginLeft: fr.spacing("3v") }}
-                        href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-                          latitude + "," + longitude
-                        )}&destination=${encodeURIComponent(address)}`}
-                        target="_blank"
-                      >
-                        Voir le trajet
-                      </a>
-                    </Typography>
-                  )}
+                  <FormationRoute etablissement={etablissement} latitude={latitude} longitude={longitude} />
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <CardActionArea
                     onClick={() => setOpenDialogMinistage(true)}
-                    style={{ marginBottom: fr.spacing("4v") }}
+                    style={{ marginBottom: fr.spacing("8v") }}
                   >
                     <Card>
                       <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625-hover)" }}>
@@ -137,6 +221,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
                     </Card>
                   </CardActionArea>
                   <DialogMinistage open={openDialogMinistage} onClose={() => setOpenDialogMinistage(false)} />
+                  <FormationDisponible formation={formation} />
                   {/* <Card>
                     <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625)" }}>
                       <i className={fr.cx("ri-profile-line")} style={{ marginRight: fr.spacing("1w") }} />
