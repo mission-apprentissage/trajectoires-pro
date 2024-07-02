@@ -208,7 +208,12 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source){
     select(-academie) %>% 
     left_join(
       n_formation_diplome %>% 
-        mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
+        # mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
+        mutate(
+          Nouvelle_formation=case_when(
+            DATE_PREMIERE_SESSION>2022~T,
+            T~F)
+        ) %>% 
         distinct(FORMATION_DIPLOME,Nouvelle_formation),
       by="FORMATION_DIPLOME"
     ) %>%  
@@ -1192,14 +1197,23 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne){
   
   var_effectifs <- "Demandes tous voeux"
   
-  catalogue_partenaire_renseigne_voeux <- catalogue_partenaire_renseigne %>% 
-    mutate(code_certification=ifelse(Filiere=="Scolaire",MEFSTAT11,FORMATION_DIPLOME )) %>% 
-    left_join(
-      voeux_parcoursup_affelnet_simpli_2023,
-      by=c("UAI","code_certification","Filiere")
-    ) %>% 
-    select(-code_certification)
-  
+  if("MEFSTAT11_voeux" %in% names(catalogue_partenaire_renseigne)){
+    catalogue_partenaire_renseigne_voeux <- catalogue_partenaire_renseigne %>% 
+      mutate(code_certification=ifelse(Filiere=="Scolaire",MEFSTAT11_voeux,FORMATION_DIPLOME )) %>%
+      left_join(
+        voeux_parcoursup_affelnet_simpli_2023,
+        by=c("UAI","code_certification","Filiere")
+      ) %>%
+      select(-code_certification)
+  }else{
+    catalogue_partenaire_renseigne_voeux <- catalogue_partenaire_renseigne %>% 
+      mutate(code_certification=ifelse(Filiere=="Scolaire",MEFSTAT11,FORMATION_DIPLOME )) %>% 
+      left_join(
+        voeux_parcoursup_affelnet_simpli_2023,
+        by=c("UAI","code_certification","Filiere")
+      ) %>% 
+      select(-code_certification)
+  }
   
   stats_catalogue_partenaire_voeux <- catalogue_partenaire_renseigne_voeux %>%
     ungroup() %>% 

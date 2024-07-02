@@ -213,7 +213,8 @@ data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
   mutate(id_unique=1:n())
 
 
-formation_catalogue_apprentissage <- read_csv2(file.path(chemin_racine_data,"RCO/formation_2024-01-11T11 35 57.905Z.csv"))
+formation_catalogue_apprentissage <- data.table::fread(file.path(chemin_racine_data,"RCO/formation_2024-01-11T11 35 57.905Z.csv")) %>% 
+  as_tibble()
 
 formation_catalogue_apprentissage <- formation_catalogue_apprentissage %>%
   mutate_all(str_remove_all,"=\"") %>%
@@ -253,7 +254,16 @@ ensemble_data_formationsStats <-  formation_catalogue_apprentissage_long_comp %>
         millesime == "2022"
       ) %>%
       rename(UAI=uai)
+  ) %>% 
+  bind_rows(
+    data_meta_formationsStats_init %>%
+      filter(
+        filiere == "superieur",
+        millesime == "2021"
+      ) %>%
+      rename(UAI=uai)
   )
+
 
 ### Insersup ----
 fr_esr_insersup <- read_excel(file.path(chemin_racine_data,"SSM/SIES/2023/insersup/fr-esr-insersup.xlsx"))
@@ -331,7 +341,7 @@ stats_Insersup <- fr_esr_insersup %>%
     Base="InserSup"
   )
 
-source(file.path(dirname(rstudioapi::getSourceEditorContext()$path),
+source(file.path(this.path::this.dir(),
                  "functions/expo_mef_catalogue_partenaire.R")
 )
 
