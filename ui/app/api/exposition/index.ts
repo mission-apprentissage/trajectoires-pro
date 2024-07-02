@@ -8,6 +8,8 @@ import { FormationsRequestSchema } from "./formations/route";
 import { FormationRequestSchema } from "./formation/type";
 
 import { fetchJson } from "../../utils/fetch";
+import { paramsToString } from "#/app/utils/searchParams";
+import { FormationRouteRequestSchema } from "./formation/route/type";
 
 const { EXPOSITION_API_BASE_URL, EXPOSITION_API_KEY } = process.env;
 
@@ -83,7 +85,7 @@ async function regionalesStats(
 }
 
 async function formations(params: FormationsRequestSchema): Promise<Paginations<"formations", Formation>> {
-  const urlParams = new URLSearchParams(mapValues(params, (v) => (v ? v.toString() : "")));
+  const urlParams = paramsToString(params);
   return await fetchJson(EXPOSITION_API_BASE_URL + `/formations?${urlParams}`);
 }
 
@@ -91,4 +93,9 @@ async function formation(params: FormationRequestSchema): Promise<Formation> {
   return await fetchJson(EXPOSITION_API_BASE_URL + `/formation/${params.id}`);
 }
 
-export { bcn, certificationsStats, regionalesStats, formations, formation };
+async function formationRoute(params: FormationRouteRequestSchema): Promise<any> {
+  const urlParams = paramsToString(params);
+  return await fetchJson(EXPOSITION_API_BASE_URL + `/formation/route?${urlParams}`);
+}
+
+export { bcn, certificationsStats, regionalesStats, formations, formation, formationRoute };

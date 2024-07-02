@@ -1,6 +1,7 @@
 import { Formation, formationSchema } from "#/types/formation";
 import { mapValues } from "lodash-es";
 import { FormationRequestSchema } from "./type";
+import { paramsToString } from "#/app/utils/searchParams";
 
 export async function formation(
   params: FormationRequestSchema,
@@ -9,7 +10,7 @@ export async function formation(
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const url = API_BASE_URL + "/exposition/formation";
 
-  const result = await fetch(`${url}?${new URLSearchParams(mapValues(params, (v) => (v ? v.toString() : "")))}`, {
+  const result = await fetch(`${url}?${paramsToString(params)}`, {
     method: "GET",
     signal,
   });

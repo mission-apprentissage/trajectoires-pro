@@ -5,6 +5,7 @@ import { WIDGETS } from "#src/services/widget/widget.js";
 import { ANCIENS_NIVEAUX_MAPPER } from "#src/services/bcn.js";
 
 const UAI_PATTERN = /^[0-9]{7}[A-Z]{1}$/;
+const CFD_PATTERN = /^[0-9A-Z]{8}$/;
 
 const customJoi = Joi.extend(
   (joi) => ({
@@ -47,6 +48,12 @@ export function uai() {
 export function uais() {
   return {
     uais: arrayOf(Joi.string().pattern(UAI_PATTERN).required()).default([]),
+  };
+}
+
+export function cfds() {
+  return {
+    cfds: arrayOf(Joi.string().pattern(CFD_PATTERN).required()).default([]),
   };
 }
 
