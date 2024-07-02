@@ -23,6 +23,7 @@ import { TagApprentissage } from "../../FormationCard";
 import { useSize } from "#/app/(prescripteur)/hooks/useSize";
 import DialogMinistage from "#/app/(prescripteur)/components/DialogMinistage";
 import useGetFormations from "#/app/(prescripteur)/hooks/useGetFormations";
+import moment from "moment";
 
 function FormationDisponible({ formation }: { formation: FormationDetail }) {
   const { isLoading, formations } = useGetFormations({
@@ -104,6 +105,17 @@ function FormationRoute({
     },
   });
 
+  const timeRoute = useMemo(() => {
+    if (!data?.paths) {
+      return null;
+    }
+
+    const legs = data.paths[0].legs;
+    const departure = moment(legs[0].departure_time);
+    const arrival = moment(legs[legs.length - 1].arrival_time);
+    return arrival.diff(departure);
+  }, data);
+
   if (isLoading) {
     return <Loader />;
   }
@@ -114,10 +126,10 @@ function FormationRoute({
         variant="subtitle2"
         style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
       >
-        {data?.paths && data?.paths[0] && (
+        {timeRoute !== null && (
           <>
             <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
-            {(data.paths[0].time / 1000 / 60).toFixed(0)} minutes
+            {(timeRoute / 1000 / 60).toFixed(0)} minutes
           </>
         )}
         {!data?.paths && distance !== null && (
