@@ -4,17 +4,15 @@ import styled from "@emotion/styled";
 import Link from "next/link";
 import { Box, Container, Typography } from "./MaterialUINext";
 import { isNil } from "lodash-es";
-import { CardActionArea, CardActionAreaProps } from "@mui/material";
+import { CardActionArea, CardActionAreaProps, CardProps as MUICardProps } from "@mui/material";
 
-export interface CardProps {
+export type CardProps = Omit<MUICardProps, "title"> & {
   title?: string | JSX.Element | null;
-  children?: JSX.Element | JSX.Element[];
-  className?: string;
   link?: string;
   linkTarget?: string;
   selected?: boolean;
   actionProps?: CardActionAreaProps;
-}
+};
 
 const StyledLink = styled(Link)`
   &[target="_blank"]::after {
@@ -31,17 +29,31 @@ function BaseCard({ title, children, className, ...props }: CardProps) {
   );
 }
 
-export function Card({ title, link, linkTarget, children, className, actionProps, ...props }: CardProps) {
-  return link ? (
-    <StyledLink href={link} target={linkTarget}>
-      <CardActionArea {...actionProps} className={className}>
+export function Card({ title, link, linkTarget, style, children, className, actionProps, ...props }: CardProps) {
+  if (link) {
+    return (
+      <StyledLink href={link} target={linkTarget} style={style}>
+        <CardActionArea {...actionProps} className={className}>
+          <BaseCard {...props} title={title}>
+            {children}
+          </BaseCard>
+        </CardActionArea>
+      </StyledLink>
+    );
+  }
+
+  if (actionProps) {
+    return (
+      <CardActionArea {...actionProps} style={style} className={className}>
         <BaseCard {...props} title={title}>
           {children}
         </BaseCard>
       </CardActionArea>
-    </StyledLink>
-  ) : (
-    <BaseCard title={title} className={className} {...props}>
+    );
+  }
+
+  return (
+    <BaseCard title={title} className={className} style={style} {...props}>
       {children}
     </BaseCard>
   );

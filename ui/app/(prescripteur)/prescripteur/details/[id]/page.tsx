@@ -143,7 +143,7 @@ function FormationRoute({
           style={{ marginLeft: fr.spacing("3v") }}
           href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
             latitude + "," + longitude
-          )}&destination=${encodeURIComponent(address)}`}
+          )}&destination=${encodeURIComponent(address)}&travelmode=transit`}
           target="_blank"
         >
           Voir le trajet
@@ -180,7 +180,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
             background-color: #fff;
             z-index: 100;
           `}
-          style={{ marginTop: fr.spacing("10v"), paddingLeft: fr.spacing("5v") }}
+          style={{ paddingLeft: fr.spacing("5v") }}
         >
           <Typography ref={refHeader} variant="h1" style={{ marginBottom: fr.spacing("3v") }}>
             {bcn.libelle_long}
@@ -221,17 +221,15 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
                   <FormationRoute etablissement={etablissement} latitude={latitude} longitude={longitude} />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <CardActionArea
-                    onClick={() => setOpenDialogMinistage(true)}
+                  <Card
+                    actionProps={{ onClick: () => setOpenDialogMinistage(true) }}
                     style={{ marginBottom: fr.spacing("8v") }}
                   >
-                    <Card>
-                      <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625-hover)" }}>
-                        <i className={fr.cx("fr-icon-calendar-2-line")} style={{ marginRight: fr.spacing("1w") }} />
-                        Pensez aux visites et ministages
-                      </Typography>
-                    </Card>
-                  </CardActionArea>
+                    <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625-hover)" }}>
+                      <i className={fr.cx("fr-icon-calendar-2-line")} style={{ marginRight: fr.spacing("1w") }} />
+                      Pensez aux visites et ministages
+                    </Typography>
+                  </Card>
                   <DialogMinistage open={openDialogMinistage} onClose={() => setOpenDialogMinistage(false)} />
                   <FormationDisponible formation={formation} />
                   {/* <Card>

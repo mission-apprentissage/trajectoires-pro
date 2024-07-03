@@ -23,6 +23,7 @@ const PortesOuvertesHeader = ({ etablissement }: { etablissement: Etablissement 
         paddingLeft: fr.spacing("6v"),
         paddingRight: fr.spacing("6v"),
         borderRadius: "4px",
+        marginBottom: fr.spacing("10v"),
       }}
     >
       <i className={fr.cx("fr-icon-calendar-2-line")} style={{ marginRight: fr.spacing("4v") }} />
