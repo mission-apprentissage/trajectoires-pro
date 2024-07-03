@@ -100,9 +100,9 @@ export default function FormationRoute({
 
         <a
           style={{ marginLeft: fr.spacing("3v") }}
-          href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-            latitude + "," + longitude
-          )}&destination=${encodeURIComponent(address)}&travelmode=transit`}
+          href={`https://www.google.com/maps/dir/?api=1&origin=${
+            latitude && longitude ? encodeURIComponent(latitude + "," + longitude) : ""
+          }&destination=${encodeURIComponent(address)}&travelmode=transit`}
           target="_blank"
         >
           Voir le trajet
