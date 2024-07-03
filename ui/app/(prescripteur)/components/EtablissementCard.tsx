@@ -2,7 +2,7 @@ import React from "react";
 import { Typography } from "#/app/components/MaterialUINext";
 import { fr } from "@codegouvfr/react-dsfr";
 import { Etablissement } from "#/types/formation";
-import { FormationRoute } from "../prescripteur/details/[id]/page";
+import FormationRoute from "../prescripteur/details/[id]/FormationRoute";
 
 export default function EtablissementCard({
   etablissement,

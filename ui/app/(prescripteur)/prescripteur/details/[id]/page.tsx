@@ -1,17 +1,15 @@
 "use client";
-import React, { Suspense, useMemo } from "react";
+import React, { Suspense } from "react";
 import { css } from "@emotion/css";
-import { CardActionArea, Stack, useTheme } from "@mui/material";
+import { Stack, useTheme } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Typography, Grid } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
-import { getDistance } from "geolib";
 import { formation } from "#/app/api/exposition/formation/query";
-import { formationRoute } from "#/app/api/exposition/formation/route/query";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import { useSearchParams } from "next/navigation";
-import { Etablissement, Formation, FormationDetail, FormationVoie } from "#/types/formation";
+import { Formation } from "#/types/formation";
 import Divider from "#/app/components/Divider";
 import Card from "#/app/components/Card";
 import PortesOuvertesHeader from "./PortesOuvertesHeader";
@@ -22,144 +20,8 @@ import { TagStatut, TagDuree } from "#/app/components/Tag";
 import { TagApprentissage } from "../../FormationCard";
 import { useSize } from "#/app/(prescripteur)/hooks/useSize";
 import DialogMinistage, { modalMinistage } from "#/app/(prescripteur)/components/DialogMinistage";
-import useGetFormations from "#/app/(prescripteur)/hooks/useGetFormations";
-import moment from "moment";
-
-export function FormationDisponible({ formation }: { formation: FormationDetail }) {
-  const { isLoading, formations } = useGetFormations({
-    cfds: [formation.cfd],
-    uais: [formation.uai],
-  });
-  const formationAutreVoie =
-    formation.voie === FormationVoie.SCOLAIRE ? FormationVoie.APPRENTISSAGE : FormationVoie.SCOLAIRE;
-
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  return (
-    formations.find(({ formation: f }) => f.voie === formationAutreVoie) && (
-      <Typography
-        variant={"body2"}
-        style={{
-          borderLeft: "4px solid #6A6AF4",
-          marginTop: fr.spacing("14v"),
-          marginLeft: fr.spacing("8v"),
-          paddingLeft: fr.spacing("8v"),
-        }}
-      >
-        {formation.voie === FormationVoie.APPRENTISSAGE ? (
-          <>Cette formation est aussi disponible en voie scolaire, sans présence en entreprise.</>
-        ) : (
-          <>Cette formation est aussi disponible en alternance.</>
-        )}
-      </Typography>
-    )
-  );
-}
-
-export function FormationRoute({
-  etablissement,
-  longitude,
-  latitude,
-}: {
-  etablissement: Etablissement;
-  longitude?: string | null;
-  latitude?: string | null;
-}) {
-  const address =
-    etablissement.address.street + ", " + etablissement.address.postCode + " " + etablissement.address.city;
-
-  const distance = useMemo(() => {
-    if (!latitude || !longitude) {
-      return null;
-    }
-
-    return getDistance(
-      { latitude: parseFloat(latitude), longitude: parseFloat(longitude) },
-      {
-        latitude: etablissement.coordinate.coordinates[1],
-        longitude: etablissement.coordinate.coordinates[0],
-      },
-      0.01
-    );
-  }, [longitude, latitude, etablissement.coordinate.coordinates]);
-
-  const { isLoading, isError, data } = useQuery({
-    staleTime: Infinity,
-    cacheTime: Infinity,
-    retry: 0,
-    queryKey: [
-      "formation",
-      latitude,
-      longitude,
-      etablissement.coordinate.coordinates[1],
-      etablissement.coordinate.coordinates[0],
-    ],
-    queryFn: ({ signal }) => {
-      if (!latitude || !longitude) {
-        return null;
-      }
-
-      return formationRoute(
-        {
-          latitudeA: latitude,
-          longitudeA: longitude,
-          latitudeB: etablissement.coordinate.coordinates[1],
-          longitudeB: etablissement.coordinate.coordinates[0],
-        },
-        { signal }
-      );
-    },
-  });
-
-  const timeRoute = useMemo(() => {
-    if (!data?.paths) {
-      return null;
-    }
-
-    const legs = data.paths[0].legs;
-    const departure = moment(legs[0].departure_time);
-    const arrival = moment(legs[legs.length - 1].arrival_time);
-    return arrival.diff(departure);
-  }, data);
-
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  return (
-    <>
-      <Typography
-        variant="subtitle2"
-        style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
-      >
-        {timeRoute !== null && (
-          <>
-            <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
-            {(timeRoute / 1000 / 60).toFixed(0)} minutes
-          </>
-        )}
-        {!data?.paths && distance !== null && (
-          <>
-            <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
-            {(distance / 1000).toFixed(2)} km
-          </>
-        )}
-
-        <a
-          style={{ marginLeft: fr.spacing("3v") }}
-          href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-            latitude + "," + longitude
-          )}&destination=${encodeURIComponent(address)}&travelmode=transit`}
-          target="_blank"
-        >
-          Voir le trajet
-        </a>
-      </Typography>
-    </>
-  );
-}
+import FormationRoute from "./FormationRoute";
+import FormationDisponible from "./FormationDisponible";
 
 function FormationDetails({ formation: { formation, etablissement, bcn } }: { formation: Formation }) {
   const searchParams = useSearchParams();
