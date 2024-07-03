@@ -13,14 +13,29 @@ export function TagApprentissage({ formationDetail }: { formationDetail: Formati
   return (
     formationDetail.voie === "apprentissage" && (
       <Tag
-        square
         variant="yellow"
+        square
         style={{
           fontWeight: 700,
         }}
       >
-        {formationDetail.voie.toUpperCase()}
+        EN ALTERNANCE
       </Tag>
+    )
+  );
+}
+
+export function LabelApprentissage({ formationDetail }: { formationDetail: FormationDetail }) {
+  return (
+    formationDetail.voie === "apprentissage" && (
+      <Typography
+        style={{
+          fontSize: "16px",
+          color: "var(--warning-425-625-hover)",
+        }}
+      >
+        Alternance
+      </Typography>
     )
   );
 }
@@ -54,15 +69,13 @@ export default function FormationCard({
       link={`/details/${key}?latitude=${latitude}&longitude=${longitude}&${getUrlParams()}`}
       linkTarget="_blank"
     >
-      <Typography style={{ marginBottom: fr.spacing("3v") }} variant="subtitle2">
-        {bcn.libelle_long}
-      </Typography>
+      <Typography variant="subtitle2">{bcn.libelle_long}</Typography>
       <Stack spacing={1} style={{ marginBottom: fr.spacing("3v") }}>
         <FormationTags tags={formationDetail.tags} />
-        <TagApprentissage formationDetail={formationDetail} />
+        <LabelApprentissage formationDetail={formationDetail} />
       </Stack>
 
-      <Typography style={{ color: "#3A3A3A", fontWeight: 700, marginBottom: fr.spacing("5v") }}>
+      <Typography variant={"body2"} style={{ color: "#3A3A3A", lineHeight: "24px", marginBottom: fr.spacing("5v") }}>
         {etablissement.libelle}
       </Typography>
 

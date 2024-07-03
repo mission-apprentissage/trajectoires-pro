@@ -1,14 +1,19 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useRef } from "react";
 import dynamic from "next/dynamic";
-import { LeafletHomeIcon, LeafletEtablissementIcon, LeafletSelectedEtablissementIcon } from "#/app/components/Map";
+import {
+  LeafletHomeIcon,
+  LeafletEtablissementIcon,
+  LeafletSelectedEtablissementIcon,
+  FitBound,
+} from "#/app/components/Map";
 import { Etablissement, Formation } from "#/types/formation";
-import { LatLngTuple } from "leaflet";
+import { FeatureGroup } from "react-leaflet";
 
 const Map = dynamic(() => import("#/app/components/Map"), { ssr: false });
 const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false });
-const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
-const Tooltip = dynamic(() => import("react-leaflet").then((mod) => mod.Tooltip), { ssr: false });
+//const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
+//const Tooltip = dynamic(() => import("react-leaflet").then((mod) => mod.Tooltip), { ssr: false });
 
 export default function FormationsMap({
   latitude,
@@ -23,33 +28,30 @@ export default function FormationsMap({
   selected?: Formation | null;
   onMarkerClick?: (etablissement: Etablissement) => void;
 }) {
-  const selectedCoordinate: LatLngTuple | null = useMemo(() => {
-    return selected
-      ? [selected.etablissement.coordinate.coordinates[1], selected.etablissement.coordinate.coordinates[0]]
-      : null;
-  }, [selected]);
+  const groupRef = useRef<L.FeatureGroup>(null);
 
   return (
-    <Map center={selectedCoordinate ? selectedCoordinate : [latitude, longitude]}>
-      {etablissements.map((etablissement: Etablissement) => {
-        const key = `marker_${etablissement.uai}`;
-        const coordinate = etablissement.coordinate.coordinates;
-        const isSelected = selected?.etablissement.uai === etablissement.uai;
+    <Map center={[latitude, longitude]}>
+      <FeatureGroup ref={groupRef}>
+        {etablissements.map((etablissement: Etablissement) => {
+          const key = `marker_${etablissement.uai}`;
+          const coordinate = etablissement.coordinate.coordinates;
+          const isSelected = selected?.etablissement.uai === etablissement.uai;
 
-        return (
-          <Marker
-            icon={isSelected ? LeafletSelectedEtablissementIcon : LeafletEtablissementIcon}
-            zIndexOffset={isSelected ? 10500 : 0}
-            key={key}
-            position={[coordinate[1], coordinate[0]]}
-            bubblingMouseEvents={false}
-            eventHandlers={{
-              click: (e) => {
-                onMarkerClick && onMarkerClick(etablissement);
-              },
-            }}
-          >
-            {/* <Popup>{etablissement.libelle}</Popup>
+          return (
+            <Marker
+              icon={isSelected ? LeafletSelectedEtablissementIcon : LeafletEtablissementIcon}
+              zIndexOffset={isSelected ? 10500 : 0}
+              key={key}
+              position={[coordinate[1], coordinate[0]]}
+              bubblingMouseEvents={false}
+              eventHandlers={{
+                click: (e) => {
+                  onMarkerClick && onMarkerClick(etablissement);
+                },
+              }}
+            >
+              {/* <Popup>{etablissement.libelle}</Popup>
             <Tooltip>
               <div style={{ width: "300px" }}>
                 <Typography sx={{ whiteSpace: "pre-line" }} variant="subtitle1">
@@ -66,15 +68,17 @@ export default function FormationsMap({
                 </Typography>
               </div>
             </Tooltip> */}
-          </Marker>
-        );
-      })}
+            </Marker>
+          );
+        })}
 
-      <Marker icon={LeafletHomeIcon} zIndexOffset={10000} position={[latitude, longitude]}>
-        {/* <Tooltip>
+        <Marker icon={LeafletHomeIcon} zIndexOffset={10000} position={[latitude, longitude]}>
+          {/* <Tooltip>
           <Typography variant="subtitle1">Ma position</Typography>
         </Tooltip> */}
-      </Marker>
+        </Marker>
+      </FeatureGroup>
+      <FitBound groupRef={groupRef} />
     </Map>
   );
 }

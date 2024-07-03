@@ -3,8 +3,8 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
-import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ZoomControl, useMap } from "react-leaflet";
+import { ReactNode, RefObject, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ZoomControl, useMap, useMapEvent } from "react-leaflet";
 import { DivIcon, LatLngTuple } from "leaflet";
 import { renderToString } from "react-dom/server";
 import dynamic from "next/dynamic";
@@ -33,8 +33,8 @@ export const LeafletEtablissementIcon = new DivIcon({
 });
 
 export const LeafletSelectedEtablissementIcon = new DivIcon({
-  iconSize: [52, 58],
-  iconAnchor: [26, 58],
+  iconSize: [58, 64],
+  iconAnchor: [29, 64],
   popupAnchor: [-3, -76],
   className: "custom-leaflet-icon color-grey leaflet-icon-selected",
   html: renderToString(<EtablissementIcon />),
@@ -78,6 +78,32 @@ const RecenterAutomatically = ({ position }: { position: LatLngTuple }) => {
 function PreventFocus() {
   const map = useMap();
   map.getContainer().focus = () => {};
+  return null;
+}
+
+export function FitBound({ groupRef }: { groupRef: RefObject<L.FeatureGroup> }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const map = useMapEvent("layeradd", () => {
+    if (!groupRef?.current) {
+      return;
+    }
+
+    const bounds = groupRef.current.getBounds();
+    if (bounds.isValid()) {
+      if (isLoading) {
+        setIsLoading(false);
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (isLoading || !groupRef?.current) {
+      return;
+    }
+
+    const bounds = groupRef.current.getBounds();
+    map.fitBounds(bounds);
+  }, [isLoading]);
   return null;
 }
 

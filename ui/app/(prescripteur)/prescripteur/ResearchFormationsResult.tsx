@@ -76,7 +76,7 @@ export default function ResearchFormationsResult({
   const formationsRef = useMemo(() => formations.map((data) => React.createRef<HTMLDivElement>()), [formations]);
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader withMargin />;
   }
 
   return (
@@ -89,7 +89,8 @@ export default function ResearchFormationsResult({
         <Grid
           item
           sm={12}
-          md={expandMap === true ? 6 : 2}
+          lg={expandMap === true ? 6 : 6}
+          xl={expandMap === true ? 6 : 4}
           className={css`
             width: 100%;
             top: 0;
@@ -127,16 +128,17 @@ export default function ResearchFormationsResult({
               }
 
               const formation = formations[formationIndex];
-              const formationRef = formationsRef[formationIndex];
+              //const formationRef = formationsRef[formationIndex];
               setSelected(formation);
-              formationRef?.current && formationRef?.current.scrollIntoView({ behavior: "smooth", block: "start" });
+              //formationRef?.current && formationRef?.current.scrollIntoView({ behavior: "smooth", block: "start" });
             }}
           />
         </Grid>
 
         <Grid
           item
-          md={expandMap === true ? 6 : 10}
+          lg={expandMap === true ? 6 : 6}
+          xl={expandMap === true ? 6 : 8}
           sm={12}
           className={css`
             padding: ${fr.spacing("5v")};
@@ -177,13 +179,13 @@ export default function ResearchFormationsResult({
               <Typography>Bonne recherche !</Typography>
             </InformationCard>
           ) : (
-            <Grid container spacing={4}>
+            <Grid container spacing={2}>
               {formations.map((formation, index) => {
                 const formationDetail = formation.formation;
                 const isSelected = selected ? selected.formation._id === formationDetail._id : false;
                 const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
                 return (
-                  <Grid item sm={12} md={4} key={key} ref={formationsRef[index]}>
+                  <Grid item sm={12} lg={6} xl={4} key={key} ref={formationsRef[index]}>
                     <FormationCard
                       selected={isSelected}
                       onMouseEnter={() => {

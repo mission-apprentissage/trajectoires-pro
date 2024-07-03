@@ -298,7 +298,7 @@ function ResearchFormationResult({ id }: { id: string }) {
   });
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader withMargin />;
   }
 
   if (isError || !data) {
