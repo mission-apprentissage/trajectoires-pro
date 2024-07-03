@@ -83,6 +83,7 @@ function PreventFocus() {
 
 export function FitBound({ groupRef }: { groupRef: RefObject<L.FeatureGroup> }) {
   const [isLoading, setIsLoading] = useState(true);
+
   const map = useMapEvent("layeradd", () => {
     if (!groupRef?.current) {
       return;
@@ -95,6 +96,19 @@ export function FitBound({ groupRef }: { groupRef: RefObject<L.FeatureGroup> }) 
       }
     }
   });
+
+  useEffect(() => {
+    if (!groupRef?.current) {
+      return;
+    }
+
+    const bounds = groupRef.current.getBounds();
+    if (bounds.isValid()) {
+      if (isLoading) {
+        setIsLoading(false);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (isLoading || !groupRef?.current) {
