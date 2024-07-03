@@ -34,7 +34,7 @@ export default function FormationRoute({
       },
       0.01
     );
-  }, [longitude, latitude, etablissement.coordinate.coordinates]);
+  }, [longitude, latitude, etablissement.coordinate.coordinates[1], etablissement.coordinate.coordinates[0]]);
 
   const { isLoading, isError, data } = useQuery({
     staleTime: Infinity,
@@ -73,7 +73,7 @@ export default function FormationRoute({
     const departure = moment(legs[0].departure_time);
     const arrival = moment(legs[legs.length - 1].arrival_time);
     return arrival.diff(departure);
-  }, data);
+  }, [data]);
 
   if (isLoading) {
     return <Loader />;

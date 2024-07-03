@@ -30,21 +30,17 @@ export default function DialogMinistage() {
         <Typography variant={"body1"} style={{ marginBottom: fr.spacing("3v") }}>
           L’inscription se fait exclusivement par votre collège ou votre établissement:
         </Typography>
-        <Typography variant={"body1"} style={{ marginBottom: fr.spacing("3v") }}>
-          <ul>
-            <li style={{ fontWeight: 700 }}>
-              Contacter le professeur principal, la C.P.E ou la direction de l’établissement de scolarisation actuel;
-            </li>
-            <li style={{ fontWeight: 700 }}>Inscription par votre collège ou votre Lycée.</li>
-            <li>
-              Signature d’une convention par les responsables légaux, le principal du collège et le proviseur du Lycée.
-            </li>
-            <li>Le lycée retourne cette convention remplie et signée à l’établissement de scolarisation actuel;</li>
-            <li>
-              L’établissement de scolarisation actuel fait signer la convention par sa direction et par la famille.
-            </li>
-          </ul>
-        </Typography>
+        <ul style={{ fontSize: "18px", marginBottom: fr.spacing("3v") }}>
+          <li style={{ fontWeight: 700 }}>
+            Contacter le professeur principal, la C.P.E ou la direction de l’établissement de scolarisation actuel;
+          </li>
+          <li style={{ fontWeight: 700 }}>Inscription par votre collège ou votre Lycée.</li>
+          <li>
+            Signature d’une convention par les responsables légaux, le principal du collège et le proviseur du Lycée.
+          </li>
+          <li>Le lycée retourne cette convention remplie et signée à l’établissement de scolarisation actuel;</li>
+          <li>L’établissement de scolarisation actuel fait signer la convention par sa direction et par la famille.</li>
+        </ul>
         <Typography variant={"body1"} style={{ marginBottom: fr.spacing("12v") }}>
           Les formulaires d’inscription et les conventions ne sont en aucun cas à renvoyer aux lycées par les familles.
         </Typography>

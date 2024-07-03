@@ -8,6 +8,7 @@ import { TagPortesOuvertes } from "../components/PortesOuvertes";
 import Card from "#/app/components/Card";
 import FormationTags from "../components/FormationTags";
 import { useFormationsSearch } from "../context/FormationsSearchContext";
+import { useFormationLink } from "../hooks/useFormationLink";
 
 export function TagApprentissage({ formationDetail }: { formationDetail: FormationDetail }) {
   return (
@@ -55,9 +56,8 @@ export default function FormationCard({
   onMouseEnter?: Function;
   onMouseLeave?: Function;
 }) {
-  const { getUrlParams } = useFormationsSearch();
   const { formation: formationDetail, etablissement, bcn } = formation;
-  const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
+  const formationLink = useFormationLink({ formation: formationDetail });
 
   return (
     <Card
@@ -66,7 +66,7 @@ export default function FormationCard({
         onMouseEnter: () => onMouseEnter && onMouseEnter(),
         onMouseLeave: () => onMouseLeave && onMouseLeave(),
       }}
-      link={`/details/${key}?latitude=${latitude}&longitude=${longitude}&${getUrlParams()}`}
+      link={formationLink}
       linkTarget="_blank"
     >
       <Typography variant="subtitle2">{bcn.libelle_long}</Typography>
