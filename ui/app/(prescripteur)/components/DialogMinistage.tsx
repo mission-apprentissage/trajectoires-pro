@@ -7,31 +7,17 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Divider from "#/app/components/Divider";
 import Button from "#/app/components/Button";
 
-export default function DialogMinistage({ onClose, open }: { onClose: () => void; open: boolean }) {
-  const handleClose = () => {
-    onClose();
-  };
+import { createModal } from "@codegouvfr/react-dsfr/Modal";
 
+export const modalMinistage = createModal({
+  id: "ministage-modal",
+  isOpenedByDefault: false,
+});
+
+export default function DialogMinistage() {
   return (
-    <Dialog onClose={handleClose} open={open} fullWidth={true} maxWidth={"md"}>
-      <DialogTitle>Information</DialogTitle>
-      <Button
-        style={{
-          position: "absolute",
-          right: 8,
-          top: 8,
-        }}
-        onClick={handleClose}
-        priority="tertiary no outline"
-      >
-        Fermer X
-      </Button>
-
-      <Divider noMargin></Divider>
-      <Container>
-        <Typography variant={"h4"} style={{ marginBottom: fr.spacing("3v") }}>
-          Qu’est ce qu’un mini-stage dans un lycée ?
-        </Typography>
+    <>
+      <modalMinistage.Component title="Qu’est ce qu’un mini-stage ?">
         <Typography variant={"body1"} style={{ marginBottom: fr.spacing("12v") }}>
           C’est une immersion dans une formation proposer par le lycée.
           <br />
@@ -69,7 +55,7 @@ export default function DialogMinistage({ onClose, open }: { onClose: () => void
         <Typography variant={"body1"} style={{ marginBottom: fr.spacing("12v") }}>
           Une demi-journée, ou une journée voire deux.
         </Typography>
-      </Container>
-    </Dialog>
+      </modalMinistage.Component>
+    </>
   );
 }

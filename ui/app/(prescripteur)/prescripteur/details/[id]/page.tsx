@@ -21,7 +21,7 @@ import WidgetSiriusEtablissement from "#/app/(prescripteur)/components/WidgetSir
 import { TagStatut, TagDuree } from "#/app/components/Tag";
 import { TagApprentissage } from "../../FormationCard";
 import { useSize } from "#/app/(prescripteur)/hooks/useSize";
-import DialogMinistage from "#/app/(prescripteur)/components/DialogMinistage";
+import DialogMinistage, { modalMinistage } from "#/app/(prescripteur)/components/DialogMinistage";
 import useGetFormations from "#/app/(prescripteur)/hooks/useGetFormations";
 import moment from "moment";
 
@@ -39,7 +39,15 @@ function FormationDisponible({ formation }: { formation: FormationDetail }) {
 
   return (
     formations.find(({ formation: f }) => f.voie === formationAutreVoie) && (
-      <Typography variant={"body2"} style={{ borderLeft: "4px solid #6A6AF4", paddingLeft: fr.spacing("8v") }}>
+      <Typography
+        variant={"body2"}
+        style={{
+          borderLeft: "4px solid #6A6AF4",
+          marginTop: fr.spacing("14v"),
+          marginLeft: fr.spacing("8v"),
+          paddingLeft: fr.spacing("8v"),
+        }}
+      >
         {formation.voie === FormationVoie.APPRENTISSAGE ? (
           <>Cette formation est aussi disponible en voie scolaire, sans présence en entreprise.</>
         ) : (
@@ -163,8 +171,6 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
   const refHeader = React.useRef<HTMLElement>(null);
   const stickyHeaderSize = useSize(refHeader);
 
-  const [openDialogMinistage, setOpenDialogMinistage] = React.useState(false);
-
   return (
     <Container style={{ marginTop: fr.spacing("5v") }} maxWidth={"xl"}>
       <Grid container>
@@ -219,19 +225,16 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
               <Grid container>
                 <Grid item xs={12} md={6}>
                   <FormationRoute etablissement={etablissement} latitude={latitude} longitude={longitude} />
+                  <FormationDisponible formation={formation} />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Card
-                    actionProps={{ onClick: () => setOpenDialogMinistage(true) }}
-                    style={{ marginBottom: fr.spacing("8v") }}
-                  >
+                  <Card actionProps={modalMinistage.buttonProps} style={{ marginBottom: fr.spacing("8v") }}>
                     <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625-hover)" }}>
                       <i className={fr.cx("fr-icon-calendar-2-line")} style={{ marginRight: fr.spacing("1w") }} />
                       Pensez aux visites et ministages
                     </Typography>
                   </Card>
-                  <DialogMinistage open={openDialogMinistage} onClose={() => setOpenDialogMinistage(false)} />
-                  <FormationDisponible formation={formation} />
+
                   {/* <Card>
                     <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625)" }}>
                       <i className={fr.cx("ri-profile-line")} style={{ marginRight: fr.spacing("1w") }} />
@@ -282,6 +285,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
           </Grid>
         </Grid>
       </Grid>
+      <DialogMinistage />
     </Container>
   );
 }
