@@ -25,7 +25,7 @@ import DialogMinistage, { modalMinistage } from "#/app/(prescripteur)/components
 import useGetFormations from "#/app/(prescripteur)/hooks/useGetFormations";
 import moment from "moment";
 
-function FormationDisponible({ formation }: { formation: FormationDetail }) {
+export function FormationDisponible({ formation }: { formation: FormationDetail }) {
   const { isLoading, formations } = useGetFormations({
     cfds: [formation.cfd],
     uais: [formation.uai],
@@ -58,7 +58,7 @@ function FormationDisponible({ formation }: { formation: FormationDetail }) {
   );
 }
 
-function FormationRoute({
+export function FormationRoute({
   etablissement,
   longitude,
   latitude,

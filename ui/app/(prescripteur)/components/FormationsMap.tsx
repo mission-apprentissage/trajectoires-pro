@@ -9,11 +9,12 @@ import {
 } from "#/app/components/Map";
 import { Etablissement, Formation } from "#/types/formation";
 import { FeatureGroup } from "react-leaflet";
+import EtablissementCard from "./EtablissementCard";
 
 const Map = dynamic(() => import("#/app/components/Map"), { ssr: false });
 const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false });
-//const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
-//const Tooltip = dynamic(() => import("react-leaflet").then((mod) => mod.Tooltip), { ssr: false });
+const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
+const Tooltip = dynamic(() => import("react-leaflet").then((mod) => mod.Tooltip), { ssr: false });
 
 export default function FormationsMap({
   latitude,
@@ -51,23 +52,13 @@ export default function FormationsMap({
                 },
               }}
             >
-              {/* <Popup>{etablissement.libelle}</Popup>
-            <Tooltip>
-              <div style={{ width: "300px" }}>
-                <Typography sx={{ whiteSpace: "pre-line" }} variant="subtitle1">
-                  {etablissement.libelle}
-                </Typography>
-                {etablissement.accessTime && (
-                  <Typography variant="body1">
-                    À moins de {Math.round(etablissement.accessTime / 60)} minutes
-                  </Typography>
-                )}
-                <Typography variant="body1">{etablissement.address.street}</Typography>
-                <Typography variant="body1">
-                  {etablissement.address.postCode} {etablissement.address.city}
-                </Typography>
-              </div>
-            </Tooltip> */}
+              <Popup>
+                <EtablissementCard
+                  etablissement={etablissement}
+                  latitude={latitude.toString()}
+                  longitude={longitude.toString()}
+                />
+              </Popup>
             </Marker>
           );
         })}
