@@ -47,9 +47,9 @@ export default function FormationDisponible({ formation }: { formation: Formatio
           `}
         >
           {formation.voie === FormationVoie.APPRENTISSAGE ? (
-            <>Cette formation est aussi disponible en voie scolaire.</>
+            <>Cette formation est aussi disponible en voie scolaire. ⓘ</>
           ) : (
-            <>Cette formation est aussi disponible en alternance.</>
+            <>Cette formation est aussi disponible en alternance. ⓘ</>
           )}
         </Typography>
       </Link>

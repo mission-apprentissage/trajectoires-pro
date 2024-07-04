@@ -86,20 +86,19 @@ export default function FormationRoute({
         style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
       >
         {timeRoute !== null && (
-          <>
+          <span style={{ marginRight: fr.spacing("3v") }}>
             <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
             {(timeRoute / 1000 / 60).toFixed(0)} minutes
-          </>
+          </span>
         )}
         {!data?.paths && distance !== null && (
-          <>
+          <span style={{ marginRight: fr.spacing("3v") }}>
             <i className={fr.cx("fr-icon-bus-fill")} style={{ marginRight: fr.spacing("1w") }} />A{" "}
             {(distance / 1000).toFixed(2)} km
-          </>
+          </span>
         )}
 
         <a
-          style={{ marginLeft: fr.spacing("3v") }}
           href={`https://www.google.com/maps/dir/?api=1&origin=${
             latitude && longitude ? encodeURIComponent(latitude + "," + longitude) : ""
           }&destination=${encodeURIComponent(address)}&travelmode=transit`}

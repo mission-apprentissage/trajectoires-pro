@@ -16,7 +16,6 @@ export default function EtablissementCard({
   return (
     <>
       <Typography variant="h5" style={{ marginBottom: fr.spacing("3v") }}>
-        <i className={fr.cx("fr-icon-map-pin-2-line")} style={{ marginRight: fr.spacing("1w") }} />
         {etablissement.libelle}
         {etablissement.url && <a style={{ marginLeft: fr.spacing("3v") }} href={etablissement.url} target="_blank"></a>}
       </Typography>

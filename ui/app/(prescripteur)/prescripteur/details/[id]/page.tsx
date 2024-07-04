@@ -22,6 +22,7 @@ import { useSize } from "#/app/(prescripteur)/hooks/useSize";
 import DialogMinistage, { modalMinistage } from "#/app/(prescripteur)/components/DialogMinistage";
 import FormationRoute from "./FormationRoute";
 import FormationDisponible from "./FormationDisponible";
+import Link from "#/app/components/Link";
 
 function FormationDetails({ formation: { formation, etablissement, bcn } }: { formation: Formation }) {
   const searchParams = useSearchParams();
@@ -76,10 +77,16 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
             </Grid>
             <Grid item xs={12} style={{ paddingLeft: fr.spacing("5v") }}>
               <Typography variant="h5" style={{ marginBottom: fr.spacing("3v") }}>
-                <i className={fr.cx("fr-icon-map-pin-2-line")} style={{ marginRight: fr.spacing("1w") }} />
-                {etablissement.libelle}
-                {etablissement.url && (
-                  <a style={{ marginLeft: fr.spacing("3v") }} href={etablissement.url} target="_blank"></a>
+                {etablissement.url ? (
+                  <Link style={{ backgroundImage: "none" }} noIcon target="_blank" href={etablissement.url}>
+                    {etablissement.libelle}
+                    <i
+                      className={"link-underline fr-icon--sm " + fr.cx("ri-external-link-line")}
+                      style={{ marginLeft: fr.spacing("3v") }}
+                    />
+                  </Link>
+                ) : (
+                  etablissement.libelle
                 )}
               </Typography>
             </Grid>
