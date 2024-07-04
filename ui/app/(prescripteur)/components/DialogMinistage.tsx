@@ -18,39 +18,25 @@ export default function DialogMinistage() {
   return (
     <>
       <modalMinistage.Component title="Qu’est ce qu’un mini-stage ?">
-        <Typography variant={"body1"} style={{ marginBottom: fr.spacing("12v") }}>
-          C’est une immersion dans une formation proposer par le lycée.
+        <p style={{ marginBottom: fr.spacing("8v") }}>
+          Le mini-stage est une <b>session d’immersion</b> destinée aux élèves de 3ème et de 2nde professionnelle, d’une
+          durée généralement comprise <b>entre une demi-journée et 2 jours</b>, dans une classe de la formation choisie.
           <br />
-          Une solution idéale pour rencontrer sur courte durée les professeurs d’atelier et d’enseignement général ainsi
-          que pour découvrir l’ambiance d’un lycée.
-        </Typography>
+          <br />
+          Le stagiaire suit les cours, théoriques ou pratiques, de la formation professionnelle. Il peut ainsi
+          rencontrer des professeurs, dispensant les ateliers ou l’enseignement général, et des élèves.
+          <br />
+          <br />
+          Le stage est donc l’occasion d’avoir un aperçu des sujets abordés en cours, de découvrir le quotidien au sein
+          de la formation et l’ambiance au sein de l’établissement.
+        </p>
         <Typography variant={"h4"} style={{ marginBottom: fr.spacing("3v") }}>
-          Comment s’inscrire à un mini-stage ?
+          Comment s’inscrire ?
         </Typography>
-        <Typography variant={"body1"} style={{ marginBottom: fr.spacing("3v") }}>
-          L’inscription se fait exclusivement par votre collège ou votre établissement:
-        </Typography>
-        <ul style={{ fontSize: "18px", marginBottom: fr.spacing("3v") }}>
-          <li style={{ fontWeight: 700 }}>
-            Contacter le professeur principal, la C.P.E ou la direction de l’établissement de scolarisation actuel;
-          </li>
-          <li style={{ fontWeight: 700 }}>Inscription par votre collège ou votre Lycée.</li>
-          <li>
-            Signature d’une convention par les responsables légaux, le principal du collège et le proviseur du Lycée.
-          </li>
-          <li>Le lycée retourne cette convention remplie et signée à l’établissement de scolarisation actuel;</li>
-          <li>L’établissement de scolarisation actuel fait signer la convention par sa direction et par la famille.</li>
-        </ul>
-        <Typography variant={"body1"} style={{ marginBottom: fr.spacing("12v") }}>
-          Les formulaires d’inscription et les conventions ne sont en aucun cas à renvoyer aux lycées par les familles.
-        </Typography>
-
-        <Typography variant={"h4"} style={{ marginBottom: fr.spacing("3v") }}>
-          Quelle durée du mini-stage ?
-        </Typography>
-        <Typography variant={"body1"} style={{ marginBottom: fr.spacing("12v") }}>
-          Une demi-journée, ou une journée voire deux.
-        </Typography>
+        <p style={{ marginBottom: fr.spacing("3v") }}>
+          L’inscription se fait exclusivement via le collège dans lequel est scolarisé l’élève. Il doit donc commencer
+          par en parler avec son professeur principal, CPE ou directeur d’établissement.
+        </p>
       </modalMinistage.Component>
     </>
   );

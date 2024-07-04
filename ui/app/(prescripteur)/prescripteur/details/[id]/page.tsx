@@ -82,7 +82,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
                   <Link style={{ backgroundImage: "none" }} noIcon target="_blank" href={etablissement.url}>
                     {etablissement.libelle}
                     <i
-                      className={"link-underline fr-icon--sm " + fr.cx("ri-external-link-line")}
+                      className={"fr-icon--sm " + fr.cx("ri-external-link-line")}
                       style={{ marginLeft: fr.spacing("3v") }}
                     />
                   </Link>
@@ -129,7 +129,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
                   >
                     <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625-hover)" }}>
                       <i className={fr.cx("fr-icon-calendar-2-line")} style={{ marginRight: fr.spacing("2v") }} />
-                      Pensez aux visites et ministages
+                      Découvrir la formation lors d’un mini-stage
                     </Typography>
                   </Card>
                   {/* <Card>
