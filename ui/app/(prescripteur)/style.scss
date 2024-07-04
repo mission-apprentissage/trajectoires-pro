@@ -58,3 +58,7 @@ form[target=_blank]::after {
     transition: background-size 0s;
     background-size: var(--underline-hover-width) calc(var(--underline-thickness)* 2), var(--underline-idle-width) var(--underline-thickness);
 }
+
+.leaflet-container a {
+    color: none;
+}

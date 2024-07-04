@@ -10,6 +10,8 @@ import {
   THRESHOLD_EN_EMPLOI,
   THRESHOLD_EN_ETUDE,
 } from "#/app/(prescripteur)/constants/constants";
+import { css } from "@emotion/css";
+import { useTheme } from "@mui/material/styles";
 function FormationResumeBlock({
   title,
   icon,
@@ -175,10 +177,20 @@ export default function FormationResume({
   formation: FormationDetail;
   etablissement: Etablissement;
 }) {
+  const theme = useTheme();
+
   return (
-    <Container maxWidth={false} style={{ backgroundColor: "#fff" }}>
+    <Container
+      maxWidth={false}
+      className={css`
+        background-color: #fff;
+        ${theme.breakpoints.down("md")} {
+          margin-left: ${fr.spacing("5v")};
+        }
+      `}
+    >
       <Grid container spacing={2}>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={12} md={3}>
           <FormationResumeBlock title={"La formation"} icon={"ri-graduation-cap-line"}>
             {formation.voie === "scolaire" ? (
               <Tag square variant="purple-light">
@@ -196,13 +208,13 @@ export default function FormationResume({
             )}
           </FormationResumeBlock>
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={12} md={3}>
           <FormationResumeBlockAdmission formation={formation} />
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={12} md={3}>
           <FormationResumeBlockEmploi formation={formation} />
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={12} md={3}>
           <FormationResumeBlockEtude formation={formation} />
         </Grid>
       </Grid>

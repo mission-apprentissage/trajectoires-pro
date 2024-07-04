@@ -34,8 +34,8 @@ export default styled(Container)<ContainerProps>`
     }
 
     return `${theme.breakpoints.down("md")} {
-      padding-left: ${nopadding ? "0" : fr.spacing("1w")};
-      padding-right: ${nopadding ? "0" : fr.spacing("1w")};
+      padding-left: 0; 
+      padding-right: 0;
     }`;
   }}
 

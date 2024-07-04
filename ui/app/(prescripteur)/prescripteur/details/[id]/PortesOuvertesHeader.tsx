@@ -1,5 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
+import { useTheme } from "@mui/material";
+import { css } from "@emotion/css";
 import { Typography } from "#/app/components/MaterialUINext";
 import { fr } from "@codegouvfr/react-dsfr";
 import { Etablissement } from "#/types/formation";
@@ -7,6 +9,7 @@ import { formatPortesOuvertes } from "#/app/(prescripteur)/components/PortesOuve
 import Link from "#/app/components/Link";
 
 const PortesOuvertesHeader = ({ etablissement }: { etablissement: Etablissement }) => {
+  const theme = useTheme();
   const strPortesOuvertes = useMemo(() => formatPortesOuvertes(etablissement), [etablissement]);
   const url = etablissement?.onisep?.id
     ? `https://www.onisep.fr/http/redirection/etablissement/slug/${etablissement.onisep.id}#events`
@@ -15,16 +18,18 @@ const PortesOuvertesHeader = ({ etablissement }: { etablissement: Etablissement 
   const title = strPortesOuvertes ? (
     <Typography
       variant="subtitle1"
-      style={{
-        backgroundColor: strPortesOuvertes.ended ? "var(--background-contrast-grey)" : "#1212FF",
-        fontWeight: 500,
-        color: strPortesOuvertes.ended ? "#3A3A3A" : "#fff",
-        padding: fr.spacing("4v"),
-        paddingLeft: fr.spacing("6v"),
-        paddingRight: fr.spacing("6v"),
-        borderRadius: "4px",
-        marginBottom: fr.spacing("10v"),
-      }}
+      className={css`
+        ${theme.breakpoints.up("sm")} {
+          border-radius: 4px;
+        }
+        font-weight: 500;
+        color: ${strPortesOuvertes.ended ? "#3A3A3A" : "#fff"};
+        background-color: ${strPortesOuvertes.ended ? "var(--background-contrast-grey)" : "#1212FF"};
+        padding: ${fr.spacing("4v")};
+        padding-left: ${fr.spacing("6v")};
+        padding-right: ${fr.spacing("6v")};
+        margin-bottom: ${fr.spacing("10v")};
+      `}
     >
       <i className={fr.cx("fr-icon-calendar-2-line")} style={{ marginRight: fr.spacing("4v") }} />
       {strPortesOuvertes.str}

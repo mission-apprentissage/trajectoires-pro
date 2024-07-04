@@ -90,20 +90,47 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
                 )}
               </Typography>
             </Grid>
-            <Grid item xs={12} style={{ paddingLeft: fr.spacing("5v"), marginBottom: fr.spacing("5v") }}>
+            <Grid
+              item
+              xs={12}
+              className={css`
+                ${theme.breakpoints.down("md")} {
+                  margin-bottom: 0;
+                }
+                margin-bottom: ${fr.spacing("5v")};
+              `}
+            >
               <Grid container>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} style={{ paddingLeft: fr.spacing("5v") }}>
                   <FormationRoute etablissement={etablissement} latitude={latitude} longitude={longitude} />
                   <FormationDisponible formation={formation} />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Card actionProps={modalMinistage.buttonProps} style={{ marginBottom: fr.spacing("8v") }}>
+                  <Divider
+                    variant="middle"
+                    noMargin
+                    className={css`
+                      ${theme.breakpoints.up("md")} {
+                        display: none;
+                      }
+                    `}
+                  />
+                  <Card
+                    actionProps={modalMinistage.buttonProps}
+                    className={css`
+                      margin-bottom: ${fr.spacing("8v")};
+                      ${theme.breakpoints.down("md")} {
+                        border: 0;
+                        margin-bottom: 0;
+                        margin-left: ${fr.spacing("2v")};
+                      }
+                    `}
+                  >
                     <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625-hover)" }}>
-                      <i className={fr.cx("fr-icon-calendar-2-line")} style={{ marginRight: fr.spacing("1w") }} />
+                      <i className={fr.cx("fr-icon-calendar-2-line")} style={{ marginRight: fr.spacing("2v") }} />
                       Pensez aux visites et ministages
                     </Typography>
                   </Card>
-
                   {/* <Card>
                     <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625)" }}>
                       <i className={fr.cx("ri-profile-line")} style={{ marginRight: fr.spacing("1w") }} />
