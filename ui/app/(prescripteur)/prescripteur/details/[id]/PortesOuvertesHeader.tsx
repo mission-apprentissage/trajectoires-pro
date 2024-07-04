@@ -1,7 +1,8 @@
+/** @jsxImportSource @emotion/react */
 "use client";
 import React, { useMemo } from "react";
 import { useTheme } from "@mui/material";
-import { css } from "@emotion/css";
+import { css } from "@emotion/react";
 import { Typography } from "#/app/components/MaterialUINext";
 import { fr } from "@codegouvfr/react-dsfr";
 import { Etablissement } from "#/types/formation";
@@ -18,7 +19,7 @@ const PortesOuvertesHeader = ({ etablissement }: { etablissement: Etablissement 
   const title = strPortesOuvertes ? (
     <Typography
       variant="subtitle1"
-      className={css`
+      css={css`
         ${theme.breakpoints.up("sm")} {
           border-radius: 4px;
         }

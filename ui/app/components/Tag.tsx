@@ -16,7 +16,7 @@ const TagStyled = styled(Tag, {
 })<TagProps>`
   &,
   &.fr-tag {
-    ${({ level }: { level: Level }) => {
+    ${({ level }: { level?: Level }) => {
       const colors = { unknow: "#eeeeee", easy: "#B8FEC9", average: "#fceeac", hard: "#FED7D7" };
       return level ? `background-color: ${colors[level]}` : "";
     }}

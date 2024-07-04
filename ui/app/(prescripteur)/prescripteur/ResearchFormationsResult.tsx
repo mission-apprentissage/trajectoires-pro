@@ -1,6 +1,7 @@
+/** @jsxImportSource @emotion/react */
 "use client";
 import React, { Suspense, useMemo, useState } from "react";
-import { css } from "@emotion/css";
+import { css } from "@emotion/react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { Typography, Grid } from "../../components/MaterialUINext";
 import InformationCard from "#/app/components/InformationCard";
@@ -91,7 +92,7 @@ export default function ResearchFormationsResult({
           sm={12}
           lg={expandMap === true ? 6 : 6}
           xl={expandMap === true ? 6 : 4}
-          className={css`
+          css={css`
             width: 100%;
             top: 0;
             position: sticky;
@@ -140,7 +141,7 @@ export default function ResearchFormationsResult({
           lg={expandMap === true ? 6 : 6}
           xl={expandMap === true ? 6 : 8}
           sm={12}
-          className={css`
+          css={css`
             padding: ${fr.spacing("5v")};
             z-index: 500;
             width: 100%;

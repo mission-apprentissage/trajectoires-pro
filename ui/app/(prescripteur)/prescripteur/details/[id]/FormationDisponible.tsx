@@ -1,8 +1,9 @@
+/** @jsxImportSource @emotion/react */
 "use client";
 import React, { useMemo } from "react";
 import { Typography } from "#/app/components/MaterialUINext";
 import { useTheme } from "@mui/material";
-import { css } from "@emotion/css";
+import { css } from "@emotion/react";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
 import { FormationDetail, FormationVoie } from "#/types/formation";
@@ -30,11 +31,12 @@ export default function FormationDisponible({ formation }: { formation: Formatio
   }
 
   return (
-    autreFormation && (
+    autreFormation &&
+    formationLink && (
       <Link noIcon href={formationLink} target="_blank">
         <Typography
           variant={"body2"}
-          className={css`
+          css={css`
             border-left: 4px solid #6a6af4;
             margin-top: ${fr.spacing("14v")};
             margin-left: ${fr.spacing("8v")};

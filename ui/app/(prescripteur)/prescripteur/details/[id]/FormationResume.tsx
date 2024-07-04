@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 "use client";
 import React from "react";
 import { Typography, Grid, Stack } from "#/app/components/MaterialUINext";
@@ -10,7 +11,7 @@ import {
   THRESHOLD_EN_EMPLOI,
   THRESHOLD_EN_ETUDE,
 } from "#/app/(prescripteur)/constants/constants";
-import { css } from "@emotion/css";
+import { css } from "@emotion/react";
 import { useTheme } from "@mui/material/styles";
 function FormationResumeBlock({
   title,
@@ -182,7 +183,7 @@ export default function FormationResume({
   return (
     <Container
       maxWidth={false}
-      className={css`
+      css={css`
         background-color: #fff;
         ${theme.breakpoints.down("md")} {
           margin-left: ${fr.spacing("5v")};

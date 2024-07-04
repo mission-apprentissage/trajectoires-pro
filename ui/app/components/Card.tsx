@@ -8,7 +8,7 @@ import { CardActionArea, CardActionAreaProps, CardProps as MUICardProps } from "
 
 export type CardProps = Omit<MUICardProps, "title"> & {
   title?: string | JSX.Element | null;
-  link?: string;
+  link?: string | null;
   linkTarget?: string;
   selected?: boolean;
   actionProps?: CardActionAreaProps;

@@ -1,6 +1,7 @@
+/** @jsxImportSource @emotion/react */
 "use client";
 import React, { Suspense } from "react";
-import { css } from "@emotion/css";
+import { css } from "@emotion/react";
 import { Stack, useTheme } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Typography, Grid } from "#/app/components/MaterialUINext";
@@ -43,7 +44,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
         <Grid
           item
           xs={12}
-          className={css`
+          css={css`
             top: 0;
             position: sticky;
             background-color: #fff;
@@ -58,7 +59,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
         <Grid
           item
           xs={12}
-          className={css`
+          css={css`
             ${theme.breakpoints.up("md")} {
               top: ${stickyHeaderSize ? `calc(${stickyHeaderSize.height}px + ${fr.spacing("3v")})` : 0};
               position: sticky;
@@ -93,7 +94,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
             <Grid
               item
               xs={12}
-              className={css`
+              css={css`
                 ${theme.breakpoints.down("md")} {
                   margin-bottom: 0;
                 }
@@ -109,7 +110,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
                   <Divider
                     variant="middle"
                     noMargin
-                    className={css`
+                    css={css`
                       ${theme.breakpoints.up("md")} {
                         display: none;
                       }
@@ -117,7 +118,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
                   />
                   <Card
                     actionProps={modalMinistage.buttonProps}
-                    className={css`
+                    css={css`
                       margin-bottom: ${fr.spacing("8v")};
                       ${theme.breakpoints.down("md")} {
                         border: 0;
@@ -145,7 +146,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
         <Grid
           item
           md={12}
-          className={css`
+          css={css`
             ${theme.breakpoints.up("md")} {
               position: sticky;
               top: ${stickyHeaderSize ? `calc(${stickyHeaderSize.height}px + ${fr.spacing("3v")})` : 0};
