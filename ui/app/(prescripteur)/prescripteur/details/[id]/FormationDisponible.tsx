@@ -38,8 +38,7 @@ export default function FormationDisponible({ formation }: { formation: Formatio
           variant={"body2"}
           css={css`
             border-left: 4px solid #6a6af4;
-            margin-top: ${fr.spacing("14v")};
-            margin-left: ${fr.spacing("8v")};
+            margin-top: ${fr.spacing("8v")};
             padding-left: ${fr.spacing("8v")};
             ${theme.breakpoints.down("md")} {
               margin-top: 0;
