@@ -34,7 +34,7 @@ import { getFormations, buildFiltersEtablissement, buildFiltersFormation } from 
 import { FORMATION_TAG } from "#src/common/constants/formationEtablissement.js";
 import FormationEtablissement from "#src/common/repositories/formationEtablissement.js";
 import Etablissement from "#src/common/repositories/etablissement.js";
-import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
+import { GraphHopperApi, getRouteDate } from "#src/services/graphHopper/graphHopper.js";
 
 async function formationStats({ uai, codeCertificationWithType, millesime }) {
   const { type, code_certification } = codeCertificationWithType;
@@ -397,6 +397,7 @@ export default () => {
       const graphHopperParameter = {
         pointA: `${latitudeA},${longitudeA}`,
         pointB: `${latitudeB},${longitudeB}`,
+        departureTime: getRouteDate(),
       };
       const route = await graphHopperApi.fetchRoute(graphHopperParameter);
 

@@ -1,6 +1,4 @@
-import moment from "moment-timezone";
-
-moment.tz.setDefault("Europe/Paris");
+import moment from "#src/common/utils/dateUtils.js";
 
 export function parseJourneesPortesOuvertes(journeesPortesOuvertes) {
   const dateFormat = "DD/MM/YYYY";

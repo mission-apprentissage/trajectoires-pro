@@ -122,14 +122,15 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
                       margin-bottom: ${fr.spacing("8v")};
                       ${theme.breakpoints.down("md")} {
                         border: 0;
+                        border-radius: 0;
                         margin-bottom: 0;
-                        margin-left: ${fr.spacing("2v")};
+                        padding-left: ${fr.spacing("2v")};
                       }
                     `}
                   >
                     <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625-hover)" }}>
                       <i className={fr.cx("fr-icon-calendar-2-line")} style={{ marginRight: fr.spacing("2v") }} />
-                      Découvrir la formation lors d’un mini-stage
+                      Découvrir la formation lors d’un mini-stage ⓘ
                     </Typography>
                   </Card>
                   {/* <Card>

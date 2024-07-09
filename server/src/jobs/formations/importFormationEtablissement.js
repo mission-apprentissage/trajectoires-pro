@@ -1,9 +1,9 @@
 import { oleoduc, writeData, transformData, mergeStreams, concatStreams, compose, filterData } from "oleoduc";
-import moment from "moment";
 import { omit, pick } from "lodash-es";
 import { upsert } from "#src/common/db/mongodb.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
+import moment from "#src/common/utils/dateUtils.js";
 import { constatRentree } from "#src/services/educationGouv/educationGouv.js";
 import { formationEtablissement } from "#src/common/db/collections/collections.js";
 import BCNMefRepository from "#src/common/repositories/bcnMef.js";

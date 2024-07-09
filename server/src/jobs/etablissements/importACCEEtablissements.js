@@ -1,5 +1,5 @@
 import { oleoduc, writeData } from "oleoduc";
-import moment from "moment-timezone";
+import moment from "#src/common/utils/dateUtils.js";
 import { upsert } from "#src/common/db/mongodb.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { acceEtablissements } from "#src/common/db/collections/collections.js";

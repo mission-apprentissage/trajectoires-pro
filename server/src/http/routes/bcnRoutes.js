@@ -7,7 +7,7 @@ import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
 import { addCsvHeaders, addJsonHeaders } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import moment from "moment-timezone";
+import moment from "#src/common/utils/dateUtils.js";
 
 export default () => {
   const router = express.Router();
@@ -43,8 +43,8 @@ export default () => {
             libelle: (f) => f.libelle,
             libelle_long: (f) => f.libelle_long,
             diplome_libelle: (f) => f.diplome?.libelle,
-            date_ouverture: (f) => moment(f.date_ouverture).tz("Europe/Paris").format(),
-            date_fermerture: (f) => f.date_fermerture && moment(f.date_fermerture).tz("Europe/Paris").format(),
+            date_ouverture: (f) => moment(f.date_ouverture).format(),
+            date_fermerture: (f) => f.date_fermerture && moment(f.date_fermerture).format(),
             date_premiere_session: (f) => f.date_premiere_session,
             date_derniere_session: (f) => f.date_derniere_session,
           },

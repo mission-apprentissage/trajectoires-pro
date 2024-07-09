@@ -32,13 +32,19 @@ function BaseCard({ title, children, className, ...props }: CardProps) {
 export function Card({ title, link, linkTarget, style, children, className, actionProps, ...props }: CardProps) {
   if (link) {
     return (
-      <StyledLink href={link} target={linkTarget} style={style}>
-        <CardActionArea {...actionProps} className={className}>
-          <BaseCard {...props} title={title}>
-            {children}
-          </BaseCard>
-        </CardActionArea>
-      </StyledLink>
+      <CardActionArea
+        {...actionProps}
+        className={className}
+        style={style}
+        onClick={(e) => {
+          window.open(link, linkTarget);
+          props.onClick && props.onClick(e as any);
+        }}
+      >
+        <BaseCard {...props} title={title}>
+          {children}
+        </BaseCard>
+      </CardActionArea>
     );
   }
 

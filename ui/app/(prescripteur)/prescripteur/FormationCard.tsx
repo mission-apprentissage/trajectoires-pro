@@ -48,6 +48,7 @@ export default function FormationCard({
   selected,
   onMouseEnter,
   onMouseLeave,
+  tabIndex,
 }: {
   latitude: number;
   longitude: number;
@@ -55,9 +56,14 @@ export default function FormationCard({
   selected: boolean;
   onMouseEnter?: Function;
   onMouseLeave?: Function;
+  tabIndex: number;
 }) {
   const { formation: formationDetail, etablissement, bcn } = formation;
-  const formationLink = useFormationLink({ formation: formationDetail });
+  const formationLink = useFormationLink({
+    formation: formationDetail,
+    longitude: longitude.toString(),
+    latitude: latitude.toString(),
+  });
 
   return (
     <Card
@@ -68,6 +74,7 @@ export default function FormationCard({
       }}
       link={formationLink}
       linkTarget="_blank"
+      tabIndex={tabIndex}
     >
       <Typography variant="subtitle2">{bcn.libelle_long}</Typography>
       <Stack spacing={1} style={{ marginBottom: fr.spacing("3v") }}>

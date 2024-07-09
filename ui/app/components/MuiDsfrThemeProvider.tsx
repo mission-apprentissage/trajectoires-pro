@@ -30,6 +30,12 @@ const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
             fontSize: 18,
           },
         },
+        MuiTouchRipple: {
+          borderRadius: 0,
+        },
+        MuiCardActionArea: {
+          focusHighlight: 0,
+        },
       }),
       custom: {
         isDarkModeEnabled: isDark,

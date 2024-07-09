@@ -1,6 +1,5 @@
 import { flatMap } from "lodash-es";
-import moment from "moment";
-import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
+import { GraphHopperApi, getRouteDate } from "#src/services/graphHopper/graphHopper.js";
 import * as Cache from "#src/common/cache.js";
 import { etablissement } from "#src/common/db/collections/collections.js";
 import { filterTag } from "./formationTag.js";
@@ -27,7 +26,7 @@ export async function buildFiltersEtablissement({ timeLimit, distance, latitude,
     try {
       const graphHopperParameter = {
         point: `${latitude},${longitude}`,
-        departureTime: moment().set({ hour: 7, minute: 0, second: 0, millisecond: 0 }).toDate(),
+        departureTime: getRouteDate(),
         buckets: buckets.filter((b) => b <= timeLimit),
         reverse_flow: true,
       };

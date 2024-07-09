@@ -195,6 +195,7 @@ export default function ResearchFormationsResult({
                       latitude={latitude}
                       longitude={longitude}
                       formation={formation}
+                      tabIndex={index}
                     />
                   </Grid>
                 );
