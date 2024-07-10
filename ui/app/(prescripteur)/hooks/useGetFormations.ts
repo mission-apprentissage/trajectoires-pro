@@ -66,7 +66,7 @@ export default function useGetFormations({
 
   const fetchNextPage = useCallback(() => {
     hasNextPage && !isFetchingNextPage && !isFetching ? queryFetchNextPage() : null;
-  }, [hasNextPage, isFetchingNextPage, isFetching]);
+  }, [hasNextPage, isFetchingNextPage, isFetching, queryFetchNextPage]);
 
   const formations = useMemo(() => (data ? data.pages.flatMap((page) => page.formations) : []), [data]);
 
@@ -76,7 +76,7 @@ export default function useGetFormations({
       etablissements[formation.etablissement.uai] = formation.etablissement;
     });
     return Object.values(etablissements);
-  }, [data]);
+  }, [formations]);
 
   return { isLoading, fetchNextPage, isFetchingNextPage, formations, etablissements };
 }

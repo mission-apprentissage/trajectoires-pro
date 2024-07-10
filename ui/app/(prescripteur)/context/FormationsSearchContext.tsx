@@ -1,7 +1,6 @@
 import { schema as schemaFormation } from "#/app/components/form/SearchFormationForm";
 import { paramsToString, searchParamsToObject } from "#/app/utils/searchParams";
 import { FormationTag } from "#/types/formation";
-import { mapValues, isNil } from "lodash-es";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createContext, useContext, useCallback } from "react";
 
@@ -34,12 +33,15 @@ const FormationsSearchProvider = ({ children }: { children: React.ReactNode }) =
   const getUrlParams = useCallback(() => {
     const urlSearchParams = paramsToString(params);
     return `${urlSearchParams}`;
-  }, []);
+  }, [params]);
 
-  const updateParams = useCallback((params: FormationsSearchParams) => {
-    const urlSearchParams = paramsToString(params);
-    router.push(`?${urlSearchParams}`);
-  }, []);
+  const updateParams = useCallback(
+    (params: FormationsSearchParams) => {
+      const urlSearchParams = paramsToString(params);
+      router.push(`?${urlSearchParams}`);
+    },
+    [router, params]
+  );
 
   return (
     <FormationsSearchContext.Provider

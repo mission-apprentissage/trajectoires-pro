@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import FormationsSearchProvider, { useFormationsSearch } from "../context/FormationsSearchContext";
 import SearchHeader from "../components/SearchHeader";
+import Title from "../components/Title";
 
 function ResearchFormationsParameter() {
   const { params } = useFormationsSearch();
@@ -50,6 +51,7 @@ function ResearchFormationsParameter() {
 export default function Page() {
   return (
     <>
+      <Title pageTitle="Recherche de formations" />
       <SearchHeader />
       <Suspense>
         <FormationsSearchProvider>

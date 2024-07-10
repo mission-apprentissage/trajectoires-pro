@@ -71,7 +71,7 @@ const RecenterAutomatically = ({ position }: { position: LatLngTuple }) => {
   const map = useMap();
   useEffect(() => {
     map.setView(position);
-  }, [position[0], position[1]]);
+  }, [map, position[0], position[1]]);
   return null;
 };
 

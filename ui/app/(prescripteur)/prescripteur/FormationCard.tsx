@@ -76,7 +76,9 @@ export default function FormationCard({
       linkTarget="_blank"
       tabIndex={tabIndex}
     >
-      <Typography variant="subtitle2">{formationDetail.libelle}</Typography>
+      <Typography variant="subtitle2" style={{ lineHeight: "20px" }}>
+        {formationDetail.libelle}
+      </Typography>
       <Stack spacing={1} style={{ marginBottom: fr.spacing("3v") }}>
         <FormationTags tags={formationDetail.tags} />
         <LabelApprentissage formationDetail={formationDetail} />

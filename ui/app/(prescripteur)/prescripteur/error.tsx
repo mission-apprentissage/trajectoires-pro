@@ -17,7 +17,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
       reset();
     }
     setOriginalUrl({ pathname, searchParams });
-  }, [pathname, searchParams]);
+  }, [reset, originalUrl, pathname, searchParams]);
 
   return (
     <Container>

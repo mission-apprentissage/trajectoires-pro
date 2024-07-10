@@ -4,7 +4,7 @@ import StartDsfr from "#/app/StartDsfr";
 import { defaultColorScheme } from "#/app/defaultColorScheme";
 import Link from "next/link";
 
-export default function RootLayout({ title, children }: { title: string; children: JSX.Element }) {
+export default function RootLayout({ title, children }: { title?: string; children: JSX.Element }) {
   const lang = "fr";
 
   return (
@@ -18,7 +18,7 @@ export default function RootLayout({ title, children }: { title: string; childre
       suppressHydrationWarning={true}
     >
       <head>
-        <title>{title}</title>
+        {title && <title>{title}</title>}
         <StartDsfr />
         <DsfrHead
           Link={Link}

@@ -22,7 +22,7 @@ export default function FormationDisponible({ formation }: { formation: Formatio
 
   const autreFormation = useMemo(
     () => formations.find(({ formation: f }) => f.voie === formationAutreVoie && f.duree == formation.duree),
-    [formations, formation]
+    [formations, formation, formationAutreVoie]
   );
   const formationLink = useFormationLink({ formation: autreFormation?.formation });
 

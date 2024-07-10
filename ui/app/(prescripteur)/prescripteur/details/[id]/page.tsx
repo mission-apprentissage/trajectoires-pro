@@ -9,7 +9,7 @@ import Container from "#/app/components/Container";
 import { formation } from "#/app/api/exposition/formation/query";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
-import { useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import { Formation } from "#/types/formation";
 import Divider from "#/app/components/Divider";
 import Card from "#/app/components/Card";
@@ -24,6 +24,7 @@ import DialogMinistage, { modalMinistage } from "#/app/(prescripteur)/components
 import FormationRoute from "./FormationRoute";
 import FormationDisponible from "./FormationDisponible";
 import Link from "#/app/components/Link";
+import Title from "#/app/(prescripteur)/components/Title";
 
 function FormationDetails({ formation: { formation, etablissement } }: { formation: Formation }) {
   const searchParams = useSearchParams();
@@ -204,10 +205,17 @@ function ResearchFormationResult({ id }: { id: string }) {
   }
 
   if (isError || !data) {
-    return <>Formation not found</>;
+    return notFound();
   }
 
-  return <FormationDetails formation={data} />;
+  return (
+    <>
+      <Title
+        pageTitle={`Détails de la formation ${data.formation.libelle} dans l'établissement ${data.etablissement.libelle}`}
+      />
+      <FormationDetails formation={data} />
+    </>
+  );
 }
 
 export default function Page({ params }: { params: { id: string } }) {
