@@ -231,7 +231,6 @@ export default () => {
           name: "stats",
           theme,
           data,
-          options,
           plausibleCustomProperties: {
             type: "formation",
             uai,
@@ -247,7 +246,6 @@ export default () => {
           hash,
           name: "error",
           theme,
-          options,
           data: {
             error: err.name,
             millesimes: formatMillesime(millesime).split("_"),
