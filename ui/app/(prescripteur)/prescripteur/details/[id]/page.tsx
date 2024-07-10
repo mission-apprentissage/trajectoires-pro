@@ -25,7 +25,7 @@ import FormationRoute from "./FormationRoute";
 import FormationDisponible from "./FormationDisponible";
 import Link from "#/app/components/Link";
 
-function FormationDetails({ formation: { formation, etablissement, bcn } }: { formation: Formation }) {
+function FormationDetails({ formation: { formation, etablissement } }: { formation: Formation }) {
   const searchParams = useSearchParams();
   const longitude = searchParams.get("longitude");
   const latitude = searchParams.get("latitude");
@@ -53,7 +53,7 @@ function FormationDetails({ formation: { formation, etablissement, bcn } }: { fo
           style={{ paddingLeft: fr.spacing("5v") }}
         >
           <Typography ref={refHeader} variant="h1" style={{ marginBottom: fr.spacing("3v") }}>
-            {bcn.libelle_long}
+            {formation.libelle}
           </Typography>
         </Grid>
         <Grid

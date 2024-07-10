@@ -2,15 +2,9 @@ import * as turf from "@turf/turf";
 import { RateLimitedApi } from "#src/common/api/RateLimitedApi.js";
 import config from "#src/config.js";
 import { fetchJsonWithRetry } from "#src/common/utils/httpUtils.js";
-import moment from "#src/common/utils/dateUtils.js";
 import geotoolbox from "../../../node_modules/geotoolbox/dist/index.min.js";
 // import fs from "fs";
 // import { getDirname } from "#src/common/utils/esmUtils.js";
-
-// TODO : move in route/isochrone utils
-export function getRouteDate() {
-  return moment().startOf("isoWeek").add(1, "week").set({ hour: 7, minute: 0, second: 0, millisecond: 0 }).toDate();
-}
 
 class GraphHopperApi extends RateLimitedApi {
   constructor(options = {}) {

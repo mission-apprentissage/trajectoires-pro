@@ -59,6 +59,7 @@ const config = {
     },
     datasets: {
       rome: "1c893376-8476-4262-9a0e-8df519883e1e",
+      certifinfo: "e47b3527-02bf-4e6d-8548-81ccb5a108de",
     },
   },
   dataenseignementsup: {

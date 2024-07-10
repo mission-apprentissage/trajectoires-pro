@@ -30,11 +30,17 @@ import {
 } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
-import { getFormations, buildFiltersEtablissement, buildFiltersFormation } from "#src/queries/getFormations.js";
+import {
+  getRouteDate,
+  getFormations,
+  buildFiltersEtablissement,
+  buildFiltersFormation,
+} from "#src/queries/getFormations.js";
 import { FORMATION_TAG } from "#src/common/constants/formationEtablissement.js";
 import FormationEtablissement from "#src/common/repositories/formationEtablissement.js";
 import Etablissement from "#src/common/repositories/etablissement.js";
-import { GraphHopperApi, getRouteDate } from "#src/services/graphHopper/graphHopper.js";
+import Formation from "#src/common/repositories/formation.js";
+import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
 
 async function formationStats({ uai, codeCertificationWithType, millesime }) {
   const { type, code_certification } = codeCertificationWithType;
@@ -309,8 +315,8 @@ export default () => {
         throw Boom.notFound();
       }
 
-      const bcn = await BCNRepository.first({ code_formation_diplome: cfd, type: "cfd" });
-      if (!bcn) {
+      const formationInfo = await Formation.first({ cfd, voie, codeDispositif });
+      if (!formationInfo) {
         throw Boom.notFound();
       }
 
@@ -318,11 +324,10 @@ export default () => {
       // TODO: add tags
       res.send({
         formation: {
-          tags: [],
+          ...formationInfo,
           ...formation,
         },
         etablissement,
-        bcn,
       });
     })
   );
@@ -331,24 +336,22 @@ export default () => {
     "/api/formations",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { longitude, latitude, distance, timeLimit, tag, codesDiplome, uais, cfds, page, items_par_page } =
-        await validate(
-          { ...req.query, ...req.params },
-          {
-            longitude: Joi.number().min(-180).max(180).default(null),
-            latitude: Joi.number().min(-90).max(90).default(null),
-            distance: Joi.number().min(0).max(100000).default(null),
-            timeLimit: Joi.number().min(0).max(7200).default(null),
-            tag: Joi.string()
-              .empty("")
-              .valid(...Object.values(FORMATION_TAG))
-              .default(null),
-            ...validators.codesDiplome(),
-            ...validators.uais(),
-            ...validators.cfds(),
-            ...validators.pagination({ items_par_page: 100 }),
-          }
-        );
+      const { longitude, latitude, distance, timeLimit, tag, uais, cfds, page, items_par_page } = await validate(
+        { ...req.query, ...req.params },
+        {
+          longitude: Joi.number().min(-180).max(180).default(null),
+          latitude: Joi.number().min(-90).max(90).default(null),
+          distance: Joi.number().min(0).max(100000).default(null),
+          timeLimit: Joi.number().min(0).max(7200).default(null),
+          tag: Joi.string()
+            .empty("")
+            .valid(...Object.values(FORMATION_TAG))
+            .default(null),
+          ...validators.uais(),
+          ...validators.cfds(),
+          ...validators.pagination({ items_par_page: 100 }),
+        }
+      );
 
       const year = new Date().getFullYear();
       const millesime = [(year - 1).toString(), year.toString()];
@@ -364,7 +367,6 @@ export default () => {
           filtersFormation: filtersFormation,
           tag,
           millesime,
-          codesDiplome,
         },
         {
           limit: items_par_page,

@@ -17,6 +17,7 @@ import { importCfdMetiers } from "./jobs/romes/importCfdMetiers.js";
 import { importRomeMetiers } from "./jobs/romes/importRomeMetiers.js";
 import { importACCEEtablissements } from "./jobs/etablissements/importACCEEtablissements.js";
 import { importEtablissements } from "./jobs/etablissements/importEtablissements.js";
+import { importFormation } from "./jobs/formations/importFormation.js";
 import { importFormations as importCAFormations } from "./jobs/catalogueApprentissage/importFormations.js";
 import { importFormationEtablissement } from "./jobs/formations/importFormationEtablissement.js";
 import { importOnisep } from "./jobs/onisep/importOnisep.js";
@@ -120,6 +121,7 @@ cli
   .action(() => {
     runScript(async () => {
       return {
+        importFormation: await importFormation(),
         importFormationEtablissement: await importFormationEtablissement(),
         importIndicateurEntree: await importIndicateurEntree(),
         importIndicateurPoursuite: await importIndicateurPoursuite(),

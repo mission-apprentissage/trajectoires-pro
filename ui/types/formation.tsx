@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import { BCN, bcnSchema } from "./bcn";
 
 export const UAI_PATTERN = /^[0-9]{7}[A-Z]{1}$/;
 export const CFD_PATTERN = /^[0-9A-Z]{8}$/;
@@ -60,7 +59,6 @@ export type Etablissement = {
 export type Formation = {
   formation: FormationDetail;
   etablissement: Etablissement;
-  bcn: BCN;
 };
 
 export const formationSchema: yup.ObjectSchema<Formation> = yup.object({
@@ -115,5 +113,4 @@ export const formationSchema: yup.ObjectSchema<Formation> = yup.object({
       })
     )
     .required(),
-  bcn: bcnSchema,
 });

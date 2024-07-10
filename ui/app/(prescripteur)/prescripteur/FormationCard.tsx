@@ -58,7 +58,7 @@ export default function FormationCard({
   onMouseLeave?: Function;
   tabIndex: number;
 }) {
-  const { formation: formationDetail, etablissement, bcn } = formation;
+  const { formation: formationDetail, etablissement } = formation;
   const formationLink = useFormationLink({
     formation: formationDetail,
     longitude: longitude.toString(),
@@ -76,7 +76,7 @@ export default function FormationCard({
       linkTarget="_blank"
       tabIndex={tabIndex}
     >
-      <Typography variant="subtitle2">{bcn.libelle_long}</Typography>
+      <Typography variant="subtitle2">{formationDetail.libelle}</Typography>
       <Stack spacing={1} style={{ marginBottom: fr.spacing("3v") }}>
         <FormationTags tags={formationDetail.tags} />
         <LabelApprentissage formationDetail={formationDetail} />

@@ -1,9 +1,14 @@
 import { flatMap } from "lodash-es";
-import { GraphHopperApi, getRouteDate } from "#src/services/graphHopper/graphHopper.js";
+import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
 import * as Cache from "#src/common/cache.js";
 import { etablissement } from "#src/common/db/collections/collections.js";
 import { filterTag } from "./formationTag.js";
+import moment from "#src/common/utils/dateUtils.js";
 //import { dbCollection } from "#src/common/db/mongodb.js";
+
+export function getRouteDate() {
+  return moment().startOf("isoWeek").add(1, "week").set({ hour: 7, minute: 0, second: 0, millisecond: 0 }).toDate();
+}
 
 export async function buildFiltersEtablissement({ timeLimit, distance, latitude, longitude, uais }) {
   let filtersEtablissement = [];
@@ -196,7 +201,7 @@ export function getDistanceFilter({ coordinate, maxDistance = 1000 }) {
 }
 
 export async function getFormations(
-  { filtersEtablissement = [], filtersFormation = [], tag = null, millesime, codesDiplome = ["3", "4"] },
+  { filtersEtablissement = [], filtersFormation = [], tag = null, millesime },
   pagination = { page: 1, limit: 100 }
 ) {
   let page = pagination.page || 1;
@@ -238,23 +243,21 @@ export async function getFormations(
     },
     {
       $lookup: {
-        from: "bcn",
-        foreignField: "code_formation_diplome",
+        from: "formation",
+        foreignField: "cfd",
         localField: "formations.cfd",
-        as: "bcn",
-        pipeline: [{ $match: { type: "cfd" } }],
+        as: "formationInfo",
       },
     },
     {
       $set: {
-        bcn: { $first: "$bcn" },
         formation: "$formations",
         _id: "$formation._id",
       },
     },
     {
-      $match: {
-        ...(codesDiplome.length > 0 ? { "bcn.diplome.code": { $in: codesDiplome } } : {}),
+      $set: {
+        "formation.libelle": { $first: "$formationInfo.libelle" },
       },
     },
     ...filterTag(tag),
@@ -262,8 +265,8 @@ export async function getFormations(
     {
       $project: {
         formation: 1,
+        formationInfo: 1,
         etablissement: 1,
-        bcn: 1,
         inserjeunes: 1,
       },
     },

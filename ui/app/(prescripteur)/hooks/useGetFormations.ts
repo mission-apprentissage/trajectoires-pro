@@ -47,7 +47,6 @@ export default function useGetFormations({
           timeLimit: time,
           tag,
           page: pageParam ?? 1,
-          codesDiplome: ["3", "4"],
           items_par_page,
           cfds,
           uais,

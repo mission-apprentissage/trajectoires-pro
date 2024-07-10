@@ -18,11 +18,6 @@ const getSchema = object({
     .transform((_, value) => {
       return value === "" ? null : value;
     }),
-  codesDiplome: array()
-    .transform(function (value, originalValue) {
-      return originalValue ? originalValue.split(/[\s,]+/) : [];
-    })
-    .of(string()),
   uais: array()
     .transform(function (value, originalValue) {
       return originalValue ? originalValue.split(/[\s,]+/) : [];
