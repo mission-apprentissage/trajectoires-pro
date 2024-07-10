@@ -19,7 +19,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
       reset();
     }
     setOriginalUrl({ pathname, searchParams });
-  }, [reset, originalUrl, pathname, searchParams]);
+  }, [pathname, searchParams]);
 
   return (
     <>
