@@ -114,7 +114,7 @@ export default function AddressField({
                 <CircularProgress />
               ) : (
                 <>
-                  {value && <div style={{ position: "absolute", right: "40px" }}>{params.InputProps.endAdornment}</div>}
+                  {value && <div style={{ position: "absolute", right: "10px" }}>{params.InputProps.endAdornment}</div>}
                   {/* <Button
                     iconId="fr-icon-map-pin-2-fill"
                     onClick={getLocation}
