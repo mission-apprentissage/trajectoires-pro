@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 "use client";
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { css } from "@emotion/react";
-import { Stack, useTheme } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
+import HtmlReactParser from "html-react-parser";
+import TruncateMarkup from "react-truncate-markup";
 import { useQuery } from "@tanstack/react-query";
 import { Typography, Grid } from "#/app/components/MaterialUINext";
 import Container from "#/app/components/Container";
@@ -26,6 +28,7 @@ import Link from "#/app/components/Link";
 import Title from "#/app/(prescripteur)/components/Title";
 import { TagApprentissage } from "#/app/(prescripteur)/components/Apprentissage";
 import { capitalize } from "lodash-es";
+import Button from "#/app/components/Button";
 
 function FormationDetails({ formation: { formation, etablissement } }: { formation: Formation }) {
   const searchParams = useSearchParams();
@@ -36,6 +39,8 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
 
   const refHeader = React.useRef<HTMLElement>(null);
   const stickyHeaderSize = useSize(refHeader);
+
+  const [descriptionLine, setDescriptionLine] = useState(5);
 
   return (
     <Container style={{ marginTop: fr.spacing("5v") }} maxWidth={"xl"}>
@@ -169,6 +174,39 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
         </Grid>
         <Grid item xs={12} style={{ backgroundColor: "#fff", zIndex: 99 }}>
           <Grid container>
+            <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
+              <Card title="La formation">
+                <TruncateMarkup
+                  lineHeight={24}
+                  lines={descriptionLine}
+                  tokenize={"words"}
+                  ellipsis={
+                    <div>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setDescriptionLine(1000);
+                        }}
+                      >
+                        Voir plus
+                      </a>
+                    </div>
+                  }
+                >
+                  <div>{HtmlReactParser(formation.description)}</div>
+                </TruncateMarkup>
+                <Box style={{ marginTop: "2rem" }}>
+                  <Link
+                    target="_blank"
+                    href={`https://www.onisep.fr/http/redirection/formation/slug/${formation?.onisep?.identifiant}`}
+                  >
+                    En savoir plus sur l&apos;onisep
+                  </Link>
+                </Box>
+              </Card>
+            </Grid>
+
             <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
               <Card title="À quoi ressemble une journée ?">
                 {formation.voie === "apprentissage" && <WidgetSiriusEtablissement etablissement={etablissement} />}

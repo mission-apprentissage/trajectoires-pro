@@ -30,6 +30,7 @@ import { importBCNSise } from "./jobs/bcn/importBCNSise.js";
 import { importIndicateurEntree } from "./jobs/formations/importIndicateurEntree.js";
 import { computeFormationTag } from "./jobs/formations/tag/computeFormationTag.js";
 import { importIndicateurPoursuite } from "./jobs/formations/importIndicateurPoursuite.js";
+import { importIdeoFichesFormations } from "./jobs/formations/importIdeoFichesFormations.js";
 
 async function importBCNCommand() {
   const statsBCN = await importBCN();
@@ -122,6 +123,7 @@ cli
     runScript(async () => {
       return {
         importFormation: await importFormation(),
+        importIdeoFichesFormations: await importIdeoFichesFormations(),
         importFormationEtablissement: await importFormationEtablissement(),
         importIndicateurEntree: await importIndicateurEntree(),
         importIndicateurPoursuite: await importIndicateurPoursuite(),

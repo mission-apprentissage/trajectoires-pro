@@ -17,6 +17,10 @@ export function schema() {
       mef11: string(),
       voie: enumOf(["scolaire", "apprentissage"]),
       libelle: string(),
+      description: string(),
+      onisep: object({
+        identifiant: string(),
+      }),
       _meta: metaSchema([metaImportSchema()]),
     },
     {

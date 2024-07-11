@@ -45,7 +45,7 @@ export default function FormationCard({
       linkTarget="_blank"
       tabIndex={tabIndex}
     >
-      <Typography variant="subtitle2" style={{ lineHeight: "20px" }}>
+      <Typography variant="subtitle2" style={{ lineHeight: "28px" }}>
         {capitalize(formationDetail.libelle)}
       </Typography>
       <Stack spacing={1} style={{ marginBottom: fr.spacing("3v") }}>

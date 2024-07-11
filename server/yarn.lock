@@ -6192,6 +6192,11 @@ node-releases@^2.0.14:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.14.tgz#2ffb053bceb8b2be8495ece1ab6ce600c4461b0b"
   integrity sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==
 
+node-xml-stream@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/node-xml-stream/-/node-xml-stream-1.0.2.tgz#7aa510f39ab125cc420e60a302f49147e80b000f"
+  integrity sha512-W4LzsKQ1x3TldQQmXZfM/JO+3SPp+zzvA2Nf82chE7vXnZy7LqHjIqQe9yDUw58g2fTOaJo+DlPnIDfmozgsuw==
+
 nodemon@2.0.16:
   version "2.0.16"
   resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-2.0.16.tgz#d71b31bfdb226c25de34afea53486c8ef225fdef"
@@ -8173,6 +8178,11 @@ xml-name-validator@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/xml-name-validator/-/xml-name-validator-4.0.0.tgz#79a006e2e63149a8600f15430f0a4725d1524835"
   integrity sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==
+
+xml-to-json-stream@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/xml-to-json-stream/-/xml-to-json-stream-1.1.0.tgz#9dbc56391679f47d7e4370e1019d5251514dece9"
+  integrity sha512-JaxUCQOk9+KajLNUV51elxlXI8cmN9rX4LVuhdCUtD7Z6N3lBsaD6l6caqjBPB1rieCZXviaoq4OKwAeup4RhA==
 
 xmlchars@^2.2.0:
   version "2.2.0"
