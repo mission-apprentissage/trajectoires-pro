@@ -9,7 +9,7 @@ import SearchFormationHomeForm from "#/app/components/form/SearchFormationHomeFo
 export default function Page({ params }: { params: { id: string } }) {
   return (
     <>
-      <Container maxWidth={false} style={{ backgroundColor: "var(--blue-france-975-75)" }}>
+      <Container maxWidth={false} style={{ backgroundColor: "var(--blue-france-975-75)", paddingBottom: "10rem" }}>
         <Container maxWidth={"lg"}>
           <Grid container spacing={0}>
             <Grid xs={12} sx={{ padding: { md: "0", xs: "1rem" }, paddingBottom: { md: "3rem" } }}>
