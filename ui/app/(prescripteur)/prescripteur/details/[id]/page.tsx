@@ -174,38 +174,40 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
         </Grid>
         <Grid item xs={12} style={{ backgroundColor: "#fff", zIndex: 99 }}>
           <Grid container>
-            <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
-              <Card title="La formation">
-                <TruncateMarkup
-                  lineHeight={24}
-                  lines={descriptionLine}
-                  tokenize={"words"}
-                  ellipsis={
-                    <div>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setDescriptionLine(1000);
-                        }}
-                      >
-                        Voir plus
-                      </a>
-                    </div>
-                  }
-                >
-                  <div>{HtmlReactParser(formation.description)}</div>
-                </TruncateMarkup>
-                <Box style={{ marginTop: "2rem" }}>
-                  <Link
-                    target="_blank"
-                    href={`https://www.onisep.fr/http/redirection/formation/slug/${formation?.onisep?.identifiant}`}
+            {formation.description && (
+              <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
+                <Card title="La formation">
+                  <TruncateMarkup
+                    lineHeight={24}
+                    lines={descriptionLine}
+                    tokenize={"words"}
+                    ellipsis={
+                      <div>
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setDescriptionLine(1000);
+                          }}
+                        >
+                          Voir plus
+                        </a>
+                      </div>
+                    }
                   >
-                    En savoir plus sur l&apos;onisep
-                  </Link>
-                </Box>
-              </Card>
-            </Grid>
+                    <div>{HtmlReactParser(formation.description)}</div>
+                  </TruncateMarkup>
+                  <Box style={{ marginTop: "2rem" }}>
+                    <Link
+                      target="_blank"
+                      href={`https://www.onisep.fr/http/redirection/formation/slug/${formation?.onisep?.identifiant}`}
+                    >
+                      En savoir plus sur l&apos;onisep
+                    </Link>
+                  </Box>
+                </Card>
+              </Grid>
+            )}
 
             <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
               <Card title="À quoi ressemble une journée ?">
