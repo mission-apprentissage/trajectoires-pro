@@ -1,5 +1,5 @@
-import { oleoduc, writeData } from "oleoduc";
-import { pick } from "lodash-es";
+import { filterData, oleoduc, writeData } from "oleoduc";
+import { pick, omit } from "lodash-es";
 import { upsert } from "#src/common/db/mongodb.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
@@ -70,6 +70,7 @@ async function importFromCertifInfo() {
 
   await oleoduc(
     await streamCertifInfo(),
+    filterData((data) => !!data["Code_Scolarité"]),
     writeData(
       async (data) => {
         const dataFormatted = {
@@ -78,8 +79,8 @@ async function importFromCertifInfo() {
         };
 
         try {
-          const res = await formation().updateMany(pick(data, ["cfd"]), {
-            $set: omitNil(dataFormatted),
+          const res = await formation().updateMany(pick(dataFormatted, ["cfd"]), {
+            $set: omitNil(omit(dataFormatted, ["cfd"])),
           });
 
           if (res.modifiedCount) {
