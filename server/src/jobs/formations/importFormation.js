@@ -58,7 +58,7 @@ async function importFromBcnAndOnisep() {
           stats.failed++;
         }
       },
-      { parallel: 10 }
+      { parallel: 1 }
     )
   );
 
@@ -93,7 +93,7 @@ async function importFromCertifInfo() {
           stats.failed++;
         }
       },
-      { parallel: 10 }
+      { parallel: 1 }
     )
   );
 

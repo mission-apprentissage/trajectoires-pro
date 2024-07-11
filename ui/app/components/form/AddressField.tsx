@@ -9,10 +9,14 @@ import { useDebounce } from "usehooks-ts";
 import Button from "@codegouvfr/react-dsfr/Button";
 
 export default function AddressField({
+  formRef,
   form: {
     field: { onChange, onBlur, value, name, ref },
     ...formProps
   },
+  InputProps,
+  FieldProps,
+  submitOnChange,
   error,
 }: any) {
   const [isLocationLoading, setIsLocationLoading] = useState(false);
@@ -69,8 +73,13 @@ export default function AddressField({
         loadingText={<CircularProgress />}
         value={value}
         defaultValue={value}
-        onInputChange={(e, v) => onChange(v)}
-        onChange={(e, v) => onChange(v)}
+        onInputChange={(e, v) => {
+          onChange(v);
+        }}
+        onChange={(e, v) => {
+          onChange(v);
+          submitOnChange && formRef.current.requestSubmit();
+        }}
         filterOptions={(x) => x}
         options={options || []}
         freeSolo
@@ -106,15 +115,17 @@ export default function AddressField({
               ) : (
                 <>
                   {value && <div style={{ position: "absolute", right: "40px" }}>{params.InputProps.endAdornment}</div>}
-                  <Button
+                  {/* <Button
                     iconId="fr-icon-map-pin-2-fill"
                     onClick={getLocation}
                     priority="tertiary no outline"
                     title="Votre localisation"
-                  />
+                  /> */}
                 </>
               ),
+              ...InputProps,
             }}
+            {...FieldProps}
           />
         )}
       />

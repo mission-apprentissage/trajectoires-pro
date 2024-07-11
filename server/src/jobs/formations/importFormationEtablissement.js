@@ -85,7 +85,7 @@ export async function importFormationEtablissement() {
           stats.failed++;
         }
       },
-      { parallel: 10 }
+      { parallel: 1 }
     )
   );
 

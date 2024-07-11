@@ -8,13 +8,50 @@ declare module "@mui/material/styles" {
       isDarkModeEnabled: boolean;
     };
   }
+
+  interface TypographyVariantsOptions {
+    h1_main?: React.CSSProperties;
+  }
+
+  interface TypographyVariants {
+    h1_main: React.CSSProperties;
+  }
+}
+
+declare module "@mui/material" {
+  interface TypographyPropsVariantOverrides {
+    h1_main: true;
+  }
+
+  interface TypographyClasses {
+    h1_main: string;
+  }
 }
 
 const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
   augmentMuiTheme: ({ nonAugmentedMuiTheme, isDark }) => {
     return {
       ...merge(nonAugmentedMuiTheme, {
+        components: {
+          MuiTypography: {
+            defaultProps: {
+              variantMapping: {
+                h1_main: "h1",
+              },
+            },
+          },
+        },
         typography: {
+          h1_main: {
+            lineHeight: "4.5rem",
+            fontSize: "4rem",
+            fontWeight: 700,
+            [nonAugmentedMuiTheme.breakpoints.down("sm")]: {
+              fontSize: "2.5rem",
+              lineHeight: "3rem",
+            },
+          },
+
           subtitle1: {
             fontSize: 20,
             fontWeight: 700,
@@ -28,6 +65,10 @@ const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
           },
           body1: {
             fontSize: 18,
+          },
+          body2: {
+            fontSize: 14,
+            lineHeight: "1.5rem",
           },
         },
         MuiTouchRipple: {

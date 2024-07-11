@@ -10,7 +10,7 @@ export default function SearchHeader() {
       maxWidth={false}
     >
       <Container>
-        <SearchFormationForm url={"/"} defaultValues={{ address: null, distance: 10, time: 90 }} />
+        <SearchFormationForm url={"/recherche"} defaultValues={{ address: null, distance: 10, time: 90 }} />
       </Container>
     </Container>
   );

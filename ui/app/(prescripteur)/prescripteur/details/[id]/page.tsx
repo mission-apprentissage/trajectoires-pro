@@ -18,13 +18,13 @@ import WidgetInserJeunes from "#/app/(prescripteur)/components/WidgetInserJeunes
 import FormationResume from "./FormationResume";
 import WidgetSiriusEtablissement from "#/app/(prescripteur)/components/WidgetSiriusEtablissement";
 import { TagStatut, TagDuree } from "#/app/components/Tag";
-import { TagApprentissage } from "../../FormationCard";
 import { useSize } from "#/app/(prescripteur)/hooks/useSize";
 import DialogMinistage, { modalMinistage } from "#/app/(prescripteur)/components/DialogMinistage";
 import FormationRoute from "./FormationRoute";
 import FormationDisponible from "./FormationDisponible";
 import Link from "#/app/components/Link";
 import Title from "#/app/(prescripteur)/components/Title";
+import { TagApprentissage } from "#/app/(prescripteur)/components/Apprentissage";
 
 function FormationDetails({ formation: { formation, etablissement } }: { formation: Formation }) {
   const searchParams = useSearchParams();

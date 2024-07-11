@@ -3,7 +3,7 @@
 import React, { Suspense, useMemo, useState } from "react";
 import { css } from "@emotion/react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
-import { Typography, Grid } from "../../components/MaterialUINext";
+import { Typography, Grid } from "../../../components/MaterialUINext";
 import InformationCard from "#/app/components/InformationCard";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
@@ -13,9 +13,9 @@ import ClientSideScrollRestorer from "#/app/components/ClientSideScrollRestorer"
 import dynamic from "next/dynamic";
 import { Formation, FormationTag } from "#/types/formation";
 import { Stack, useTheme } from "@mui/material";
-import FormationAllTags from "../components/FormationAllTags";
-import useGetFormations from "../hooks/useGetFormations";
-import { useFormationsSearch } from "../context/FormationsSearchContext";
+import FormationAllTags from "../../components/FormationAllTags";
+import useGetFormations from "../../hooks/useGetFormations";
+import { useFormationsSearch } from "../../context/FormationsSearchContext";
 
 const FormationsMap = dynamic(() => import("#/app/(prescripteur)/components/FormationsMap"), {
   ssr: false,

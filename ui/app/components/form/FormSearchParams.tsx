@@ -6,14 +6,22 @@ import * as yup from "yup";
 import { FieldValues } from "react-hook-form";
 import { flatten, get } from "lodash-es";
 import { searchParamsToObject } from "#/app/utils/searchParams";
-import { Suspense } from "react";
+import { RefObject, Suspense, useRef } from "react";
 
 type FormSearchParamsProps<FormData extends FieldValues> = {
   url: string;
   defaultValues: FormData;
   forceValues?: Partial<FormData>;
   schema: yup.ObjectSchema<FormData>;
-  children: ({ control, errors }: { control: Control<FormData, any>; errors: FieldErrors<FormData> }) => JSX.Element;
+  children: ({
+    control,
+    errors,
+    formRef,
+  }: {
+    control: Control<FormData, any>;
+    errors: FieldErrors<FormData>;
+    formRef: RefObject<HTMLFormElement>;
+  }) => JSX.Element;
 };
 
 export function FormSearchParams<FormData extends FieldValues>({
@@ -25,6 +33,8 @@ export function FormSearchParams<FormData extends FieldValues>({
 }: FormSearchParamsProps<FormData>) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   const parameters: any = searchParamsToObject(searchParams, defaultValues, schema);
 
@@ -50,8 +60,8 @@ export function FormSearchParams<FormData extends FieldValues>({
   });
 
   return (
-    <form autoComplete="off" onSubmit={onSubmit} style={{ flex: "1" }}>
-      {children({ control, errors })}
+    <form autoComplete="off" onSubmit={onSubmit} ref={formRef} style={{ flex: "1" }}>
+      {children({ control, errors, formRef })}
     </form>
   );
 }
