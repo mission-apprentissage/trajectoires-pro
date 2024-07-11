@@ -19,7 +19,7 @@ export default function WidgetInserJeunes({
     <>
       <div>
         <iframe
-          style={{ display: "block", width: "100%", height: 0 }}
+          style={{ display: "block", margin: "0 auto", width: "100%", maxWidth: "650px", height: 0 }}
           scrolling="no"
           frameBorder="0"
           src={`${API_URL}/inserjeunes/formations/${etablissement.uai}-${code}/widget/${WIDGET_HASH}?noTitle=true&responsiveWidth=28em`}

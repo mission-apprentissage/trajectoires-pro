@@ -195,7 +195,7 @@ export default () => {
     "/api/inserjeunes/regionales/:region/certifications/:codes_certifications/widget/:hash",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { hash, theme, region, codes_certifications, millesime, vue } = await validate(
+      const { hash, theme, region, codes_certifications, millesime, vue, ...options } = await validate(
         { ...req.params, ...req.query },
         {
           hash: Joi.string(),
@@ -217,6 +217,7 @@ export default () => {
             hash,
             name: "stats",
             theme,
+            options,
             data,
             plausibleCustomProperties: {
               type: "regionales",
@@ -236,6 +237,7 @@ export default () => {
           hash,
           name: "stats",
           theme,
+          options,
           data,
           plausibleCustomProperties: {
             type: "regionale",
@@ -252,6 +254,7 @@ export default () => {
           hash,
           name: "error",
           theme,
+          options,
           data: {
             error: err.name,
             millesimes: formatMillesime(millesime).split("_"),

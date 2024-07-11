@@ -8,6 +8,7 @@ import Card from "#/app/components/Card";
 import FormationTags from "../../components/FormationTags";
 import { useFormationLink } from "../../hooks/useFormationLink";
 import { LabelApprentissage } from "../../components/Apprentissage";
+import { capitalize } from "lodash-es";
 
 export default function FormationCard({
   latitude,
@@ -45,7 +46,7 @@ export default function FormationCard({
       tabIndex={tabIndex}
     >
       <Typography variant="subtitle2" style={{ lineHeight: "20px" }}>
-        {formationDetail.libelle}
+        {capitalize(formationDetail.libelle)}
       </Typography>
       <Stack spacing={1} style={{ marginBottom: fr.spacing("3v") }}>
         <FormationTags tags={formationDetail.tags} />

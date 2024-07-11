@@ -25,6 +25,7 @@ import FormationDisponible from "./FormationDisponible";
 import Link from "#/app/components/Link";
 import Title from "#/app/(prescripteur)/components/Title";
 import { TagApprentissage } from "#/app/(prescripteur)/components/Apprentissage";
+import { capitalize } from "lodash-es";
 
 function FormationDetails({ formation: { formation, etablissement } }: { formation: Formation }) {
   const searchParams = useSearchParams();
@@ -54,7 +55,7 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
           style={{ paddingLeft: fr.spacing("5v") }}
         >
           <Typography ref={refHeader} variant="h1" style={{ marginBottom: fr.spacing("3v") }}>
-            {formation.libelle}
+            {capitalize(formation.libelle)}
           </Typography>
         </Grid>
         <Grid
