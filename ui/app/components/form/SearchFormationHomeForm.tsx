@@ -25,7 +25,7 @@ export default function SearchFormationHomeForm({
       {({ control, errors, formRef }) => {
         return (
           <Grid container spacing={0} style={{ backgroundColor: "#FFFFFF", padding: "18px", paddingRight: "24px" }}>
-            <Grid item md={8} sm={8} xs={12}>
+            <Grid item md={8} sm={12} xs={12}>
               <Controller
                 name="address"
                 control={control}

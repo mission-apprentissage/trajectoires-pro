@@ -7,6 +7,8 @@ import { CircularProgress } from "#/app/components/MaterialUINext";
 import { fetchAddress, fetchReverse } from "#/app/services/address";
 import { useDebounce } from "usehooks-ts";
 import Button from "@codegouvfr/react-dsfr/Button";
+import Popper from "@mui/material/Popper";
+import { PopperProps } from "@mui/base";
 
 export default function AddressField({
   formRef,
@@ -67,6 +69,19 @@ export default function AddressField({
     }
   };
 
+  const CustomPopper = (props: PopperProps) => {
+    return (
+      <Popper
+        {...props}
+        placement="bottom"
+        sx={{
+          width: props?.anchorEl ? (props?.anchorEl as HTMLElement).clientWidth + 18 : 0,
+          marginLeft: "-18px !important",
+        }}
+      />
+    );
+  };
+
   return (
     <>
       <Autocomplete
@@ -84,12 +99,14 @@ export default function AddressField({
         filterOptions={(x) => x}
         options={options || []}
         freeSolo
+        disablePortal
         sx={{
           "& .MuiOutlinedInput-root": {
             paddingRight: "10px!important",
           },
           ...sx,
         }}
+        PopperComponent={CustomPopper}
         renderOption={(props, option) => {
           return (
             <li {...props} key={option}>
