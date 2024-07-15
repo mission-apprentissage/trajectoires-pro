@@ -3,7 +3,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { Grid } from "#/app/components/MaterialUINext";
 import { Controller } from "react-hook-form";
 import { Nullable } from "#/app/utils/types";
-import FormSearchParams from "./FormSearchParams";
+import { FormSearchParams } from "./FormSearchParams";
 import AddressField from "./AddressField";
 import DistanceField from "./DistanceField";
 import TimeField from "./TimeField";

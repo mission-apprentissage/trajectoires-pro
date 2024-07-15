@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import Container from "#/app/components/Container";
 import { Grid, Stack, Typography } from "#/app/components/MaterialUINext";
 import Button from "#/app/components/Button";
@@ -7,10 +7,8 @@ import SearchFormationHomeForm from "#/app/components/form/SearchFormationHomeFo
 import { useTheme } from "@mui/material/styles";
 
 export default function Page({ params }: { params: { id: string } }) {
-  const theme = useTheme();
-
   return (
-    <>
+    <Suspense>
       <Container maxWidth={false} style={{ backgroundColor: "var(--blue-france-975-75)", paddingBottom: "10rem" }}>
         <Container maxWidth={"lg"}>
           <Grid container spacing={0}>
@@ -85,6 +83,6 @@ export default function Page({ params }: { params: { id: string } }) {
           </Grid>
         </Container>
       </Container>
-    </>
+    </Suspense>
   );
 }
