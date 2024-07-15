@@ -4,8 +4,11 @@ import Container from "#/app/components/Container";
 import { Grid, Stack, Typography } from "#/app/components/MaterialUINext";
 import Button from "#/app/components/Button";
 import SearchFormationHomeForm from "#/app/components/form/SearchFormationHomeForm";
+import { useTheme } from "@mui/material/styles";
 
 export default function Page({ params }: { params: { id: string } }) {
+  const theme = useTheme();
+
   return (
     <>
       <Container maxWidth={false} style={{ backgroundColor: "var(--blue-france-975-75)", paddingBottom: "10rem" }}>
