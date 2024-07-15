@@ -186,7 +186,14 @@ export default function ResearchFormationsResult({
                 const isSelected = selected ? selected.formation._id === formationDetail._id : false;
                 const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
                 return (
-                  <Grid item sm={12} lg={6} xl={4} key={key} ref={formationsRef[index]}>
+                  <Grid
+                    item
+                    sm={12}
+                    lg={expandMap ? 12 : 6}
+                    xl={expandMap ? 6 : 4}
+                    key={key}
+                    ref={formationsRef[index]}
+                  >
                     <FormationCard
                       selected={isSelected}
                       onMouseEnter={() => {

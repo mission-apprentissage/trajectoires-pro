@@ -45,13 +45,14 @@ export default function FormationCard({
       linkTarget="_blank"
       tabIndex={tabIndex}
     >
+      <Stack spacing={1} style={{ marginBottom: formationDetail.tags.length > 0 ? fr.spacing("3v") : 0 }}>
+        <FormationTags tags={formationDetail.tags} />
+      </Stack>
+      <LabelApprentissage formationDetail={formationDetail} />
+
       <Typography variant="subtitle2" style={{ lineHeight: "28px" }}>
         {capitalize(formationDetail.libelle)}
       </Typography>
-      <Stack spacing={1} style={{ marginBottom: fr.spacing("3v") }}>
-        <FormationTags tags={formationDetail.tags} />
-        <LabelApprentissage formationDetail={formationDetail} />
-      </Stack>
 
       <Typography variant={"body2"} style={{ color: "#3A3A3A", lineHeight: "24px", marginBottom: fr.spacing("5v") }}>
         {etablissement.libelle}
