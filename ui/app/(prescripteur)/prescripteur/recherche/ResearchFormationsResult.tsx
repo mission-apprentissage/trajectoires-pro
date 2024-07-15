@@ -90,7 +90,8 @@ export default function ResearchFormationsResult({
         <Grid
           item
           sm={12}
-          lg={expandMap === true ? 6 : 6}
+          md={expandMap === true ? 6 : 4}
+          lg={expandMap === true ? 6 : 4}
           xl={expandMap === true ? 6 : 4}
           css={css`
             width: 100%;
@@ -138,7 +139,8 @@ export default function ResearchFormationsResult({
 
         <Grid
           item
-          lg={expandMap === true ? 6 : 6}
+          md={expandMap === true ? 6 : 8}
+          lg={expandMap === true ? 6 : 8}
           xl={expandMap === true ? 6 : 8}
           sm={12}
           css={css`
