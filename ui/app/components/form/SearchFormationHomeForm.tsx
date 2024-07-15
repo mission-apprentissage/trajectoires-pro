@@ -18,7 +18,7 @@ export default function SearchFormationHomeForm({
   url: string;
   defaultValues: Nullable<SearchFormationFormData>;
 }) {
-  const isDownSm = useMediaQuery<Theme>((theme) => theme.breakpoints.down("sm"));
+  //const isDownSm = useMediaQuery<Theme>((theme) => theme.breakpoints.down("sm"));
 
   return (
     <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={{ tag: "" }}>
@@ -38,7 +38,8 @@ export default function SearchFormationHomeForm({
                     error={errors?.address}
                     form={form}
                     formRef={formRef}
-                    submitOnChange={isDownSm}
+                    //submitOnChange={isDownSm}
+                    submitOnChange={true}
                   />
                 )}
               />
@@ -58,24 +59,24 @@ export default function SearchFormationHomeForm({
               />
             </Grid>
             <Grid item md={4} sm={4} xs={12} style={{ textAlign: "left" }}>
-              {!isDownSm && (
-                <Box sx={{ display: { xs: "none", md: "block" } }}>
-                  <Button
-                    type={"submit"}
-                    style={{
-                      borderRadius: "26px",
-                      height: "100%",
-                      width: "100%",
-                      backgroundColor: "var(--blue-france-sun-113-625-hover)",
-                      fontSize: "20px",
-                      lineHeight: "32px",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {"Explorer"}
-                  </Button>
-                </Box>
-              )}
+              {/* {!isDownSm && ( */}
+              <Box sx={{ display: { xs: "none", md: "block" } }}>
+                <Button
+                  type={"submit"}
+                  style={{
+                    borderRadius: "26px",
+                    height: "100%",
+                    width: "100%",
+                    backgroundColor: "var(--blue-france-sun-113-625-hover)",
+                    fontSize: "20px",
+                    lineHeight: "32px",
+                    justifyContent: "center",
+                  }}
+                >
+                  {"Explorer"}
+                </Button>
+              </Box>
+              {/* )} */}
             </Grid>
           </Grid>
         );
