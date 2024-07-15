@@ -74,10 +74,10 @@ export default function FormSearchParamsWithSuspense<FormData extends FieldValue
   children,
 }: FormSearchParamsProps<FormData>) {
   return (
-    <Suspense>
-      <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={forceValues}>
-        {children}
-      </FormSearchParams>
-    </Suspense>
+    // <Suspense>
+    <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={forceValues}>
+      {children}
+    </FormSearchParams>
+    // </Suspense>
   );
 }
