@@ -18,6 +18,7 @@ export default function AddressField({
   FieldProps,
   submitOnChange,
   error,
+  sx,
 }: any) {
   const [isLocationLoading, setIsLocationLoading] = useState(false);
 
@@ -87,6 +88,7 @@ export default function AddressField({
           "& .MuiOutlinedInput-root": {
             paddingRight: "10px!important",
           },
+          ...sx,
         }}
         renderOption={(props, option) => {
           return (

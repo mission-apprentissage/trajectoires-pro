@@ -9,7 +9,7 @@ import DistanceField from "./DistanceField";
 import TimeField from "./TimeField";
 import Button from "../Button";
 import { SearchFormationFormData, schema } from "./SearchFormationForm";
-import { Box, Theme, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 
 export default function SearchFormationHomeForm({
   url,
@@ -18,7 +18,9 @@ export default function SearchFormationHomeForm({
   url: string;
   defaultValues: Nullable<SearchFormationFormData>;
 }) {
-  const isDownSm = useMediaQuery<Theme>((theme) => theme.breakpoints.down("sm"));
+  const theme = useTheme();
+  const iSDownSm = theme.breakpoints.down("md");
+  const isUpSm = theme.breakpoints.up("md");
 
   return (
     <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={{ tag: "" }}>
@@ -30,16 +32,30 @@ export default function SearchFormationHomeForm({
                 name="address"
                 control={control}
                 render={(form) => (
-                  <AddressField
-                    FieldProps={{ variant: "standard", label: "Ton adresse, ta ville" }}
-                    InputProps={{
-                      disableUnderline: true,
-                    }}
-                    error={errors?.address}
-                    form={form}
-                    formRef={formRef}
-                    submitOnChange={isDownSm}
-                  />
+                  <>
+                    <AddressField
+                      sx={{ [isUpSm]: { display: "none" } }}
+                      FieldProps={{ variant: "standard", label: "Ton adresse, ta ville" }}
+                      InputProps={{
+                        disableUnderline: true,
+                      }}
+                      error={errors?.address}
+                      form={form}
+                      formRef={formRef}
+                      submitOnChange={true}
+                    />
+                    <AddressField
+                      sx={{ [iSDownSm]: { display: "none" } }}
+                      FieldProps={{ variant: "standard", label: "Ton adresse, ta ville" }}
+                      InputProps={{
+                        disableUnderline: true,
+                      }}
+                      error={errors?.address}
+                      form={form}
+                      formRef={formRef}
+                      submitOnChange={false}
+                    />
+                  </>
                 )}
               />
             </Grid>
@@ -58,24 +74,22 @@ export default function SearchFormationHomeForm({
               />
             </Grid>
             <Grid item md={4} sm={4} xs={12} style={{ textAlign: "left" }}>
-              {!isDownSm && (
-                <Box sx={{ display: { xs: "none", md: "block" } }}>
-                  <Button
-                    type={"submit"}
-                    style={{
-                      borderRadius: "26px",
-                      height: "100%",
-                      width: "100%",
-                      backgroundColor: "var(--blue-france-sun-113-625-hover)",
-                      fontSize: "20px",
-                      lineHeight: "32px",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {"Explorer"}
-                  </Button>
-                </Box>
-              )}
+              <Box sx={{ display: { xs: "none", md: "block" } }}>
+                <Button
+                  type={"submit"}
+                  style={{
+                    borderRadius: "26px",
+                    height: "100%",
+                    width: "100%",
+                    backgroundColor: "var(--blue-france-sun-113-625-hover)",
+                    fontSize: "20px",
+                    lineHeight: "32px",
+                    justifyContent: "center",
+                  }}
+                >
+                  {"Explorer"}
+                </Button>
+              </Box>
             </Grid>
           </Grid>
         );
