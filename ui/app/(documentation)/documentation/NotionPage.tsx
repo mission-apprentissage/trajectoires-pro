@@ -3,7 +3,7 @@ import "#/app/(documentation)/styles/notion.scss";
 import NotionWrapper from "#/app/components/wrapper/NotionWrapper";
 import NotionDoc from "#/app/components/NotionDoc";
 import React from "react";
-export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export default function NotionPage({ pageId, disableHeader }: { pageId: string; disableHeader?: boolean }) {
   const BASE_PATH = process.env.NEXT_PUBLIC_HOST_REWRITE === "true" ? "/" : "/documentation/";
