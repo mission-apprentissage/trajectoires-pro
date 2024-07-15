@@ -1,6 +1,5 @@
+"use client";
 import React from "react";
-import { Footer } from "#/app/components/Footer";
-import { title } from "../constants/constants";
 import Container from "#/app/components/Container";
 import { Grid, Stack, Typography } from "#/app/components/MaterialUINext";
 import Button from "#/app/components/Button";
@@ -52,12 +51,12 @@ export default function Page({ params }: { params: { id: string } }) {
                   marginBottom: "1rem",
                 }}
               >
-                *Voie Pro = Professionnelle, ce n’est pas si clair ?
+                *Voie Pro = Professionnelle. Ce n’est pas si clair ?
               </Typography>
               <Typography variant={"body2"} style={{ marginBottom: "1.5rem" }}>
-                Après la 3ᵉ, il est possible d&apos;apprendre un métier en CAP ou en bac pro. Élève au sein d&apos;un
-                lycée professionnel ou apprenti en centre de formation d&apos;apprentis, le futur diplômé pourra
-                travailler ou poursuivre ses études.
+                Après la 3ᵉ, il est possible d&apos;apprendre un métier en CAP ou en bac pro, au sein d&apos;un lycée
+                professionnel ou d&apos;un centre de formation d&apos;apprentis. À l&apos;issue de ce cursus,
+                l&apos;élève diplômé pourra accéder directement à un emploi ou choisir de poursuivre ses études.
               </Typography>
               <Stack direction={{ md: "row", xs: "column" }} spacing={"14px"}>
                 <Button

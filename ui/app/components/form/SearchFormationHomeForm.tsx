@@ -25,7 +25,7 @@ export default function SearchFormationHomeForm({
       {({ control, errors, formRef }) => {
         return (
           <Grid container spacing={0} style={{ backgroundColor: "#FFFFFF", padding: "18px", paddingRight: "24px" }}>
-            <Grid item md={6} sm={8} xs={12}>
+            <Grid item md={8} sm={8} xs={12}>
               <Controller
                 name="address"
                 control={control}
@@ -57,7 +57,7 @@ export default function SearchFormationHomeForm({
                 render={(form) => <TimeField error={errors?.time} form={form} />}
               />
             </Grid>
-            <Grid item md={6} sm={4} xs={12} style={{ textAlign: "left" }}>
+            <Grid item md={4} sm={4} xs={12} style={{ textAlign: "left" }}>
               {!isDownSm && (
                 <Box sx={{ display: { xs: "none", md: "block" } }}>
                   <Button
@@ -72,7 +72,7 @@ export default function SearchFormationHomeForm({
                       justifyContent: "center",
                     }}
                   >
-                    {"Explorer les formations"}
+                    {"Explorer"}
                   </Button>
                 </Box>
               )}
