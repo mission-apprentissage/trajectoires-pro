@@ -34,6 +34,7 @@ services:
     build:
       context: ui
     mem_limit: 1g
+    restart: unless-stopped
     networks:
       - trajectoires_pro_network
     depends_on:
