@@ -43,7 +43,7 @@ export default function FormationDisponible({ formation }: { formation: Formatio
             ${theme.breakpoints.down("md")} {
               margin-top: 0;
               margin-left: 0;
-              margin-bottom: ${fr.spacing("4v")};
+              margin-bottom: ${fr.spacing("3v")};
             }
           `}
         >

@@ -59,7 +59,7 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
           `}
           style={{ paddingLeft: fr.spacing("5v") }}
         >
-          <Typography ref={refHeader} variant="h1" style={{ marginBottom: fr.spacing("3v") }}>
+          <Typography ref={refHeader} variant="h1" style={{ marginBottom: fr.spacing("6v") }}>
             {capitalize(formation.libelle)}
           </Typography>
         </Grid>
@@ -83,13 +83,13 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
                 <TagApprentissage formationDetail={formation} />
               </Stack>
             </Grid>
-            <Grid item xs={12} style={{ paddingLeft: fr.spacing("5v") }}>
+            <Grid item xs={12} md={6} style={{ paddingLeft: fr.spacing("5v") }}>
               <Typography variant="h5" style={{ marginBottom: fr.spacing("3v") }}>
                 {etablissement.url ? (
                   <Link style={{ backgroundImage: "none" }} noIcon target="_blank" href={etablissement.url}>
                     {etablissement.libelle}
                     <i
-                      className={"fr-icon--sm " + fr.cx("ri-external-link-line")}
+                      className={"fr-icon--sm " + fr.cx("ri-external-link-fill")}
                       style={{ marginLeft: fr.spacing("3v") }}
                     />
                   </Link>
@@ -113,7 +113,7 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
                   <FormationRoute etablissement={etablissement} latitude={latitude} longitude={longitude} />
                   <FormationDisponible formation={formation} />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} sx={{ marginTop: { xs: fr.spacing("3v"), md: 0 } }}>
                   <Divider
                     variant="middle"
                     noMargin

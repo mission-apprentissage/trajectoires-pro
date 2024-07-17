@@ -11,20 +11,24 @@ declare module "@mui/material/styles" {
 
   interface TypographyVariantsOptions {
     h1_main?: React.CSSProperties;
+    subtitle4?: React.CSSProperties;
   }
 
   interface TypographyVariants {
     h1_main: React.CSSProperties;
+    subtitle4: React.CSSProperties;
   }
 }
 
 declare module "@mui/material" {
   interface TypographyPropsVariantOverrides {
     h1_main: true;
+    subtitle4: true;
   }
 
   interface TypographyClasses {
     h1_main: string;
+    subtitle4: string;
   }
 }
 
@@ -37,6 +41,7 @@ const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
             defaultProps: {
               variantMapping: {
                 h1_main: "h1",
+                subtitle4: "p",
               },
             },
           },
@@ -51,7 +56,14 @@ const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
               lineHeight: "3rem",
             },
           },
-
+          h5: {
+            fontSize: "1.25rem",
+            lineHeight: "1.75rem",
+            [nonAugmentedMuiTheme.breakpoints.up("xs")]: {
+              fontSize: "1.25rem",
+              lineHeight: "1.75rem",
+            },
+          },
           subtitle1: {
             fontSize: 20,
             fontWeight: 700,
@@ -62,6 +74,11 @@ const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
           },
           subtitle3: {
             fontSize: 18,
+          },
+          subtitle4: {
+            fontSize: "1rem",
+            lineHeight: "1.5rem",
+            fontWeight: 700,
           },
           body1: {
             fontSize: 18,

@@ -31,6 +31,7 @@ class GraphHopperApi extends RateLimitedApi {
     pt_profile_duration = "PT120M",
     pt_limit_street_time = "PT120M",
     pt_ignore_transfers = false,
+    pt_arrive_by = true,
   }) {
     //http://141.94.105.71:8989/route?point=44.544606%2C6.077989&point=44.540663044546385%2C6.091216108562817&pt.earliest_departure_time=2024-07-01T05%3A00%3A00Z&pt.arrive_by=true&locale=en-US&profile=pt&pt.profile=false&pt.access_profile=foot&pt.beta_access_time=1&pt.egress_profile=foot&pt.beta_egress_time=1&pt.profile_duration=PT120M&pt.limit_street_time=PT30M&pt.ignore_transfers=false
     return this.execute(async () => {
@@ -45,6 +46,7 @@ class GraphHopperApi extends RateLimitedApi {
         "pt.profile_duration": pt_profile_duration,
         "pt.limit_street_time": pt_limit_street_time,
         "pt.ignore_transfers": pt_ignore_transfers,
+        "pt.arrive_by": pt_arrive_by,
       });
 
       console.error(`${GraphHopperApi.baseApiUrl}/route?${params}&point=${pointA}&point=${pointB}`);

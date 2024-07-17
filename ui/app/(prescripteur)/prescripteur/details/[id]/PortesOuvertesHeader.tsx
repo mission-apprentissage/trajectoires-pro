@@ -20,7 +20,7 @@ const PortesOuvertesHeader = ({ etablissement }: { etablissement: Etablissement 
     <Typography
       variant="subtitle1"
       css={css`
-        ${theme.breakpoints.up("sm")} {
+        ${theme.breakpoints.up("md")} {
           border-radius: 4px;
         }
         font-weight: 500;

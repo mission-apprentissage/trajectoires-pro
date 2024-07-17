@@ -21,7 +21,7 @@ export default function EtablissementCard({
           <Link style={{ backgroundImage: "none" }} noIcon target="_blank" href={etablissement.url}>
             {etablissement.libelle}
             <i
-              className={"link-underline fr-icon--sm " + fr.cx("ri-external-link-line")}
+              className={"link-underline fr-icon--sm " + fr.cx("ri-external-link-fill")}
               style={{ marginLeft: fr.spacing("3v") }}
             />
           </Link>
