@@ -118,8 +118,8 @@ L.Rrose = L.Popup.extend({
 
   _computePosition: function () {
     // Set the pixel distances from the map edges at which popups are too close and need to be re-oriented.
-    var x_bound = this.container.offsetWidth / 2,
-      y_bound = this.container.offsetHeight;
+    var x_bound = this.container.offsetWidth / 2 + (this.options?.bounds?.x ?? 0),
+      y_bound = this.container.offsetHeight + (this.options?.bounds?.y ?? 0);
     this.oldPosition = this.options.position;
 
     // Determine the alternate direction to pop up; north mimics Leaflet's default behavior, so we initialize to that.

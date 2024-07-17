@@ -58,6 +58,9 @@ export default function FormationsMap({
                   nw: new L.Point(0, -50),
                   s: new L.Point(0, 0),
                 }}
+                bounds={{
+                  y: 100,
+                }}
               >
                 <EtablissementCard
                   etablissement={etablissement}

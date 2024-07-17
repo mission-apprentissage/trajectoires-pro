@@ -16,7 +16,7 @@ import "#/common/leaflet/leaflet.rrose.css";
 export interface PopupProps extends PopupOptions, EventedProps {
   children?: ReactNode;
   position?: LatLngExpression;
-  offsets: {
+  offsets?: {
     n?: L.Point;
     ne?: L.Point;
     nw?: L.Point;
@@ -25,6 +25,10 @@ export interface PopupProps extends PopupOptions, EventedProps {
     sw?: L.Point;
     e?: L.Point;
     w?: L.Point;
+  };
+  bounds?: {
+    y?: number;
+    x?: number;
   };
 }
 
