@@ -154,11 +154,11 @@ export default function ResearchFormationsResult({
           xl={expandMap === true ? 6 : 8}
           sm={12}
           css={css`
-            padding: ${fr.spacing("5v")};
+            padding: 1.75rem;
             z-index: 500;
             width: 100%;
             ${theme.breakpoints.up("lg")} {
-              padding-left: ${fr.spacing("20v")};
+              padding-left: 1.75rem;
             }
           `}
         >
