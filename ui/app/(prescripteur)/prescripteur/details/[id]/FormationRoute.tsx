@@ -65,7 +65,7 @@ export default function FormationRoute({
   });
 
   const timeRoute = useMemo(() => {
-    if (!data?.paths) {
+    if (!data?.paths?.length) {
       return null;
     }
 
