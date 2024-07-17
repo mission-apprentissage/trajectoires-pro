@@ -7,7 +7,7 @@ import moment from "#src/common/utils/dateUtils.js";
 //import { dbCollection } from "#src/common/db/mongodb.js";
 
 export function getRouteDate() {
-  return moment().startOf("isoWeek").add(1, "week").set({ hour: 7, minute: 0, second: 0, millisecond: 0 }).toDate();
+  return moment().startOf("isoWeek").add(1, "week").set({ hour: 8, minute: 30, second: 0, millisecond: 0 }).toDate();
 }
 
 export async function buildFiltersEtablissement({ timeLimit, distance, latitude, longitude, uais }) {
