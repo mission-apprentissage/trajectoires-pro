@@ -8,13 +8,12 @@ import {
   FitBound,
 } from "#/app/components/Map";
 import { Etablissement, Formation } from "#/types/formation";
-import { FeatureGroup } from "react-leaflet";
+import { FeatureGroup, Marker } from "react-leaflet";
 import EtablissementCard from "./EtablissementCard";
+import DynamicPopup from "./DynamicPopup";
+import L from "leaflet";
 
 const Map = dynamic(() => import("#/app/components/Map"), { ssr: false });
-const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false });
-const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
-const Tooltip = dynamic(() => import("react-leaflet").then((mod) => mod.Tooltip), { ssr: false });
 
 export default function FormationsMap({
   latitude,
@@ -52,13 +51,20 @@ export default function FormationsMap({
                 },
               }}
             >
-              <Popup>
+              <DynamicPopup
+                offsets={{
+                  n: new L.Point(0, -50),
+                  ne: new L.Point(0, -50),
+                  nw: new L.Point(0, -50),
+                  s: new L.Point(0, 0),
+                }}
+              >
                 <EtablissementCard
                   etablissement={etablissement}
                   latitude={latitude.toString()}
                   longitude={longitude.toString()}
                 />
-              </Popup>
+              </DynamicPopup>
             </Marker>
           );
         })}

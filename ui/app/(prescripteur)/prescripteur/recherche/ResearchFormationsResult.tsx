@@ -104,13 +104,23 @@ export default function ResearchFormationsResult({
             }
           `}
         >
-          <div style={{ position: "absolute", top: "20px", width: "100%", zIndex: 600, textAlign: "center" }}>
+          <div
+            style={{
+              position: "absolute",
+              top: "20px",
+              width: "100%",
+              zIndex: 600,
+              textAlign: "center",
+              pointerEvents: "none",
+            }}
+          >
             <Button
               iconId="fr-icon-road-map-line"
               priority="secondary"
               size="small"
               variant="white"
               rounded
+              style={{ pointerEvents: "auto" }}
               onClick={() => {
                 setExpandMap(!expandMap);
               }}
