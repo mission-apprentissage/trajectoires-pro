@@ -116,7 +116,7 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
                 <Grid item xs={12} md={6} sx={{ marginTop: { xs: fr.spacing("3v"), md: 0 } }}>
                   <Divider
                     variant="middle"
-                    noMargin
+                    margin={"0"}
                     css={css`
                       ${theme.breakpoints.up("md")} {
                         display: none;
@@ -173,52 +173,68 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
           />
         </Grid>
         <Grid item xs={12} style={{ backgroundColor: "#fff", zIndex: 99 }}>
-          <Grid container>
+          <Grid container style={{ maxWidth: "800px", paddingLeft: fr.spacing("8v") }}>
             {formation.description && (
-              <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
-                <Card title="La formation">
-                  <TruncateMarkup
-                    lineHeight={24}
-                    lines={descriptionLine}
-                    tokenize={"words"}
-                    ellipsis={
-                      <div>
-                        <a
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setDescriptionLine(1000);
-                          }}
-                        >
-                          Voir plus
-                        </a>
-                      </div>
-                    }
+              <Grid item xs={12}>
+                <Divider margin={fr.spacing("10v")} />
+                <Card type="details" title="La formation">
+                  <Box
+                    style={{
+                      border: "1px solid #DDDDDD",
+                      padding: "1rem",
+                      paddingBottom: "1.5rem",
+                      paddingTop: "1.5rem",
+                    }}
                   >
-                    <div>{HtmlReactParser(formation.description)}</div>
-                  </TruncateMarkup>
-                  <Box style={{ marginTop: "2rem" }}>
-                    <Link
-                      target="_blank"
-                      href={`https://www.onisep.fr/http/redirection/formation/slug/${formation?.onisep?.identifiant}`}
+                    <TruncateMarkup
+                      lineHeight={24}
+                      lines={descriptionLine}
+                      tokenize={"words"}
+                      ellipsis={
+                        <div>
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setDescriptionLine(1000);
+                            }}
+                          >
+                            Voir plus
+                          </a>
+                        </div>
+                      }
                     >
-                      En savoir plus sur l&apos;onisep
-                    </Link>
+                      <div>{HtmlReactParser(formation.description)}</div>
+                    </TruncateMarkup>
+                    <Box style={{ marginTop: "2rem" }}>
+                      <Link
+                        style={{ color: "var(--blue-france-sun-113-625)" }}
+                        target="_blank"
+                        href={`https://www.onisep.fr/http/redirection/formation/slug/${formation?.onisep?.identifiant}`}
+                      >
+                        En savoir plus sur l&apos;onisep
+                      </Link>
+                    </Box>
                   </Box>
                 </Card>
+
+                {formation.voie === "apprentissage" && (
+                  <Box style={{ marginTop: fr.spacing("10v") }}>
+                    <Typography variant="h3" style={{ marginBottom: fr.spacing("5v") }}>
+                      À quoi ressemble une journée ?
+                    </Typography>
+                    <WidgetSiriusEtablissement
+                      etablissement={etablissement}
+                      fallbackComponent={<>Nous n&apos;avons pas d&apos;informations</>}
+                    />
+                  </Box>
+                )}
               </Grid>
             )}
 
             <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
-              <Card title="À quoi ressemble une journée ?">
-                {formation.voie === "apprentissage" && <WidgetSiriusEtablissement etablissement={etablissement} />}
-              </Card>
-            </Grid>
-            <Grid item xs={12} style={{ marginTop: fr.spacing("5v") }}>
-              <Card title="À quoi ressemble la vie en sortie de cette formation ?">
-                <Typography align="center" style={{ color: "var(--blue-france-sun-113-625)" }} variant="h6">
-                  Les élèves 6 mois après la formation
-                </Typography>
+              <Card type="details" title="L’accès à l’emploi">
+                <Typography variant="h3">Que deviennent les élèves après ce CAP ?</Typography>
                 <WidgetInserJeunes etablissement={etablissement} formation={formation} />
               </Card>
             </Grid>

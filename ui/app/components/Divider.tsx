@@ -4,14 +4,14 @@ import { css } from "@emotion/react";
 import Divider, { DividerProps } from "@mui/material/Divider";
 import { useTheme } from "@mui/material/styles";
 
-export default function CustomDivider({ noMargin, className, ...props }: DividerProps & { noMargin?: boolean }) {
+export default function CustomDivider({ margin, className, ...props }: DividerProps & { margin?: string }) {
   const theme = useTheme();
   return (
     <Divider
       component="div"
       style={{
-        marginTop: noMargin ? 0 : fr.spacing("5v"),
-        marginBottom: noMargin ? 0 : fr.spacing("5v"),
+        marginTop: margin !== undefined ? margin : fr.spacing("5v"),
+        marginBottom: margin !== undefined ? margin : fr.spacing("5v"),
         ...props.style,
       }}
       className={className}

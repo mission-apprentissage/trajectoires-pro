@@ -12,6 +12,7 @@ export type CardProps = Omit<MUICardProps, "title"> & {
   linkTarget?: string;
   selected?: boolean;
   actionProps?: CardActionAreaProps;
+  type?: "details";
 };
 
 const StyledLink = styled(Link)`
@@ -23,8 +24,8 @@ const StyledLink = styled(Link)`
 function BaseCard({ title, children, className, ...props }: CardProps) {
   return (
     <Box className={className} {...props}>
-      {title && (typeof title === "string" ? <Typography variant="h4">{title}</Typography> : title)}
-      <Container style={{ padding: fr.spacing("3v") }}>{children}</Container>
+      {title && (typeof title === "string" ? <Typography variant="h2">{title}</Typography> : title)}
+      <Container>{children}</Container>
     </Box>
   );
 }
@@ -66,16 +67,38 @@ export function Card({ title, link, linkTarget, style, children, className, acti
 }
 
 export default styled(Card)<CardProps>`
-  border: 1px solid #dddddd;
-  border-radius: 10px;
-  padding: 0;
-  overflow: hidden;
+  ${({ type }) => {
+    switch (type) {
+      case "details":
+        return `
+         & .MuiContainer-root {
+          padding: 0;
+        }  
 
-  h4 {
-    background-color: #f5f5fe;
-    color: var(--blue-france-sun-113-625);
-    padding: ${fr.spacing("3v")};
-  }
+        h2 {
+          margin-bottom: 2rem;
+        }
+          `;
+
+      default:
+        return `
+        border: 1px solid #dddddd;
+        border-radius: 10px;
+        padding: 0;
+        overflow: hidden;
+
+        h2 {
+          background-color: #f5f5fe;
+          color: var(--blue-france-sun-113-625);
+          padding: ${fr.spacing("3v")};
+        }
+
+        & .MuiContainer-root {
+          padding: ${fr.spacing("3v")};
+        }  
+        `;
+    }
+  }};
 
   ${({ selected }) => {
     return !isNil(selected) && selected ? "background-color: var(--hover);" : "";
