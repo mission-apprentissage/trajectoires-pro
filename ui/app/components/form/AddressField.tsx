@@ -5,7 +5,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { useQuery } from "@tanstack/react-query";
 import { CircularProgress } from "#/app/components/MaterialUINext";
 import { fetchAddress } from "#/app/services/address";
-import { useDebounce } from "usehooks-ts";
+import { useThrottle } from "@uidotdev/usehooks";
 import Popper, { PopperProps } from "@mui/material/Popper";
 import { fr } from "@codegouvfr/react-dsfr";
 import Link from "../Link";
@@ -106,9 +106,14 @@ export default function AddressField({
 
   const [isLocationLoading, setIsLocationLoading] = useState(false);
 
-  const valueDebounce = useDebounce(value, 200);
+  const valueDebounce = useThrottle(value, 300);
 
   const { isLoading, data: options } = useQuery({
+    keepPreviousData: true,
+    // TODO : type
+    placeholderData: (previousData: any) => {
+      return previousData;
+    },
     queryKey: ["address", valueDebounce],
     queryFn: async () => {
       if (!valueDebounce || valueDebounce === myPosition) {

@@ -7,12 +7,11 @@ import { Typography, Grid } from "../../../components/MaterialUINext";
 import InformationCard from "#/app/components/InformationCard";
 import Loader from "#/app/components/Loader";
 import { fr } from "@codegouvfr/react-dsfr";
-import Button from "#/app/components/Button";
 import FormationCard from "./FormationCard";
 import ClientSideScrollRestorer from "#/app/components/ClientSideScrollRestorer";
 import dynamic from "next/dynamic";
 import { Formation, FormationTag } from "#/types/formation";
-import { Stack, useTheme } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
 import FormationAllTags from "../../components/FormationAllTags";
 import useGetFormations from "../../hooks/useGetFormations";
 import { useFormationsSearch } from "../../context/FormationsSearchContext";
@@ -61,7 +60,6 @@ export default function ResearchFormationsResult({
 }) {
   const theme = useTheme();
   const [selected, setSelected] = useState<null | Formation>(null);
-  const [expandMap, setExpandMap] = useState(false);
 
   const { isLoading, fetchNextPage, isFetchingNextPage, formations, etablissements } = useGetFormations({
     latitude,
@@ -90,9 +88,9 @@ export default function ResearchFormationsResult({
         <Grid
           item
           sm={12}
-          md={expandMap === true ? 6 : 4}
-          lg={expandMap === true ? 6 : 4}
-          xl={expandMap === true ? 6 : 4}
+          md={4}
+          lg={4}
+          xl={4}
           css={css`
             width: 100%;
             top: 0;
@@ -104,30 +102,6 @@ export default function ResearchFormationsResult({
             }
           `}
         >
-          <div
-            style={{
-              position: "absolute",
-              top: "20px",
-              width: "100%",
-              zIndex: 600,
-              textAlign: "center",
-              pointerEvents: "none",
-            }}
-          >
-            <Button
-              iconId="fr-icon-road-map-line"
-              priority="secondary"
-              size="small"
-              variant="white"
-              rounded
-              style={{ pointerEvents: "auto" }}
-              onClick={() => {
-                setExpandMap(!expandMap);
-              }}
-            >
-              Voir sur la carte
-            </Button>
-          </div>
           <FormationsMap
             selected={selected}
             longitude={longitude}
@@ -149,9 +123,9 @@ export default function ResearchFormationsResult({
 
         <Grid
           item
-          md={expandMap === true ? 6 : 8}
-          lg={expandMap === true ? 6 : 8}
-          xl={expandMap === true ? 6 : 8}
+          md={8}
+          lg={8}
+          xl={8}
           sm={12}
           css={css`
             padding: 1.75rem;
@@ -198,24 +172,19 @@ export default function ResearchFormationsResult({
                 const isSelected = selected ? selected.formation._id === formationDetail._id : false;
                 const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
                 return (
-                  <Grid
-                    item
-                    sm={12}
-                    lg={expandMap ? 12 : 6}
-                    xl={expandMap ? 6 : 4}
-                    key={key}
-                    ref={formationsRef[index]}
-                  >
-                    <FormationCard
-                      selected={isSelected}
-                      onMouseEnter={() => {
-                        setSelected(formation);
-                      }}
-                      latitude={latitude}
-                      longitude={longitude}
-                      formation={formation}
-                      tabIndex={index}
-                    />
+                  <Grid item sm={12} lg={6} xl={4} key={key} ref={formationsRef[index]}>
+                    <Box sx={{ maxWidth: { xs: "100%", lg: "266px" } }}>
+                      <FormationCard
+                        selected={isSelected}
+                        onMouseEnter={() => {
+                          setSelected(formation);
+                        }}
+                        latitude={latitude}
+                        longitude={longitude}
+                        formation={formation}
+                        tabIndex={index}
+                      />
+                    </Box>
                   </Grid>
                 );
               })}

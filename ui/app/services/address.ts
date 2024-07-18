@@ -7,7 +7,7 @@ export async function fetchAddress(
   address: string,
   { signal }: { signal: AbortSignal | undefined } = { signal: undefined }
 ): Promise<any> {
-  if (!address || address.length < 3) {
+  if (!address || address.trim().length < 3) {
     return null;
   }
 
