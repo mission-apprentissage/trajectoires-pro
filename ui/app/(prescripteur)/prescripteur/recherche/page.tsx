@@ -7,12 +7,19 @@ import FormationsSearchProvider, { useFormationsSearch } from "../../context/For
 import SearchHeader from "../../components/SearchHeader";
 import Title from "../../components/Title";
 import Loader from "#/app/components/Loader";
+import ErrorUserGeolocation from "../../errors/ErrorUserGeolocation";
+import ErrorAddressInvalid from "../../errors/ErrorAddressInvalid";
+import UserGeolocatioDenied from "../../components/UserGeolocatioDenied";
 
 function ResearchFormationsParameter() {
   const { params } = useFormationsSearch();
   const { address, distance = 10, time = 15, tag } = params ?? {};
 
-  const { data: coordinate, isLoading } = useQuery({
+  const {
+    data: coordinate,
+    isLoading,
+    error,
+  } = useQuery({
     staleTime: Infinity,
     cacheTime: Infinity,
     retry: 0,
@@ -25,7 +32,7 @@ function ResearchFormationsParameter() {
       const addressCoordinate = await fetchAddress(address);
       if (!addressCoordinate?.features) {
         // TODO: manage address fetch error
-        throw new Error("Addresse invalide.");
+        throw new ErrorAddressInvalid();
       }
 
       return addressCoordinate.features[0].geometry.coordinates;
@@ -34,6 +41,10 @@ function ResearchFormationsParameter() {
 
   if (!params) {
     return null;
+  }
+
+  if (error && error instanceof ErrorUserGeolocation) {
+    return <UserGeolocatioDenied />;
   }
 
   if (isLoading) {

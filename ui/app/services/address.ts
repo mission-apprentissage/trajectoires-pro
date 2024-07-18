@@ -1,3 +1,4 @@
+import ErrorUserGeolocation from "../(prescripteur)/errors/ErrorUserGeolocation";
 import { myPosition } from "../components/form/AddressField";
 
 const API_BASE_URL = "https://api-adresse.data.gouv.fr";
@@ -12,7 +13,7 @@ export async function fetchAddress(
 
   if (address === myPosition) {
     // get the current users location
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
@@ -30,12 +31,12 @@ export async function fetchAddress(
           },
           (error) => {
             console.error("Error getting user location:", error);
-            resolve(null);
+            reject(new ErrorUserGeolocation());
           }
         );
       } else {
         console.error("Geolocation is not supported by this browser.");
-        resolve(null);
+        reject(new ErrorUserGeolocation());
       }
     });
   }
