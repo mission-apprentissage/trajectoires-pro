@@ -38,7 +38,7 @@ export default function SearchFormationForm({
       {({ control, errors }) => {
         return (
           <Grid container spacing={2}>
-            <Grid item md={6} sm={8} xs={12}>
+            <Grid item md={6} sm={8} xs={12} style={{ position: "relative" }}>
               <Controller
                 name="address"
                 control={control}

@@ -1,14 +1,52 @@
 "use client";
-import React, { useState } from "react";
-import { TextField } from "#/app/components/MaterialUINext";
+import React, { HTMLAttributes, useState } from "react";
+import { TextField, Typography } from "#/app/components/MaterialUINext";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useQuery } from "@tanstack/react-query";
 import { CircularProgress } from "#/app/components/MaterialUINext";
-import { fetchAddress, fetchReverse } from "#/app/services/address";
+import { fetchAddress } from "#/app/services/address";
 import { useDebounce } from "usehooks-ts";
-import Button from "@codegouvfr/react-dsfr/Button";
-import Popper from "@mui/material/Popper";
-import { PopperProps } from "@mui/base";
+import Popper, { PopperProps } from "@mui/material/Popper";
+import { fr } from "@codegouvfr/react-dsfr";
+
+export const myPosition = "Autour de moi";
+
+const ListboxComponent = React.forwardRef<HTMLUListElement>(function ListboxComponent(
+  props: HTMLAttributes<HTMLElement>,
+  ref
+) {
+  const { children, style, ...other } = props;
+
+  return (
+    <div>
+      <ul {...other} ref={ref}>
+        {children}
+      </ul>
+      <Typography variant="body3" style={{ padding: "1rem" }}>
+        Adresse non trouvée ? (TODO)Envoyer une alerte aux équipes.
+      </Typography>
+    </div>
+  );
+});
+
+const CustomPopper = (props: PopperProps) => {
+  return (
+    <Popper
+      {...props}
+      placement="bottom-start"
+      sx={{
+        marginTop: "18px !important",
+        marginLeft: { xs: "-16px !important", md: "-18px !important" },
+        "& .MuiPaper-root": {
+          boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.2)",
+        },
+      }}
+      style={{
+        width: "calc(100%)",
+      }}
+    />
+  );
+};
 
 export default function AddressField({
   formRef,
@@ -29,58 +67,26 @@ export default function AddressField({
   const { isLoading, data: options } = useQuery({
     queryKey: ["address", valueDebounce],
     queryFn: async () => {
-      const result = await fetchAddress(valueDebounce);
+      if (!valueDebounce) {
+        return [myPosition];
+      }
+
+      const result = await fetchAddress(valueDebounce.label);
       return result
-        ? result.features.map((f: any) => {
-            if (f.properties.type === "municipality") {
-              return f.properties.label + " (" + f.properties.postcode + ")";
-            }
-            return f.properties.label;
-          })
-        : [];
+        ? [
+            myPosition,
+            ...result.features.map((f: any) => {
+              const label =
+                f.properties.type === "municipality"
+                  ? f.properties.label + " (" + f.properties.postcode + ")"
+                  : f.properties.label;
+              return label;
+            }),
+          ]
+        : [myPosition];
     },
     // cacheTime: Infinity,
   });
-
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      setIsLocationLoading(true);
-      // get the current users location
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          const locations = await fetchReverse(latitude, longitude);
-
-          setIsLocationLoading(false);
-
-          if (locations) {
-            const location = locations.features[0].properties.label;
-            onChange(location);
-          }
-        },
-
-        (error) => {
-          setIsLocationLoading(false);
-          console.error("Error getting user location:", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  };
-
-  const CustomPopper = (props: PopperProps) => {
-    return (
-      <Popper
-        {...props}
-        placement="bottom"
-        sx={{
-          width: props?.anchorEl ? (props?.anchorEl as HTMLElement).clientWidth + 18 : 0,
-          marginLeft: "-18px !important",
-        }}
-      />
-    );
-  };
 
   return (
     <>
@@ -90,7 +96,7 @@ export default function AddressField({
         value={value}
         defaultValue={value}
         onInputChange={(e, v) => {
-          onChange(v);
+          onChange({ label: v });
         }}
         onChange={(e, v) => {
           onChange(v);
@@ -107,9 +113,26 @@ export default function AddressField({
           ...sx,
         }}
         PopperComponent={CustomPopper}
+        ListboxComponent={ListboxComponent as React.ComponentType<React.HTMLAttributes<HTMLElement>>}
         renderOption={(props, option) => {
+          const { key, ...rest } = props;
+
           return (
-            <li {...props} key={option}>
+            <li
+              key={option}
+              {...rest}
+              style={{ color: option === myPosition ? "var(--blue-france-sun-113-625-hover)" : "" }}
+            >
+              <i
+                className={option === myPosition ? fr.cx("ri-map-pin-5-line") : fr.cx("ri-map-pin-line")}
+                style={{
+                  borderRadius: "3px",
+                  padding: fr.spacing("1v"),
+                  marginRight: fr.spacing("3v"),
+                  backgroundColor: "var(--info-950-100)",
+                  color: "var(--blue-france-sun-113-625-hover)",
+                }}
+              ></i>
               {option}
             </li>
           );
@@ -134,12 +157,6 @@ export default function AddressField({
               ) : (
                 <>
                   {value && <div style={{ position: "absolute", right: "10px" }}>{params.InputProps.endAdornment}</div>}
-                  {/* <Button
-                    iconId="fr-icon-map-pin-2-fill"
-                    onClick={getLocation}
-                    priority="tertiary no outline"
-                    title="Votre localisation"
-                  /> */}
                 </>
               ),
               ...InputProps,

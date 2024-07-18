@@ -12,11 +12,13 @@ declare module "@mui/material/styles" {
   interface TypographyVariantsOptions {
     h1_main?: React.CSSProperties;
     subtitle4?: React.CSSProperties;
+    body3?: React.CSSProperties;
   }
 
   interface TypographyVariants {
     h1_main: React.CSSProperties;
     subtitle4: React.CSSProperties;
+    body3: React.CSSProperties;
   }
 }
 
@@ -24,11 +26,13 @@ declare module "@mui/material" {
   interface TypographyPropsVariantOverrides {
     h1_main: true;
     subtitle4: true;
+    body3: true;
   }
 
   interface TypographyClasses {
     h1_main: string;
     subtitle4: string;
+    body3: string;
   }
 }
 
@@ -42,6 +46,7 @@ const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
               variantMapping: {
                 h1_main: "h1",
                 subtitle4: "p",
+                body3: "p",
               },
             },
           },
@@ -86,6 +91,10 @@ const { MuiDsfrThemeProvider } = createMuiDsfrThemeProvider({
           body2: {
             fontSize: 14,
             lineHeight: "1.5rem",
+          },
+          body3: {
+            fontSize: "0.75rem",
+            lineHeight: "1.25rem",
           },
         },
         MuiTouchRipple: {

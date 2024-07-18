@@ -1,3 +1,5 @@
+import { myPosition } from "../components/form/AddressField";
+
 const API_BASE_URL = "https://api-adresse.data.gouv.fr";
 
 export async function fetchAddress(
@@ -6,6 +8,36 @@ export async function fetchAddress(
 ): Promise<any> {
   if (!address || address.length < 3) {
     return null;
+  }
+
+  if (address === myPosition) {
+    // get the current users location
+    return await new Promise((resolve) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+
+            resolve({
+              features: [
+                {
+                  geometry: {
+                    coordinates: [longitude, latitude],
+                  },
+                },
+              ],
+            });
+          },
+          (error) => {
+            console.error("Error getting user location:", error);
+            resolve(null);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+        resolve(null);
+      }
+    });
   }
 
   //TODO: gestion des erreurs

@@ -9,14 +9,17 @@ import DistanceField from "./DistanceField";
 import TimeField from "./TimeField";
 import Button from "../Button";
 import { SearchFormationFormData, schema } from "./SearchFormationForm";
-import { Box, Theme } from "@mui/material";
+import { Box, Stack, Theme } from "@mui/material";
+import { CSSProperties } from "react";
 
 export default function SearchFormationHomeForm({
   url,
   defaultValues,
+  style,
 }: {
   url: string;
   defaultValues: Nullable<SearchFormationFormData>;
+  style?: CSSProperties;
 }) {
   const isDownSm = useMediaQuery<Theme>((theme) => theme.breakpoints.down("sm"));
 
@@ -24,24 +27,53 @@ export default function SearchFormationHomeForm({
     <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={{ tag: "" }}>
       {({ control, errors, formRef }) => {
         return (
-          <Grid container spacing={0} style={{ backgroundColor: "#FFFFFF", padding: "18px", paddingRight: "24px" }}>
-            <Grid item md={8} sm={12} xs={12}>
-              <Controller
-                name="address"
-                control={control}
-                render={(form) => (
-                  <AddressField
-                    FieldProps={{ variant: "standard", label: "Ton adresse, ta ville" }}
-                    InputProps={{
-                      disableUnderline: true,
+          <Grid container spacing={0} style={{ backgroundColor: "#FFFFFF", ...style }}>
+            <Grid item md={12} sm={12} xs={12}>
+              <Stack direction="row" spacing={2} style={{ position: "relative" }}>
+                <Controller
+                  name="address"
+                  control={control}
+                  render={(form) => (
+                    <AddressField
+                      sx={{ width: "66%", padding: "18px", paddingRight: "0px" }}
+                      FieldProps={{ variant: "standard", label: "Ton adresse, ta ville" }}
+                      InputProps={{
+                        disableUnderline: true,
+                      }}
+                      error={errors?.address}
+                      form={form}
+                      formRef={formRef}
+                      submitOnChange={isDownSm}
+                    />
+                  )}
+                />
+                {!isDownSm && (
+                  <Box
+                    sx={{
+                      width: "33%",
+                      padding: "18px",
+                      paddingLeft: "0",
+                      paddingRight: "24px",
+                      display: { xs: "none", md: "block" },
                     }}
-                    error={errors?.address}
-                    form={form}
-                    formRef={formRef}
-                    submitOnChange={isDownSm}
-                  />
+                  >
+                    <Button
+                      type={"submit"}
+                      style={{
+                        borderRadius: "26px",
+                        height: "100%",
+                        width: "100%",
+                        backgroundColor: "var(--blue-france-sun-113-625-hover)",
+                        fontSize: "20px",
+                        lineHeight: "32px",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {"Explorer"}
+                    </Button>
+                  </Box>
                 )}
-              />
+              </Stack>
             </Grid>
             <Grid item md={2} xs={2} style={{ display: "none" }}>
               <Controller
@@ -57,26 +89,7 @@ export default function SearchFormationHomeForm({
                 render={(form) => <TimeField error={errors?.time} form={form} />}
               />
             </Grid>
-            <Grid item md={4} sm={4} xs={12} style={{ textAlign: "left" }}>
-              {!isDownSm && (
-                <Box sx={{ display: { xs: "none", md: "block" } }}>
-                  <Button
-                    type={"submit"}
-                    style={{
-                      borderRadius: "26px",
-                      height: "100%",
-                      width: "100%",
-                      backgroundColor: "var(--blue-france-sun-113-625-hover)",
-                      fontSize: "20px",
-                      lineHeight: "32px",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {"Explorer"}
-                  </Button>
-                </Box>
-              )}
-            </Grid>
+            <Grid item md={4} sm={4} xs={12} style={{ textAlign: "left" }}></Grid>
           </Grid>
         );
       }}

@@ -6,12 +6,13 @@ import { useQuery } from "@tanstack/react-query";
 import FormationsSearchProvider, { useFormationsSearch } from "../../context/FormationsSearchContext";
 import SearchHeader from "../../components/SearchHeader";
 import Title from "../../components/Title";
+import Loader from "#/app/components/Loader";
 
 function ResearchFormationsParameter() {
   const { params } = useFormationsSearch();
   const { address, distance = 10, time = 15, tag } = params ?? {};
 
-  const { data: coordinate } = useQuery({
+  const { data: coordinate, isLoading } = useQuery({
     staleTime: Infinity,
     cacheTime: Infinity,
     retry: 0,
@@ -20,6 +21,7 @@ function ResearchFormationsParameter() {
       if (!address) {
         return null;
       }
+
       const addressCoordinate = await fetchAddress(address);
       if (!addressCoordinate?.features) {
         // TODO: manage address fetch error
@@ -34,6 +36,9 @@ function ResearchFormationsParameter() {
     return null;
   }
 
+  if (isLoading) {
+    return <Loader withMargin />;
+  }
   return (
     coordinate && (
       <ResearchFormationsResult
