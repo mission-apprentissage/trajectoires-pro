@@ -173,7 +173,7 @@ export default function ResearchFormationsResult({
                 const key = `${formationDetail.cfd}-${formationDetail.codeDispositif}-${formationDetail.uai}-${formationDetail.voie}`;
                 return (
                   <Grid item sm={12} lg={6} xl={4} key={key} ref={formationsRef[index]}>
-                    <Box sx={{ maxWidth: { xs: "100%", lg: "266px" } }}>
+                    <Box sx={{ maxWidth: { xs: "100%", lg: "100%" } }}>
                       <FormationCard
                         selected={isSelected}
                         onMouseEnter={() => {
