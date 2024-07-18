@@ -8,6 +8,7 @@ import { fetchAddress } from "#/app/services/address";
 import { useDebounce } from "usehooks-ts";
 import Popper, { PopperProps } from "@mui/material/Popper";
 import { fr } from "@codegouvfr/react-dsfr";
+import Link from "../Link";
 
 export const myPosition = "Autour de moi";
 
@@ -22,8 +23,19 @@ const ListboxComponent = React.forwardRef<HTMLUListElement>(function ListboxComp
       <ul {...other} ref={ref}>
         {children}
       </ul>
-      <Typography className="listbox-footer" variant="body3" style={{ padding: "1rem" }}>
-        Adresse non trouvée ? (TODO)Envoyer une alerte aux équipes.
+      <Typography
+        onMouseDown={(event) => {
+          // Prevent blur
+          event.preventDefault();
+        }}
+        className="listbox-footer"
+        variant="body3"
+        style={{ padding: "1rem" }}
+      >
+        Adresse non trouvée ?{" "}
+        <Link target="_blank" href="https://adresse.data.gouv.fr/nous-contacter">
+          Envoyer une alerte aux équipes.
+        </Link>
       </Typography>
     </div>
   );
@@ -124,6 +136,7 @@ export default function AddressField({
     <div
       style={{
         width: "100%",
+        borderRadius: "5px",
         backgroundColor: "white",
         ...(isFocus && isMobile
           ? {
