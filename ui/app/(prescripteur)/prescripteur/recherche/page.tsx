@@ -57,8 +57,8 @@ export default function Page() {
   return (
     <>
       <Title pageTitle="Recherche de formations" />
-      <SearchHeader />
       <Suspense>
+        <SearchHeader />
         <FormationsSearchProvider>
           <ResearchFormationsParameter />
         </FormationsSearchProvider>
