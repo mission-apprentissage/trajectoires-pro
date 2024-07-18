@@ -10,24 +10,30 @@ import TimeField from "./TimeField";
 import Button from "../Button";
 import { SearchFormationFormData, schema } from "./SearchFormationForm";
 import { Box, Stack, Theme } from "@mui/material";
-import { CSSProperties } from "react";
 
 export default function SearchFormationHomeForm({
   url,
   defaultValues,
-  style,
+  bordered,
 }: {
   url: string;
   defaultValues: Nullable<SearchFormationFormData>;
-  style?: CSSProperties;
+  bordered?: boolean;
 }) {
-  const isDownSm = useMediaQuery<Theme>((theme) => theme.breakpoints.down("sm"));
+  const isDownSm = useMediaQuery<Theme>((theme) => theme.breakpoints.down("md"));
 
   return (
     <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={{ tag: "" }}>
       {({ control, errors, formRef }) => {
         return (
-          <Grid container spacing={0} style={{ backgroundColor: "#FFFFFF", ...style }}>
+          <Grid
+            container
+            spacing={0}
+            style={{
+              backgroundColor: "#FFFFFF",
+              ...(bordered ? { borderRadius: "5px", border: "2px solid var(--blue-france-sun-113-625-hover)" } : {}),
+            }}
+          >
             <Grid item md={12} sm={12} xs={12}>
               <Stack direction="row" spacing={2} style={{ position: "relative" }}>
                 <Controller
@@ -35,8 +41,8 @@ export default function SearchFormationHomeForm({
                   control={control}
                   render={(form) => (
                     <AddressField
-                      sx={{ width: "66%", padding: "18px", paddingRight: "0px" }}
-                      FieldProps={{ variant: "standard", label: "Ton adresse, ta ville" }}
+                      sx={{ padding: "18px", paddingRight: "0px" }}
+                      isMobile={isDownSm}
                       InputProps={{
                         disableUnderline: true,
                       }}

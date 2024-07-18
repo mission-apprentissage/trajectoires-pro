@@ -276,8 +276,8 @@ describe("repositories", () => {
       });
 
       it("Ne renvoie pas de somme pour une statistique quand tout les champs sont null", async () => {
-        insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" });
-        insertCertificationsStats(
+        await insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" });
+        await insertCertificationsStats(
           {
             code_certification: "12345678",
             code_formation_diplome: "12345678",
@@ -287,8 +287,8 @@ describe("repositories", () => {
           },
           false
         );
-        insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" });
-        insertCertificationsStats(
+        await insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" });
+        await insertCertificationsStats(
           {
             code_certification: "23830024202",
             code_formation_diplome: "12345678",

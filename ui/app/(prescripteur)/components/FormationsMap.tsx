@@ -79,7 +79,7 @@ export default function FormationsMap({
         </Marker>
       </FeatureGroup>
 
-      <FitBound key={etablissements.length} groupRef={groupRef} />
+      {etablissements.length && <FitBound key={etablissements.length} groupRef={groupRef} />}
     </Map>
   );
 }

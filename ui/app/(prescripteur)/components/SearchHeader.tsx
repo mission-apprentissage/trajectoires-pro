@@ -1,7 +1,7 @@
 "use client";
 import Container from "#/app/components/Container";
-import SearchFormationForm from "#/app/components/form/SearchFormationForm";
 import SearchFormationHomeForm from "#/app/components/form/SearchFormationHomeForm";
+import { Grid } from "#/app/components/MaterialUINext";
 
 export default function SearchHeader() {
   return (
@@ -10,13 +10,21 @@ export default function SearchHeader() {
       nopadding={true}
       maxWidth={false}
     >
-      <Container>
-        <SearchFormationHomeForm
-          url={"/recherche"}
-          defaultValues={{ address: null, distance: 10, time: 90 }}
-          style={{ borderRadius: "5px", border: "2px solid var(--blue-france-sun-113-625-hover)" }}
-        />
-      </Container>
+      <Grid container spacing={0}>
+        <Grid
+          item
+          xs={12}
+          lg={10}
+          xl={8}
+          sx={{ padding: { md: "2rem", xs: "1rem" }, paddingLeft: { md: "5rem" }, paddingRight: { md: "5rem" } }}
+        >
+          <SearchFormationHomeForm
+            url={"/recherche"}
+            defaultValues={{ address: null, distance: 10, time: 90 }}
+            bordered
+          />
+        </Grid>
+      </Grid>
     </Container>
   );
 }

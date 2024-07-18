@@ -42,9 +42,10 @@ export async function fetchAddress(
 
   //TODO: gestion des erreurs
   const type = address.split(" ").length > 1 ? "" : "municipality";
-  const result = await fetch(`${API_BASE_URL}/search/?q=${encodeURIComponent(address)}&type=${type}`, { signal });
+  const result = await fetch(`${API_BASE_URL}/search/?q=${encodeURIComponent(address)}&type=${type}&limit=20`, {
+    signal,
+  });
   const json = await result.json();
-
   return json;
 }
 

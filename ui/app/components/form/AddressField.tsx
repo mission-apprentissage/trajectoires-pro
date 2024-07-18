@@ -1,6 +1,6 @@
 "use client";
 import React, { HTMLAttributes, useState } from "react";
-import { TextField, Typography } from "#/app/components/MaterialUINext";
+import { Box, TextField, Typography } from "#/app/components/MaterialUINext";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useQuery } from "@tanstack/react-query";
 import { CircularProgress } from "#/app/components/MaterialUINext";
@@ -18,25 +18,54 @@ const ListboxComponent = React.forwardRef<HTMLUListElement>(function ListboxComp
   const { children, style, ...other } = props;
 
   return (
-    <div>
+    <div className="listbox-container">
       <ul {...other} ref={ref}>
         {children}
       </ul>
-      <Typography variant="body3" style={{ padding: "1rem" }}>
+      <Typography className="listbox-footer" variant="body3" style={{ padding: "1rem" }}>
         Adresse non trouvée ? (TODO)Envoyer une alerte aux équipes.
       </Typography>
     </div>
   );
 });
 
-const CustomPopper = (props: PopperProps) => {
-  return (
+const CustomPopper = ({ isMobile, isFocus, ...props }: PopperProps & { isFocus: boolean; isMobile: boolean }) => {
+  const { children, className, placement = "bottom" } = props;
+
+  return isFocus && isMobile ? (
+    <Box
+      className={className}
+      sx={{
+        flex: " 1 1 auto",
+        "& .MuiPaper-root": {
+          height: "100%",
+        },
+        "& .MuiAutocomplete-listbox": {
+          overflowY: "auto",
+          height: "0px",
+          maxHeight: "100%",
+          flex: "1 1 auto",
+        },
+        "& .listbox-container": {
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        },
+        "& .listbox-footer": {
+          flex: "0 1 auto",
+        },
+      }}
+      style={{ position: "static" }}
+    >
+      {typeof children === "function" ? children({ placement }) : children}
+    </Box>
+  ) : (
     <Popper
       {...props}
       placement="bottom-start"
       sx={{
         marginTop: "18px !important",
-        marginLeft: { xs: "-16px !important", md: "-18px !important" },
+        marginLeft: { md: "-18px !important" },
         "& .MuiPaper-root": {
           boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.2)",
         },
@@ -59,7 +88,10 @@ export default function AddressField({
   submitOnChange,
   error,
   sx,
+  isMobile,
 }: any) {
+  const [isFocus, setIsFocus] = useState(false);
+
   const [isLocationLoading, setIsLocationLoading] = useState(false);
 
   const valueDebounce = useDebounce(value, 200);
@@ -67,11 +99,11 @@ export default function AddressField({
   const { isLoading, data: options } = useQuery({
     queryKey: ["address", valueDebounce],
     queryFn: async () => {
-      if (!valueDebounce) {
+      if (!valueDebounce || valueDebounce === myPosition) {
         return [myPosition];
       }
 
-      const result = await fetchAddress(valueDebounce.label);
+      const result = await fetchAddress(valueDebounce);
       return result
         ? [
             myPosition,
@@ -89,18 +121,42 @@ export default function AddressField({
   });
 
   return (
-    <>
+    <div
+      style={{
+        width: "100%",
+        backgroundColor: "white",
+        ...(isFocus && isMobile
+          ? {
+              position: "fixed",
+              top: "0",
+              left: 0,
+              height: "100vh",
+              zIndex: 9999,
+              display: "flex",
+              flexFlow: "column",
+            }
+          : {}),
+      }}
+    >
       <Autocomplete
         loading={isLoading}
         loadingText={<CircularProgress />}
         value={value}
         defaultValue={value}
+        open={isFocus}
+        onOpen={(e) => {
+          setIsFocus(true);
+        }}
+        onBlur={(e) => {
+          setIsFocus(false);
+        }}
         onInputChange={(e, v) => {
-          onChange({ label: v });
+          onChange(v);
         }}
         onChange={(e, v) => {
           onChange(v);
           submitOnChange && formRef.current.requestSubmit();
+          setIsFocus(false);
         }}
         filterOptions={(x) => x}
         options={options || []}
@@ -110,9 +166,17 @@ export default function AddressField({
           "& .MuiOutlinedInput-root": {
             paddingRight: "10px!important",
           },
+          ...(isFocus && isMobile
+            ? {
+                flex: " 0 1 auto",
+                borderRadius: "5px",
+                border: "2px solid var(--blue-france-sun-113-625-hover)",
+                margin: "1rem",
+              }
+            : {}),
           ...sx,
         }}
-        PopperComponent={CustomPopper}
+        PopperComponent={(props) => <CustomPopper isFocus={isFocus} isMobile={isMobile} {...props} />}
         ListboxComponent={ListboxComponent as React.ComponentType<React.HTMLAttributes<HTMLElement>>}
         renderOption={(props, option) => {
           const { key, ...rest } = props;
@@ -143,15 +207,28 @@ export default function AddressField({
             error={!!error}
             helperText={error ? "Votre adresse n'est pas valide" : ""}
             InputLabelProps={{ shrink: true }}
-            label={"Votre adresse"}
-            placeholder={"Indiquez une adresse"}
+            label={isMobile && isFocus ? "" : "Ton adresse, ta ville"}
+            placeholder={"Saisir sa ville, son adresse"}
             className="addressField"
             onFocus={(event) => {
               event.target.select();
+              setIsFocus(true);
             }}
             InputProps={{
               ...params.InputProps,
               type: "search",
+              startAdornment:
+                isMobile && isFocus ? (
+                  <i
+                    onClick={(e) => {
+                      setIsFocus(false);
+                    }}
+                    style={{ marginRight: "1rem" }}
+                    className={fr.cx("ri-arrow-left-s-line")}
+                  ></i>
+                ) : (
+                  <></>
+                ),
               endAdornment: isLocationLoading ? (
                 <CircularProgress />
               ) : (
@@ -161,10 +238,11 @@ export default function AddressField({
               ),
               ...InputProps,
             }}
+            variant={"standard"}
             {...FieldProps}
           />
         )}
       />
-    </>
+    </div>
   );
 }
