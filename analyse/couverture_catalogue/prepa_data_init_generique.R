@@ -109,14 +109,24 @@ voeux_parcoursup_simpli <- voeux_parcoursup %>%
         by=c("cod_aff_form"="CODEFORMATIONACCUEIL")
       )   
   ) %>% 
-  distinct(cod_uai,CODEMEF,APPRENTISSAGEOUSCOLAIRE,CODECFD,acc_tot,voe_tot) %>% 
-  setNames(c("UAI","MEFSTAT11","Filiere","FORMATION_DIPLOME","Nombre de voeux affectes","Demandes tous voeux")) 
+  distinct(cod_uai,cod_aff_form,CODEMEF,APPRENTISSAGEOUSCOLAIRE,CODECFD,acc_tot,voe_tot) %>% 
+  setNames(c("UAI","CODEFORMATIONACCUEIL","MEF","Filiere","FORMATION_DIPLOME","Nombre de voeux affectes","Demandes tous voeux")) %>%
+  left_join(
+    n_mef %>% 
+      select(MEF,MEF_STAT_11) %>% 
+      rename(MEFSTAT11=MEF_STAT_11),
+    by="MEF"
+  ) %>% 
+  select(-MEF)
 
 
 voeux_parcoursup_affelnet_simpli_2023 <- voeux_parcoursup_simpli %>% 
-  bind_rows(voeux_affelnet_simpli) %>% 
+  mutate(catalogue_voeux="parcoursup") %>% 
+  bind_rows(voeux_affelnet_simpli %>% 
+              mutate(catalogue_voeux="affelnet")
+  ) %>% 
   mutate(code_certification=ifelse(Filiere=="Scolaire",MEFSTAT11,FORMATION_DIPLOME)) %>% 
-  distinct(UAI,code_certification,Filiere,`Nombre de voeux affectes`,`Demandes tous voeux`) 
+  distinct(UAI,CODEFORMATIONACCUEIL,code_certification,Filiere,catalogue_voeux,`Nombre de voeux affectes`,`Demandes tous voeux`) 
 
 
 
