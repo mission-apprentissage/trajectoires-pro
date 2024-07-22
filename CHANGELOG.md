@@ -1,3 +1,10 @@
+## [1.19.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.19.0...v1.19.1) (2024-07-15)
+
+
+### Bug Fixes
+
+* notion revalidate et restart policy de l'ui ([#271](https://github.com/mission-apprentissage/trajectoires-pro/issues/271)) ([0f0891e](https://github.com/mission-apprentissage/trajectoires-pro/commit/0f0891e98029e6ce0d438aea7ed457520a14a222))
+
 # [1.19.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.18.0...v1.19.0) (2024-06-20)
 
 

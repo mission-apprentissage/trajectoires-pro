@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "version": "1.19.0",
+  "version": "1.19.1",
   "private": true,
   "scripts": {
     "dev": "yarn predev && NEXT_PUBLIC_VERSION=$npm_package_version next dev",
