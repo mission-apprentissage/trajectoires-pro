@@ -24,8 +24,9 @@ const config = {
   },
   graphHopper: {
     api: {
-      // Sandbox url for testing purpose
-      baseUrl: env.get("GRAPHHOPPER_BASE_URL").default("http://141.94.105.71:8989").asString(),
+      // Sandbox url for testing purpose, TODO : enlever serveur de ananda en cas de crash (utiliser pour accèlerer graphhopper)
+      baseUrl: env.get("GRAPHHOPPER_BASE_URL").default("http://ananda-nono.io:8989/").asString(),
+      //baseUrl: env.get("GRAPHHOPPER_BASE_URL").default("http://141.94.105.71:8989").asString(),
     },
   },
   ovh: {

@@ -194,17 +194,20 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
                       lines={descriptionLine}
                       tokenize={"words"}
                       ellipsis={
-                        <div>
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setDescriptionLine(1000);
-                            }}
-                          >
-                            Voir plus
-                          </a>
-                        </div>
+                        <>
+                          {"..."}
+                          <div style={{ marginTop: "-1.5rem" }}>
+                            <a
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setDescriptionLine(1000);
+                              }}
+                            >
+                              Voir plus
+                            </a>
+                          </div>
+                        </>
                       }
                     >
                       <div>{HtmlReactParser(formation.description)}</div>
