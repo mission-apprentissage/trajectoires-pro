@@ -26,7 +26,7 @@ export async function buildFiltersEtablissement({ timeLimit, distance, latitude,
   }
 
   if (timeLimit) {
-    const buckets = [7200, 5400, 3600, 1800, 900];
+    const buckets = [7200, 5400, 3600, 2700, 1800, 900];
     const graphHopperApi = new GraphHopperApi();
     try {
       const graphHopperParameter = {

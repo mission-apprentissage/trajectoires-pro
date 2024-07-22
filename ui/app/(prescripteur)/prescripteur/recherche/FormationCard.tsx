@@ -10,6 +10,18 @@ import { useFormationLink } from "../../hooks/useFormationLink";
 import { LabelApprentissage } from "../../components/Apprentissage";
 import { capitalize } from "lodash-es";
 
+function formatAccessTime(time: number) {
+  if (time >= 3600) {
+    return (
+      <>
+        À moins de {Math.floor(time / 3600).toFixed(0)}h{(time % 3600) / 60 || ""}
+      </>
+    );
+  }
+
+  return <>À moins de {(time / 60).toFixed(0)} minutes</>;
+}
+
 export default function FormationCard({
   latitude,
   longitude,
@@ -62,8 +74,8 @@ export default function FormationCard({
         <Grid item xs={10}>
           {etablissement.accessTime ? (
             <Typography variant="subtitle2" color={"var(--blue-france-sun-113-625)"}>
-              <i style={{ marginRight: fr.spacing("2v") }} className={fr.cx("fr-icon-bus-fill")} />À moins de{" "}
-              {(etablissement.accessTime / 60).toFixed(0)} minutes
+              <i style={{ marginRight: fr.spacing("2v") }} className={fr.cx("fr-icon-bus-fill")} />
+              {formatAccessTime(etablissement.accessTime)}
             </Typography>
           ) : (
             <Typography variant="subtitle2" color={"var(--blue-france-sun-113-625)"}>

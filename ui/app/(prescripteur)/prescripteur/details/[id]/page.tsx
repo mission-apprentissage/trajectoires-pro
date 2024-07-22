@@ -84,7 +84,10 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
               </Stack>
             </Grid>
             <Grid item xs={12} md={6} style={{ paddingLeft: fr.spacing("5v") }}>
-              <Typography variant="h5" style={{ marginBottom: fr.spacing("3v") }}>
+              <Typography
+                variant="h5"
+                style={{ color: "var(--blue-france-sun-113-625)", marginBottom: fr.spacing("3v") }}
+              >
                 {etablissement.url ? (
                   <Link style={{ backgroundImage: "none" }} noIcon target="_blank" href={etablissement.url}>
                     {etablissement.libelle}

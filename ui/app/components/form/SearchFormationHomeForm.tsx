@@ -49,7 +49,7 @@ export default function SearchFormationHomeForm({
                       error={errors?.address}
                       form={form}
                       formRef={formRef}
-                      submitOnChange={isDownSm}
+                      submitOnChange={true}
                     />
                   )}
                 />

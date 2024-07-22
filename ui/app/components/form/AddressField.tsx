@@ -134,7 +134,7 @@ export default function AddressField({
           ]
         : [myPosition];
     },
-    // cacheTime: Infinity,
+    cacheTime: Infinity,
   });
 
   return (
