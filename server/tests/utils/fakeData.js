@@ -105,6 +105,7 @@ export function insertFormationsStats(custom = {}, withStat = true) {
       {},
       {
         uai: createUAI(faker.helpers.replaceSymbols("075####")),
+        libelle_etablissement: "Lycée",
         millesime: "2018_2019",
         filiere: "apprentissage",
         code_certification,

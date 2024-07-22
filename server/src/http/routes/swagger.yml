@@ -1107,6 +1107,9 @@ components:
       properties:
         uai:
           type: string
+        libelle_etablissement:
+          description: Nom de l'établissement
+          type: string
         millesime:
           type: string
         code_certification:

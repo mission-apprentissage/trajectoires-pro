@@ -30,6 +30,7 @@ export function schema() {
       uai_gestionnaire: arrayOf(string()), // Dans le cas ou uai_type est lieu_formation ou formateur
       uai_donnee: string(),
       uai_donnee_type: enumOf(UAI_TYPE),
+      libelle_etablissement: string(),
       millesime: string(),
       region: regionSchema(),
       academie: academieSchema(),
