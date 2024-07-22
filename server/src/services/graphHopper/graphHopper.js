@@ -106,29 +106,36 @@ class GraphHopperApi extends RateLimitedApi {
     //   .fill(0)
     //   .map((v, index) => (index + 1) * timePart)
     //   .reverse();
-    const geometries = [];
-    for (const time of times) {
-      // if (time === 3600) {
-      //   const geometry = JSON.parse(fs.readFileSync(getDirname(import.meta.url) + "/a.json"));
-      //   geometries.push({
-      //     time,
-      //     feature: geometry.polygons[0],
-      //   });
-      // }
+    // const geometries = [];
+    // for (const time of times) {
+    //   // if (time === 3600) {
+    //   //   const geometry = JSON.parse(fs.readFileSync(getDirname(import.meta.url) + "/a.json"));
+    //   //   geometries.push({
+    //   //     time,
+    //   //     feature: geometry.polygons[0],
+    //   //   });
+    //   // }
 
-      // if (time === 1800) {
-      //   const geometry = JSON.parse(fs.readFileSync(getDirname(import.meta.url) + "/b.json"));
-      //   geometries.push({
-      //     time,
-      //     feature: geometry.polygons[0],
-      //   });
-      // }
-      const geometry = await this.fetchIsochrone({ point, departureTime, timeLimit: time, reverse_flow });
-      geometries.push({
-        time,
-        feature: geometry.polygons[0],
-      });
-    }
+    //   // if (time === 1800) {
+    //   //   const geometry = JSON.parse(fs.readFileSync(getDirname(import.meta.url) + "/b.json"));
+    //   //   geometries.push({
+    //   //     time,
+    //   //     feature: geometry.polygons[0],
+    //   //   });
+    //   // }
+    //   const geometry = await this.fetchIsochrone({ point, departureTime, timeLimit: time, reverse_flow });
+    //   geometries.push({
+    //     time,
+    //     feature: geometry.polygons[0],
+    //   });
+    // }
+
+    const geometries = await Promise.all(
+      times.map(async (time) => {
+        const geometry = await this.fetchIsochrone({ point, departureTime, timeLimit: time, reverse_flow });
+        return { time, feature: geometry.polygons[0] };
+      })
+    );
 
     const tStart = Date.now();
 
