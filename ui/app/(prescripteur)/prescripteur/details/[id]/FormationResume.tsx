@@ -186,7 +186,7 @@ export default function FormationResume({
       css={css`
         background-color: #fff;
         ${theme.breakpoints.down("md")} {
-          margin-left: ${fr.spacing("5v")};
+          padding-left: ${fr.spacing("5v")};
         }
       `}
     >

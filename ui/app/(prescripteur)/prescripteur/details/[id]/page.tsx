@@ -28,7 +28,6 @@ import Link from "#/app/components/Link";
 import Title from "#/app/(prescripteur)/components/Title";
 import { TagApprentissage } from "#/app/(prescripteur)/components/Apprentissage";
 import { capitalize } from "lodash-es";
-import Button from "#/app/components/Button";
 
 function FormationDetails({ formation: { formation, etablissement } }: { formation: Formation }) {
   const searchParams = useSearchParams();
@@ -40,7 +39,7 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
   const refHeader = React.useRef<HTMLElement>(null);
   const stickyHeaderSize = useSize(refHeader);
 
-  const [descriptionLine, setDescriptionLine] = useState(5);
+  const [descriptionLine, setDescriptionLine] = useState(6);
 
   return (
     <Container style={{ marginTop: fr.spacing("5v") }} maxWidth={"xl"}>
@@ -143,12 +142,6 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
                       Découvrir la formation lors d’un mini-stage ⓘ
                     </Typography>
                   </Card>
-                  {/* <Card>
-                    <Typography variant="subtitle2" style={{ color: "var(--blue-france-sun-113-625)" }}>
-                      <i className={fr.cx("ri-profile-line")} style={{ marginRight: fr.spacing("1w") }} />
-                      Voir sur le site d’affectation (Affelnet)
-                    </Typography>
-                  </Card> */}
                 </Grid>
               </Grid>
             </Grid>
@@ -176,10 +169,17 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
           />
         </Grid>
         <Grid item xs={12} style={{ backgroundColor: "#fff", zIndex: 99 }}>
-          <Grid container style={{ maxWidth: "800px", paddingLeft: fr.spacing("8v") }}>
+          <Grid
+            container
+            style={{
+              maxWidth: "800px",
+              paddingLeft: fr.spacing("8v"),
+              paddingRight: fr.spacing("8v"),
+              paddingTop: fr.spacing("10v"),
+            }}
+          >
             {formation.description && (
               <Grid item xs={12}>
-                <Divider margin={fr.spacing("10v")} />
                 <Card type="details" title="La formation">
                   <Box
                     style={{
@@ -215,7 +215,7 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
                         target="_blank"
                         href={`https://www.onisep.fr/http/redirection/formation/slug/${formation?.onisep?.identifiant}`}
                       >
-                        En savoir plus sur l&apos;onisep
+                        En savoir plus, sur le site de l&apos;Onisep
                       </Link>
                     </Box>
                   </Box>
@@ -223,13 +223,7 @@ function FormationDetails({ formation: { formation, etablissement } }: { formati
 
                 {formation.voie === "apprentissage" && (
                   <Box style={{ marginTop: fr.spacing("10v") }}>
-                    <Typography variant="h3" style={{ marginBottom: fr.spacing("5v") }}>
-                      À quoi ressemble une journée ?
-                    </Typography>
-                    <WidgetSiriusEtablissement
-                      etablissement={etablissement}
-                      fallbackComponent={<>Nous n&apos;avons pas d&apos;informations</>}
-                    />
+                    <WidgetSiriusEtablissement etablissement={etablissement} fallbackComponent={<></>} />
                   </Box>
                 )}
               </Grid>
