@@ -1,3 +1,10 @@
+# [1.20.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.19.1...v1.20.0) (2024-07-23)
+
+
+### Features
+
+* nom de l'établissement dans l'API ([#274](https://github.com/mission-apprentissage/trajectoires-pro/issues/274)) ([78524ef](https://github.com/mission-apprentissage/trajectoires-pro/commit/78524ef4ba07bb66b650fee88cb3f8026b647f24))
+
 ## [1.19.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.19.0...v1.19.1) (2024-07-15)
 
 
