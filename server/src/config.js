@@ -61,7 +61,7 @@ const config = {
     datasets: {
       rome: "1c893376-8476-4262-9a0e-8df519883e1e",
       certifinfo: "e47b3527-02bf-4e6d-8548-81ccb5a108de",
-      onisepIdeoFichesFormations: "6dcae6d4-8f87-4d2e-89ca-8a2806db1a67",
+      onisepIdeoFichesFormations: "a60a48d2-b7fe-4677-b41a-ce2557b5074a",
     },
   },
   dataenseignementsup: {
