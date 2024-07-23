@@ -9,6 +9,31 @@ export enum FormationTag {
   ADMISSION_FACILE = "admission_facile",
 }
 
+// TODO : fetch domaine from API
+export enum FormationDomaine {
+  "tous secteurs" = "tous secteurs",
+  "agriculture, animaux" = "agriculture, animaux",
+  "armée, sécurité" = "armée, sécurité",
+  "arts, culture, artisanat" = "arts, culture, artisanat",
+  "banque, assurances, immobilier" = "banque, assurances, immobilier",
+  "commerce, marketing, vente" = "commerce, marketing, vente",
+  "construction, architecture, travaux publics" = "construction, architecture, travaux publics",
+  "économie, droit, politique" = "économie, droit, politique",
+  "électricité, électronique, robotique" = "électricité, électronique, robotique",
+  "environnement, énergies, propreté" = "environnement, énergies, propreté",
+  "gestion des entreprises, comptabilité" = "gestion des entreprises, comptabilité",
+  "histoire-géographie, psychologie, sociologie" = "histoire-géographie, psychologie, sociologie",
+  "hôtellerie-restauration, tourisme" = "hôtellerie-restauration, tourisme",
+  "information-communication, audiovisuel" = "information-communication, audiovisuel",
+  "informatique, Internet" = "informatique, Internet",
+  "lettres, langues, enseignement" = "lettres, langues, enseignement",
+  "logistique, transport" = "logistique, transport",
+  "matières premières, fabrication, industries" = "matières premières, fabrication, industries",
+  "mécanique" = "mécanique",
+  "santé, social, sport" = "santé, social, sport",
+  "sciences" = "sciences",
+}
+
 export enum FormationVoie {
   SCOLAIRE = "scolaire",
   APPRENTISSAGE = "apprentissage",

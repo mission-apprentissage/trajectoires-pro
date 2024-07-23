@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { object, number, array, string, InferType } from "yup";
 import * as API from "../index";
-import { FormationTag, UAI_PATTERN, CFD_PATTERN } from "#/types/formation";
+import { FormationTag, FormationDomaine, UAI_PATTERN, CFD_PATTERN } from "#/types/formation";
 import { tryCatch } from "#/app/utils/routeUtils";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +28,12 @@ const getSchema = object({
       return originalValue ? originalValue.split(/[\s,]+/) : [];
     })
     .of(string().matches(CFD_PATTERN)),
+  domaine: string()
+    .oneOf(Object.values(FormationDomaine))
+    .nullable()
+    .transform((_, value) => {
+      return value === "" ? null : value;
+    }),
   page: number().required().default(0).min(0).integer(),
   items_par_page: number().required().default(10).positive().integer(),
 });

@@ -1,4 +1,4 @@
-import { object, objectId, string, enumOf } from "./jsonSchema/jsonSchemaTypes.js";
+import { object, arrayOf, objectId, string, enumOf } from "./jsonSchema/jsonSchemaTypes.js";
 import { metaSchema, metaImportSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "formation";
@@ -15,9 +15,16 @@ export function schema() {
       codeDispositif: string(),
       codeDiplome: string(),
       mef11: string(),
+      codeRncp: string(),
       voie: enumOf(["scolaire", "apprentissage"]),
       libelle: string(),
       description: string(),
+      domaines: arrayOf(
+        object({
+          domaine: string(),
+          sousDomaine: string(),
+        })
+      ),
       onisep: object({
         identifiant: string(),
       }),

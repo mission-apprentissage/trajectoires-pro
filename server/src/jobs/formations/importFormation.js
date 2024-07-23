@@ -11,6 +11,46 @@ import BCNMefRepository from "#src/common/repositories/bcnMef.js";
 
 const logger = getLoggerWithContext("import");
 
+function formatDomaine(formationInitiale) {
+  if (!formationInitiale || !formationInitiale["domainesous-domaine"]) {
+    return [];
+  }
+
+  const domaines = formationInitiale["domainesous-domaine"].split(" | ");
+  return domaines.map((domaine) => {
+    const domainePart = domaine.split("/");
+    return {
+      domaine: domainePart[0],
+      sousDomaine: domainePart[1],
+    };
+  });
+}
+
+async function getFormationInitialeWithContinuum(bcn) {
+  const { code_formation_diplome } = bcn;
+
+  const formationInitiale = await OnisepRawRepository.first({
+    type: "ideoFormationsInitiales",
+    "data.code_scolarite": code_formation_diplome,
+  });
+  if (formationInitiale) {
+    return formationInitiale;
+  }
+
+  const bcnCfd = await BCNRepository.first({ code_certification: code_formation_diplome });
+
+  // Todo: improve continuum request
+  if (bcnCfd.nouveau_diplome.length !== 1) {
+    return null;
+  }
+
+  const formationInitialeNew = await OnisepRawRepository.first({
+    type: "ideoFormationsInitiales",
+    "data.code_scolarite": bcnCfd.nouveau_diplome[0],
+  });
+  return formationInitialeNew;
+}
+
 async function importFromBcnAndOnisep() {
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
 
@@ -20,11 +60,8 @@ async function importFromBcnAndOnisep() {
       async (bcn) => {
         const { code_formation_diplome, type, code_certification, libelle_long } = bcn;
         const bcnMef = type === "mef" ? await BCNMefRepository.first({ mef_stat_11: code_certification }) : null;
-        const formationInitiale = await OnisepRawRepository.first({
-          type: "ideoFormationsInitiales",
-          "data.code_scolarite": code_formation_diplome,
-        });
 
+        const formationInitiale = await getFormationInitialeWithContinuum(bcn);
         const dataFormatted = {
           cfd: code_formation_diplome,
           voie: type === "mef" ? "scolaire" : "apprentissage",
@@ -32,6 +69,8 @@ async function importFromBcnAndOnisep() {
           codeDiplome: bcn.diplome.code,
           mef11: bcnMef ? code_certification : null,
           libelle: formationInitiale ? formationInitiale.data.libelle_formation_principal : libelle_long,
+          codeRncp: formationInitiale ? formationInitiale.data.code_rncp : null,
+          domaines: formatDomaine(formationInitiale?.data),
         };
 
         try {

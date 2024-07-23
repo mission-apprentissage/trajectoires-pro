@@ -1,6 +1,6 @@
 import { schema as schemaFormation } from "#/app/components/form/SearchFormationForm";
 import { paramsToString, searchParamsToObject } from "#/app/utils/searchParams";
-import { FormationTag } from "#/types/formation";
+import { FormationDomaine, FormationTag } from "#/types/formation";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createContext, useContext, useCallback } from "react";
 
@@ -9,6 +9,7 @@ type FormationsSearchParams = {
   distance: number;
   time: number;
   tag?: FormationTag;
+  domaine?: FormationDomaine;
 };
 
 const FormationsSearchContext = createContext<{
@@ -26,7 +27,7 @@ const FormationsSearchProvider = ({ children }: { children: React.ReactNode }) =
   const searchParams = useSearchParams();
   const params = searchParamsToObject(
     searchParams,
-    { address: null, distance: 10, time: null, tag: null },
+    { address: null, distance: 10, time: null, tag: null, domaine: null },
     schemaFormation
   );
 

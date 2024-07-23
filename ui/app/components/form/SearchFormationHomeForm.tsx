@@ -23,7 +23,7 @@ export default function SearchFormationHomeForm({
   const isDownSm = useMediaQuery<Theme>((theme) => theme.breakpoints.down("md"));
 
   return (
-    <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={{ tag: "" }}>
+    <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={{ tag: "", domaine: "" }}>
       {({ control, errors, formRef }) => {
         return (
           <Grid

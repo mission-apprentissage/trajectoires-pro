@@ -7,6 +7,7 @@ export type ButtonProps = {
   rounded?: boolean | string;
   variant?: "white" | "white-black";
   smallIconOnly?: boolean;
+  iconOnly?: boolean;
 } & DSFRButtonProps;
 
 function ButtonBase({ children, smallIconOnly, ...props }: ButtonProps) {
@@ -18,7 +19,7 @@ function ButtonBase({ children, smallIconOnly, ...props }: ButtonProps) {
 }
 
 export default styled(ButtonBase, {
-  shouldForwardProp: (prop) => !["rounded", "variant"].includes(prop),
+  shouldForwardProp: (prop) => !["iconOnly", "rounded", "variant"].includes(prop),
 })<ButtonProps>`
   ${({ rounded }) => (rounded ? (isString(rounded) ? `border-radius: ${rounded};` : "border-radius: 16px;") : "")}
   ${({ variant }) => {
@@ -49,6 +50,21 @@ export default styled(ButtonBase, {
         display: none;
        }
       }`
+      : "";
+  }}
+
+  ${({ iconOnly }) => {
+    return iconOnly
+      ? `
+      &.fr-btn--lg.fr-btn--icon-left[class^=fr-icon-]::before, &.fr-btn--lg.fr-btn--icon-left[class*=" fr-icon-"]::before, &.fr-btn--lg.fr-btn--icon-left[class^=fr-fi-]::before, &.fr-btn--lg.fr-btn--icon-left[class*=" fr-fi-"]::before, &[class^=fr-icon-]::before, &[class*=" fr-icon-"]::before, &[class^=fr-fi-]::before, &[class*=" fr-fi-"]::before{
+          margin-right: 0;
+          margin-left: 0;
+      }
+
+      padding: 0.25rem;
+      border-radius: 1rem;
+      min-height: 0;
+    `
       : "";
   }}
 `;

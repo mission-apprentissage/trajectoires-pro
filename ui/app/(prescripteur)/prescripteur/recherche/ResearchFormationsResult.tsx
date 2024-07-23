@@ -10,7 +10,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import FormationCard from "./FormationCard";
 import ClientSideScrollRestorer from "#/app/components/ClientSideScrollRestorer";
 import dynamic from "next/dynamic";
-import { Formation, FormationTag } from "#/types/formation";
+import { Formation, FormationTag, FormationDomaine } from "#/types/formation";
 import { Box, Stack, useTheme } from "@mui/material";
 import FormationAllTags from "../../components/FormationAllTags";
 import useGetFormations from "../../hooks/useGetFormations";
@@ -49,6 +49,7 @@ export default function ResearchFormationsResult({
   distance,
   time,
   tag,
+  domaine,
   page = 1,
 }: {
   latitude: number;
@@ -56,6 +57,7 @@ export default function ResearchFormationsResult({
   distance: number;
   time: number;
   tag?: FormationTag | null;
+  domaine?: FormationDomaine | null;
   page: number;
 }) {
   const theme = useTheme();
@@ -68,6 +70,7 @@ export default function ResearchFormationsResult({
     time,
     tag,
     page,
+    domaine,
   });
 
   useBottomScrollListener(fetchNextPage);

@@ -1,4 +1,4 @@
-import { FormationTag } from "#/types/formation";
+import { FormationDomaine, FormationTag } from "#/types/formation";
 import { FrCxArg } from "@codegouvfr/react-dsfr";
 
 export const FORMATION_TAG: { tag: FormationTag; libelle: string; color: string; bgColor: string; icon: FrCxArg }[] = [
@@ -23,4 +23,31 @@ export const FORMATION_TAG: { tag: FormationTag; libelle: string; color: string;
     bgColor: "var(--warning-975-75)",
     icon: "ri-door-open-fill",
   },
+];
+
+export const FORMATION_DOMAINE: {
+  domaine: FormationDomaine;
+  isAll?: boolean;
+}[] = [
+  { domaine: FormationDomaine["tous secteurs"], isAll: true },
+  { domaine: FormationDomaine["agriculture, animaux"] },
+  { domaine: FormationDomaine["armée, sécurité"] },
+  { domaine: FormationDomaine["arts, culture, artisanat"] },
+  { domaine: FormationDomaine["banque, assurances, immobilier"] },
+  { domaine: FormationDomaine["commerce, marketing, vente"] },
+  { domaine: FormationDomaine["construction, architecture, travaux publics"] },
+  { domaine: FormationDomaine["économie, droit, politique"] },
+  { domaine: FormationDomaine["électricité, électronique, robotique"] },
+  { domaine: FormationDomaine["environnement, énergies, propreté"] },
+  { domaine: FormationDomaine["gestion des entreprises, comptabilité"] },
+  { domaine: FormationDomaine["histoire-géographie, psychologie, sociologie"] },
+  { domaine: FormationDomaine["hôtellerie-restauration, tourisme"] },
+  { domaine: FormationDomaine["information-communication, audiovisuel"] },
+  { domaine: FormationDomaine["informatique, Internet"] },
+  { domaine: FormationDomaine["lettres, langues, enseignement"] },
+  { domaine: FormationDomaine["logistique, transport"] },
+  { domaine: FormationDomaine["matières premières, fabrication, industries"] },
+  { domaine: FormationDomaine["mécanique"] },
+  { domaine: FormationDomaine["santé, social, sport"] },
+  { domaine: FormationDomaine["sciences"] },
 ];

@@ -56,13 +56,21 @@ export async function buildFiltersEtablissement({ timeLimit, distance, latitude,
   return filtersEtablissement;
 }
 
-export async function buildFiltersFormation({ cfds }) {
+export async function buildFiltersFormation({ cfds, domaine }) {
   let filtersFormation = [];
 
   if (cfds.length > 0) {
     filtersFormation.push({
       $match: {
         "formation.cfd": { $in: cfds },
+      },
+    });
+  }
+
+  if (domaine) {
+    filtersFormation.push({
+      $match: {
+        "formationInfo.domaines.domaine": { $in: [domaine] },
       },
     });
   }

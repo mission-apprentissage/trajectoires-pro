@@ -1,7 +1,8 @@
-import { oleoduc, writeData, filterData } from "oleoduc";
+import { oleoduc, writeData, filterData, transformData } from "oleoduc";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { streamIdeoFichesFormations } from "#src/services/dataGouv/onisep.js";
 import { formation as formationCollection } from "#src/common/db/collections/collections.js";
+import BCNRepository from "#src/common/repositories/bcn.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -15,11 +16,15 @@ export async function importIdeoFichesFormations() {
   await oleoduc(
     await streamIdeoFichesFormations(),
     filterData((data) => data.code_scolarite && data.descriptif_format_court),
+    transformData(async (formation) => {
+      const cfds = await BCNRepository.cfdsParentAndChildren(formation.code_scolarite);
+      return { cfds, formation };
+    }),
     writeData(
-      async (formation) => {
+      async ({ cfds, formation }) => {
         try {
           const res = await formationCollection().updateMany(
-            { cfd: formation.code_scolarite },
+            { cfd: { $in: cfds } },
             {
               $set: {
                 description: cleanDescription(formation.descriptif_format_court),

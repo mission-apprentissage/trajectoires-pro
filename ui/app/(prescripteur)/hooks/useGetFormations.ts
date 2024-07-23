@@ -2,7 +2,7 @@
 import { useCallback, useMemo } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { formations as formationsQuery } from "#/app/api/exposition/formations/query";
-import { FormationTag } from "#/types/formation";
+import { FormationDomaine, FormationTag } from "#/types/formation";
 
 export default function useGetFormations({
   latitude,
@@ -10,9 +10,11 @@ export default function useGetFormations({
   distance,
   time,
   tag,
+  domaine,
   uais,
   cfds,
   page,
+
   items_par_page = 100,
 }: {
   latitude?: number;
@@ -20,6 +22,7 @@ export default function useGetFormations({
   distance?: number;
   time?: number;
   tag?: FormationTag | null;
+  domaine?: FormationDomaine | null;
   uais?: string[];
   cfds?: string[];
   page?: number;
@@ -37,7 +40,18 @@ export default function useGetFormations({
     cacheTime: Infinity,
     retry: false,
     //keepPreviousData: true,
-    queryKey: ["formations", latitude, longitude, distance, time, tag, page, uais?.toString(), cfds?.toString()],
+    queryKey: [
+      "formations",
+      latitude,
+      longitude,
+      distance,
+      time,
+      tag,
+      domaine,
+      page,
+      uais?.toString(),
+      cfds?.toString(),
+    ],
     queryFn: ({ pageParam, signal }) => {
       return formationsQuery(
         {
@@ -46,6 +60,7 @@ export default function useGetFormations({
           distance,
           timeLimit: time,
           tag,
+          domaine,
           page: pageParam ?? 1,
           items_par_page,
           cfds,
