@@ -75,6 +75,7 @@ describe("importFormationsStats", () => {
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found, {
       uai: "0751234J",
+      libelle_etablissement: "Lycée professionnel",
       code_certification: "12345678",
       code_certification_type: "cfd",
       code_formation_diplome: "12345678",
@@ -140,6 +141,7 @@ describe("importFormationsStats", () => {
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found, {
       uai: "0751234J",
+      libelle_etablissement: "Lycée professionnel",
       code_certification: "12345678900",
       code_certification_type: "mef11",
       code_formation_diplome: "12345678",

@@ -70,6 +70,7 @@ async function loadParameters(parameters, millesimes) {
       if (index === -1) {
         results.push({
           uai,
+          libelle_etablissement: etablissement?.appellation_officielle,
           millesime,
           region: findRegionByNom(data.region),
           academie: findAcademieByCode(etablissement?.academie),
@@ -155,6 +156,7 @@ export async function importFormationsStats(options = {}) {
               ...stats,
               ...customStats,
               ...certification,
+              libelle_etablissement: params.libelle_etablissement,
               region: pick(params.region, ["code", "nom"]),
               academie: pick(params.academie, ["code", "nom"]),
               donnee_source: {

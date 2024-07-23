@@ -1273,6 +1273,7 @@ describe("computeContinuumStats", () => {
           code_formation_diplome: "10000002",
           libelle: "BAC PRO BATIMENT",
           uai: "1234567",
+          libelle_etablissement: "Lycée",
           diplome: {
             code: "4",
             libelle: "BAC",
@@ -1367,6 +1368,7 @@ describe("computeContinuumStats", () => {
           code_formation_diplome: "10000002",
           libelle: "LIBELLE",
           uai: "1234567",
+          libelle_etablissement: "Lycée",
           diplome: {
             code: "4",
             libelle: "BAC",
@@ -1462,6 +1464,7 @@ describe("computeContinuumStats", () => {
           code_formation_diplome: "10000001",
           libelle: "BAC PRO BATIMENT",
           uai: "1234567",
+          libelle_etablissement: "Lycée",
           diplome: {
             code: "4",
             libelle: "BAC",
@@ -1559,6 +1562,7 @@ describe("computeContinuumStats", () => {
           code_formation_diplome: "10000001",
           libelle: "BAC PRO BATIMENT",
           uai: "1234567",
+          libelle_etablissement: "Lycée",
           diplome: {
             code: "4",
             libelle: "BAC",
@@ -1656,6 +1660,7 @@ describe("computeContinuumStats", () => {
           code_formation_diplome: "10000001",
           libelle: "LIBELLE",
           uai: "1234567",
+          libelle_etablissement: "Lycée",
           diplome: {
             code: "4",
             libelle: "BAC",
@@ -1763,6 +1768,7 @@ describe("computeContinuumStats", () => {
           code_formation_diplome: "10000002",
           libelle: "BAC PRO BATIMENT",
           uai: "1234567",
+          libelle_etablissement: "Lycée",
           diplome: {
             code: "4",
             libelle: "BAC",
@@ -1843,6 +1849,7 @@ describe("computeContinuumStats", () => {
         code_formation_diplome: "10000001",
         libelle: "BAC PRO BATIMENT",
         uai: "1234567",
+        libelle_etablissement: "Lycée",
         diplome: {
           code: "4",
           libelle: "BAC",
@@ -1873,6 +1880,7 @@ describe("computeContinuumStats", () => {
         code_formation_diplome: "10000003",
         libelle: "BAC PRO BATIMENT",
         uai: "1234567",
+        libelle_etablissement: "Lycée",
         diplome: {
           code: "4",
           libelle: "BAC",
@@ -1906,6 +1914,7 @@ describe("computeContinuumStats", () => {
         code_formation_diplome: "10000001",
         libelle: "LIBELLE",
         uai: "1200000",
+        libelle_etablissement: "Lycée",
         diplome: {
           code: "4",
           libelle: "BAC",
@@ -1939,6 +1948,7 @@ describe("computeContinuumStats", () => {
         code_formation_diplome: "10000003",
         libelle: "LIBELLE",
         uai: "1200000",
+        libelle_etablissement: "Lycée",
         diplome: {
           code: "4",
           libelle: "BAC",

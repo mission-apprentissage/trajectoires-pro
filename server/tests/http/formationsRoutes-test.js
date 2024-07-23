@@ -57,6 +57,7 @@ describe("formationsRoutes", () => {
         formations: [
           {
             uai: "0751234J",
+            libelle_etablissement: "Lycée",
             code_certification: "12345678",
             code_certification_type: "cfd",
             code_formation_diplome: "12345678",
@@ -562,6 +563,7 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data, {
         uai: "0751234J",
+        libelle_etablissement: "Lycée",
         code_certification: "12345678",
         code_certification_type: "cfd",
         code_formation_diplome: "12345678",
