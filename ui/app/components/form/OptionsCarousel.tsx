@@ -32,12 +32,17 @@ export default function OptionsCarousel<T>({
   };
 
   const scollToCb = useCallback((index: number) => {
-    if (!refOptions.current[index] || !refContainer?.current) {
+    if (!refOptions?.current[index] || !refContainer?.current) {
+      return;
+    }
+
+    const currentRef = refOptions.current[index];
+    if (!currentRef || !currentRef.getBoundingClientRect || !currentRef.getBoundingClientRect()) {
       return;
     }
 
     const newScrollPosition =
-      refOptions.current[index].getBoundingClientRect().x -
+      currentRef.getBoundingClientRect().x -
       refContainer.current.getBoundingClientRect().x +
       refContainer.current.scrollLeft;
 
@@ -112,20 +117,24 @@ export default function OptionsCarousel<T>({
                 size="small"
                 rounded
                 onClick={() => {
-                  if (!refOptions.current[index] || !refContainer.current) {
+                  if (!refContainer.current) {
+                    return;
+                  }
+
+                  const currentRef = refOptions.current[index];
+                  if (!currentRef || !currentRef.getBoundingClientRect || !currentRef.getBoundingClientRect()) {
                     return;
                   }
 
                   // If element is not full
                   const rightSide =
-                    refOptions.current[index].getBoundingClientRect().x +
-                    refOptions.current[index].getBoundingClientRect().width -
+                    currentRef.getBoundingClientRect().x +
+                    currentRef.getBoundingClientRect().width -
                     (refContainer.current.getBoundingClientRect().width +
                       refContainer.current.getBoundingClientRect().x);
 
                   const leftSide =
-                    refOptions.current[index].getBoundingClientRect().x -
-                    refContainer.current.getBoundingClientRect().x;
+                    currentRef.getBoundingClientRect().x - refContainer.current.getBoundingClientRect().x;
 
                   if (rightSide > -50) {
                     scrollList(refContainer.current.scrollLeft + rightSide + 50);
