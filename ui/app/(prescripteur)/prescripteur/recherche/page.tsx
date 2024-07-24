@@ -1,7 +1,7 @@
 "use client";
 import ResearchFormationsResult from "./ResearchFormationsResult";
 import { fetchAddress } from "#/app/services/address";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import FormationsSearchProvider, { useFormationsSearch } from "../../context/FormationsSearchContext";
 import SearchHeader from "../../components/SearchHeader";
@@ -10,101 +10,14 @@ import Loader from "#/app/components/Loader";
 import ErrorUserGeolocation from "../../errors/ErrorUserGeolocation";
 import ErrorAddressInvalid from "../../errors/ErrorAddressInvalid";
 import UserGeolocatioDenied from "../../components/UserGeolocatioDenied";
-import { Box, Grid } from "#/app/components/MaterialUINext";
-import Slider from "react-slick";
+import { Grid } from "#/app/components/MaterialUINext";
 import { capitalize } from "lodash-es";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { FormationDomaine } from "#/types/formation";
 import { FORMATION_DOMAINE } from "#/app/services/formation";
-import Button from "#/app/components/Button";
-
-function DomainesSlider({ selected }: { selected?: FormationDomaine | null }) {
-  const { params, updateParams } = useFormationsSearch();
-  const sliderRef = useRef<Slider>(null);
-  const index = FORMATION_DOMAINE.findIndex(({ domaine, isAll }) => {
-    return (!selected && isAll) || selected === domaine;
-  });
-
-  var settings = {
-    className: "slider variable-width",
-    dots: false,
-    infinite: false,
-    slidesToShow: 1,
-    slidesToScroll: 3,
-    variableWidth: true,
-    arrows: false,
-    swipeToSlide: true,
-    initialSlide: index >= 2 ? index - 2 : 0,
-  };
-
-  useEffect(() => {
-    sliderRef?.current?.slickGoTo(index >= 2 ? index - 2 : 0, true);
-  }, [sliderRef, index]);
-
-  return (
-    <Box style={{ display: "flex" }}>
-      <Box style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Button
-          iconOnly
-          size="large"
-          rounded
-          iconId="fr-icon-arrow-left-s-first-line"
-          onClick={() => sliderRef?.current?.slickPrev()}
-          priority="tertiary no outline"
-          title="Domaines de formations précédents"
-          style={{
-            border: "1px solid var(--text-action-high-blue-france)",
-          }}
-        />
-      </Box>
-      <Box style={{ flex: "1 1 auto", marginLeft: "1rem", marginRight: "1rem", overflow: "hidden" }}>
-        <Slider key={selected} ref={sliderRef} {...settings}>
-          {FORMATION_DOMAINE.map(({ domaine, isAll }) => {
-            return (
-              <Box key={domaine}>
-                <Box style={{ marginLeft: isAll ? "0" : "0.5rem", marginRight: "0.5rem" }}>
-                  <Button
-                    priority={(!selected && isAll) || selected === domaine ? undefined : "tertiary no outline"}
-                    size="small"
-                    rounded
-                    onClick={() => {
-                      if (!params) {
-                        return;
-                      }
-
-                      updateParams({
-                        ...params,
-                        domaine: isAll ? undefined : domaine,
-                      });
-                    }}
-                  >
-                    {capitalize(domaine)}
-                  </Button>
-                </Box>
-              </Box>
-            );
-          })}
-        </Slider>
-      </Box>
-      <Box style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Button
-          iconOnly
-          size="large"
-          rounded
-          iconId="fr-icon-arrow-right-s-last-line"
-          onClick={() => sliderRef?.current?.slickNext()}
-          priority="tertiary no outline"
-          title="Domaines de formations suivants"
-          style={{ border: "1px solid var(--text-action-high-blue-france)" }}
-        />
-      </Box>
-    </Box>
-  );
-}
+import OptionsCarousel from "#/app/components/form/OptionsCarousel";
 
 function ResearchFormationsParameter() {
-  const { params } = useFormationsSearch();
+  const { params, updateParams } = useFormationsSearch();
   const { address, distance = 10, time = 15, tag, domaine } = params ?? {};
 
   const {
@@ -152,7 +65,24 @@ function ResearchFormationsParameter() {
           xl={12}
           sx={{ padding: { md: "2rem", xs: "1rem" }, paddingLeft: { md: "5rem" }, paddingRight: { md: "5rem" } }}
         >
-          <DomainesSlider selected={domaine} />
+          <OptionsCarousel
+            defaultValue={FormationDomaine["tous secteurs"]}
+            selected={domaine ? [domaine] : []}
+            options={FORMATION_DOMAINE.map(({ domaine, isAll }) => ({
+              option: capitalize(domaine),
+              value: domaine,
+            }))}
+            onClick={(selected) => {
+              if (!params) {
+                return;
+              }
+
+              updateParams({
+                ...params,
+                domaine: selected === "tous secteurs" ? undefined : selected,
+              });
+            }}
+          />
         </Grid>
       </Grid>
       {coordinate && (
