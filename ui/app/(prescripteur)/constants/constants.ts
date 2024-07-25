@@ -4,4 +4,4 @@ export const THRESHOLD_EN_EMPLOI = [31, 14];
 export const THRESHOLD_EN_ETUDE = [64, 28];
 
 export const title = "C’EST QUI LE PRO ?";
-export const tagline = "Toutes les formations professionnelles en sortie de collège";
+export const tagline = "Découvre les formations professionnelles en sortie de collège";
