@@ -5,8 +5,11 @@ import { Box } from "../MaterialUINext";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { BoxProps } from "@mui/material";
+import { FrIconClassName, RiIconClassName } from "@codegouvfr/react-dsfr";
 
-const Gradient = styled(Box)<BoxProps & { reverse?: boolean }>`
+const Gradient = styled(Box, {
+  shouldForwardProp: (prop) => !["reverse"].includes(prop),
+})<BoxProps & { reverse?: boolean }>`
   pointer-events: none;
   position: absolute;
   ${({ reverse }) => (reverse ? "right: 34px" : "left: 34px")};
@@ -27,7 +30,7 @@ export default function OptionsCarousel<T>({
 }: {
   selected?: T[];
   defaultValue?: T;
-  options: { option: string; value: T }[];
+  options: { option: string; value: T; icon?: never | FrIconClassName | RiIconClassName }[];
   onClick?: (selected: T) => void;
 }): React.ReactNode {
   const scollOffset = 400;
@@ -151,6 +154,7 @@ export default function OptionsCarousel<T>({
               style={{ flexShrink: "0" }}
             >
               <Button
+                {...(option.icon ? { iconId: option.icon } : { iconId: undefined })}
                 priority={isSelected ? undefined : "tertiary no outline"}
                 size="small"
                 rounded

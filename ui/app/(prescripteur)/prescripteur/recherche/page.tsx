@@ -75,8 +75,9 @@ function ResearchFormationsParameter() {
           <OptionsCarousel
             defaultValue={FormationDomaine["tout"]}
             selected={domaine ? [domaine] : []}
-            options={FORMATION_DOMAINE.map(({ domaine, isAll }) => ({
+            options={FORMATION_DOMAINE.map(({ domaine, icon }) => ({
               option: capitalize(domaine),
+              icon: icon,
               value: domaine,
             }))}
             onClick={(selected) => {
