@@ -63,7 +63,14 @@ function ResearchFormationsParameter() {
           xs={12}
           lg={12}
           xl={12}
-          sx={{ padding: { md: "2rem", xs: "1rem" }, paddingLeft: { md: "1.75" }, paddingRight: { md: "1.75" } }}
+          sx={{
+            border: "1px solid #DDDDDD",
+            boxShadow: "0 4px 4px -4px #00000040",
+            padding: { md: "2rem", xs: "1rem" },
+            paddingLeft: { md: "1.75" },
+            paddingRight: { md: "1.75" },
+            zIndex: 99,
+          }}
         >
           <OptionsCarousel
             defaultValue={FormationDomaine["tout"]}

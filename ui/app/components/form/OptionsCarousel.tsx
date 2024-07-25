@@ -9,7 +9,7 @@ import { BoxProps } from "@mui/material";
 const Gradient = styled(Box)<BoxProps & { reverse?: boolean }>`
   pointer-events: none;
   position: absolute;
-  ${({ reverse }) => (reverse ? "right: 35px" : "left: 35px")};
+  ${({ reverse }) => (reverse ? "right: 34px" : "left: 34px")};
   display: block;
   width: 48px;
   height: 100%;
@@ -90,7 +90,17 @@ export default function OptionsCarousel<T>({
 
   return (
     <Box style={{ display: "flex", position: "relative" }}>
-      <Box style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Box
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "absolute",
+          left: 0,
+          backgroundColor: "white",
+          visibility: isScrollMax === -1 ? "hidden" : undefined,
+        }}
+      >
         <Button
           iconOnly
           size="large"
@@ -101,7 +111,6 @@ export default function OptionsCarousel<T>({
           title="Domaines de formations précédents"
           style={{
             border: "1px solid var(--grey-900-175)",
-            visibility: isScrollMax === -1 ? "hidden" : undefined,
           }}
         />
       </Box>
@@ -124,7 +133,6 @@ export default function OptionsCarousel<T>({
             gap: 0 1rem;
             margin-right: 2px;
             margin-left: 2px;
-            padding-left: 1rem;
           }
         `}
         ref={refContainer}
@@ -147,6 +155,15 @@ export default function OptionsCarousel<T>({
                 size="small"
                 rounded
                 style={{ paddingTop: "5px" }}
+                css={css`
+                  &:hover {
+                    background-color: var(--active-tint) !important;
+                  }
+
+                  &:active {
+                    background-color: var(--hover-tint) !important;
+                  }
+                `}
                 onClick={() => {
                   const currentContainer = refContainer.current;
                   const currentRef = refOptions.current[index];

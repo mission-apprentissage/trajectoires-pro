@@ -5,11 +5,7 @@ import { Grid } from "#/app/components/MaterialUINext";
 
 export default function SearchHeader() {
   return (
-    <Container
-      style={{ border: "1px solid #DDDDDD", boxShadow: "4px 0px 6px 0px #00000040" }}
-      nopadding={true}
-      maxWidth={false}
-    >
+    <Container nopadding={true} maxWidth={false}>
       <Grid container spacing={0}>
         <Grid
           item
