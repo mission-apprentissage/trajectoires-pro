@@ -4,12 +4,13 @@ import { Grid } from "#/app/components/MaterialUINext";
 import { Controller } from "react-hook-form";
 import { Nullable } from "#/app/utils/types";
 import { FormSearchParams } from "./FormSearchParams";
-import AddressField from "./AddressField";
+import AddressField, { myPosition } from "./AddressField";
 import DistanceField from "./DistanceField";
 import TimeField from "./TimeField";
 import Button from "../Button";
 import { SearchFormationFormData, schema } from "./SearchFormationForm";
 import { Box, Stack, Theme } from "@mui/material";
+import useSearchHistory from "#/app/(prescripteur)/hooks/useSearchHistory";
 
 export default function SearchFormationHomeForm({
   url,
@@ -21,9 +22,17 @@ export default function SearchFormationHomeForm({
   bordered?: boolean;
 }) {
   const isDownSm = useMediaQuery<Theme>((theme) => theme.breakpoints.down("md"));
-
+  const { history, push: pushHistory } = useSearchHistory();
   return (
-    <FormSearchParams url={url} defaultValues={defaultValues} schema={schema} forceValues={{ tag: "", domaine: "" }}>
+    <FormSearchParams
+      onSubmit={(data) => {
+        data.address && data.address !== myPosition && pushHistory(data.address);
+      }}
+      url={url}
+      defaultValues={defaultValues}
+      schema={schema}
+      forceValues={{ tag: "", domaine: "" }}
+    >
       {({ control, errors, formRef }) => {
         return (
           <Grid
@@ -50,6 +59,7 @@ export default function SearchFormationHomeForm({
                       form={form}
                       formRef={formRef}
                       submitOnChange={true}
+                      defaultValues={history}
                     />
                   )}
                 />

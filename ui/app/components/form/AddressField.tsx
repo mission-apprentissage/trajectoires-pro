@@ -101,6 +101,7 @@ export default function AddressField({
   error,
   sx,
   isMobile,
+  defaultValues,
 }: any) {
   const [isFocus, setIsFocus] = useState(false);
 
@@ -117,7 +118,7 @@ export default function AddressField({
     queryKey: ["address", valueDebounce],
     queryFn: async () => {
       if (!valueDebounce || valueDebounce === myPosition) {
-        return [myPosition];
+        return [myPosition, ...(defaultValues ?? [])];
       }
 
       const result = await fetchAddress(valueDebounce);
@@ -132,7 +133,7 @@ export default function AddressField({
               return label;
             }),
           ]
-        : [myPosition];
+        : [myPosition, ...(defaultValues ?? [])];
     },
     cacheTime: Infinity,
   });

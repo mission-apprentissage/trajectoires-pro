@@ -22,6 +22,7 @@ type FormSearchParamsProps<FormData extends FieldValues> = {
     errors: FieldErrors<FormData>;
     formRef: RefObject<HTMLFormElement>;
   }) => JSX.Element;
+  onSubmit?: (data: FormData) => void;
 };
 
 export function FormSearchParams<FormData extends FieldValues>({
@@ -30,6 +31,7 @@ export function FormSearchParams<FormData extends FieldValues>({
   forceValues,
   schema,
   children,
+  onSubmit,
 }: FormSearchParamsProps<FormData>) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -47,7 +49,9 @@ export function FormSearchParams<FormData extends FieldValues>({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmitBase = handleSubmit((data) => {
+    onSubmit && onSubmit(data);
+
     const entries = Object.entries(schema.fields).map(([key, fieldSchema]) => {
       if (fieldSchema.type === "array") {
         return [get(forceValues, key, data[key]).map((v: any) => [key, v])];
@@ -56,11 +60,12 @@ export function FormSearchParams<FormData extends FieldValues>({
     });
 
     const urlParams = new URLSearchParams(flatten(entries));
+
     router.push(`${url}?${urlParams}`);
   });
 
   return (
-    <form autoComplete="off" onSubmit={onSubmit} ref={formRef} style={{ flex: "1" }}>
+    <form autoComplete="off" onSubmit={onSubmitBase} ref={formRef} style={{ flex: "1" }}>
       {children({ control, errors, formRef })}
     </form>
   );
