@@ -22,6 +22,13 @@ const config = {
       .default("mongodb://127.0.0.1:27017/trajectoires-pro?retryWrites=true&w=majority")
       .asString(),
   },
+  graphHopper: {
+    api: {
+      // Sandbox url for testing purpose, TODO : enlever serveur de ananda en cas de crash (utiliser pour accèlerer graphhopper)
+      baseUrl: env.get("GRAPHHOPPER_BASE_URL").default("http://ananda-nono.io:8989").asString(),
+      //baseUrl: env.get("GRAPHHOPPER_BASE_URL").default("http://141.94.105.71:8989").asString(),
+    },
+  },
   ovh: {
     storage: {
       uri: env.get("TRAJECTOIRES_PRO_OVH_STORAGE_URI").required().asString(),
@@ -53,6 +60,8 @@ const config = {
     },
     datasets: {
       rome: "1c893376-8476-4262-9a0e-8df519883e1e",
+      certifinfo: "e47b3527-02bf-4e6d-8548-81ccb5a108de",
+      onisepIdeoFichesFormations: "a60a48d2-b7fe-4677-b41a-ce2557b5074a",
     },
   },
   dataenseignementsup: {
@@ -64,6 +73,17 @@ const config = {
     },
     datasets: {
       insersup: "fr-esr-insersup",
+    },
+  },
+  onisep: {
+    api: {
+      baseUrl: env.get("ONISEP_BASE_URL").default("https://api.opendata.onisep.fr/api/1.0").asString(),
+    },
+    datasets: {
+      tablePassageCodesCertifications: "6152ccdf850ef",
+      ideoActionsFormationInitialeUniversLycee: "605340ddc19a9",
+      ideoStructuresEnseignementSecondaire: "5fa5816ac6a6e",
+      ideoFormationsInitiales: "5fa591127f501",
     },
   },
   catalogueApprentissage: {
@@ -78,7 +98,23 @@ const config = {
   },
   acce: {
     files: {
+      // https://dep.adc.education.fr/acce/extract.php
       etablissements: path.join(getDirname(import.meta.url), "../data/", "acce_etablissements.csv"),
+    },
+  },
+  educationGouv: {
+    files: {
+      constatRentree: path.join(getDirname(import.meta.url), "../data/", "educationGouv/constatRentree2023.csv"),
+    },
+  },
+  orion: {
+    files: {
+      // https://orion-recette.inserjeunes.beta.gouv.fr/api/etablissements?order=asc&limit=1000000&withAnneeCommune=true
+      exportEtablissements: path.join(
+        getDirname(import.meta.url),
+        "../data/orion/",
+        "etablissement_export_rentree_2023.csv"
+      ),
     },
   },
   millesimes: {

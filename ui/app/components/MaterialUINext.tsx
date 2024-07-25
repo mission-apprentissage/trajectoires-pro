@@ -1,6 +1,6 @@
 "use client";
 import Container from "@mui/material/Container";
-import Typograhpy from "@mui/material/Typography";
+import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import AppBar from "@mui/material/AppBar";
@@ -16,7 +16,7 @@ import Icon from "@mui/material/Icon";
 
 export {
   Container,
-  Typograhpy,
+  Typography,
   TextField,
   Grid,
   AppBar,

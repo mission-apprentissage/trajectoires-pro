@@ -2,6 +2,7 @@ import express from "express";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import Joi from "joi";
+import Boom from "boom";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
 import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src/http/utils/responseUtils.js";
@@ -29,6 +30,17 @@ import {
 } from "#src/http/errors.js";
 import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
+import {
+  getRouteDate,
+  getFormations,
+  buildFiltersEtablissement,
+  buildFiltersFormation,
+} from "#src/queries/getFormations.js";
+import { FORMATION_TAG } from "#src/common/constants/formationEtablissement.js";
+import FormationEtablissement from "#src/common/repositories/formationEtablissement.js";
+import Etablissement from "#src/common/repositories/etablissement.js";
+import Formation from "#src/common/repositories/formation.js";
+import { GraphHopperApi } from "#src/services/graphHopper/graphHopper.js";
 
 async function formationStats({ uai, codeCertificationWithType, millesime }) {
   const { type, code_certification } = codeCertificationWithType;
@@ -192,6 +204,7 @@ export default () => {
         uai,
         code_certification,
         millesime: millesimeBase,
+        ...options
       } = await validate(
         { ...req.params, ...req.query },
         {
@@ -218,6 +231,7 @@ export default () => {
           hash,
           name: "stats",
           theme,
+          options,
           data,
           plausibleCustomProperties: {
             type: "formation",
@@ -234,6 +248,7 @@ export default () => {
           hash,
           name: "error",
           theme,
+          options,
           data: {
             error: err.name,
             millesimes: formatMillesime(millesime).split("_"),
@@ -269,6 +284,130 @@ export default () => {
 
       res.setHeader("content-type", "text/html");
       return res.status(200).send(widget);
+    })
+  );
+
+  router.get(
+    "/api/formation/:cfd-:codeDispositif?-:uai-:voie",
+    authMiddleware("public"),
+    tryCatch(async (req, res) => {
+      const { cfd, codeDispositif, uai, voie } = await validate(
+        { ...req.params, ...req.query },
+        {
+          cfd: Joi.string().required(),
+          codeDispositif: Joi.string().allow(null, "").default(null),
+          ...validators.uai(),
+          voie: Joi.string().valid("scolaire", "apprentissage").required(),
+        }
+      );
+
+      const formation = await FormationEtablissement.first({
+        uai,
+        cfd,
+        codeDispositif,
+        voie,
+      });
+      if (!formation) {
+        throw Boom.notFound();
+      }
+
+      const etablissement = await Etablissement.first({ uai });
+      if (!etablissement) {
+        throw Boom.notFound();
+      }
+
+      const formationInfo = await Formation.first({ cfd, voie, codeDispositif });
+      if (!formationInfo) {
+        throw Boom.notFound();
+      }
+
+      addJsonHeaders(res);
+      // TODO: add tags
+      res.send({
+        formation: {
+          ...formationInfo,
+          ...formation,
+        },
+        etablissement,
+      });
+    })
+  );
+
+  router.get(
+    "/api/formations",
+    authMiddleware("public"),
+    tryCatch(async (req, res) => {
+      const { longitude, latitude, distance, timeLimit, tag, uais, cfds, domaine, page, items_par_page } =
+        await validate(
+          { ...req.query, ...req.params },
+          {
+            longitude: Joi.number().min(-180).max(180).default(null),
+            latitude: Joi.number().min(-90).max(90).default(null),
+            distance: Joi.number().min(0).max(100000).default(null),
+            timeLimit: Joi.number().min(0).max(7200).default(null),
+            tag: Joi.string()
+              .empty("")
+              .valid(...Object.values(FORMATION_TAG))
+              .default(null),
+            ...validators.uais(),
+            ...validators.cfds(),
+            domaine: Joi.string().empty("").default(null),
+            ...validators.pagination({ items_par_page: 100 }),
+          }
+        );
+
+      const year = new Date().getFullYear();
+      const millesime = [(year - 1).toString(), year.toString()];
+
+      const filtersEtablissement = await buildFiltersEtablissement({ timeLimit, distance, latitude, longitude, uais });
+
+      // Formations filter
+      const filtersFormation = await buildFiltersFormation({ cfds, domaine });
+
+      const paginatedFormations = await getFormations(
+        {
+          filtersEtablissement: filtersEtablissement,
+          filtersFormation: filtersFormation,
+          tag,
+          millesime,
+        },
+        {
+          limit: items_par_page,
+          page,
+        }
+      );
+
+      addJsonHeaders(res);
+      res.send(paginatedFormations);
+    })
+  );
+
+  // TODO: move in another route
+  router.get(
+    "/api/formation/route",
+    authMiddleware("public"),
+    tryCatch(async (req, res) => {
+      const { longitudeA, latitudeA, longitudeB, latitudeB } = await validate(
+        { ...req.query, ...req.params },
+        {
+          longitudeA: Joi.number().min(-180).max(180).required(),
+          latitudeA: Joi.number().min(-90).max(90).required(),
+          longitudeB: Joi.number().min(-180).max(180).required(),
+          latitudeB: Joi.number().min(-90).max(90).required(),
+        }
+      );
+
+      const graphHopperApi = new GraphHopperApi();
+
+      const graphHopperParameter = {
+        pointA: `${latitudeA},${longitudeA}`,
+        pointB: `${latitudeB},${longitudeB}`,
+        departureTime: getRouteDate(),
+      };
+      const route = await graphHopperApi.fetchRoute(graphHopperParameter);
+
+      addJsonHeaders(res);
+      res.send(route);
     })
   );
   return router;

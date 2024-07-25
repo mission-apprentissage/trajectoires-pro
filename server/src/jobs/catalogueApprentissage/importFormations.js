@@ -32,6 +32,9 @@ const FIELDS_TO_TRANSFORM = {
   },
 
   cfd_date_fermeture: toDate,
+  periode: (periodes) => {
+    return periodes ? periodes.map((p) => toDate(p)) : [];
+  },
 };
 
 const FIELDS_TO_IMPORT = [
@@ -69,6 +72,12 @@ const FIELDS_TO_IMPORT = [
   "diplome",
   "niveau",
   "libelle_court",
+  "periode",
+  "parcoursup_statut",
+  "parcoursup_previous_statut",
+  "affelnet_statut",
+  "affelnet_previous_statut",
+  "duree",
 ];
 
 export async function importFormations(options = {}) {

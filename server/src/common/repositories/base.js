@@ -108,7 +108,7 @@ export class MongoRepository extends Repository {
     return (await this.first(queryPrepared)) ? true : false;
   }
 
-  async find(query) {
+  async find(query = {}) {
     const queryPrepared = this.prepare(query);
     return dbCollection(this.getCollection()).find(queryPrepared).stream();
   }

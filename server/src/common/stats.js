@@ -3,6 +3,7 @@ import { transformData } from "oleoduc";
 import { $field, $percentage, $removeNullOrZero, $removeWhenAllNull } from "./utils/mongodbUtils.js";
 import { percentage } from "./utils/numberUtils.js";
 import config from "#src/config.js";
+import { MIN_ELEVES_THRESHOLD } from "#src/common/constants/inserjeunes.js";
 
 export const INSERJEUNES_STATS_NAMES = [
   "nb_annee_term",
@@ -250,7 +251,7 @@ function transformDisplayStatRules() {
     },
     {
       // Remplace les taux par null si le nbr en année terminales < 20
-      cond: (data) => data && data.nb_annee_term < 20,
+      cond: (data) => data && data.nb_annee_term < MIN_ELEVES_THRESHOLD,
       transformation: (data) => mapValues(data, (o, k) => (TAUX.test(k) ? null : o)),
       message: (data) =>
         merge(data, {

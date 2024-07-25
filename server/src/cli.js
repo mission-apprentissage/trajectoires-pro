@@ -15,14 +15,22 @@ import { importCfdRomes } from "./jobs/romes/importCfdRomes.js";
 import { importRomes } from "./jobs/romes/importRomes.js";
 import { importCfdMetiers } from "./jobs/romes/importCfdMetiers.js";
 import { importRomeMetiers } from "./jobs/romes/importRomeMetiers.js";
+import { importACCEEtablissements } from "./jobs/etablissements/importACCEEtablissements.js";
 import { importEtablissements } from "./jobs/etablissements/importEtablissements.js";
+import { importFormation } from "./jobs/formations/importFormation.js";
 import { importFormations as importCAFormations } from "./jobs/catalogueApprentissage/importFormations.js";
+import { importFormationEtablissement } from "./jobs/formations/importFormationEtablissement.js";
+import { importOnisep } from "./jobs/onisep/importOnisep.js";
 import { backfillMetrics } from "./jobs/backfillMetrics.js";
 import { asArray } from "./common/utils/stringUtils.js";
 import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
 import { computeUAI } from "./jobs/stats/computeUAI.js";
 import * as UserJob from "./jobs/user/user.js";
 import { importBCNSise } from "./jobs/bcn/importBCNSise.js";
+import { importIndicateurEntree } from "./jobs/formations/importIndicateurEntree.js";
+import { computeFormationTag } from "./jobs/formations/tag/computeFormationTag.js";
+import { importIndicateurPoursuite } from "./jobs/formations/importIndicateurPoursuite.js";
+import { importIdeoFichesFormations } from "./jobs/formations/importIdeoFichesFormations.js";
 
 async function importBCNCommand() {
   const statsBCN = await importBCN();
@@ -56,11 +64,30 @@ async function importRomesCommand() {
   };
 }
 
+async function importOnisepCommand() {
+  return {
+    importTablePassage: await importOnisep("tablePassageCodesCertifications", ["certif_info_ci_identifiant"]),
+    importFormationsLycee: await importOnisep("ideoActionsFormationInitialeUniversLycee", [
+      "action_de_formation_af_identifiant_onisep",
+      "ens_code_uai",
+    ]),
+    importStructuresSecondaire: await importOnisep("ideoStructuresEnseignementSecondaire", ["code_uai"]),
+    importFormationsInitiales: await importOnisep("ideoFormationsInitiales", ["url_et_id_onisep", "duree"]),
+  };
+}
+
 cli
   .command("importBCN")
   .description("Import les CFD et MEF depuis la BCN")
   .action(() => {
     runScript(importBCNCommand);
+  });
+
+cli
+  .command("importOnisep")
+  .description("Importe les données de l'onisep")
+  .action(() => {
+    runScript(importOnisepCommand);
   });
 
 cli
@@ -74,7 +101,12 @@ cli
   .command("importEtablissements")
   .description("Importe les données d'établissements")
   .action(() => {
-    runScript(importEtablissements);
+    runScript(async () => {
+      return {
+        importACCEEtablissements: await importACCEEtablissements(),
+        importEtablissements: await importEtablissements(),
+      };
+    });
   });
 
 cli
@@ -82,6 +114,22 @@ cli
   .description("Importe les données du catalogue de l'apprentissage")
   .action(() => {
     runScript(importCAFormations);
+  });
+
+cli
+  .command("importFormationEtablissement")
+  .description("Importe les formations dans les établissements")
+  .action(() => {
+    runScript(async () => {
+      return {
+        importFormation: await importFormation(),
+        importIdeoFichesFormations: await importIdeoFichesFormations(),
+        importFormationEtablissement: await importFormationEtablissement(),
+        importIndicateurEntree: await importIndicateurEntree(),
+        importIndicateurPoursuite: await importIndicateurPoursuite(),
+        computeFormationTag: await computeFormationTag(),
+      };
+    });
   });
 
 cli
@@ -137,6 +185,7 @@ cli
     runScript(async () => {
       return {
         importBCN: await importBCNCommand(),
+        importOnisep: await importOnisepCommand(),
         importEtablissements: await importEtablissements(),
         importStats: await importStats(),
         importSupStats: await importSupStats(),
@@ -144,6 +193,7 @@ cli
         importCatalogueApprentissage: await importCAFormations(),
         computeUAI: await computeUAI(),
         importRomes: await importRomesCommand(),
+        importFormationEtablissement: await importFormationEtablissement(),
       };
     });
   });

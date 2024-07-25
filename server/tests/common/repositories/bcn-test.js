@@ -22,8 +22,8 @@ describe("repositories", () => {
   describe("bcn", () => {
     describe("find", () => {
       it("Retourne la liste des formations sous forme de page", async () => {
-        insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" });
-        insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" });
+        await insertCFD({ code_certification: "12345678", code_formation_diplome: "12345678" });
+        await insertMEF({ code_certification: "23830024202", code_formation_diplome: "12345678" });
 
         const result = await BCNRepository.findAndPaginate({});
         assert.deepStrictEqual(result.pagination, {

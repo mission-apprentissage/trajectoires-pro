@@ -157,7 +157,7 @@ export default () => {
     "/api/inserjeunes/certifications/:codes_certifications/widget/:hash",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { hash, theme, codes_certifications, millesime, vue } = await validate(
+      const { hash, theme, codes_certifications, millesime, vue, ...options } = await validate(
         { ...req.params, ...req.query },
         {
           hash: Joi.string(),
@@ -178,6 +178,7 @@ export default () => {
             hash,
             name: "stats",
             theme,
+            options,
             data,
             plausibleCustomProperties: {
               type: "certifications",
@@ -196,6 +197,7 @@ export default () => {
           hash,
           name: "stats",
           theme,
+          options,
           data,
           plausibleCustomProperties: {
             type: "certification",
@@ -211,6 +213,7 @@ export default () => {
           hash,
           name: "error",
           theme,
+          options,
           data: {
             error: err.name,
             millesimes: formatMillesime(millesime).split("_"),

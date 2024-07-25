@@ -9,7 +9,7 @@
   <div class="icon-spacing fr-icon-map-pin-2-fill" aria-hidden="true"></div>
   <div><%= data.region.nom %></div>
 </div>
-<% } else { %>
+<% } else if (!data.uai) { %>
 <div class="subTitle blue-marine grid">
   <div class="icon-spacing fr-icon-map-pin-2-fill" aria-hidden="true"></div>
   <div>France</div>
