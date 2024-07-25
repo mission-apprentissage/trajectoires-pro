@@ -63,10 +63,10 @@ function ResearchFormationsParameter() {
           xs={12}
           lg={12}
           xl={12}
-          sx={{ padding: { md: "2rem", xs: "1rem" }, paddingLeft: { md: "5rem" }, paddingRight: { md: "5rem" } }}
+          sx={{ padding: { md: "2rem", xs: "1rem" }, paddingLeft: { md: "1.75" }, paddingRight: { md: "1.75" } }}
         >
           <OptionsCarousel
-            defaultValue={FormationDomaine["tous secteurs"]}
+            defaultValue={FormationDomaine["tout"]}
             selected={domaine ? [domaine] : []}
             options={FORMATION_DOMAINE.map(({ domaine, isAll }) => ({
               option: capitalize(domaine),
@@ -79,7 +79,7 @@ function ResearchFormationsParameter() {
 
               updateParams({
                 ...params,
-                domaine: selected === "tous secteurs" ? undefined : selected,
+                domaine: selected === FormationDomaine["tout"] || selected === domaine ? undefined : selected,
               });
             }}
           />

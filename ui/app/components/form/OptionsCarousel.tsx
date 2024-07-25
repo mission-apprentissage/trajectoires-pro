@@ -3,6 +3,21 @@ import { css } from "@emotion/react";
 import Button from "../Button";
 import { Box } from "../MaterialUINext";
 import { useCallback, useEffect, useRef, useState } from "react";
+import styled from "@emotion/styled";
+import { BoxProps } from "@mui/material";
+
+const Gradient = styled(Box)<BoxProps & { reverse?: boolean }>`
+  pointer-events: none;
+  position: absolute;
+  ${({ reverse }) => (reverse ? "right: 35px" : "left: 35px")};
+  display: block;
+  width: 48px;
+  height: 100%;
+  background-image: ${({ reverse }) =>
+    reverse
+      ? "linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%)"
+      : "linear-gradient(270deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%)"};
+`;
 
 export default function OptionsCarousel<T>({
   selected,
@@ -16,12 +31,15 @@ export default function OptionsCarousel<T>({
   onClick?: (selected: T) => void;
 }): React.ReactNode {
   const scollOffset = 400;
+
   const refContainer = useRef<HTMLDivElement>(null);
   const refOptions = useRef<(HTMLDivElement | null)[]>([]);
+
   const [currentIndex, setCurrentIndex] = useState(
     selected && selected.length > 0 ? options.findIndex((o) => o.value === selected[0]) : 0
   );
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isScrollMax, setIsScrollMax] = useState(-1); // -1 = max left, 1 = max right
 
   const scrollList = (offset: number) => {
     if (!refContainer?.current) {
@@ -50,6 +68,19 @@ export default function OptionsCarousel<T>({
     setCurrentIndex(index);
   }, []);
 
+  const handleScroll = useCallback(
+    (event: React.UIEvent<HTMLElement>) => {
+      const target = event.target as HTMLElement;
+      if (!target) {
+        return;
+      }
+
+      const { scrollLeft, scrollWidth, offsetWidth } = target;
+      setIsScrollMax(scrollLeft === 0 ? -1 : scrollLeft + offsetWidth === scrollWidth ? 1 : 0);
+    },
+    [refContainer]
+  );
+
   useEffect(() => {
     if (!isLoaded) {
       scollToCb(currentIndex);
@@ -57,7 +88,6 @@ export default function OptionsCarousel<T>({
     }
   }, [currentIndex, isLoaded]);
 
-  console.log(selected, defaultValue, !selected?.length && defaultValue !== undefined);
   return (
     <Box style={{ display: "flex", position: "relative" }}>
       <Box style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -65,12 +95,13 @@ export default function OptionsCarousel<T>({
           iconOnly
           size="large"
           rounded
-          iconId="fr-icon-arrow-left-s-first-line"
+          iconId="fr-icon-arrow-left-s-line"
           onClick={() => refContainer?.current && scrollList(refContainer.current.scrollLeft - scollOffset)}
           priority="tertiary no outline"
           title="Domaines de formations précédents"
           style={{
-            border: "1px solid var(--text-action-high-blue-france)",
+            border: "1px solid var(--grey-900-175)",
+            visibility: isScrollMax === -1 ? "hidden" : undefined,
           }}
         />
       </Box>
@@ -85,20 +116,19 @@ export default function OptionsCarousel<T>({
             -ms-overflow-style: none; /* IE and Edge */
             scrollbar-width: none; /* Firefox */
             ${isLoaded ? "scroll-behavior: smooth;" : ""}
+
+            display: flex;
+            flex-direction: row;
+            overflow: scroll;
+            overflow-y: scroll;
+            gap: 0 1rem;
+            margin-right: 2px;
+            margin-left: 2px;
+            padding-left: 1rem;
           }
         `}
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          overflow: "scroll",
-          overflowY: "scroll",
-          gap: "0 1rem",
-          marginRight: "1px",
-          marginLeft: "1px",
-          paddingRight: "200px",
-          paddingLeft: "1rem",
-        }}
         ref={refContainer}
+        onScroll={handleScroll}
       >
         {options.map((option, index) => {
           const isSelected =
@@ -116,28 +146,30 @@ export default function OptionsCarousel<T>({
                 priority={isSelected ? undefined : "tertiary no outline"}
                 size="small"
                 rounded
+                style={{ paddingTop: "5px" }}
                 onClick={() => {
-                  if (!refContainer.current) {
-                    return;
-                  }
-
+                  const currentContainer = refContainer.current;
                   const currentRef = refOptions.current[index];
-                  if (!currentRef || !currentRef.getBoundingClientRect || !currentRef.getBoundingClientRect()) {
+
+                  if (!currentContainer || !currentRef) {
                     return;
                   }
 
                   // If element is not full
                   const rightSide =
-                    currentRef.getBoundingClientRect().x +
-                    currentRef.getBoundingClientRect().width -
-                    (refContainer.current.getBoundingClientRect().width +
-                      refContainer.current.getBoundingClientRect().x);
+                    currentRef.offsetLeft +
+                    currentRef.offsetWidth -
+                    (currentContainer.offsetWidth + currentContainer.scrollLeft);
 
-                  const leftSide =
-                    currentRef.getBoundingClientRect().x - refContainer.current.getBoundingClientRect().x;
+                  const leftSide = currentRef.offsetLeft - currentContainer.scrollLeft;
 
                   if (rightSide > -50) {
-                    scrollList(refContainer.current.scrollLeft + rightSide + 50);
+                    if (currentRef.offsetWidth > currentContainer.offsetWidth - 50) {
+                      // Mobile
+                      scrollList(refContainer.current.scrollLeft + leftSide - 50);
+                    } else {
+                      scrollList(refContainer.current.scrollLeft + rightSide);
+                    }
                   }
 
                   if (leftSide < 50) {
@@ -152,43 +184,21 @@ export default function OptionsCarousel<T>({
           );
         })}
       </Box>
-      <Box
-        style={{
-          pointerEvents: "none",
-          position: "absolute",
-          left: "35px",
-
-          display: "block",
-
-          width: "20px",
-          height: "100%",
-          backgroundImage: "linear-gradient(270deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)",
-        }}
-      ></Box>
-
-      <Box
-        style={{
-          pointerEvents: "none",
-          position: "absolute",
-          right: "35px",
-
-          display: "block",
-
-          width: "20px",
-          height: "100%",
-          backgroundImage: "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)",
-        }}
-      ></Box>
+      <Gradient style={{ visibility: isScrollMax === -1 ? "hidden" : undefined }} />
+      <Gradient reverse style={{ visibility: isScrollMax === 1 ? "hidden" : undefined }} />
       <Box style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Button
           iconOnly
           size="large"
           rounded
-          iconId="fr-icon-arrow-right-s-last-line"
+          iconId="fr-icon-arrow-right-s-line"
           onClick={() => refContainer?.current && scrollList(refContainer.current.scrollLeft + scollOffset)}
           priority="tertiary no outline"
           title="Domaines de formations suivants"
-          style={{ border: "1px solid var(--text-action-high-blue-france)" }}
+          style={{
+            border: "1px solid var(--grey-900-175)",
+            visibility: isScrollMax === 1 ? "hidden" : undefined,
+          }}
         />
       </Box>
     </Box>

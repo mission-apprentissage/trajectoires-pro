@@ -11,7 +11,7 @@ export enum FormationTag {
 
 // TODO : fetch domaine from API
 export enum FormationDomaine {
-  "tous secteurs" = "tous secteurs",
+  "tout" = "tout",
   "agriculture, animaux" = "agriculture, animaux",
   "armée, sécurité" = "armée, sécurité",
   "arts, culture, artisanat" = "arts, culture, artisanat",

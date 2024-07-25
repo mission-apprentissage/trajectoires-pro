@@ -29,7 +29,7 @@ export const FORMATION_DOMAINE: {
   domaine: FormationDomaine;
   isAll?: boolean;
 }[] = [
-  { domaine: FormationDomaine["tous secteurs"], isAll: true },
+  { domaine: FormationDomaine["tout"], isAll: true },
   { domaine: FormationDomaine["agriculture, animaux"] },
   { domaine: FormationDomaine["armée, sécurité"] },
   { domaine: FormationDomaine["arts, culture, artisanat"] },
@@ -40,11 +40,13 @@ export const FORMATION_DOMAINE: {
   { domaine: FormationDomaine["électricité, électronique, robotique"] },
   { domaine: FormationDomaine["environnement, énergies, propreté"] },
   { domaine: FormationDomaine["gestion des entreprises, comptabilité"] },
-  { domaine: FormationDomaine["histoire-géographie, psychologie, sociologie"] },
+  // Pas de formations dans le catalogue actuellement
+  //{ domaine: FormationDomaine["histoire-géographie, psychologie, sociologie"] },
   { domaine: FormationDomaine["hôtellerie-restauration, tourisme"] },
   { domaine: FormationDomaine["information-communication, audiovisuel"] },
   { domaine: FormationDomaine["informatique, Internet"] },
-  { domaine: FormationDomaine["lettres, langues, enseignement"] },
+  // Pas de formations dans le catalogue actuellement
+  //{ domaine: FormationDomaine["lettres, langues, enseignement"] },
   { domaine: FormationDomaine["logistique, transport"] },
   { domaine: FormationDomaine["matières premières, fabrication, industries"] },
   { domaine: FormationDomaine["mécanique"] },
