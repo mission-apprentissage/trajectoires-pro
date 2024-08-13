@@ -94,30 +94,6 @@ export default function OptionsCarousel<T>({
   return (
     <Box style={{ display: "flex", position: "relative" }}>
       <Box
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "absolute",
-          left: 0,
-          backgroundColor: "white",
-          visibility: isScrollMax === -1 ? "hidden" : undefined,
-        }}
-      >
-        <Button
-          iconOnly
-          size="large"
-          rounded
-          iconId="fr-icon-arrow-left-s-line"
-          onClick={() => refContainer?.current && scrollList(refContainer.current.scrollLeft - scollOffset)}
-          priority="tertiary no outline"
-          title="Domaines de formations précédents"
-          style={{
-            border: "1px solid var(--grey-900-175)",
-          }}
-        />
-      </Box>
-      <Box
         css={css`
           &::-webkit-scrollbar {
             display: none;
@@ -204,6 +180,30 @@ export default function OptionsCarousel<T>({
             </Box>
           );
         })}
+      </Box>
+      <Box
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "absolute",
+          left: 0,
+          backgroundColor: "white",
+          visibility: isScrollMax === -1 ? "hidden" : undefined,
+        }}
+      >
+        <Button
+          iconOnly
+          size="large"
+          rounded
+          iconId="fr-icon-arrow-left-s-line"
+          onClick={() => refContainer?.current && scrollList(refContainer.current.scrollLeft - scollOffset)}
+          priority="tertiary no outline"
+          title="Domaines de formations précédents"
+          style={{
+            border: "1px solid var(--grey-900-175)",
+          }}
+        />
       </Box>
       <Gradient style={{ visibility: isScrollMax === -1 ? "hidden" : undefined }} />
       <Gradient reverse style={{ visibility: isScrollMax === 1 ? "hidden" : undefined }} />
