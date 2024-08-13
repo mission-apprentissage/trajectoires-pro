@@ -76,7 +76,7 @@ export default function Page({ params }: { params: { id: string } }) {
                   priority="secondary"
                   variant={"white-black"}
                 >
-                  Quizz voie pro
+                  Quiz voie pro
                 </Button>
               </Stack>
             </Grid>
