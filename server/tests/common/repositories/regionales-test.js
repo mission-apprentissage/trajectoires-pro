@@ -302,7 +302,7 @@ describe("repositories", () => {
       });
 
       it("Ne renvoie pas de somme pour une statistique quand tout les champs sont null", async () => {
-        insertRegionalesStats(
+        await insertRegionalesStats(
           {
             code_certification: "12345678",
             code_formation_diplome: "12345678",
@@ -316,7 +316,7 @@ describe("repositories", () => {
           },
           false
         );
-        insertRegionalesStats(
+        await insertRegionalesStats(
           {
             code_certification: "23830024202",
             code_formation_diplome: "12345678",
