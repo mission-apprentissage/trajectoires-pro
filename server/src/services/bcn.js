@@ -3,7 +3,7 @@ import { fetchStream } from "#src/common/utils/httpUtils.js";
 import iconv from "iconv-lite";
 import { parseCsv } from "#src/common/utils/csvUtils.js";
 
-const ANCIENS_NIVEAUX_MAPPER = {
+export const ANCIENS_NIVEAUX_MAPPER = {
   5: "3", // CAP
   4: "4", // BAC
   3: "5", // BTS

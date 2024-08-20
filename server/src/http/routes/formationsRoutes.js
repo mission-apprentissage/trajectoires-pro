@@ -192,6 +192,7 @@ export default () => {
         uai,
         code_certification,
         millesime: millesimeBase,
+        ...options
       } = await validate(
         { ...req.params, ...req.query },
         {
@@ -218,6 +219,7 @@ export default () => {
           hash,
           name: "stats",
           theme,
+          options,
           data,
           plausibleCustomProperties: {
             type: "formation",
@@ -234,6 +236,7 @@ export default () => {
           hash,
           name: "error",
           theme,
+          options,
           data: {
             error: err.name,
             millesimes: formatMillesime(millesime).split("_"),
