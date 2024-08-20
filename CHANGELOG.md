@@ -1,3 +1,10 @@
+# [1.21.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.20.0...v1.21.0) (2024-08-20)
+
+
+### Features
+
+* ajout d'options dans le widget ([#275](https://github.com/mission-apprentissage/trajectoires-pro/issues/275)) ([c04f888](https://github.com/mission-apprentissage/trajectoires-pro/commit/c04f888239a1f6d3d95b73c8206730daeb0cabc4))
+
 # [1.20.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.19.1...v1.20.0) (2024-07-23)
 
 
