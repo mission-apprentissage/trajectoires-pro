@@ -322,6 +322,23 @@ parcoursup_2024_renseigne <- parcoursup_2024_renseigne %>%
   )
 
 
+parcoursup_2024_renseigne <- parcoursup_2024_renseigne  %>% 
+  left_join(
+    parcoursup_2024  %>% 
+      mutate(LIBFORMATION=str_split_fixed(LIBFORMATION," - ",n=2)[,1]) %>% 
+      select(CODEFORMATIONACCUEIL,LIBFORMATION),
+    by="CODEFORMATIONACCUEIL"
+  ) %>% 
+  mutate(
+    libelle_type_diplome=case_when(
+      libelle_type_diplome %in% c("Inconnu","Autres diplômes") & LIBFORMATION %in% c("Licence", "BUT", "Certificat de Spécialisation", "Formations  des écoles d'ingénieurs", 
+                                                                                     "D.E secteur sanitaire", "BTS", "D.E secteur social", "Formation des écoles de commerce et de management", 
+                                                                                     "BPJEPS") ~ LIBFORMATION,
+      libelle_type_diplome %in% c("Inconnu","Autres diplômes") ~ "Autres diplômes",
+      T~libelle_type_diplome 
+    )
+  ) %>% 
+  select(-LIBFORMATION)
 
 rmarkdown::render("stats_catalogue_generique.Rmd", 
                   params = list(
