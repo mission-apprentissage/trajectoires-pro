@@ -439,8 +439,16 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
           (!is.na(presence_UAI_ACCE) & !(!Nouvelle_formation & is.na(presence_Code_Scolarité_certif_info)) & !Nouvelle_formation & type_territoire !="Territoire mal couvert"& certificateur_valideur_simpli=="Ministère de l'éducation nationale ou Ministère de l'agriculture")~T,
           T~F)
       )
-    
+
   }
+  
+  
+  catalogue_partenaire_renseigne <- catalogue_partenaire_renseigne %>% 
+    mutate(
+      famillemetiers=ifelse(is.na(famillemetiers),"Hors famille de métiers",famillemetiers)
+    )
+  
+
   
   return(catalogue_partenaire_renseigne)
 } 
