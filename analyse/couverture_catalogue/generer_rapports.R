@@ -193,7 +193,6 @@ parcoursup_2024_ij_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = p
 
 
 
-
 ### Parcoursup dans InserSup ----
 
 association_CODEFORMATIONACCUEIL_sise <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/association_rncp_sup.xlsx"),
@@ -263,6 +262,7 @@ parcoursup_2024_isup_avec_sise <- parcoursup_2024_isup_avec_sise %>%
 parcoursup_2024_isup_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_isup_avec_sise,type_source = "superieur")
 
 
+
 ## Parcoursup pas dans InserJeunes et pas dans  InserSup ----
 parcoursup_2024_pas_ij_pas_isup <- parcoursup_2024 %>% 
   filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
@@ -326,7 +326,7 @@ parcoursup_2024_renseigne <- parcoursup_2024_renseigne  %>%
   left_join(
     parcoursup_2024  %>% 
       mutate(LIBFORMATION=str_split_fixed(LIBFORMATION," - ",n=2)[,1]) %>% 
-      select(CODEFORMATIONACCUEIL,LIBFORMATION),
+      select(CODEFORMATIONACCUEIL,LIBFORMATION,APPRENTISSAGEOUSCOLAIRE),
     by="CODEFORMATIONACCUEIL"
   ) %>% 
   mutate(
@@ -336,9 +336,14 @@ parcoursup_2024_renseigne <- parcoursup_2024_renseigne  %>%
                                                                                      "BPJEPS") ~ LIBFORMATION,
       libelle_type_diplome %in% c("Inconnu","Autres diplômes") ~ "Autres diplômes",
       T~libelle_type_diplome 
-    )
+    ),
+    Filiere=APPRENTISSAGEOUSCOLAIRE
   ) %>% 
-  select(-LIBFORMATION)
+  select(-LIBFORMATION,-APPRENTISSAGEOUSCOLAIRE)
+
+parcoursup_2024_renseigne <- parcoursup_2024_renseigne %>% 
+  mutate(type_formation="Après le bac")
+
 
 rmarkdown::render("stats_catalogue_generique.Rmd", 
                   params = list(
@@ -356,7 +361,7 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                   output_file = "parcoursup_07_2024.html"
 )
 
-## Catalogue apprentissage  ----
+# Catalogue apprentissage  ----
 
 formation_catalogue_apprentissage <- data.table::fread(file.path(chemin_racine_data,"RCO/formation_2024-05-02T07 56 05.492Z.csv")) %>% 
   as_tibble()
