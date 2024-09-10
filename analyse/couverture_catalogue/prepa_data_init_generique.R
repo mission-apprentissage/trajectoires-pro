@@ -205,7 +205,7 @@ data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
          ),
          millesime=str_sub(millesime,-4),
          Couverture=case_when(
-           millesime == max(millesime) & `Couverture Taux En Emploi 6 Mois` & `Couverture Taux Autres 6 Mois` & `Couverture Taux En poursuite`  ~ "Couvert",
+           millesime == max(millesime) & !all(`Couverture Taux En Emploi 6 Mois` & `Couverture Taux Autres 6 Mois` & `Couverture Taux En poursuite`)  ~ "Non couvert",
            millesime == max(millesime) & str_detect(Avant_apres_continuum, "continuum") ~ "Couvert",
            Avant_apres_continuum =="Avant continuum" ~ "Couvert",
            Avant_apres_continuum =="Apres continuum" ~ "Non couvert",
