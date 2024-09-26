@@ -84,7 +84,7 @@ const config = {
   millesimes: {
     default: env.get("TRAJECTOIRES_PRO_MILLESIMES").default("2020,2021,2022").asArray(),
     formations: env.get("TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS").default("2019_2020,2020_2021,2021_2022").asArray(),
-    formationsSup: env.get("MILLESIMES_FORMATIONS_SUP").default("2020_2021").asArray(),
+    formationsSup: env.get("MILLESIMES_FORMATIONS_SUP").default("2020_2021", "2021_2022").asArray(),
     regionales: env.get("TRAJECTOIRES_PRO_MILLESIMES_REGIONALES").default("2019_2020,2020_2021,2021_2022").asArray(),
   },
   widget: {
