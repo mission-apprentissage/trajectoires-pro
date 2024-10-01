@@ -3,7 +3,31 @@ library(tidyverse)
 library(readxl)
 library(rmarkdown)
 
+
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+
+#Base InserJeunes ----
+rmarkdown::render("base_inserjeunes_avant_integration_sup_dans_ij.Rmd", 
+                  params = list(
+                    phase = "Production",
+                    date_maj= "27/06/2024",
+                    emplacement_data_meta_formationsStats_init = "Donnees IJ/metabase/production/FormationsStats_2024_05_23.csv"
+                  ),
+                  output_format = "html_document",
+                  output_dir = "base_inserjeunes",
+                  output_file = "base_inserjeunes_production_2024_06.html"
+)
+
+rmarkdown::render("base_inserjeunes.Rmd", 
+                  params = list(
+                    phase = "Recette",
+                    date_maj= format(Sys.time(), '%d/%m/%Y'),
+                    emplacement_data_meta_formationsStats_init = "Donnees IJ/metabase/recette/FormationsStats.csv"
+                  ),
+                  output_format = "html_document",
+                  output_dir = "base_inserjeunes",
+                  output_file = "base_inserjeunes_recette_2024_10.html"
+)
 
 chemin_racine_data <- "../../../../0- data" 
 source("prepa_data_init_generique.R")
