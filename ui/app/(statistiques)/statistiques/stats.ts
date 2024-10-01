@@ -14,7 +14,7 @@ export async function plateformesInfo() {
   const results = plateformes.results;
   const production = results.filter((r) => (r as any).properties?.Statut?.select?.name === "Production");
   const waiting = results.filter((r) =>
-    ["Négociation", "Contacté"].includes((r as any).properties?.Statut?.select?.name)
+    ["Développement", "Intégration envisagée"].includes((r as any).properties?.Statut?.select?.name)
   );
 
   return {
