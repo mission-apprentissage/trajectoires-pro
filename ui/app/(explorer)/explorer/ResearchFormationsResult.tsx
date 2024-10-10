@@ -166,6 +166,23 @@ export default function ResearchFormationsResult({
         size: 150,
       },
       {
+        id: "lba",
+        header: "LBA",
+        size: 50,
+        Cell: ({ row }) => {
+          return (
+            <div>
+              <a
+                target="_blank"
+                href={`https://catalogue.apprentissage.education.gouv.fr/recherche/formations?SEARCH="${row.original.code_formation_diplome}"`}
+              >
+                ICI
+              </a>
+            </div>
+          );
+        },
+      },
+      {
         accessorKey: "code_formation_diplome",
         header: "CFD",
         size: 150,
