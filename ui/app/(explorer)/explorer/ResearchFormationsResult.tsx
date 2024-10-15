@@ -168,7 +168,8 @@ export default function ResearchFormationsResult({
       {
         id: "lba",
         header: "CatA",
-        size: 70,
+        minSize: 80,
+        size: 80,
         Cell: ({ row }) => {
           return (
             <div>
@@ -185,17 +186,17 @@ export default function ResearchFormationsResult({
       {
         accessorKey: "code_formation_diplome",
         header: "CFD",
-        size: 150,
+        size: 120,
       },
       {
         accessorKey: "diplome.libelle",
         header: "Diplôme",
-        size: 150,
+        size: 100,
       },
       {
         id: "type",
         header: "Filière",
-        size: 150,
+        size: 120,
         accessorFn: (row) => {
           return row.type === "cfd" ? "Apprentissage" : "Scolaire";
         },
