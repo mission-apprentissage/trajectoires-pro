@@ -167,8 +167,8 @@ export default function ResearchFormationsResult({
       },
       {
         id: "lba",
-        header: "LBA",
-        size: 50,
+        header: "CatA",
+        size: 70,
         Cell: ({ row }) => {
           return (
             <div>
