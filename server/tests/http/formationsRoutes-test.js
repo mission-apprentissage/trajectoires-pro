@@ -1078,16 +1078,16 @@ describe("formationsRoutes", () => {
       expect(subTitle).to.contain.text("Lycée professionnel");
 
       const emploiBlock = dom.window.document.querySelector(".block-emploi");
-      expect(emploiBlock).to.contain.text("EN EMPLOI");
-      expect(emploiBlock).to.contain.text("5 élèves sur 10");
+      expect(emploiBlock).to.contain.text("TRAVAILLENT");
+      expect(emploiBlock).to.contain.text("50%");
 
       const formationBlock = dom.window.document.querySelector(".block-formation");
-      expect(formationBlock).to.contain.text("EN FORMATION");
-      expect(formationBlock).to.contain.text("3 élèves sur 10");
+      expect(formationBlock).to.contain.text("ÉTUDIENT");
+      expect(formationBlock).to.contain.text("30%");
 
       const autresBlock = dom.window.document.querySelector(".block-autres");
       expect(autresBlock).to.contain.text("AUTRES PARCOURS");
-      expect(autresBlock).to.contain.text("2 élèves sur 10");
+      expect(autresBlock).to.contain.text("20%");
     });
 
     it("Vérifie qu'on obtient un widget pour un code au format XXX:XXX", async () => {
@@ -1102,16 +1102,16 @@ describe("formationsRoutes", () => {
       expect(subTitle).to.contain.text("Lycée professionnel");
 
       const emploiBlock = dom.window.document.querySelector(".block-emploi");
-      expect(emploiBlock).to.contain.text("EN EMPLOI");
-      expect(emploiBlock).to.contain.text("5 élèves sur 10");
+      expect(emploiBlock).to.contain.text("TRAVAILLENT");
+      expect(emploiBlock).to.contain.text("50%");
 
       const formationBlock = dom.window.document.querySelector(".block-formation");
-      expect(formationBlock).to.contain.text("EN FORMATION");
-      expect(formationBlock).to.contain.text("3 élèves sur 10");
+      expect(formationBlock).to.contain.text("ÉTUDIENT");
+      expect(formationBlock).to.contain.text("30%");
 
       const autresBlock = dom.window.document.querySelector(".block-autres");
       expect(autresBlock).to.contain.text("AUTRES PARCOURS");
-      expect(autresBlock).to.contain.text("2 élèves sur 10");
+      expect(autresBlock).to.contain.text("20%");
     });
 
     it("Vérifie qu'on obtient un widget d'erreur quand la formation n'existe pas", async () => {

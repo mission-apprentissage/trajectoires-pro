@@ -11,9 +11,11 @@ const computeTaux = (taux) => {
 
         const lessOne = taux.value > 0 && taux.value < 5 && eleves === 1;
 
-        let elevePlural = lessOne || eleves === 1 ? "élève" : "élèves";
-        let description=lessOne ? "Moins d'un " + elevePlural + " sur 10" : eleves + " " + elevePlural + " sur 10";
-        description=eleves== 0 ? "Aucun élève" : description;
+        // Old description : affichage du type x élève
+        // let elevePlural = lessOne || eleves === 1 ? "élève" : "élèves";
+        // let description=lessOne ? "Moins d'un " + elevePlural + " sur 10" : eleves + " " + elevePlural + " sur 10";
+        // description=eleves== 0 ? "Aucun élève" : description;
+        description = taux.value + '%';
 
 
         acc.taux[taux.name] = {
@@ -43,12 +45,12 @@ if (data.type == "filieres") {
 infos = {emploi: {}, formation: {}, autres: {}};
 infos["emploi"].colorIcon = "green-variant";
 infos["emploi"].colorText = "green";
-infos["emploi"].title = "EN EMPLOI";
+infos["emploi"].title = "TRAVAILLENT";
 infos["emploi"].icon = "#ri-briefcase-4-line";
 
 infos["formation"].colorIcon = "blue-variant";
 infos["formation"].colorText = "blue";
-infos["formation"].title = "EN FORMATION";
+infos["formation"].title = "ÉTUDIENT";
 infos["formation"].icon = "#ri-graduation-cap-line";
 
 infos["autres"].colorIcon = "orange-variant";

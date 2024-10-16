@@ -18,12 +18,10 @@
         document.querySelector('#modal-description .description-' + type).style.display = "none";
         document.querySelector('#modal-description .title-' + type).style.display = "none";
         document.querySelector('#modal-description .body-' + type + '-enable').style.display = "none";
-        document.querySelector('#modal-description .body-' + type + '-disable').style.display = "flex";
       })
 
       document.querySelector('#modal-description .description-' + type).style.display = "block";
-      document.querySelector('#modal-description .title-' + type).style.display = "block";
-      document.querySelector('#modal-description .body-' + type + '-disable').style.display = "none";
+      document.querySelector('#modal-description .title-' + type).style.display = "flex";
       document.querySelector('#modal-description .body-' + type + '-enable').style.display = "flex";
 
       document.querySelector('#modal-description').style.display = "block";
@@ -49,7 +47,17 @@
 
 
     .card-modal .title {
-      margin-bottom: 10px;
+      margin-bottom: 18px;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      gap: 0.5rem
+    }
+
+    .card-modal .title .icon {
+      width: 32px;
+      height: 32px;
+      vertical-align: text-top;
     }
 
     .badge {
@@ -81,11 +89,13 @@
       justify-content: center;
       font-weight: 700;
       font-size: 12px;
+      flex: 1;
     }
 
     .block-title {
       display: flex;
       align-items: center;
+      flex-direction: column;
       font-size: 14px;
     }
 
@@ -93,6 +103,7 @@
       margin-right: 4px;
       width: 20px;
       height: 20px;
+      vertical-align: text-top;
     }
 
     .body-description {
@@ -115,6 +126,7 @@
       height: var(--body-height)
     }
 
+
     .body .icon {
       position: absolute;
       left: var(--body-icon-left);
@@ -122,6 +134,24 @@
       width: var(--body-icon-width);
       height: var(--body-icon-width);
     }
+
+    .modal .body svg {
+      width: 40px;
+      height: 73px;
+    }
+
+    .modal .body .icon {
+      position: absolute;
+      left: 10px;
+      top: 19px;
+      width: 19px;
+      height: 19px;
+    }
+
+    .modal .card .bodies {
+      padding-top: 0;
+    }
+
 
     .modal-link:hover {
       cursor: pointer;
@@ -148,12 +178,13 @@
 
     .description-more {
       display: flex;
-      justify-content: flex-end;
-      margin-top: 5px;
+      justify-content: flex-start;
+      margin-top: 1.5rem;
     }
 
-    .description-more a:after {
-      display: none;
+    .description-more a {
+      background-image: none;
+      font-weight: 500;
     }
 
     .icon-link {
@@ -175,11 +206,22 @@
 
     .modal {
       display: none;
+      border-radius: 4px;
+      background: var(--light-decisions-background-background-alt-blue-france, #F5F5FE);
+      /* shadow / light / raised */
+      box-shadow: 0px 2px 6px 0px rgba(0, 0, 18, 0.16);
     }
 
     .modal .card {
       margin-top: 0px;
-      padding-top: 5px;
+      padding: 0px;
+
+    }
+
+    .modal .card .card-modal {
+      padding-left: 3rem;
+      padding-right: 3rem;
+      padding-bottom: 2rem;
     }
 
     .title-filieres {
@@ -190,9 +232,18 @@
       padding-top: 15px;
     }
 
+    .modal .card .bodies {
+      margin-left: 0rem;
+    }
+
+
     @media screen and (max-width: 40em) {
       .blocks {
         gap: 5px;
+      }
+
+      .description-more {
+        justify-content: center;
       }
     }
 
@@ -201,7 +252,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 2px;
+        gap: 24px;
         margin-bottom: 10px;
         ;
       }
@@ -213,6 +264,10 @@
       .card-modal .bodies {
         align-items: flex-start;
         justify-content: flex-start;
+      }
+
+      .onlyMobile {
+        display: none;
       }
     }
 
@@ -248,6 +303,12 @@
       .card-modal .body-grey .body {
         display: none;
       }
+
+      .modal .card .card-modal {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-bottom: 1rem;
+      }
     }
 
     @media screen and (max-width: 30em) {
@@ -263,35 +324,32 @@
 
   <div class="modal" id="modal-description">
     <div class="card">
+      <button onClick="closeModal()" class="plausible-event-name=Modal+Close fr-btn--close fr-btn" title="Fermer la fenêtre modale"></button>
       <div class="card-modal">
-
-        <button onClick="closeModal()" class="plausible-event-name=Modal+Close fr-btn--close fr-btn" title="Fermer la fenêtre modale">Fermer</button>
-        <div class="title title-emploi">
-          Nombre d'élèves ayant obtenu un emploi
+        <div class="title title-emploi <%=infos["emploi"].colorText %>">
+          <div>
+            <svg class="remix icon">
+              <use xlink:href="<%= infos["emploi"].icon %>" />
+            </svg>
+          </div>
+          <div>Les élèves qui travaillent</div>
         </div>
-        <div class="title title-formation">
-          Nombre d'élèves poursuivant leur formation
+        <div class="title title-formation <%=infos["formation"].colorText %>">
+          <div><svg class="remix icon">
+              <use xlink:href="<%= infos["formation"].icon %>" />
+            </svg></div>
+          <div>Les élèves qui poursuivent des études</div>
         </div>
-        <div class="title title-autres">
-          Nombre d'élèves réalisant d'autres parcours
+        <div class="title title-autres <%=infos["autres"].colorText %>">
+          <div><svg class="remix icon">
+              <use xlink:href="<%= infos["autres"].icon %>" />
+            </svg></div>
+          <div>Les élèves qui réalisent d’autres parcours</div>
         </div>
 
         <div class="bodies">
           <% for (const key of ["emploi", "formation", "autres"]) { %>
-          <div class="body-group body-grey body-<%= key %>-disable">
-            <% for (var i=0; i<2;i++) { %>
-            <div class="body">
-              <svg class="grey">
-                <use xlink:href="#icon-union" />
-              </svg>
-              <svg class="remix icon white">
-                <use xlink:href="<%= infos[key].icon %>" />
-              </svg>
-            </div>
-            <% } %>
-          </div>
           <div class="body-group body-<%= key %>-enable">
-            <% for (var i=0; i<6;i++) { %>
             <div class="body">
               <svg class="<%= infos[key].colorIcon %>">
                 <use xlink:href="#icon-union" />
@@ -300,32 +358,30 @@
                 <use xlink:href="<%= infos[key].icon %>" />
               </svg>
             </div>
-            <% } %>
           </div>
           <% } %>
         </div>
         <div class="description">
           <div class="description-emploi">
-            Il s'agit du nombre d'élèves ayant trouvé un emploi 6 mois après leur dernière année dans cette formation.<br /><br />
-            Ce chiffre comprend les emplois privés et publics mais uniquement salariés. Les auto-entrepreneurs sont comptabilisés dans les “<span>autres parcours</span>”.</div>
+            Il s’agit du pourcentage de jeunes ayant trouvé un emploi 6 mois après leur dernière année dans cette formation.
+            <br /><br />Ce chiffre comprend les emplois privés et publics mais uniquement salariés. Les auto-entreprises sont comptabilisées dans les “<span>autres parcours</span>”.
+          </div>
           <div class="description-formation">
-            Cet indicateur comptabilise le nombre d'élèves inscrits dans une formation, qu'il s'agisse d'un autre niveau d'étude, d'un redoublement, d'une réorientation vers une nouvelle formation...<br /><br />
-            L'indicateur ne tient pas compte de la continuité dans un parcours de formation pour le moment.
+            Il s’agit du pourcentage de jeunes inscrits dans une formation 6 mois après leur dernière année dans cette formation.
+            <br /><br />Il peut s’agir d'un redoublement, d'un autre niveau d'étude, d'une réorientation vers une nouvelle formation.
           </div>
           <div class="description-autres">
-            Il s'agit du nombre d'élèves qui ne sont ni en emploi, ni en formation. Ils peuvent être au chômage, en inactivité, indépendants, partis à l'étranger, en formation privée hors contrat.
+            Il s'agit du pourcentage d'élèves qui ne sont ni en emploi, ni en formation 6 mois après leur dernière année dans cette formation.
+            <br /><br />Ils peuvent être au chômage, en inactivité, indépendants, partis à l'étranger, en formation privée hors contrat.
           </div>
         </div>
         <div class="description-more">
-          <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/"><button class="fr-btn fr-btn--icon-right fr-icon-external-link-line">
-              En savoir plus sur ces indicateurs
-            </button>
-          </a>
-
+          <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus</a>
         </div>
       </div>
     </div>
   </div>
+
 
   <div class="container">
     <% if (!options?.noTitle) { %>
@@ -370,7 +426,7 @@
     <% } %>
 
     <div class="card-footer">
-      Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html"><%= data.filiere === "superieur" ? "InserSup" : "InserJeunes" %></a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/">En savoir plus sur ces indicateurs.</a>
+      Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html"><%= data.filiere === "superieur" ? "InserSup" : "InserJeunes" %></a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/"> D’où viennent ces données ?</a>
     </div>
   </div>
 </body>
