@@ -748,7 +748,7 @@ describe("certificationsRoutes", () => {
     it("Vérifie qu'on retourne une 400 si le code de certification n'est pas valide", async () => {
       const { httpClient } = await startServer();
 
-      const response = await httpClient.get(`/api/inserjeunes/certifications/INVALIDE`);
+      const response = await httpClient.get(`/api/inserjeunes/certifications/INVALIDE!`);
 
       assert.strictEqual(response.status, 400);
       assert.deepStrictEqual(response.data, {
@@ -760,7 +760,7 @@ describe("certificationsRoutes", () => {
             context: {
               key: "codes_certifications",
               label: "codes_certifications",
-              value: ["INVALIDE"],
+              value: ["INVALIDE!"],
             },
             message: '"codes_certifications" must have the type CFD, MEFSTAT11 or SISE',
             path: ["codes_certifications"],
@@ -1723,16 +1723,16 @@ describe("certificationsRoutes", () => {
       const dom = new JSDOM(response.data);
 
       const emploiBlock = dom.window.document.querySelector(".block-emploi");
-      expect(emploiBlock).to.contain.text("EN EMPLOI");
-      expect(emploiBlock).to.contain.text("3 élèves sur 10");
+      expect(emploiBlock).to.contain.text("TRAVAILLENT");
+      expect(emploiBlock).to.contain.text("30%");
 
       const formationBlock = dom.window.document.querySelector(".block-formation");
-      expect(formationBlock).to.contain.text("EN FORMATION");
-      expect(formationBlock).to.contain.text("5 élèves sur 10");
+      expect(formationBlock).to.contain.text("ÉTUDIENT");
+      expect(formationBlock).to.contain.text("50%");
 
       const autresBlock = dom.window.document.querySelector(".block-autres");
       expect(autresBlock).to.contain.text("AUTRES PARCOURS");
-      expect(autresBlock).to.contain.text("2 élèves sur 10");
+      expect(autresBlock).to.contain.text("20%");
     });
 
     it("Vérifie qu'on obtient un widget", async () => {
@@ -1744,16 +1744,16 @@ describe("certificationsRoutes", () => {
       const dom = new JSDOM(response.data);
 
       const emploiBlock = dom.window.document.querySelector(".block-emploi");
-      expect(emploiBlock).to.contain.text("EN EMPLOI");
-      expect(emploiBlock).to.contain.text("3 élèves sur 10");
+      expect(emploiBlock).to.contain.text("TRAVAILLENT");
+      expect(emploiBlock).to.contain.text("30%");
 
       const formationBlock = dom.window.document.querySelector(".block-formation");
-      expect(formationBlock).to.contain.text("EN FORMATION");
-      expect(formationBlock).to.contain.text("5 élèves sur 10");
+      expect(formationBlock).to.contain.text("ÉTUDIENT");
+      expect(formationBlock).to.contain.text("50%");
 
       const autresBlock = dom.window.document.querySelector(".block-autres");
       expect(autresBlock).to.contain.text("AUTRES PARCOURS");
-      expect(autresBlock).to.contain.text("2 élèves sur 10");
+      expect(autresBlock).to.contain.text("20%");
     });
 
     it("Vérifie qu'on obtient un widget d'erreur quand la formation n'existe pas", async () => {

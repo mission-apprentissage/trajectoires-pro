@@ -31,12 +31,13 @@
   <% if (taux[key].eleves > 0) { %>
   <div onClick="showModal('<%= key %>')" class="block block-<%= key %> modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : infos[key].colorText %>">
     <div class="block-title">
-      <svg class="remix icon">
-        <use xlink:href="<%= infos[key].icon %>" />
-      </svg>
-      <%= infos[key].title %> ⓘ
+      <div><%= taux[key].description %></div>
+      <div>
+        <svg class="remix icon">
+          <use xlink:href="<%= infos[key].icon %>" />
+        </svg><%= infos[key].title %> ⓘ
+      </div>
     </div>
-    <div><%= taux[key].description %></div>
   </div>
   <% } %>
   <% } %>
