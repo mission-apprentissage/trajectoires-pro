@@ -28,8 +28,8 @@
 </div>
 <div class="blocks">
   <% for (const key of ["emploi", "formation", "autres"]) { %>
-  <% if (taux[key].eleves > 0) { %>
-  <div onClick="showModal('<%= key %>')" class="block block-<%= key %> modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].eleves == 0 ? "grey-variant" : infos[key].colorText %>">
+  <% if (taux[key].value > 0) { %>
+  <div onClick="showModal('<%= key %>')" class="block block-<%= key %> modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].value == 0 ? "grey-variant" : infos[key].colorText %>">
     <div class="block-title">
       <div><%= taux[key].description %></div>
       <div>
