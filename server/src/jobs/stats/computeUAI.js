@@ -143,7 +143,7 @@ async function computeUAILieuFormation(millesime, result, handleError) {
       uai_type: { $ne: "lieu_formation" },
     }),
     transformData(async (stats) => {
-      const { uai_type, uai_lieu_formation, uai_formateur, uai_gestionnaire } = stats;
+      const { uai_type, uai_lieu_formation, uai_formateur, uai_gestionnaire, millesime } = stats;
 
       if (!uai_lieu_formation || uai_lieu_formation.length === 0) {
         return [];
