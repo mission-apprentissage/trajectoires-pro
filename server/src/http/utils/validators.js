@@ -6,7 +6,7 @@ import { WIDGETS } from "#src/services/widget/widget.js";
 import { ANCIENS_NIVEAUX_MAPPER } from "#src/services/bcn.js";
 
 const UAI_PATTERN = /^[0-9]{7}[A-Z]{1}$/;
-export const CFD_PATTERN = /^(?:CFD:)?([0-9]{8})$/;
+export const CFD_PATTERN = /^(?:CFD:)?([0-9A-Z]{8})$/;
 export const MEF11_PATTERN = /^(?:MEFSTAT11:)?([0-9]{11})$/;
 export const SISE_PATTERN = /^SISE:([0-9]{7})$/;
 export const CODE_CERTIFICATION_PATTERNS = [

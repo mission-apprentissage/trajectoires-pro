@@ -1,3 +1,10 @@
+## [1.21.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.21.0...v1.21.1) (2024-10-16)
+
+
+### Bug Fixes
+
+* bug dans l'association des uais ([#287](https://github.com/mission-apprentissage/trajectoires-pro/issues/287)) ([0d52d5e](https://github.com/mission-apprentissage/trajectoires-pro/commit/0d52d5ee542546b7bc133d4953d5e4fe90f34b3f))
+
 # [1.21.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.20.0...v1.21.0) (2024-08-20)
 
 
