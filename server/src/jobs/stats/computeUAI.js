@@ -1,6 +1,6 @@
-import { oleoduc, transformData, writeData, flattenArray } from "oleoduc";
+import { oleoduc, transformData, writeData, flattenArray, filterData } from "oleoduc";
 import { omitNil } from "#src/common/utils/objectUtils.js";
-import { uniq, omit, mapKeys } from "lodash-es";
+import { uniq, omit, mapKeys, isNil } from "lodash-es";
 import toArray from "stream-to-array";
 import { upsert } from "#src/common/db/mongodb.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
@@ -51,86 +51,90 @@ function insertUai(result, handleError) {
 async function computeUAIBase(millesime, result, handleError) {
   return oleoduc(
     await FormationStatsRepository.find({ millesime }),
-    transformData(async (stats) => {
-      const { uai, code_formation_diplome, millesime, filiere } = stats;
+    filterData((stats) => isNil(stats.uai_type)),
+    transformData(
+      async (stats) => {
+        const { uai, code_formation_diplome, millesime, filiere } = stats;
 
-      // Le lieu de formation, le formateur et le gestionnaire sont identiques pour la voie scolaire
-      if (filiere !== "apprentissage") {
+        // Le lieu de formation, le formateur et le gestionnaire sont identiques pour la voie scolaire
+        if (filiere !== "apprentissage") {
+          return {
+            uai: stats.uai,
+            uai_type: "lieu_formation",
+            uai_donnee: stats.uai,
+            uai_donnee_type: "lieu_formation",
+            uai_formateur: [stats.uai],
+            uai_gestionnaire: [stats.uai],
+            code_certification: stats.code_certification,
+            millesime: millesime,
+          };
+        }
+
+        const cfdWithContinuum = await BCNRepository.cfdsParentAndChildren(code_formation_diplome);
+        const uaisLieu = await CAFormationRepository.find({
+          uai_formation: uai,
+          cfd: cfdWithContinuum,
+        }).then((stream) => toArray(stream));
+
+        // Cas ou la donnée correspond au lieu de formation
+        if (uaisLieu.length > 0) {
+          return {
+            uai: stats.uai,
+            uai_type: "lieu_formation",
+            uai_donnee: stats.uai,
+            uai_donnee_type: "lieu_formation",
+            uai_formateur: uniq(uaisLieu.map((u) => u.etablissement_formateur_uai).filter((v) => v)),
+            uai_gestionnaire: uniq(uaisLieu.map((u) => u.etablissement_gestionnaire_uai).filter((v) => v)),
+            code_certification: stats.code_certification,
+            millesime: millesime,
+          };
+        }
+
+        const uaisFormateur = await CAFormationRepository.find({
+          etablissement_formateur_uai: uai,
+          cfd: cfdWithContinuum,
+        }).then((stream) => toArray(stream));
+        if (uaisFormateur.length > 0) {
+          return {
+            uai: stats.uai,
+            uai_type: "formateur",
+            uai_donnee: stats.uai,
+            uai_donnee_type: "formateur",
+            uai_lieu_formation: uniq(uaisFormateur.map((u) => u.uai_formation).filter((v) => v)),
+            uai_gestionnaire: uniq(uaisFormateur.map((u) => u.etablissement_gestionnaire_uai).filter((v) => v)),
+            code_certification: stats.code_certification,
+            millesime: millesime,
+          };
+        }
+
+        const uaisGestionnaire = await CAFormationRepository.find({
+          etablissement_gestionnaire_uai: uai,
+          cfd: cfdWithContinuum,
+        }).then((stream) => toArray(stream));
+        if (uaisGestionnaire.length > 0) {
+          return {
+            uai: stats.uai,
+            uai_type: "gestionnaire",
+            uai_donnee: stats.uai,
+            uai_donnee_type: "gestionnaire",
+            uai_lieu_formation: uniq(uaisGestionnaire.map((u) => u.uai_formation).filter((v) => v)),
+            uai_formateur: uniq(uaisGestionnaire.map((u) => u.etablissement_formateur_uai).filter((v) => v)),
+            code_certification: stats.code_certification,
+            millesime: millesime,
+          };
+        }
+
         return {
           uai: stats.uai,
-          uai_type: "lieu_formation",
+          uai_type: "inconnu",
           uai_donnee: stats.uai,
-          uai_donnee_type: "lieu_formation",
-          uai_formateur: [stats.uai],
-          uai_gestionnaire: [stats.uai],
+          uai_donnee_type: "inconnu",
           code_certification: stats.code_certification,
           millesime: millesime,
         };
-      }
-
-      const cfdWithContinuum = await BCNRepository.cfdsParentAndChildren(code_formation_diplome);
-      const uaisLieu = await CAFormationRepository.find({
-        uai_formation: uai,
-        cfd: cfdWithContinuum,
-      }).then((stream) => toArray(stream));
-
-      // Cas ou la donnée correspond au lieu de formation
-      if (uaisLieu.length > 0) {
-        return {
-          uai: stats.uai,
-          uai_type: "lieu_formation",
-          uai_donnee: stats.uai,
-          uai_donnee_type: "lieu_formation",
-          uai_formateur: uniq(uaisLieu.map((u) => u.etablissement_formateur_uai).filter((v) => v)),
-          uai_gestionnaire: uniq(uaisLieu.map((u) => u.etablissement_gestionnaire_uai).filter((v) => v)),
-          code_certification: stats.code_certification,
-          millesime: millesime,
-        };
-      }
-
-      const uaisFormateur = await CAFormationRepository.find({
-        etablissement_formateur_uai: uai,
-        cfd: cfdWithContinuum,
-      }).then((stream) => toArray(stream));
-      if (uaisFormateur.length > 0) {
-        return {
-          uai: stats.uai,
-          uai_type: "formateur",
-          uai_donnee: stats.uai,
-          uai_donnee_type: "formateur",
-          uai_lieu_formation: uniq(uaisFormateur.map((u) => u.uai_formation).filter((v) => v)),
-          uai_gestionnaire: uniq(uaisFormateur.map((u) => u.etablissement_gestionnaire_uai).filter((v) => v)),
-          code_certification: stats.code_certification,
-          millesime: millesime,
-        };
-      }
-
-      const uaisGestionnaire = await CAFormationRepository.find({
-        etablissement_gestionnaire_uai: uai,
-        cfd: cfdWithContinuum,
-      }).then((stream) => toArray(stream));
-      if (uaisGestionnaire.length > 0) {
-        return {
-          uai: stats.uai,
-          uai_type: "gestionnaire",
-          uai_donnee: stats.uai,
-          uai_donnee_type: "gestionnaire",
-          uai_lieu_formation: uniq(uaisGestionnaire.map((u) => u.uai_formation).filter((v) => v)),
-          uai_formateur: uniq(uaisGestionnaire.map((u) => u.etablissement_formateur_uai).filter((v) => v)),
-          code_certification: stats.code_certification,
-          millesime: millesime,
-        };
-      }
-
-      return {
-        uai: stats.uai,
-        uai_type: "inconnu",
-        uai_donnee: stats.uai,
-        uai_donnee_type: "inconnu",
-        code_certification: stats.code_certification,
-        millesime: millesime,
-      };
-    }),
+      },
+      { parallel: 5 }
+    ),
     writeData(insertUai(result, handleError))
   );
 }
