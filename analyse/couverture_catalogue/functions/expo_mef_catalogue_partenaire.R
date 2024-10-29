@@ -68,11 +68,15 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
       nest() %>% 
       mutate(
         type_formation=case_when(
-          as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%0:4 ~ "Avant le bac",
-          as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%5:8 ~ "Après le bac",
-          is.na(NIVEAU_QUALIFICATION_RNCP)|NIVEAU_QUALIFICATION_RNCP==99~"Inconnu"
+          is.na(NIVEAU_QUALIFICATION_RNCP)|NIVEAU_QUALIFICATION_RNCP==99~"Niveau inconnu",
+          T~NIVEAU_QUALIFICATION_RNCP
         ),
-        type_formation=factor(type_formation,levels=c("Avant le bac","Après le bac","Inconnu")),
+        # type_formation=case_when(
+        #   as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%0:4 ~ "Avant le bac",
+        #   as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%5:8 ~ "Après le bac",
+        #   is.na(NIVEAU_QUALIFICATION_RNCP)|NIVEAU_QUALIFICATION_RNCP==99~"Inconnu"
+        # ),
+        # type_formation=factor(type_formation,levels=c("Avant le bac","Après le bac","Inconnu")),
         libelle_type_diplome=case_when(
           str_detect(LIBELLE_COURT,"DIP3-CNAM")~"Titre professionnel homologué",
           str_detect(LIBELLE_COURT,"TH3")~"Titre professionnel homologué",
@@ -86,7 +90,7 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
           str_detect(LIBELLE_COURT,"CSA")~"CSA",
           str_detect(LIBELLE_COURT,"CS")~"CS",
           str_detect(LIBELLE_COURT,"ASSIMI.BTS")~"BTS",
-          type_formation=="Inconnu"~"Inconnu",
+          type_formation=="Niveau inconnu"~"Inconnu",
           T~LIBELLE_COURT
         )) %>% 
       ungroup()    
@@ -289,8 +293,9 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
                 by=setdiff(names(catalogue_init),c("MEFSTAT11_annee_terminale", "FORMATION_DIPLOME_annee_terminale", 
                                                    "GROUPE_SPECIALITE", "LETTRE_SPECIALITE", "LIBELLE_LONG_200", 
                                                    "LIBELLE_STAT_33", "filiere","CODESISE"))) %>% 
-      mutate(type_formation="Après le bac",
-             type_formation=factor(type_formation,levels=c("Avant le bac","Après le bac","Inconnu")),
+      mutate(
+        # type_formation="Après le bac",
+        # type_formation=factor(type_formation,levels=c("Avant le bac","Après le bac","Inconnu")),
              libelle_type_diplome=str_split_fixed(LIBELLE_COURT," - ",n=2)[,1]
       )
     
@@ -445,6 +450,12 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
   
   catalogue_partenaire_renseigne <- catalogue_partenaire_renseigne %>% 
     mutate(
+      perimetre=case_when(
+        type_formation %in% str_pad(0:5,pad="0",width=2,side="left")~"InserSco",
+        type_formation %in% str_pad(6:8,pad="0",width=2,side="left")~"InserSup",
+        T~"Inconnu"
+        
+      ),
       famillemetiers=ifelse(is.na(famillemetiers),"Hors famille de métiers",famillemetiers)
     )
   
@@ -458,24 +469,24 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
   ##stats_catalogue_partenaire ----
   
   stats_catalogue_partenaire <- catalogue_partenaire_renseigne %>%
-    select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
+    select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,perimetre,libelle_type_diplome) %>% 
     ungroup() %>% 
-    group_by(type_formation,libelle_type_diplome,Filiere) %>% 
+    group_by(perimetre,type_formation,libelle_type_diplome,Filiere) %>% 
     summarise("Nombre de formations"=n()) %>% 
     ungroup() %>% 
     mutate("Part du  catalogue"=prop.table(`Nombre de formations`)) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
-        select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
+        select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,perimetre,libelle_type_diplome) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
         summarise(`Nombre de formations`=n()) %>% 
         ungroup() %>% 
         left_join(
           catalogue_partenaire_renseigne %>% 
             filter(Couverture=="Couvert")%>%   
-            group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
+            group_by(perimetre,type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
             summarise("Nombre de formations couvertes"=n()),
-          by=c("type_formation","libelle_type_diplome","Filiere","famillemetiers")
+          by=c("perimetre","type_formation","libelle_type_diplome","Filiere","famillemetiers")
         ) %>% 
         mutate(
           famillemetiers=ifelse(is.na(famillemetiers),"Hors famille de métiers",famillemetiers),
@@ -510,11 +521,11 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
           )
         ) %>% 
         pivot_wider(names_from = name,values_from = value) ,
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere,Couverture) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere,Couverture) %>% 
         summarise(nb=n()) %>% 
         mutate(part=prop.table(nb)) %>% 
         pivot_longer(cols = c(nb,part)) %>% 
@@ -527,11 +538,11 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         mutate_all(replace_na,0,) %>% 
         mutate(`Non couvert (nb)`=`Non couvert (nb)`+`Sous le seuil de 20 élèves (nb)`,
                `Non couvert (%)`=`Non couvert (%)`+`Sous le seuil de 20 élèves (%)`),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(catalogue_partenaire_renseigne %>% 
                 filter(type_uai!="Non couvert") %>% 
-                group_by(type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
+                group_by(perimetre,type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
                 summarise(nb=n()) %>% 
                 mutate(part=prop.table(nb)) %>% 
                 pivot_longer(cols = c(nb,part)) %>% 
@@ -542,74 +553,74 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
                 select(-name) %>% 
                 pivot_wider(names_from = type_uai,values_from = value) %>% 
                 mutate_all(replace_na,0,),
-              by=c("type_formation","libelle_type_diplome","Filiere")
+              by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
         filter(Couverture=="Non couvert") %>% 
         filter(certificateur_valideur_simpli!="Ministère de l'éducation nationale ou Ministère de l'agriculture") %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere) %>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Autres ministères certificateurs (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
         filter(Couverture=="Non couvert") %>% 
         filter(type_territoire!="Territoire normalement couvert") %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere) %>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Territoires non couverts (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
         filter(Couverture=="Non couvert") %>% 
         filter(Nouvelle_formation) %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Nouvelles formations (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
         filter(Couverture=="Non couvert") %>% 
         filter(is.na(presence_UAI_ACCE))%>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - UAI inconnu (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
         filter(Couverture=="Non couvert") %>% 
         filter(!Nouvelle_formation) %>%   
         filter(is.na(presence_Code_Scolarité_certif_info))%>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - code certif inconnu (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
         filter(Couverture=="Non couvert") %>%
         filter(scope) %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=n()) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - sans raison évidente (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     mutate(
       `Non couvert - Autres ministères certificateurs (%)`=`Non couvert - Autres ministères certificateurs (nb)`/`Non couvert (nb)`,
@@ -626,12 +637,12 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
   ##stats_catalogue_partenaire_globale----
   
   stats_catalogue_partenaire_globale <- catalogue_partenaire_renseigne %>%
-    select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
+    select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,perimetre,libelle_type_diplome) %>% 
     summarise("Nombre de formations"=n()) %>% 
     mutate("Part du  catalogue"=prop.table(`Nombre de formations`),
-           type_formation="Total",libelle_type_diplome="Total",Filiere="Total") %>% 
+           perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total") %>% 
     left_join(catalogue_partenaire_renseigne %>%
-                select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,libelle_type_diplome) %>% 
+                select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,perimetre,libelle_type_diplome) %>% 
                 mutate(
                   famillemetiers=ifelse(is.na(famillemetiers),"Hors famille de métiers",famillemetiers)
                 ) %>% 
@@ -677,8 +688,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
                   )
                 ) %>% 
                 pivot_wider(names_from = name,values_from = value) %>% 
-                mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
-              by=c("type_formation","libelle_type_diplome","Filiere")
+                mutate(perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+              by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>%
     left_join(
       catalogue_partenaire_renseigne %>% 
@@ -695,8 +706,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         mutate_all(replace_na,0,) %>% 
         mutate(`Non couvert (nb)`=`Non couvert (nb)`+`Sous le seuil de 20 élèves (nb)`,
                `Non couvert (%)`=`Non couvert (%)`+`Sous le seuil de 20 élèves (%)`,
-               type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+               perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
@@ -712,8 +723,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         select(-name)  %>% 
         pivot_wider(names_from = type_uai,values_from = value) %>% 
         mutate_all(replace_na,0) %>% 
-        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+        mutate(perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
@@ -723,8 +734,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Autres ministères certificateurs (nb)"=nb) %>% 
-        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
-      by=c("type_formation","libelle_type_diplome","Filiere")) %>% 
+        mutate(perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
         filter(Couverture=="Non couvert") %>% 
@@ -733,8 +744,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Territoires non couverts (nb)"=nb) %>% 
-        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+        mutate(perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
@@ -744,8 +755,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Nouvelles formations (nb)"=nb)%>% 
-        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+        mutate(perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
@@ -755,8 +766,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - UAI inconnu (nb)"=nb) %>% 
-        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+        mutate(perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
@@ -767,8 +778,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - code certif inconnu (nb)"=nb) %>% 
-        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+        mutate(perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>%
@@ -778,8 +789,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - sans raison évidente (nb)"=nb)%>% 
-        mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+        mutate(perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total"),
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     mutate(
       `Non couvert - Autres ministères certificateurs (%)`=`Non couvert - Autres ministères certificateurs (nb)`/`Non couvert (nb)`,
@@ -800,7 +811,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
     bind_rows(stats_catalogue_partenaire_globale) 
   
   
-  col_to_add <- setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
+  col_to_add <- setdiff(c("perimetre","type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
                           "Part du  catalogue", "Couvert (nb)", "Couvert (%)",
                           
                           "Formations associées à une famille de métiers (nb)", 
@@ -826,7 +837,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
     
     stats_catalogue_partenaire_temp <- stats_catalogue_partenaire_temp %>% 
       bind_cols(
-        map(setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
+        map(setdiff(c("perimetre","type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
                       "Part du  catalogue", "Couvert (nb)", "Couvert (%)",
                       
                       "Formations associées à une famille de métiers (nb)", 
@@ -861,7 +872,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
   
   stats_catalogue_partenaire <- stats_catalogue_partenaire_temp %>% 
     select(
-      c("type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
+      c("perimetre","type_formation", "libelle_type_diplome", "Filiere", "Nombre de formations", 
         "Part du  catalogue", 
         "Formations non associées à une famille de métiers (nb)", 
         "Formations associées à une famille de métiers (nb)", 
@@ -901,7 +912,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
       )
     ) %>% 
     rename(
-      "Avant/après bac"=type_formation,
+      "Périmètre"=perimetre,
+      "Niveau de formation"=type_formation,
       "Type diplôme"=libelle_type_diplome,
       "Couverture (nb)"=`Couvert (nb)`,
       "Couverture (%)"=`Couvert (%)`,
@@ -911,7 +923,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
       "Territoires mal couverts (%)"="Non couvert - Territoires non couverts (%)" 
     ) %>% 
     mutate(
-      `Avant/après bac`=ifelse(`Avant/après bac`=="Avant le bac","Avant","Après"),
+      # `Avant/après bac`=ifelse(`Avant/après bac`=="Avant le bac","Avant","Après"),
       Filiere=ifelse(Filiere=="Scolaire","Sco.","App.")
     )
   
@@ -987,21 +999,21 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
   
   stats_catalogue_partenaire_voeux <- catalogue_partenaire_renseigne_voeux %>%
     ungroup() %>% 
-    group_by(type_formation,libelle_type_diplome,Filiere) %>% 
+    group_by(perimetre,type_formation,libelle_type_diplome,Filiere) %>% 
     summarise(Effectifs=sum(!!sym(var_effectifs),na.rm=T)) %>% 
     ungroup() %>% 
     mutate("Part du  catalogue"=prop.table(Effectifs)) %>% 
     left_join(
       catalogue_partenaire_renseigne_voeux %>%
-        group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
         summarise(Effectifs=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         ungroup() %>% 
         left_join(
           catalogue_partenaire_renseigne_voeux %>% 
             filter(Couverture =="Couvert")%>%   
-            group_by(type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
+            group_by(perimetre,type_formation,libelle_type_diplome,Filiere,famillemetiers) %>% 
             summarise("Effectifs couverts"=sum(!!sym(var_effectifs),na.rm=T)),
-          by=c("type_formation","libelle_type_diplome","Filiere","famillemetiers")
+          by=c("perimetre","type_formation","libelle_type_diplome","Filiere","famillemetiers")
         ) %>% 
         mutate(
           famillemetiers=ifelse(is.na(famillemetiers),"Hors famille de métiers",famillemetiers),
@@ -1036,11 +1048,11 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
           )
         ) %>% 
         pivot_wider(names_from = name,values_from = value),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne_voeux %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere,Couverture) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere,Couverture) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate(part=prop.table(nb)) %>% 
         pivot_longer(cols = c(nb,part)) %>% 
@@ -1053,11 +1065,11 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         mutate_all(replace_na,0,) %>% 
         mutate(`Non couvert (nb)`=`Non couvert (nb)`+`Sous le seuil de 20 élèves (nb)`,
                `Non couvert (%)`=`Non couvert (%)`+`Sous le seuil de 20 élèves (%)`),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(catalogue_partenaire_renseigne_voeux %>% 
                 filter(type_uai!="Non couvert") %>% 
-                group_by(type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
+                group_by(perimetre,type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
                 summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
                 mutate(part=prop.table(nb)) %>% 
                 pivot_longer(cols = c(nb,part)) %>% 
@@ -1068,74 +1080,74 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
                 select(-name) %>% 
                 pivot_wider(names_from = type_uai,values_from = value) %>% 
                 mutate_all(replace_na,0,),
-              by=c("type_formation","libelle_type_diplome","Filiere")
+              by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne_voeux %>%
         filter(Couverture =="Non couvert")%>%   
         filter(certificateur_valideur_simpli!="Ministère de l'éducation nationale ou Ministère de l'agriculture") %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Autres ministères certificateurs (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne_voeux %>% 
         filter(Couverture =="Non couvert")%>%   
         filter(type_territoire=="Territoire mal couvert") %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Territoires non couverts (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne_voeux %>% 
         filter(Couverture =="Non couvert")%>%   
         filter(Nouvelle_formation) %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - Nouvelles formations (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne_voeux %>% 
         filter(Couverture =="Non couvert")%>%   
         filter(is.na(presence_UAI_ACCE))%>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - UAI inconnu (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne_voeux %>% 
         filter(Couverture =="Non couvert")%>%   
         filter(!Nouvelle_formation) %>%   
         filter(is.na(presence_Code_Scolarité_certif_info))%>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - code certif inconnu (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne_voeux %>%
         filter(Couverture=="Non couvert") %>%
         filter(scope) %>% 
-        group_by(type_formation,libelle_type_diplome,Filiere ) %>% 
+        group_by(perimetre,type_formation,libelle_type_diplome,Filiere ) %>% 
         summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
         mutate_all(replace_na,0,) %>% 
         rename(
           "Non couvert - sans raison évidente (nb)"=nb),
-      by=c("type_formation","libelle_type_diplome","Filiere")
+      by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     mutate(
       `Non couvert - Autres ministères certificateurs (%)`=`Non couvert - Autres ministères certificateurs (nb)`/`Non couvert (nb)`,
@@ -1298,7 +1310,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
       `Non couvert - code certif inconnu (%)`=`Non couvert - code certif inconnu (nb)`/`Non couvert (nb)`,
       `Non couvert - sans raison évidente (%)`=`Non couvert - sans raison évidente (nb)`/`Non couvert (nb)`
     ) %>% 
-    mutate(type_formation="Total",libelle_type_diplome="Total",Filiere="Total")
+    mutate(perimetre="Total",type_formation="Total",libelle_type_diplome="Total",Filiere="Total")
   
   
   ## Synthese ----
@@ -1307,7 +1319,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
   stats_catalogue_partenaire_voeux_temp <- stats_catalogue_partenaire_voeux %>% 
     bind_rows(stats_catalogue_partenaire_globale_voeux) 
   
-  col_to_add <- setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Effectifs", 
+  col_to_add <- setdiff(c("perimetre","type_formation", "libelle_type_diplome", "Filiere", "Effectifs", 
                           "Part du  catalogue", "Couvert (nb)", "Couvert (%)", 
                           
                           
@@ -1336,7 +1348,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
     
     stats_catalogue_partenaire_voeux_temp <- stats_catalogue_partenaire_voeux_temp %>% 
       bind_cols(
-        map(setdiff(c("type_formation", "libelle_type_diplome", "Filiere", "Effectifs", 
+        map(setdiff(c("perimetre","type_formation", "libelle_type_diplome", "Filiere", "Effectifs", 
                       "Part du  catalogue", "Couvert (nb)", "Couvert (%)", 
                       
                       
@@ -1374,7 +1386,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
   
   stats_catalogue_partenaire_voeux <- stats_catalogue_partenaire_voeux_temp %>% 
     select(
-      c("type_formation", "libelle_type_diplome", "Filiere", 
+      c("perimetre","type_formation", "libelle_type_diplome", "Filiere", 
         
         "Effectifs", 
         
@@ -1417,7 +1429,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
       )
     ) %>% 
     rename(
-      "Avant/après bac"=type_formation,
+      "Périmètre"=perimetre,
+      "Niveau de formation"=type_formation,
       "Type diplôme"=libelle_type_diplome,
       "Couverture (nb)"=`Couvert (nb)`,
       "Couverture (%)"=`Couvert (%)`,
@@ -1428,7 +1441,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
       !!sym(var_effectifs):=Effectifs
     ) %>% 
     mutate(
-      `Avant/après bac`=ifelse(`Avant/après bac`=="Avant le bac","Avant","Après"),
+      # `Avant/après bac`=ifelse(`Avant/après bac`=="Avant le bac","Avant","Après"),
       Filiere=ifelse(Filiere=="Scolaire","Sco.","App.")
     )
   
