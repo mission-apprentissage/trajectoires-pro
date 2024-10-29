@@ -1,3 +1,10 @@
+## [1.21.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.21.1...v1.21.2) (2024-10-21)
+
+
+### Bug Fixes
+
+* bug de millésime sur le calcul des uais ([#291](https://github.com/mission-apprentissage/trajectoires-pro/issues/291)) ([66b6a97](https://github.com/mission-apprentissage/trajectoires-pro/commit/66b6a972c920a47311cd12610a3de70df508cd5b))
+
 ## [1.21.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.21.0...v1.21.1) (2024-10-16)
 
 
