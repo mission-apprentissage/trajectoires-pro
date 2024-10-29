@@ -665,7 +665,7 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                     type_source = NULL,
                     type_voeux= "parcoursup",
                     nom_catalogue= "Parcoursup",
-                    afficher_stats_voeux=FALSE,
+                    afficher_stats_voeux=TRUE,
                     stats_catalogue=stats_catalogue_parcoursup_2024_10,
                     nom_catalogue_detail = "Parcoursup - Octobre 2024",
                     lien_drive_catalogue ="https://docs.google.com/spreadsheets/d/1ShIzmTuVb7ZRBqXMlskqrx8OQVSB7N1i/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true"

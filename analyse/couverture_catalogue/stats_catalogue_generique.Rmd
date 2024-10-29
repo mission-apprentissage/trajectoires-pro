@@ -55,7 +55,7 @@ if(!is.null(params$stats_catalogue)){
 
 dt_header <- stats_catalogue$stats_catalogue_partenaire %>%
   mutate_all(replace_na,0) %>% 
-  mutate_at(vars(4:length(.)),as.numeric) %>% 
+  mutate_at(vars(5:length(.)),as.numeric) %>% 
   mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
   slice(-nrow(.))
 
@@ -92,7 +92,7 @@ datatable(dt_header,
 if(params$afficher_stats_voeux){
   dt_header <- stats_catalogue$stats_catalogue_partenaire_voeux %>%
   mutate_all(replace_na,0) %>% 
-  mutate_at(vars(4:length(.)),as.numeric) %>% 
+  mutate_at(vars(5:length(.)),as.numeric) %>% 
   mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
   slice(-nrow(.))
 
