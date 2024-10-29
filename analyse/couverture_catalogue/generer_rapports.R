@@ -161,7 +161,7 @@ ideo_actions_de_formation_initiale_univers_lycee_simpli <- ideo_actions_de_forma
   select(`ENS code UAI`,MEF_STAT_11,MEF_STAT_11_voeux,Filiere) %>% 
   setNames(c("UAI","MEFSTAT11","MEFSTAT11_voeux","Filiere")) 
 
- 
+
 # onisep <- read_csv2("C:/Users/arnau/d-sidd Dropbox/Arnaud milet/0_beta/1- Exposition/0- data/onisep/transfer_7425716_files_efd8604c/relations_etablissement-inserjeunes_etablissement_inserjeunes_20240507_161712.csv")
 # 
 # onisep_simpli <- onisep %>% 
@@ -187,7 +187,9 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
 
 
 
-# Parcoursup 07_2024----
+
+# Parcoursup ----
+## Parcoursup 07_2024----
 
 parcoursup_2024 <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/listesFormationsInsertJeunes_toutesFormations_020224.xls"))
 
@@ -287,7 +289,7 @@ parcoursup_2024_isup_renseigne <- expo_mef_catalogue_partenaire(catalogue_init =
 
 
 
-## Parcoursup pas dans InserJeunes et pas dans  InserSup ----
+### Parcoursup pas dans InserJeunes et pas dans  InserSup ----
 parcoursup_2024_pas_ij_pas_isup <- parcoursup_2024 %>% 
   filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
   filter(!CODEFORMATIONACCUEIL %in% (parcoursup_2024_ij_renseigne %>% 
@@ -385,6 +387,296 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                   output_file = "parcoursup_07_2024.html"
 )
 
+## Parcoursup 10_2024----
+
+parcoursup_2024_10 <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/listeFormationsInserJeunes_finSession2024_01_10_2024.xls"))
+
+### Parcoursup dans InserJeunes ----
+
+parcoursup_2024_ij <- parcoursup_2024_10 %>% 
+  filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+  rowwise() %>% 
+  filter(!any(is.na(CODECFD),is.na(CODEMEF))) %>% 
+  ungroup() %>% 
+  select(contains("UAI"),CODEFORMATION,LIBFORMATION,CODECFD,CODEMEF,APPRENTISSAGEOUSCOLAIRE,CODEFORMATIONACCUEIL) %>% 
+  left_join(
+    n_mef %>% 
+      select(MEF,MEF_STAT_11),
+    by=c("CODEMEF"="MEF")
+  ) %>% 
+  mutate(CODESISE=NA)
+
+parcoursup_2024_ij_simpli <- parcoursup_2024_ij %>% 
+  select(UAI_GES,MEF_STAT_11,APPRENTISSAGEOUSCOLAIRE,CODEFORMATIONACCUEIL) %>% 
+  setNames(c("UAI","MEFSTAT11","Filiere","CODEFORMATIONACCUEIL")) 
+
+
+
+parcoursup_2024_ij_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_ij_simpli,type_source = "affelnet")
+
+
+
+### Parcoursup dans InserSup ----
+
+listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS <- read_excel("C:/Users/arnau/d-sidd Dropbox/Arnaud milet/0_beta/1- Exposition/Groupe-002 - Parcoursup/003 - 4 - Prepa ParcourSup 2025/listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS.xlsx")
+
+
+
+
+### Parcoursup pas dans InserJeunes et pas dans  InserSup ----
+parcoursup_2024_pas_ij_pas_isup <- parcoursup_2024_10 %>% 
+  filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+  filter(!CODEFORMATIONACCUEIL %in% (parcoursup_2024_ij_renseigne %>% 
+                                       select(CODEFORMATIONACCUEIL) %>% 
+                                       bind_rows(
+                                         listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
+                                           select(CODEFORMATIONACCUEIL)
+                                       ) %>% 
+                                       pull(CODEFORMATIONACCUEIL))) %>%
+  left_join(
+    n_mef %>% 
+      select(MEF,MEF_STAT_11),
+    by=c("CODEMEF"="MEF")
+  ) 
+
+
+
+parcoursup_2024_pas_ij_pas_isup_simpli <- parcoursup_2024_pas_ij_pas_isup %>% 
+  select(UAI_GES,MEF_STAT_11,APPRENTISSAGEOUSCOLAIRE,CODEFORMATIONACCUEIL) %>% 
+  setNames(c("UAI","MEFSTAT11","Filiere","CODEFORMATIONACCUEIL")) 
+
+
+parcoursup_2024_pas_ij_pas_isup_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_pas_ij_pas_isup_simpli,type_source = "affelnet")
+
+
+
+
+
+parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij <- parcoursup_2024_pas_ij_pas_isup_renseigne %>% 
+  mutate(type="pas_isup_pas_ij") %>% 
+  bind_rows(
+    parcoursup_2024_ij_renseigne %>% 
+      mutate(type="ij")
+  )
+
+### stats_catalogue ----
+
+stats_catalogue_pas_ij_pas_isup_et_ij <- expo_mef_stats_catalogue_partenaire(
+  catalogue_partenaire_renseigne = parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij,
+  type_voeux= "parcoursup"
+)  
+
+stats_catalogue_isup <- NULL
+
+stats_catalogue_isup$stats_catalogue_partenaire <- listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
+  mutate(
+    `Type diplôme`=case_when(
+      str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+      str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+    ),
+    Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App.")
+    ) %>% 
+  group_by(`Type diplôme`,Filiere) %>% 
+  summarise(`Nombre de formations`=n()) %>% 
+  mutate(
+    `Niveau de formation`="06",
+    Périmètre = "InserSup"
+  ) %>% 
+  left_join(
+    listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>%
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+        ),
+        Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App."),
+        `Couverture avec code SISE retenu`=ifelse(`Couverture avec code SISE retenu`=="Couvert avec plusieurs SISE","Non couvert",`Couverture avec code SISE retenu`)
+      ) %>% 
+      group_by(`Type diplôme`,Filiere,`Couverture avec code SISE retenu`) %>% 
+      summarise(nb=n()) %>% 
+      pivot_wider(names_from = `Couverture avec code SISE retenu` ,values_from = nb) %>% 
+      mutate_all(replace_na,0) %>% 
+      rename(
+        "Couverture (nb)"="Couvert" ,
+        "Non couvert (nb)"=`Non couvert`,
+        "Dont sous le seuil de 20 élèves (nb)" =`Sous les seuils`
+      ),
+    by=c("Type diplôme","Filiere")
+  ) %>% 
+  left_join(
+    listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>%
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+        ),
+        Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App."),
+        `Couverture avec code SISE retenu`=ifelse(`Couverture avec code SISE retenu`=="Couvert avec plusieurs SISE","Non couvert",`Couverture avec code SISE retenu`)
+      ) %>% 
+      group_by(`Type diplôme`,Filiere,`Couverture avec code SISE retenu`) %>% 
+      summarise(part=n()) %>% 
+      mutate(
+        part=prop.table(part),
+      )%>% 
+      pivot_wider(names_from = `Couverture avec code SISE retenu` ,values_from = part) %>% 
+      mutate_all(replace_na,0) %>% 
+      rename(
+        "Couverture (%)"="Couvert" ,
+        "Non couvert (%)"=`Non couvert`,
+        "Dont sous le seuil de 20 élèves (%)" =`Sous les seuils`
+      ),
+    by=c("Type diplôme","Filiere")
+  )
+
+
+stats_catalogue_isup$stats_catalogue_partenaire_voeux <- listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
+  mutate(
+    `Type diplôme`=case_when(
+      str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+      str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+    ),
+    Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App.")
+  ) %>% 
+  group_by(`Type diplôme`,Filiere) %>% 
+  summarise(`Demandes tous voeux`=sum(NBDEDEMANDES)) %>% 
+  mutate(
+    `Niveau de formation`="06",
+    Périmètre = "InserSup"
+  ) %>% 
+  left_join(
+    listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>%
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+        ),
+        Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App."),
+        `Couverture avec code SISE retenu`=ifelse(`Couverture avec code SISE retenu`=="Couvert avec plusieurs SISE","Non couvert",`Couverture avec code SISE retenu`)
+      ) %>% 
+      group_by(`Type diplôme`,Filiere,`Couverture avec code SISE retenu`) %>% 
+      summarise(nb=sum(NBDEDEMANDES)) %>% 
+      pivot_wider(names_from = `Couverture avec code SISE retenu` ,values_from = nb) %>% 
+      mutate_all(replace_na,0) %>% 
+      rename(
+        "Couverture (nb)"="Couvert" ,
+        "Non couvert (nb)"=`Non couvert`,
+        "Dont sous le seuil de 20 élèves (nb)" =`Sous les seuils`
+      ),
+    by=c("Type diplôme","Filiere")
+  ) %>% 
+  left_join(
+    listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>%
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+        ),
+        Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App."),
+        `Couverture avec code SISE retenu`=ifelse(`Couverture avec code SISE retenu`=="Couvert avec plusieurs SISE","Non couvert",`Couverture avec code SISE retenu`)
+      ) %>% 
+      group_by(`Type diplôme`,Filiere,`Couverture avec code SISE retenu`) %>% 
+      summarise(part=sum(NBDEDEMANDES)) %>% 
+      mutate(
+        part=prop.table(part),
+      )%>% 
+      pivot_wider(names_from = `Couverture avec code SISE retenu` ,values_from = part) %>% 
+      mutate_all(replace_na,0) %>% 
+      rename(
+        "Couverture (%)"="Couvert" ,
+        "Non couvert (%)"=`Non couvert`,
+        "Dont sous le seuil de 20 élèves (%)" =`Sous les seuils`
+      ),
+    by=c("Type diplôme","Filiere")
+  )
+
+stats_catalogue_parcoursup_2024_10 <- NULL
+stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire <- bind_rows(
+  stats_catalogue_pas_ij_pas_isup_et_ij$stats_catalogue_partenaire,
+  stats_catalogue_isup$stats_catalogue_partenaire
+)
+
+
+stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire <- stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire %>% 
+  filter(`Type diplôme`!="Total") %>% 
+  arrange(`Niveau de formation`) %>% 
+  mutate(`Part du  catalogue`=prop.table(`Nombre de formations`))
+
+stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire <- stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire %>% 
+  bind_rows(
+    stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire %>% 
+      select_if(is.numeric) %>% 
+      summarise_all(sum,na.rm=T) %>% 
+      mutate(
+        Périmètre = "Total",
+        `Niveau de formation`="Total",
+        `Type diplôme`="Total",
+        Filiere="Total",
+        "Couverture (%)"=`Couverture (nb)`/`Nombre de formations`,
+        "Formations non associées à une famille de métiers - Formations couvertes (%)"=`Formations non associées à une famille de métiers - Formations couvertes (nb)`/`Nombre de formations`,
+        "Non couvert (%)"=`Non couvert (nb)`/`Nombre de formations`,
+        "Dont sous le seuil de 20 élèves (%)"=`Dont sous le seuil de 20 élèves (nb)`/`Nombre de formations`,
+        "Non couvert - Nouvelles formations (%)"=`Non couvert - Nouvelles formations (nb)`/`Nombre de formations`,
+        "Non couvert - code certif inconnu (%)"=`Non couvert - code certif inconnu (nb)`/`Nombre de formations`,
+        "Non couvert - Autres ministères certificateurs (%)"=`Non couvert - Autres ministères certificateurs (nb)`/`Nombre de formations`,
+        "Non couvert - UAI inconnu (%)"=`Non couvert - UAI inconnu (nb)`/`Nombre de formations`,
+        "Territoires mal couverts (%)"=`Territoires mal couverts (nb)`/`Nombre de formations`,
+        "Non couvert - sans raison évidente (%)"=`Non couvert - sans raison évidente (nb)`/`Nombre de formations`
+      )
+  )
+
+
+
+stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- bind_rows(
+  stats_catalogue_pas_ij_pas_isup_et_ij$stats_catalogue_partenaire_voeux,
+  stats_catalogue_isup$stats_catalogue_partenaire_voeux
+)
+
+stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux %>% 
+  filter(`Type diplôme`!="Total") %>% 
+  arrange(`Niveau de formation`) %>% 
+  mutate(`Part du  catalogue`=prop.table(`Demandes tous voeux`))
+
+stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux %>% 
+  bind_rows(
+    stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux %>% 
+      select_if(is.numeric) %>% 
+      summarise_all(sum,na.rm=T) %>% 
+      mutate(
+        Périmètre = "Total",
+        `Niveau de formation`="Total",
+        `Type diplôme`="Total",
+        Filiere="Total",
+        "Couverture (%)"=`Couverture (nb)`/`Demandes tous voeux`,
+        "Formations non associées à une famille de métiers - Effectifs couverts (%)"=`Formations non associées à une famille de métiers - Effectifs couverts (nb)`/`Demandes tous voeux`,
+        "Non couvert (%)"=`Non couvert (nb)`/`Demandes tous voeux`,
+        "Dont sous le seuil de 20 élèves (%)"=`Dont sous le seuil de 20 élèves (nb)`/`Demandes tous voeux`,
+        "Non couvert - Nouvelles formations (%)"=`Non couvert - Nouvelles formations (nb)`/`Demandes tous voeux`,
+        "Non couvert - code certif inconnu (%)"=`Non couvert - code certif inconnu (nb)`/`Demandes tous voeux`,
+        "Non couvert - Autres ministères certificateurs (%)"=`Non couvert - Autres ministères certificateurs (nb)`/`Demandes tous voeux`,
+        "Non couvert - UAI inconnu (%)"=`Non couvert - UAI inconnu (nb)`/`Demandes tous voeux`,
+        "Territoires mal couverts (%)"=`Territoires mal couverts (nb)`/`Demandes tous voeux`,
+        "Non couvert - sans raison évidente (%)"=`Non couvert - sans raison évidente (nb)`/`Demandes tous voeux`
+      )
+  )
+
+rmarkdown::render("stats_catalogue_generique.Rmd", 
+                  params = list(
+                    catalogue_init=NULL,
+                    type_source = NULL,
+                    type_voeux= "parcoursup",
+                    nom_catalogue= "Parcoursup",
+                    afficher_stats_voeux=FALSE,
+                    stats_catalogue=stats_catalogue_parcoursup_2024_10,
+                    nom_catalogue_detail = "Parcoursup - Octobre 2024",
+                    lien_drive_catalogue ="https://docs.google.com/spreadsheets/d/1ShIzmTuVb7ZRBqXMlskqrx8OQVSB7N1i/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true"
+                  ),
+                  output_format = "html_document",
+                  output_dir = "parcoursup",
+                  output_file = "parcoursup_10_2024.html"
+)
+
+
+
 # Catalogue apprentissage  ----
 
 formation_catalogue_apprentissage <- data.table::fread(file.path(chemin_racine_data,"RCO/formation_2024-05-02T07 56 05.492Z.csv")) %>% 
@@ -437,7 +729,7 @@ formation_catalogue_apprentissage_simpli <-formation_catalogue_apprentissage %>%
   mutate(MEFSTAT11=ifelse(is.na(MEF_STAT_11_recherche_1),MEF_STAT_11_recherche_2,MEF_STAT_11_recherche_1),
          CODEFORMATIONACCUEIL=as.numeric(CODEFORMATIONACCUEIL)) %>% 
   select(UAI,CFD,Filiere,MEFSTAT11,CODEFORMATIONACCUEIL)
-  
+
 
 # formation_catalogue_apprentissage_simpli <- formation_catalogue_apprentissage %>% 
 #   select(`UAI formateur`,`Code du diplome ou du titre suivant la nomenclature de l'Education nationale (CodeEN)`,Duree,`parcoursup_id (g_ta_cod)`) %>% 
