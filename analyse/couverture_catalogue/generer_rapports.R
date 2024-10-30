@@ -391,6 +391,22 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
 
 parcoursup_2024_10 <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/listeFormationsInserJeunes_finSession2024_01_10_2024.xls"))
 
+parcoursup_nomenclature_de_ref_renseigne <- read_csv2("../../../../Groupe-002 - Parcoursup/003 - 4 - Prepa ParcourSup 2025/parcoursup_nomenclature_de_ref_renseigne.csv")
+
+parcoursup_2024_10<- parcoursup_2024_10 %>% 
+  left_join(
+    parcoursup_nomenclature_de_ref_renseigne %>% 
+      filter(!nomenclature_de_ref=="Aucune") %>% 
+      select(-nomenclature_de_ref,-id) %>% 
+      distinct() %>% 
+      mutate_all(as.character),
+    by=c("CODECFD","LISTE_RNCP","LISTE_IDEO","CODESISE")
+  ) %>% 
+  mutate(
+    lib_type_formation=ifelse(is.na(lib_type_formation),LIBFORMATION,lib_type_formation),
+    niveau_formation=ifelse(is.na(niveau_formation),"Niveau inconnu",niveau_formation)
+  )
+
 ### Parcoursup dans InserJeunes ----
 
 parcoursup_2024_ij <- parcoursup_2024_10 %>% 
@@ -459,6 +475,29 @@ parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij <- parcoursup_2024_pas_ij_pas_is
       mutate(type="ij")
   )
 
+parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+  select(-perimetre,-type_formation,-libelle_type_diplome) %>% 
+  left_join(
+    parcoursup_2024_10 %>% 
+      mutate(LIBFORMATION=str_split_fixed(LIBFORMATION," - ",2)[,1],
+             LIBFORMATION=str_to_upper(LIBFORMATION)) %>% 
+      select(CODEFORMATIONACCUEIL,LIBFORMATION,niveau_formation,qualite_code) %>% 
+      rename(lib_type_formation=LIBFORMATION) %>% 
+      mutate(
+        perimetre=case_when(
+          niveau_formation %in% c(0:5)~"InserSco",
+          niveau_formation %in% c(6:8)~"InserSup",
+          T~"Inconnu"
+        )
+      ) %>% 
+      rename(type_formation=niveau_formation,
+             libelle_type_diplome=lib_type_formation) ,
+    by="CODEFORMATIONACCUEIL"
+  ) %>% 
+  mutate(
+    type_formation=ifelse(is.na(qualite_code)|qualite_code=="Correspondance impossible via les codes renseignés","Problème de qualité du code formation en entrée",type_formation)
+  ) 
+
 ### stats_catalogue ----
 
 stats_catalogue_pas_ij_pas_isup_et_ij <- expo_mef_stats_catalogue_partenaire(
@@ -479,7 +518,7 @@ stats_catalogue_isup$stats_catalogue_partenaire <- listeFormationsInserJeunes_fi
   group_by(`Type diplôme`,Filiere) %>% 
   summarise(`Nombre de formations`=n()) %>% 
   mutate(
-    `Niveau de formation`="06",
+    `Niveau de formation`="6",
     Périmètre = "InserSup"
   ) %>% 
   left_join(
@@ -540,7 +579,7 @@ stats_catalogue_isup$stats_catalogue_partenaire_voeux <- listeFormationsInserJeu
   group_by(`Type diplôme`,Filiere) %>% 
   summarise(`Demandes tous voeux`=sum(NBDEDEMANDES)) %>% 
   mutate(
-    `Niveau de formation`="06",
+    `Niveau de formation`="6",
     Périmètre = "InserSup"
   ) %>% 
   left_join(
