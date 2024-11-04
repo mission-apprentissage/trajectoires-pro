@@ -543,10 +543,12 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
       by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(catalogue_partenaire_renseigne %>% 
-                filter(type_uai!="Non couvert") %>% 
+                # filter(type_uai!="Non couvert") %>% 
+                filter(Couverture=="Couvert") %>% 
                 group_by(perimetre,type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
                 summarise(nb=n()) %>% 
-                mutate(part=prop.table(nb)) %>% 
+                mutate(part=prop.table(nb),
+                       type_uai=str_remove(type_uai," \\+ sous le seuil")) %>% 
                 pivot_longer(cols = c(nb,part)) %>% 
                 mutate(type_uai=case_when(
                   name=="nb"~paste0(type_uai," (nb)"),
@@ -713,10 +715,12 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
     ) %>% 
     left_join(
       catalogue_partenaire_renseigne %>% 
-        filter(type_uai!="Non couvert") %>% 
+        # filter(type_uai!="Non couvert") %>% 
+        filter(Couverture=="Couvert") %>%
         group_by(type_uai) %>%
         summarise(nb=n())  %>% 
-        mutate(part=prop.table(nb)) %>% 
+        mutate(part=prop.table(nb),
+               type_uai=str_remove(type_uai," \\+ sous le seuil")) %>% 
         pivot_longer(cols = c(nb,part)) %>% 
         mutate(type_uai=case_when(
           name=="nb"~paste0(type_uai," (nb)"),
@@ -824,9 +828,9 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
                           "Formations non associées à une famille de métiers - Formations couvertes (%)",
                           
                           "Non couvert (nb)", "Non couvert (%)", 
-                          "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
-                          "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
-                          "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
+                          "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert (nb)", 
+                          "UAI Formateur - Couvert (%)", "UAI Gestionnaire - Couvert (nb)", "UAI Gestionnaire - Couvert (%)", "UAI Lieu formation - Couvert (nb)", 
+                          "UAI Lieu formation - Couvert (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
                           "Non couvert - Territoires non couverts (nb)","Non couvert - Territoires non couverts (%)",
                           "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
                           "Non couvert - UAI inconnu (nb)", "Non couvert - UAI inconnu (%)",
@@ -849,10 +853,14 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
                       "Formations non associées à une famille de métiers - Formations couvertes (nb)",
                       "Formations non associées à une famille de métiers - Formations couvertes (%)",
                       
+                      "UAI Formateur - Couvert (nb)", "UAI Formateur - Couvert (%)", 
+                      "UAI Gestionnaire - Couvert (nb)", "UAI Gestionnaire - Couvert (%)", 
+                      "UAI Lieu formation - Couvert (nb)", "UAI Lieu formation - Couvert (%)",
+                      
                       "Non couvert (nb)", "Non couvert (%)", 
-                      "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
-                      "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
-                      "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
+                      "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)",
+                      
+                      "Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
                       "Non couvert - Territoires non couverts (nb)","Non couvert - Territoires non couverts (%)",
                       "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
                       
@@ -886,21 +894,19 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         "Formations associées à une famille de métiers - Formations couvertes (nb)", 
         "Formations associées à une famille de métiers - Formations couvertes (%)", 
         
+        "UAI Lieu formation - Couvert (nb)",
+        "UAI Lieu formation - Couvert (%)",
+        "UAI Formateur - Couvert (nb)",
+        "UAI Formateur - Couvert (%)",
+        "UAI Gestionnaire - Couvert (nb)",
+        "UAI Gestionnaire - Couvert (%)",
+        
         "Non couvert (nb)", "Non couvert (%)", 
         
         "Sous le seuil de 20 élèves (nb)", 
         "Sous le seuil de 20 élèves (%)", 
         "Non couvert - Nouvelles formations (nb)", 
         "Non couvert - Nouvelles formations (%)", 
-        
-        # "UAI Formateur - Couvert + sous le seuil (nb)", 
-        # "UAI Formateur - Couvert + sous le seuil (%)", 
-        # "UAI Gestionnaire - Couvert + sous le seuil (nb)", 
-        # "UAI Gestionnaire - Couvert + sous le seuil (%)", 
-        # "UAI Lieu formation - Couvert + sous le seuil (nb)", 
-        # "UAI Lieu formation - Couvert + sous le seuil (%)", 
-        
-        
         
         "Non couvert - code certif inconnu (nb)", 
         "Non couvert - code certif inconnu (%)", 
@@ -922,7 +928,13 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
       "Dont sous le seuil de 20 élèves (nb)"=`Sous le seuil de 20 élèves (nb)`,
       "Dont sous le seuil de 20 élèves (%)"=`Sous le seuil de 20 élèves (%)`,
       "Territoires mal couverts (nb)"="Non couvert - Territoires non couverts (nb)", 
-      "Territoires mal couverts (%)"="Non couvert - Territoires non couverts (%)" 
+      "Territoires mal couverts (%)"="Non couvert - Territoires non couverts (%)",
+      "Dont couvert par l'UAI lieu de formation (nb)"=`UAI Lieu formation - Couvert (nb)`,
+      "Dont couvert par l'UAI formateur (nb)"=`UAI Formateur - Couvert (nb)`,
+      "Dont couvert par l'UAI Gestionnaire (nb)"=`UAI Gestionnaire - Couvert (nb)`,
+      "Dont couvert par l'UAI lieu de formation (%)"=`UAI Lieu formation - Couvert (%)`,
+      "Dont couvert par l'UAI formateur (%)"=`UAI Formateur - Couvert (%)`,
+      "Dont couvert par l'UAI Gestionnaire (%)"=`UAI Gestionnaire - Couvert (%)`
     ) %>% 
     mutate(
       # `Avant/après bac`=ifelse(`Avant/après bac`=="Avant le bac","Avant","Après"),
@@ -1070,10 +1082,12 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
       by=c("perimetre","type_formation","libelle_type_diplome","Filiere")
     ) %>% 
     left_join(catalogue_partenaire_renseigne_voeux %>% 
-                filter(type_uai!="Non couvert") %>% 
+                # filter(type_uai!="Non couvert") %>% 
+                filter(Couverture=="Couvert") %>% 
                 group_by(perimetre,type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
                 summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
-                mutate(part=prop.table(nb)) %>% 
+                mutate(part=prop.table(nb),
+                       type_uai=str_remove(type_uai," \\+ sous le seuil")) %>% 
                 pivot_longer(cols = c(nb,part)) %>% 
                 mutate(type_uai=case_when(
                   name=="nb"~paste0(type_uai," (nb)"),
@@ -1236,10 +1250,12 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
                `Non couvert (%)`=`Non couvert (%)`+`Sous le seuil de 20 élèves (%)`)
     ) %>%  
     bind_cols(catalogue_partenaire_renseigne_voeux %>% 
-                filter(type_uai!="Non couvert") %>% 
+                # filter(type_uai!="Non couvert") %>% 
+                filter(Couverture=="Couvert") %>%
                 group_by(type_uai) %>% 
                 summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
-                mutate(part=prop.table(nb)) %>% 
+                mutate(part=prop.table(nb),
+                       type_uai=str_remove(type_uai," \\+ sous le seuil")) %>% 
                 pivot_longer(cols = c(nb,part)) %>% 
                 mutate(type_uai=case_when(
                   name=="nb"~paste0(type_uai," (nb)"),
@@ -1332,11 +1348,14 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
                           "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
                           "Formations non associées à une famille de métiers - Effectifs couverts (%)",
                           
+                          "UAI Formateur - Couvert (nb)", "UAI Formateur - Couvert (%)", 
+                          "UAI Gestionnaire - Couvert (nb)", "UAI Gestionnaire - Couvert (%)", 
+                          "UAI Lieu formation - Couvert (nb)", "UAI Lieu formation - Couvert (%)",
                           
                           "Non couvert (nb)", "Non couvert (%)", 
-                          "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
-                          "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
-                          "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
+                          "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)",
+                          
+                          "Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
                           "Non couvert - Territoires non couverts (nb)","Non couvert - Territoires non couverts (%)",
                           "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
                           
@@ -1361,11 +1380,14 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
                       "Formations non associées à une famille de métiers - Effectifs couverts (nb)",
                       "Formations non associées à une famille de métiers - Effectifs couverts (%)",
                       
+                      "UAI Formateur - Couvert (nb)","UAI Formateur - Couvert (%)", 
+                      "UAI Gestionnaire - Couvert (nb)", "UAI Gestionnaire - Couvert (%)", 
+                      "UAI Lieu formation - Couvert (nb)", "UAI Lieu formation - Couvert (%)",
                       
                       "Non couvert (nb)", "Non couvert (%)", 
-                      "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)","UAI Formateur - Couvert + sous le seuil (nb)", 
-                      "UAI Formateur - Couvert + sous le seuil (%)", "UAI Gestionnaire - Couvert + sous le seuil (nb)", "UAI Gestionnaire - Couvert + sous le seuil (%)", "UAI Lieu formation - Couvert + sous le seuil (nb)", 
-                      "UAI Lieu formation - Couvert + sous le seuil (%)","Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
+                      "Sous le seuil de 20 élèves (nb)", "Sous le seuil de 20 élèves (%)",
+                      
+                      "Non couvert - Autres ministères certificateurs (nb)","Non couvert - Autres ministères certificateurs (%)",
                       "Non couvert - Territoires non couverts (nb)","Non couvert - Territoires non couverts (%)",
                       "Non couvert - Nouvelles formations (nb)","Non couvert - Nouvelles formations (%)",
                       
@@ -1403,22 +1425,20 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         "Formations associées à une famille de métiers - Effectifs couverts (nb)",
         "Formations associées à une famille de métiers - Effectifs couverts (%)",
         
+        "UAI Lieu formation - Couvert (nb)",
+        "UAI Lieu formation - Couvert (%)",
+        "UAI Formateur - Couvert (nb)",
+        "UAI Formateur - Couvert (%)",
+        "UAI Gestionnaire - Couvert (nb)",
+        "UAI Gestionnaire - Couvert (%)",
+        
         "Non couvert (nb)", "Non couvert (%)", 
         
         "Sous le seuil de 20 élèves (nb)", 
         "Sous le seuil de 20 élèves (%)", 
         "Non couvert - Nouvelles formations (nb)", 
         "Non couvert - Nouvelles formations (%)", 
-        
-        # "UAI Formateur - Couvert + sous le seuil (nb)", 
-        # "UAI Formateur - Couvert + sous le seuil (%)", 
-        # "UAI Gestionnaire - Couvert + sous le seuil (nb)", 
-        # "UAI Gestionnaire - Couvert + sous le seuil (%)", 
-        # "UAI Lieu formation - Couvert + sous le seuil (nb)", 
-        # "UAI Lieu formation - Couvert + sous le seuil (%)", 
-        
-        
-        
+
         "Non couvert - code certif inconnu (nb)", 
         "Non couvert - code certif inconnu (%)", 
         "Non couvert - Autres ministères certificateurs (nb)", 
@@ -1440,7 +1460,14 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
       "Dont sous le seuil de 20 élèves (%)"=`Sous le seuil de 20 élèves (%)`,
       "Territoires mal couverts (nb)"="Non couvert - Territoires non couverts (nb)", 
       "Territoires mal couverts (%)"="Non couvert - Territoires non couverts (%)",
-      !!sym(var_effectifs):=Effectifs
+      !!sym(var_effectifs):=Effectifs,
+      "Dont couvert par l'UAI lieu de formation (nb)"=`UAI Lieu formation - Couvert (nb)`,
+      "Dont couvert par l'UAI formateur (nb)"=`UAI Formateur - Couvert (nb)`,
+      "Dont couvert par l'UAI Gestionnaire (nb)"=`UAI Gestionnaire - Couvert (nb)`,
+      "Dont couvert par l'UAI lieu de formation (%)"=`UAI Lieu formation - Couvert (%)`,
+      "Dont couvert par l'UAI formateur (%)"=`UAI Formateur - Couvert (%)`,
+      "Dont couvert par l'UAI Gestionnaire (%)"=`UAI Gestionnaire - Couvert (%)`
+      
     ) %>% 
     mutate(
       # `Avant/après bac`=ifelse(`Avant/après bac`=="Avant le bac","Avant","Après"),
