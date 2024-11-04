@@ -1,5 +1,6 @@
 expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet"){
   
+  #affelenet / onisep ----
   if( type_source %in% c("onisep","affelnet") ){
     catalogue_partenaire_renseigne <- catalogue_init %>% 
       left_join(
@@ -133,7 +134,7 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
         catalogue_partenaire_renseigne %>% 
           unnest() %>%
           left_join(
-            opendata_certif_info %>%
+            opendata_certifinfo %>%
               filter(!is.na(Code_Scolarité)) %>%
               distinct(Code_Scolarité,valideur,certificateur),
             by=c("FORMATION_DIPLOME_annee_terminale"="Code_Scolarité")
@@ -158,7 +159,7 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
           ) %>% 
           distinct(across(names(catalogue_init)), famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
           left_join(
-            opendata_certif_info %>% 
+            opendata_certifinfo %>% 
               filter(!is.na(Code_Scolarité)) %>% 
               distinct(Code_Scolarité,valideur,certificateur),
             by=c("FORMATION_DIPLOME"="Code_Scolarité")
@@ -250,7 +251,7 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
             by=c("FORMATION_DIPLOME_annee_terminale"="FORMATION_DIPLOME")
           ) %>% 
           left_join(
-            opendata_certif_info %>% 
+            opendata_certifinfo %>% 
               filter(!is.na(Code_Scolarité)) %>% 
               distinct(Code_Scolarité) %>% 
               mutate(presence_Code_Scolarité_certif_info=T),
@@ -265,6 +266,7 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
         T~F)
       )
   }else if( type_source %in% c("superieur") ){
+    #superieur ----
     
     catalogue_partenaire_renseigne <-catalogue_init %>% 
       filter(!is.na(CODESISE)) %>%
@@ -333,7 +335,7 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
         catalogue_partenaire_renseigne %>% 
           unnest() %>%
           left_join(
-            opendata_certif_info %>%
+            opendata_certifinfo %>%
               filter(!is.na(Code_Scolarité)) %>%
               distinct(Code_Scolarité,valideur,certificateur),
             by=c("FORMATION_DIPLOME_annee_terminale"="Code_Scolarité")
@@ -358,7 +360,7 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
           ) %>% 
           distinct(across(names(catalogue_init)), famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
           left_join(
-            opendata_certif_info %>% 
+            opendata_certifinfo %>% 
               filter(!is.na(Code_Scolarité)) %>% 
               distinct(Code_Scolarité,valideur,certificateur),
             by=c("FORMATION_DIPLOME"="Code_Scolarité")
@@ -433,7 +435,7 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
         by=c("UAI"="numero_uai")
       ) %>% 
       left_join(
-        opendata_certif_info %>% 
+        opendata_certifinfo %>% 
           filter(!is.na(Code_Scolarité)) %>% 
           distinct(Code_Scolarité) %>% 
           mutate(presence_Code_Scolarité_certif_info=T),

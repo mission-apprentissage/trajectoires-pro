@@ -17,8 +17,26 @@ n_niveau_formation_diplome <- read_csv2(file.path(chemin_racine_data,"BCN/n_nive
 
 ## CertifInfos
 
-opendata_certif_info <- data.table::fread(file.path(chemin_racine_data,"Certif_Infos/opendata-certifinfo-13032024.csv"),
-                                          encoding = "Latin-1")
+opendata_certifinfo <- data.table::fread(file.path(chemin_racine_data,"Certif_Infos/opendata-certifinfo-01072024.csv"),
+                                         encoding ="Latin-1" )
+
+inserJeune_sise_rncp <- read_csv2(file.path(chemin_racine_data,"RCO/2024_09_12/inserJeune-sise-rncp.csv"), 
+                                  skip = 1)
+
+inserJeune_certifinfo <- read_csv2(file.path(chemin_racine_data,"RCO/2024_09_12/inserJeune-certifinfo.csv"), 
+                                   skip = 1)
+
+
+inserJeune_certifinfo_correspondance <- inserJeune_certifinfo %>%
+  select(`Code Certifinfo`,`Intitule Certifinfo`,`Code RNCP`,`Code Onisep`,`Code Onisep Ideo`,`Code Sise`,`Code Sise`,`Code scolarité`) %>% 
+  left_join(
+    opendata_certifinfo %>% 
+      select(Code_Diplome,Libelle_Type_Diplome,Libelle_Type_Diplome,Code_Niveau_Europeen),
+    by=c("Code Certifinfo"="Code_Diplome")
+  )
+
+table_de_passage_codes_certifications_et_formations <- read_delim(file.path(chemin_racine_data,"onisep/table_de_passage_codes_certifications_et_formations.csv"), 
+                                                                  delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
 ## ACCE
 
