@@ -199,6 +199,7 @@ data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
     code_certification ,
     code_formation_diplome,
     uai,
+    uai_type,
     uai_donnee_type,
     type_source,
     filiere,

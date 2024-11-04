@@ -787,6 +787,11 @@ stats_catalogue_pas_ij_pas_isup_et_ij$stats_catalogue_partenaire <- stats_catalo
   mutate(
     "Couverture (%)"=`Couverture (nb)`/`Nombre de formations`,
     "Formations non associées à une famille de métiers - Formations couvertes (%)"=`Formations non associées à une famille de métiers - Formations couvertes (nb)`/`Nombre de formations`,
+    
+    "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Nombre de formations`,
+    "Dont couvert par l'UAI formateur (%)"=`Dont couvert par l'UAI formateur (nb)`/`Nombre de formations`,
+    "Dont couvert par l'UAI gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Nombre de formations`,
+    
     "Non couvert (%)"=`Non couvert (nb)`/`Nombre de formations`,
     "Dont sous le seuil de 20 élèves (%)"=`Dont sous le seuil de 20 élèves (nb)`/`Nombre de formations`,
     "Non couvert - Nouvelles formations (%)"=`Non couvert - Nouvelles formations (nb)`/`Nombre de formations`,
@@ -835,6 +840,11 @@ stats_catalogue_pas_ij_pas_isup_et_ij$stats_catalogue_partenaire_voeux <- stats_
   mutate(
     "Couverture (%)"=`Couverture (nb)`/`Demandes tous voeux`,
     "Formations non associées à une famille de métiers - Effectifs couverts (%)"=`Formations non associées à une famille de métiers - Effectifs couverts (nb)`/`Demandes tous voeux`,
+    
+    "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Demandes tous voeux`,
+    "Dont couvert par l'UAI formateur (%)"=`Dont couvert par l'UAI formateur (nb)`/`Demandes tous voeux`,
+    "Dont couvert par l'UAI gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Demandes tous voeux`,
+    
     "Non couvert (%)"=`Non couvert (nb)`/`Demandes tous voeux`,
     "Dont sous le seuil de 20 élèves (%)"=`Dont sous le seuil de 20 élèves (nb)`/`Demandes tous voeux`,
     "Non couvert - Nouvelles formations (%)"=`Non couvert - Nouvelles formations (nb)`/`Demandes tous voeux`,
@@ -924,7 +934,32 @@ stats_catalogue_isup$stats_catalogue_partenaire <- listeFormationsInserJeunes_fi
         "Dont sous le seuil de 20 élèves (%)" =`Sous les seuils`
       ),
     by=c("Type diplôme","Filiere")
+  ) %>% 
+  left_join(
+    listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>%
+      filter(FORMATION_PARAMÉTRÉE=="Paramétrée",`Couverture avec code SISE retenu`=="Couvert") %>% 
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+        ),
+        Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App."),
+        uai_type=case_when(
+          UAI_GES==UAI_COMPOSANTE ~"Dont couvert par l'UAI lieu de formation (nb)",
+          UAI_GES!=UAI_COMPOSANTE ~ "Dont couvert par l'UAI Gestionnaire (nb)"
+        )
+      ) %>% 
+      group_by(`Type diplôme`,Filiere,uai_type) %>% 
+      summarise(nb=n()) %>%
+      pivot_wider(names_from = uai_type ,values_from = nb) %>% 
+      mutate_all(replace_na,0),
+    by=c("Type diplôme","Filiere")
+  ) %>% 
+  mutate(
+    "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Nombre de formations` ,
+    "Dont couvert par l'UAI Gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Nombre de formations` 
   )
+
 
 
 stats_catalogue_isup$stats_catalogue_partenaire_voeux <- listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
@@ -994,7 +1029,32 @@ stats_catalogue_isup$stats_catalogue_partenaire_voeux <- listeFormationsInserJeu
         "Dont sous le seuil de 20 élèves (%)" =`Sous les seuils`
       ),
     by=c("Type diplôme","Filiere")
+  )%>% 
+  left_join(
+    listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>%
+      filter(FORMATION_PARAMÉTRÉE=="Paramétrée",`Couverture avec code SISE retenu`=="Couvert") %>% 
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+        ),
+        Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App."),
+        uai_type=case_when(
+          UAI_GES==UAI_COMPOSANTE ~"Dont couvert par l'UAI lieu de formation (nb)",
+          UAI_GES!=UAI_COMPOSANTE ~ "Dont couvert par l'UAI Gestionnaire (nb)"
+        )
+      ) %>% 
+      group_by(`Type diplôme`,Filiere,uai_type) %>% 
+      summarise(nb=sum(NBDEDEMANDES)) %>%
+      pivot_wider(names_from = uai_type ,values_from = nb) %>% 
+      mutate_all(replace_na,0),
+    by=c("Type diplôme","Filiere")
+  ) %>% 
+  mutate(
+    "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Demandes tous voeux`,
+    "Dont couvert par l'UAI Gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Demandes tous voeux`
   )
+
 
 stats_catalogue_parcoursup_2024_10 <- NULL
 stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire <- bind_rows(
@@ -1020,6 +1080,11 @@ stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire <- stats_catalogue
         Filiere="Total",
         "Couverture (%)"=`Couverture (nb)`/`Nombre de formations`,
         "Formations non associées à une famille de métiers - Formations couvertes (%)"=`Formations non associées à une famille de métiers - Formations couvertes (nb)`/`Nombre de formations`,
+        
+        "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Nombre de formations`,
+        "Dont couvert par l'UAI formateur (%)"=`Dont couvert par l'UAI formateur (nb)`/`Nombre de formations`,
+        "Dont couvert par l'UAI Gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Nombre de formations`,
+        
         "Non couvert (%)"=`Non couvert (nb)`/`Nombre de formations`,
         "Dont sous le seuil de 20 élèves (%)"=`Dont sous le seuil de 20 élèves (nb)`/`Nombre de formations`,
         "Non couvert - Nouvelles formations (%)"=`Non couvert - Nouvelles formations (nb)`/`Nombre de formations`,
@@ -1032,19 +1097,34 @@ stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire <- stats_catalogue
       )
   )  %>% 
   select(c("Périmètre", "Niveau de formation", "Type diplôme", "Filiere", 
-           "Nombre de formations", "Part du  catalogue", "Formations non associées à une famille de métiers (nb)", 
-           "Couverture (nb)", "Couverture (%)", "Formations non associées à une famille de métiers - Formations couvertes (nb)", 
-           "Formations non associées à une famille de métiers - Formations couvertes (%)", 
-           "Formations associées à une famille de métiers - Formations couvertes (%)", 
+           "Nombre de formations", "Part du  catalogue", 
+           # "Formations non associées à une famille de métiers (nb)", 
+           "Couverture (nb)", "Couverture (%)", 
+           # "Formations non associées à une famille de métiers - Formations couvertes (nb)", 
+           # "Formations non associées à une famille de métiers - Formations couvertes (%)", 
+           # "Formations associées à une famille de métiers - Formations couvertes (%)", 
+           
+           "Dont couvert par l'UAI lieu de formation (nb)",
+           "Dont couvert par l'UAI lieu de formation (%)",
+           "Dont couvert par l'UAI formateur (nb)",
+           "Dont couvert par l'UAI formateur (%)",
+           "Dont couvert par l'UAI Gestionnaire (nb)",
+           "Dont couvert par l'UAI Gestionnaire (%)",
+           
            "Non couvert (nb)", "Non couvert (%)", "Dont sous le seuil de 20 élèves (nb)", 
            "Dont sous le seuil de 20 élèves (%)", "Non couvert - Nouvelles formations (nb)", 
            "Non couvert - Nouvelles formations (%)", "Non couvert - code certif inconnu (nb)", 
            "Non couvert - code certif inconnu (%)", "Non couvert - Autres ministères certificateurs (nb)", 
            "Non couvert - Autres ministères certificateurs (%)", "Non couvert - UAI inconnu (nb)", 
-           "Non couvert - UAI inconnu (%)", "Territoires mal couverts (nb)", 
-           "Non couvert - sans raison évidente (%)", "Non couvert - Problème de qualité du code formation en entrée (nb)", 
+           "Non couvert - UAI inconnu (%)", 
+           
+           "Territoires mal couverts (nb)","Territoires mal couverts (%)",
+           
+           "Non couvert - Problème de qualité du code formation en entrée (nb)", 
            "Non couvert - Problème de qualité du code formation en entrée (%)",
-           "Territoires mal couverts (%)", "Non couvert - sans raison évidente (nb)"
+           
+           "Non couvert - sans raison évidente (%)",
+           "Non couvert - sans raison évidente (nb)"
   ))
 
 
@@ -1071,6 +1151,11 @@ stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- stats_cat
         Filiere="Total",
         "Couverture (%)"=`Couverture (nb)`/`Demandes tous voeux`,
         "Formations non associées à une famille de métiers - Effectifs couverts (%)"=`Formations non associées à une famille de métiers - Effectifs couverts (nb)`/`Demandes tous voeux`,
+
+        "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Demandes tous voeux`,
+        "Dont couvert par l'UAI formateur (%)"=`Dont couvert par l'UAI formateur (nb)`/`Demandes tous voeux`,
+        "Dont couvert par l'UAI Gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Demandes tous voeux`,
+        
         "Non couvert (%)"=`Non couvert (nb)`/`Demandes tous voeux`,
         "Dont sous le seuil de 20 élèves (%)"=`Dont sous le seuil de 20 élèves (nb)`/`Demandes tous voeux`,
         "Non couvert - Nouvelles formations (%)"=`Non couvert - Nouvelles formations (nb)`/`Demandes tous voeux`,
@@ -1083,17 +1168,60 @@ stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- stats_cat
       )
   ) %>% 
   select(c("Périmètre", "Niveau de formation", "Type diplôme", "Filiere", 
-           "Demandes tous voeux", "Part du  catalogue", "Formations non associées à une famille de métiers (nb)", 
-           "Couverture (nb)", "Couverture (%)", "Formations non associées à une famille de métiers - Effectifs couverts (nb)", 
-           "Formations non associées à une famille de métiers - Effectifs couverts (%)", 
-           "Formations associées à une famille de métiers - Effectifs couverts (%)", 
+           "Demandes tous voeux", "Part du  catalogue", 
+           # "Formations non associées à une famille de métiers (nb)", 
+           "Couverture (nb)", "Couverture (%)", 
+           # "Formations non associées à une famille de métiers - Effectifs couverts (nb)", 
+           # "Formations non associées à une famille de métiers - Effectifs couverts (%)", 
+           # "Formations associées à une famille de métiers - Effectifs couverts (%)",
+           
+           "Dont couvert par l'UAI lieu de formation (nb)",
+           "Dont couvert par l'UAI lieu de formation (%)",
+           "Dont couvert par l'UAI formateur (nb)",
+           "Dont couvert par l'UAI formateur (%)",
+           "Dont couvert par l'UAI Gestionnaire (nb)",
+           "Dont couvert par l'UAI Gestionnaire (%)",
+           
            "Non couvert (nb)", "Non couvert (%)", "Dont sous le seuil de 20 élèves (nb)", 
            "Dont sous le seuil de 20 élèves (%)", "Non couvert - Nouvelles formations (nb)", 
            "Non couvert - Nouvelles formations (%)", "Non couvert - code certif inconnu (nb)", 
            "Non couvert - code certif inconnu (%)", "Non couvert - Autres ministères certificateurs (nb)", 
            "Non couvert - Autres ministères certificateurs (%)", "Non couvert - UAI inconnu (nb)", 
-           "Non couvert - UAI inconnu (%)", "Territoires mal couverts (nb)", 
-           "Non couvert - sans raison évidente (%)", "Non couvert - Problème de qualité du code formation en entrée (nb)", 
+           "Non couvert - UAI inconnu (%)", "Territoires mal couverts (nb)","Territoires mal couverts (%)",
+           
+           "Non couvert - Problème de qualité du code formation en entrée (nb)", 
            "Non couvert - Problème de qualité du code formation en entrée (%)",
-           "Territoires mal couverts (%)", "Non couvert - sans raison évidente (nb)"
+           
+           "Non couvert - sans raison évidente (%)",
+           "Non couvert - sans raison évidente (nb)"
   ))
+
+
+#Le sup semble couvert sur l'établissement gestionnaire: https://dossier.parcoursup.fr/Candidats/public/fiches/afficherFicheFormation?g_ta_cod=24415
+#
+#Université de Montpellier, Antenne de Perpignan (66)
+#https://data.enseignementsup-recherche.gouv.fr/explore/dataset/fr-esr-insersup/information/?flg=fr-fr&disjunctive.source&disjunctive.reg_id&disjunctive.aca_id&disjunctive.id_paysage&disjunctive.id_paysage_actuel&disjunctive.etablissement&disjunctive.type_diplome&disjunctive.dom&disjunctive.discipli&disjunctive.sectdis&disjunctive.diplome&disjunctive.date_inser&sort=-promo&q=0660922U
+#https://data.enseignementsup-recherche.gouv.fr/explore/dataset/fr-esr-insersup/table/?flg=fr-fr&disjunctive.source&disjunctive.reg_id&disjunctive.aca_id&disjunctive.id_paysage&disjunctive.id_paysage_actuel&disjunctive.etablissement&disjunctive.type_diplome&disjunctive.dom&disjunctive.discipli&disjunctive.sectdis&disjunctive.diplome&disjunctive.date_inser&refine.etablissement=0342490X&sort=-promo&refine.diplome=2300044
+#
+#Université Panthéon- Assas Paris2 - Antenne Melun  
+#https://dossier.parcoursup.fr/Candidats/public/fiches/afficherFicheFormation?g_ta_cod=9913
+#https://data.enseignementsup-recherche.gouv.fr/explore/dataset/fr-esr-insersup/table/?flg=fr-fr&disjunctive.source&disjunctive.reg_id&disjunctive.aca_id&disjunctive.id_paysage&disjunctive.id_paysage_actuel&disjunctive.etablissement&disjunctive.type_diplome&disjunctive.dom&disjunctive.discipli&disjunctive.sectdis&disjunctive.diplome&disjunctive.date_inser&refine.etablissement=0756305W&sort=-promo&refine.diplome=2300002
+#https://data.enseignementsup-recherche.gouv.fr/explore/dataset/fr-esr-insersup/table/?flg=fr-fr&disjunctive.source&disjunctive.reg_id&disjunctive.aca_id&disjunctive.id_paysage&disjunctive.id_paysage_actuel&disjunctive.etablissement&disjunctive.type_diplome&disjunctive.dom&disjunctive.discipli&disjunctive.sectdis&disjunctive.diplome&disjunctive.date_inser&refine.etablissement=0772448T&sort=-promo&refine.diplome=2300002
+#
+#Après vérification, aucun uai des 131 antennes présentes dans PS n'ont de stats pour leurs UAI (91 antennes ont des stats en remontant au gestionnaire)
+listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>%
+filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+  filter(UAI_GES!=UAI_COMPOSANTE) %>% 
+  mutate(
+    `Type diplôme`=case_when(
+      str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+      str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+    ),
+    Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App.")
+  ) %>% 
+  distinct(UAI_COMPOSANTE) %>% 
+  filter(UAI_COMPOSANTE %in% 
+           (  data_meta_formationsStats_init %>% 
+                filter(filiere=="superieur") %>% 
+                distinct(uai) %>% 
+                pull(uai)))
