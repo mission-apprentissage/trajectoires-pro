@@ -189,187 +189,229 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
 
 
 # Parcoursup ----
-## Parcoursup 07_2024----
+# ## Parcoursup 07_2024----
+# 
+# parcoursup_2024 <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/listesFormationsInsertJeunes_toutesFormations_020224.xls"))
+# 
+# 
+# ### Parcoursup dans InserJeunes ----
+# 
+# parcoursup_2024_ij <- parcoursup_2024 %>% 
+#   filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+#   rowwise() %>% 
+#   filter(!any(is.na(CODECFD),is.na(CODEMEF))) %>% 
+#   ungroup() %>% 
+#   select(contains("UAI"),CODEFORMATION,LIBFORMATION,CODECFD,CODEMEF,APPRENTISSAGEOUSCOLAIRE,CODEFORMATIONACCUEIL) %>% 
+#   left_join(
+#     n_mef %>% 
+#       select(MEF,MEF_STAT_11),
+#     by=c("CODEMEF"="MEF")
+#   ) %>% 
+#   mutate(CODESISE=NA)
+# 
+# parcoursup_2024_ij_simpli <- parcoursup_2024_ij %>% 
+#   select(UAI_GES,MEF_STAT_11,APPRENTISSAGEOUSCOLAIRE,CODEFORMATIONACCUEIL) %>% 
+#   setNames(c("UAI","MEFSTAT11","Filiere","CODEFORMATIONACCUEIL")) 
+# 
+# 
+# 
+# parcoursup_2024_ij_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_ij_simpli,type_source = "affelnet")
+# 
+# 
+# 
+# ### Parcoursup dans InserSup ----
+# 
+# association_CODEFORMATIONACCUEIL_sise <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/association_rncp_sup.xlsx"),
+#                                                     sheet = "2024")
+# 
+# Fichier_Certif_info <- data.table::fread(file.path(chemin_racine_data,"RCO/InserJeunes/InserJeunes/Fichier Certif info.csv"),encoding = "Latin-1") 
+# 
+# Fichier_Certif_info_simpli <- Fichier_Certif_info %>% 
+#   select(code_rncp,code_sise ) %>% 
+#   as_tibble() %>% 
+#   mutate(code_sise=ifelse(code_sise=="",NA,code_sise),
+#          code_rncp=as.character(code_rncp)) %>% 
+#   filter(!is.na(code_sise),!is.na(code_rncp)) %>% 
+#   distinct() %>% 
+#   rename(CODESISE=code_sise)
+# 
+# 
+# parcoursup_2024_isup_avec_association_CODEFORMATIONACCUEIL_sise <- parcoursup_2024 %>% 
+#   filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+#   rowwise() %>% 
+#   filter(any(is.na(CODECFD),is.na(CODEMEF)),CODEFORMATIONACCUEIL%in% association_CODEFORMATIONACCUEIL_sise$CODEFORMATIONACCUEIL) %>% 
+#   ungroup() %>% 
+#   select(contains("UAI"),CODEFORMATION,LIBFORMATION,CODEFORMATIONACCUEIL) %>% 
+#   left_join(
+#     association_CODEFORMATIONACCUEIL_sise %>% 
+#       select(CODEFORMATIONACCUEIL,CODESISE),
+#     by="CODEFORMATIONACCUEIL"
+#   )
+# 
+# parcoursup_2024_isup_sans_association_CODEFORMATIONACCUEIL_sise <-parcoursup_2024 %>% 
+#   filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+#   rowwise() %>% 
+#   filter(any(is.na(CODECFD),is.na(CODEMEF)),!CODEFORMATIONACCUEIL%in% association_CODEFORMATIONACCUEIL_sise$CODEFORMATIONACCUEIL,!is.na(LISTE_RNCP)) %>% 
+#   ungroup() %>% 
+#   select(contains("UAI"),CODEFORMATION,LIBFORMATION,CODEFORMATIONACCUEIL,LISTE_RNCP) %>% 
+#   mutate(LISTE_RNCP=map(LISTE_RNCP,~tibble(RNCP=unlist(str_split(.,";"))))) %>% 
+#   unnest() %>% 
+#   left_join(
+#     Fichier_Certif_info_simpli,
+#     by=c("RNCP"="code_rncp")
+#   ) %>% 
+#   select(-RNCP,-UAI_COMPOSANTE,-UAI_AFF) %>% 
+#   distinct()
+# 
+# 
+# parcoursup_2024_isup_avec_sise <- parcoursup_2024_isup_avec_association_CODEFORMATIONACCUEIL_sise %>% 
+#   bind_rows(parcoursup_2024_isup_sans_association_CODEFORMATIONACCUEIL_sise ) %>% 
+#   mutate(filiere="superieur") %>%
+#   select(UAI_GES,CODESISE,LIBFORMATION,filiere,CODEFORMATIONACCUEIL) %>% 
+#   setNames(c("UAI","CODESISE","LIBELLE_COURT","Filiere","CODEFORMATIONACCUEIL")) 
+# 
+# 
+# parcoursup_2024_isup_avec_sise <- parcoursup_2024_isup_avec_sise %>% 
+#   bind_cols(
+#     map(c("MEFSTAT11", "famillemetiers", "FORMATION_DIPLOME", "NIVEAU_FORMATION_DIPLOME", 
+#           "NIVEAU_QUALIFICATION_RNCP", "MEFSTAT11_annee_terminale", "FORMATION_DIPLOME_annee_terminale", 
+#           "GROUPE_SPECIALITE", "LETTRE_SPECIALITE", "LIBELLE_LONG_200", 
+#           "LIBELLE_STAT_33", "filiere"),
+#         function(x){
+#           tibble(var=NA) %>% 
+#             setNames(x)
+#         }) %>% 
+#       reduce(bind_cols)
+#   )
+# 
+# 
+# parcoursup_2024_isup_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_isup_avec_sise,type_source = "superieur")
+# 
+# 
+# 
+# ### Parcoursup pas dans InserJeunes et pas dans  InserSup ----
+# parcoursup_2024_pas_ij_pas_isup <- parcoursup_2024 %>% 
+#   filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+#   filter(!CODEFORMATIONACCUEIL %in% (parcoursup_2024_ij_renseigne %>% 
+#                                        select(CODEFORMATIONACCUEIL) %>% 
+#                                        bind_rows(
+#                                          parcoursup_2024_isup_renseigne %>% 
+#                                            select(CODEFORMATIONACCUEIL)
+#                                        ) %>% 
+#                                        pull(CODEFORMATIONACCUEIL))) %>%
+#   left_join(
+#     n_mef %>% 
+#       select(MEF,MEF_STAT_11),
+#     by=c("CODEMEF"="MEF")
+#   ) %>% 
+#   mutate(CODESISE=NA)
+# 
+# 
+# 
+# parcoursup_2024_pas_ij_pas_isup_simpli <- parcoursup_2024_pas_ij_pas_isup %>% 
+#   select(UAI_GES,MEF_STAT_11,APPRENTISSAGEOUSCOLAIRE,CODEFORMATIONACCUEIL) %>% 
+#   setNames(c("UAI","MEFSTAT11","Filiere","CODEFORMATIONACCUEIL")) 
+# 
+# 
+# parcoursup_2024_pas_ij_pas_isup_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_pas_ij_pas_isup_simpli,type_source = "affelnet")
+# 
+# 
+# 
+# 
+# 
+# parcoursup_2024_renseigne <- parcoursup_2024_pas_ij_pas_isup_renseigne %>% 
+#   mutate(type="pas_isup_pas_ij") %>% 
+#   bind_rows(
+#     parcoursup_2024_ij_renseigne %>% 
+#       mutate(type="ij")
+#   ) %>% 
+#   bind_rows(
+#     parcoursup_2024_isup_renseigne %>% 
+#       mutate(type="isup")
+#   )
+# 
+# 
+# #Pour afficher les stats sur les données transmises en février 2024
+# listeFormationsInserJeunes_2024_ensemble_bdd_parametrees_completees_a_transmettre_ps <- read_excel("C:/Users/arnau/d-sidd Dropbox/Arnaud milet/0_beta/1- Exposition/Groupe-002 - Parcoursup/002 - 2 - Parcoursup/2024/a transmettre/listeFormationsInserJeunes_2024_ensemble_bdd_parametrees_completees_a_transmettre_ps.xlsx")
+# 
+# parcoursup_2024_renseigne <- parcoursup_2024_renseigne %>% 
+#   select(-Couverture) %>% 
+#   left_join(
+#     listeFormationsInserJeunes_2024_ensemble_bdd_parametrees_completees_a_transmettre_ps %>% 
+#       mutate(Couverture=case_when(
+#         !is.na(taux_en_emploi_6_mois)~"Couvert",
+#         nb_annee_term<20~"Sous le seuil de 20 élèves",
+#         T~"Non couvert"
+#       )) %>% 
+#       select(CODEFORMATIONACCUEIL,Couverture),
+#     by="CODEFORMATIONACCUEIL"
+#   )
+# 
+# 
+# parcoursup_2024_renseigne <- parcoursup_2024_renseigne  %>% 
+#   left_join(
+#     parcoursup_2024  %>% 
+#       mutate(LIBFORMATION=str_split_fixed(LIBFORMATION," - ",n=2)[,1]) %>% 
+#       select(CODEFORMATIONACCUEIL,LIBFORMATION,APPRENTISSAGEOUSCOLAIRE),
+#     by="CODEFORMATIONACCUEIL"
+#   ) %>% 
+#   mutate(
+#     libelle_type_diplome=case_when(
+#       libelle_type_diplome %in% c("Inconnu","Autres diplômes") & LIBFORMATION %in% c("Licence", "BUT", "Certificat de Spécialisation", "Formations  des écoles d'ingénieurs", 
+#                                                                                      "D.E secteur sanitaire", "BTS", "D.E secteur social", "Formation des écoles de commerce et de management", 
+#                                                                                      "BPJEPS") ~ LIBFORMATION,
+#       libelle_type_diplome %in% c("Inconnu","Autres diplômes") ~ "Autres diplômes",
+#       T~libelle_type_diplome 
+#     ),
+#     Filiere=APPRENTISSAGEOUSCOLAIRE
+#   ) %>% 
+#   select(-LIBFORMATION,-APPRENTISSAGEOUSCOLAIRE)
+# 
+# parcoursup_2024_renseigne <- parcoursup_2024_renseigne %>% 
+#   mutate(type_formation="Après le bac")
+# 
+# 
+# rmarkdown::render("stats_catalogue_generique.Rmd", 
+#                   params = list(
+#                     catalogue_init=NULL,
+#                     type_source = NULL,
+#                     type_voeux= "parcoursup",
+#                     nom_catalogue= "Parcoursup",
+#                     afficher_stats_voeux=FALSE,
+#                     catalogue_renseigne=parcoursup_2024_renseigne,
+#                     nom_catalogue_detail = "Parcoursup - Juillet 2024",
+#                     lien_drive_catalogue ="https://docs.google.com/spreadsheets/d/1ShIzmTuVb7ZRBqXMlskqrx8OQVSB7N1i/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true"
+#                   ),
+#                   output_format = "html_document",
+#                   output_dir = "parcoursup",
+#                   output_file = "parcoursup_07_2024.html"
+# )
+# 
+# ## Parcoursup 10_2024----
+# 
+# source("parcoursup/script_prepa_ps_2025.R")
+# 
+# rmarkdown::render("stats_catalogue_generique.Rmd", 
+#                   params = list(
+#                     catalogue_init=NULL,
+#                     type_source = NULL,
+#                     type_voeux= "parcoursup",
+#                     nom_catalogue= "Parcoursup",
+#                     afficher_stats_voeux=TRUE,
+#                     stats_catalogue=stats_catalogue_parcoursup_2024_10,
+#                     nom_catalogue_detail = "Parcoursup - Octobre 2024",
+#                     lien_drive_catalogue ="https://docs.google.com/spreadsheets/d/1ShIzmTuVb7ZRBqXMlskqrx8OQVSB7N1i/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true"
+#                   ),
+#                   output_format = "html_document",
+#                   output_dir = "parcoursup",
+#                   output_file = "parcoursup_10_2024.html"
+# )
 
-parcoursup_2024 <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/listesFormationsInsertJeunes_toutesFormations_020224.xls"))
 
 
-### Parcoursup dans InserJeunes ----
+## Parcoursup campagne 2024----
 
-parcoursup_2024_ij <- parcoursup_2024 %>% 
-  filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
-  rowwise() %>% 
-  filter(!any(is.na(CODECFD),is.na(CODEMEF))) %>% 
-  ungroup() %>% 
-  select(contains("UAI"),CODEFORMATION,LIBFORMATION,CODECFD,CODEMEF,APPRENTISSAGEOUSCOLAIRE,CODEFORMATIONACCUEIL) %>% 
-  left_join(
-    n_mef %>% 
-      select(MEF,MEF_STAT_11),
-    by=c("CODEMEF"="MEF")
-  ) %>% 
-  mutate(CODESISE=NA)
-
-parcoursup_2024_ij_simpli <- parcoursup_2024_ij %>% 
-  select(UAI_GES,MEF_STAT_11,APPRENTISSAGEOUSCOLAIRE,CODEFORMATIONACCUEIL) %>% 
-  setNames(c("UAI","MEFSTAT11","Filiere","CODEFORMATIONACCUEIL")) 
-
-
-
-parcoursup_2024_ij_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_ij_simpli,type_source = "affelnet")
-
-
-
-### Parcoursup dans InserSup ----
-
-association_CODEFORMATIONACCUEIL_sise <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/association_rncp_sup.xlsx"),
-                                                    sheet = "2024")
-
-Fichier_Certif_info <- data.table::fread(file.path(chemin_racine_data,"RCO/InserJeunes/InserJeunes/Fichier Certif info.csv"),encoding = "Latin-1") 
-
-Fichier_Certif_info_simpli <- Fichier_Certif_info %>% 
-  select(code_rncp,code_sise ) %>% 
-  as_tibble() %>% 
-  mutate(code_sise=ifelse(code_sise=="",NA,code_sise),
-         code_rncp=as.character(code_rncp)) %>% 
-  filter(!is.na(code_sise),!is.na(code_rncp)) %>% 
-  distinct() %>% 
-  rename(CODESISE=code_sise)
-
-
-parcoursup_2024_isup_avec_association_CODEFORMATIONACCUEIL_sise <- parcoursup_2024 %>% 
-  filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
-  rowwise() %>% 
-  filter(any(is.na(CODECFD),is.na(CODEMEF)),CODEFORMATIONACCUEIL%in% association_CODEFORMATIONACCUEIL_sise$CODEFORMATIONACCUEIL) %>% 
-  ungroup() %>% 
-  select(contains("UAI"),CODEFORMATION,LIBFORMATION,CODEFORMATIONACCUEIL) %>% 
-  left_join(
-    association_CODEFORMATIONACCUEIL_sise %>% 
-      select(CODEFORMATIONACCUEIL,CODESISE),
-    by="CODEFORMATIONACCUEIL"
-  )
-
-parcoursup_2024_isup_sans_association_CODEFORMATIONACCUEIL_sise <-parcoursup_2024 %>% 
-  filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
-  rowwise() %>% 
-  filter(any(is.na(CODECFD),is.na(CODEMEF)),!CODEFORMATIONACCUEIL%in% association_CODEFORMATIONACCUEIL_sise$CODEFORMATIONACCUEIL,!is.na(LISTE_RNCP)) %>% 
-  ungroup() %>% 
-  select(contains("UAI"),CODEFORMATION,LIBFORMATION,CODEFORMATIONACCUEIL,LISTE_RNCP) %>% 
-  mutate(LISTE_RNCP=map(LISTE_RNCP,~tibble(RNCP=unlist(str_split(.,";"))))) %>% 
-  unnest() %>% 
-  left_join(
-    Fichier_Certif_info_simpli,
-    by=c("RNCP"="code_rncp")
-  ) %>% 
-  select(-RNCP,-UAI_COMPOSANTE,-UAI_AFF) %>% 
-  distinct()
-
-
-parcoursup_2024_isup_avec_sise <- parcoursup_2024_isup_avec_association_CODEFORMATIONACCUEIL_sise %>% 
-  bind_rows(parcoursup_2024_isup_sans_association_CODEFORMATIONACCUEIL_sise ) %>% 
-  mutate(filiere="superieur") %>%
-  select(UAI_GES,CODESISE,LIBFORMATION,filiere,CODEFORMATIONACCUEIL) %>% 
-  setNames(c("UAI","CODESISE","LIBELLE_COURT","Filiere","CODEFORMATIONACCUEIL")) 
-
-
-parcoursup_2024_isup_avec_sise <- parcoursup_2024_isup_avec_sise %>% 
-  bind_cols(
-    map(c("MEFSTAT11", "famillemetiers", "FORMATION_DIPLOME", "NIVEAU_FORMATION_DIPLOME", 
-          "NIVEAU_QUALIFICATION_RNCP", "MEFSTAT11_annee_terminale", "FORMATION_DIPLOME_annee_terminale", 
-          "GROUPE_SPECIALITE", "LETTRE_SPECIALITE", "LIBELLE_LONG_200", 
-          "LIBELLE_STAT_33", "filiere"),
-        function(x){
-          tibble(var=NA) %>% 
-            setNames(x)
-        }) %>% 
-      reduce(bind_cols)
-  )
-
-
-parcoursup_2024_isup_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_isup_avec_sise,type_source = "superieur")
-
-
-
-### Parcoursup pas dans InserJeunes et pas dans  InserSup ----
-parcoursup_2024_pas_ij_pas_isup <- parcoursup_2024 %>% 
-  filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
-  filter(!CODEFORMATIONACCUEIL %in% (parcoursup_2024_ij_renseigne %>% 
-                                       select(CODEFORMATIONACCUEIL) %>% 
-                                       bind_rows(
-                                         parcoursup_2024_isup_renseigne %>% 
-                                           select(CODEFORMATIONACCUEIL)
-                                       ) %>% 
-                                       pull(CODEFORMATIONACCUEIL))) %>%
-  left_join(
-    n_mef %>% 
-      select(MEF,MEF_STAT_11),
-    by=c("CODEMEF"="MEF")
-  ) %>% 
-  mutate(CODESISE=NA)
-
-
-
-parcoursup_2024_pas_ij_pas_isup_simpli <- parcoursup_2024_pas_ij_pas_isup %>% 
-  select(UAI_GES,MEF_STAT_11,APPRENTISSAGEOUSCOLAIRE,CODEFORMATIONACCUEIL) %>% 
-  setNames(c("UAI","MEFSTAT11","Filiere","CODEFORMATIONACCUEIL")) 
-
-
-parcoursup_2024_pas_ij_pas_isup_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_pas_ij_pas_isup_simpli,type_source = "affelnet")
-
-
-
-
-
-parcoursup_2024_renseigne <- parcoursup_2024_pas_ij_pas_isup_renseigne %>% 
-  mutate(type="pas_isup_pas_ij") %>% 
-  bind_rows(
-    parcoursup_2024_ij_renseigne %>% 
-      mutate(type="ij")
-  ) %>% 
-  bind_rows(
-    parcoursup_2024_isup_renseigne %>% 
-      mutate(type="isup")
-  )
-
-
-#Pour afficher les stats sur les données transmises en février 2024
-listeFormationsInserJeunes_2024_ensemble_bdd_parametrees_completees_a_transmettre_ps <- read_excel("C:/Users/arnau/d-sidd Dropbox/Arnaud milet/0_beta/1- Exposition/Groupe-002 - Parcoursup/002 - 2 - Parcoursup/2024/a transmettre/listeFormationsInserJeunes_2024_ensemble_bdd_parametrees_completees_a_transmettre_ps.xlsx")
-
-parcoursup_2024_renseigne <- parcoursup_2024_renseigne %>% 
-  select(-Couverture) %>% 
-  left_join(
-    listeFormationsInserJeunes_2024_ensemble_bdd_parametrees_completees_a_transmettre_ps %>% 
-      mutate(Couverture=case_when(
-        !is.na(taux_en_emploi_6_mois)~"Couvert",
-        nb_annee_term<20~"Sous le seuil de 20 élèves",
-        T~"Non couvert"
-      )) %>% 
-      select(CODEFORMATIONACCUEIL,Couverture),
-    by="CODEFORMATIONACCUEIL"
-  )
-
-
-parcoursup_2024_renseigne <- parcoursup_2024_renseigne  %>% 
-  left_join(
-    parcoursup_2024  %>% 
-      mutate(LIBFORMATION=str_split_fixed(LIBFORMATION," - ",n=2)[,1]) %>% 
-      select(CODEFORMATIONACCUEIL,LIBFORMATION,APPRENTISSAGEOUSCOLAIRE),
-    by="CODEFORMATIONACCUEIL"
-  ) %>% 
-  mutate(
-    libelle_type_diplome=case_when(
-      libelle_type_diplome %in% c("Inconnu","Autres diplômes") & LIBFORMATION %in% c("Licence", "BUT", "Certificat de Spécialisation", "Formations  des écoles d'ingénieurs", 
-                                                                                     "D.E secteur sanitaire", "BTS", "D.E secteur social", "Formation des écoles de commerce et de management", 
-                                                                                     "BPJEPS") ~ LIBFORMATION,
-      libelle_type_diplome %in% c("Inconnu","Autres diplômes") ~ "Autres diplômes",
-      T~libelle_type_diplome 
-    ),
-    Filiere=APPRENTISSAGEOUSCOLAIRE
-  ) %>% 
-  select(-LIBFORMATION,-APPRENTISSAGEOUSCOLAIRE)
-
-parcoursup_2024_renseigne <- parcoursup_2024_renseigne %>% 
-  mutate(type_formation="Après le bac")
-
+source("parcoursup/script_prepa_ps_2025_campagne_2024.R")
 
 rmarkdown::render("stats_catalogue_generique.Rmd", 
                   params = list(
@@ -378,18 +420,21 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                     type_voeux= "parcoursup",
                     nom_catalogue= "Parcoursup",
                     afficher_stats_voeux=FALSE,
-                    catalogue_renseigne=parcoursup_2024_renseigne,
-                    nom_catalogue_detail = "Parcoursup - Juillet 2024",
+                    stats_catalogue=stats_catalogue_parcoursup_campagne_2024,
+                    afficher_stats_synthese=TRUE,
+                    stats_catalogue_synthese=stats_catalogue_parcoursup_campagne_2024_synthese,
+                    nom_catalogue_detail = "Parcoursup - campagne 2024",
                     lien_drive_catalogue ="https://docs.google.com/spreadsheets/d/1ShIzmTuVb7ZRBqXMlskqrx8OQVSB7N1i/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true"
                   ),
                   output_format = "html_document",
                   output_dir = "parcoursup",
-                  output_file = "parcoursup_07_2024.html"
+                  output_file = "parcoursup_campagne_2024.html"
 )
 
-## Parcoursup 10_2024----
 
-source("parcoursup/script_prepa_ps_2025.R")
+## Parcoursup campagne 2025----
+
+source("parcoursup/script_prepa_ps_2025_campagne_2025.R")
 
 rmarkdown::render("stats_catalogue_generique.Rmd", 
                   params = list(
@@ -397,40 +442,17 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                     type_source = NULL,
                     type_voeux= "parcoursup",
                     nom_catalogue= "Parcoursup",
-                    afficher_stats_voeux=TRUE,
-                    stats_catalogue=stats_catalogue_parcoursup_2024_10,
-                    nom_catalogue_detail = "Parcoursup - Octobre 2024",
+                    afficher_stats_voeux=FALSE,
+                    stats_catalogue=stats_catalogue_parcoursup_campagne_2025,
+                    afficher_stats_synthese=TRUE,
+                    stats_catalogue_synthese=stats_catalogue_parcoursup_campagne_2025_synthese,
+                    nom_catalogue_detail = "Parcoursup - campagne 2025",
                     lien_drive_catalogue ="https://docs.google.com/spreadsheets/d/1ShIzmTuVb7ZRBqXMlskqrx8OQVSB7N1i/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true"
                   ),
                   output_format = "html_document",
                   output_dir = "parcoursup",
-                  output_file = "parcoursup_10_2024.html"
+                  output_file = "parcoursup_campagne_2025.html"
 )
-
-
-
-## Parcoursup agregation 02_2024_ET_10_2024----
-
-source("parcoursup/script_prepa_ps_2025_agreagation_02_2024_ET_10_2024.R")
-
-rmarkdown::render("stats_catalogue_generique.Rmd", 
-                  params = list(
-                    catalogue_init=NULL,
-                    type_source = NULL,
-                    type_voeux= "parcoursup",
-                    nom_catalogue= "Parcoursup",
-                    afficher_stats_voeux=TRUE,
-                    stats_catalogue=stats_catalogue_parcoursup_2024_agregation_10_2024_02,
-                    afficher_stats_voeux_synthese_2024=TRUE,
-                    stats_catalogue_synthese_2024=stats_catalogue_parcoursup_2024_agregation_10_2024_02_synthese_scope_2024,
-                    nom_catalogue_detail = "Parcoursup - Agrégation des catalogues Février et Octobre 2024",
-                    lien_drive_catalogue ="https://docs.google.com/spreadsheets/d/1ShIzmTuVb7ZRBqXMlskqrx8OQVSB7N1i/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true"
-                  ),
-                  output_format = "html_document",
-                  output_dir = "parcoursup",
-                  output_file = "parcoursup_agregation_02_2024_ET_10_2024.html"
-)
-
 
 # Catalogue apprentissage  ----
 
