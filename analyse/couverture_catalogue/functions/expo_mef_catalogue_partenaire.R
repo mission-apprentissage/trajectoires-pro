@@ -999,11 +999,11 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
           filter(!is.na(CODEFORMATIONACCUEIL))%>% 
           left_join(
             voeux_parcoursup_affelnet_simpli_2023 %>%
-              select(c(CODEFORMATIONACCUEIL,all_of(var_effectifs))),
+              select(c(CODEFORMATIONACCUEIL,all_of(var_effectifs)))%>% 
+              distinct(),
             by="CODEFORMATIONACCUEIL"
           )
       )
-    
   }
     
   
