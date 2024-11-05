@@ -149,7 +149,7 @@
   .card {
     margin-top: 10px;
     padding: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 2rem;
   }
 
   .card-footer {
@@ -169,6 +169,12 @@
   .fr-btn--close:after {
     margin-left: 0;
     margin-right: 0;
+  }
+
+  .external-small[target=_blank]:after {
+    --icon-size: 0.75rem;
+    height: var(--icon-size);
+    width: var(--icon-size);
   }
 
 

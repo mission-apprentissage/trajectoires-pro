@@ -106,6 +106,13 @@
       vertical-align: text-top;
     }
 
+
+    .block-title .description {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 28px;
+    }
+
     .body-description {
       margin-bottom: 10px;
     }
@@ -314,7 +321,16 @@
 
     @media screen and (max-width: 30em) {
       .block-title {
-        font-size: 12px;
+        font-size: 16px;
+      }
+
+      .block-title .description {
+        font-size: 20px;
+      }
+
+      .block-title .icon {
+        width: 22px;
+        height: 22px;
       }
     }
   </style>
@@ -427,7 +443,7 @@
     <% } %>
 
     <div class="card-footer">
-      Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html"><%= data.filiere === "superieur" ? "InserSup" : "InserJeunes" %></a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/"> D’où viennent ces données ?</a>
+      Données issues du dispositif <a target="_blank" class="external-small" href="https://beta.gouv.fr/startups/exposition-ij.html"><%= data.filiere === "superieur" ? "InserSup" : "InserJeunes" %></a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" class="external-small" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/"> D’où viennent ces données ?</a>
     </div>
   </div>
 </body>
