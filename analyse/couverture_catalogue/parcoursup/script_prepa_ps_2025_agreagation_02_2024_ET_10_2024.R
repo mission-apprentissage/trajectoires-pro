@@ -1265,13 +1265,13 @@ stats_catalogue_parcoursup_2024_agregation_10_2024_02$stats_catalogue_partenaire
   select(Périmètre,`Niveau de formation`,`Type diplôme`,Filiere,Certificateur,`Scope 2024`,`Scope 2025`,everything()) %>% 
   mutate(
     `Scope 2024`=case_when(
-      !is.na(`Scope 2024`)~`Scope 2024`,
+      !is.na(`Scope 2024`) & Filiere=="Sco."~`Scope 2024`,
       Périmètre=="Total"~"Total",
       `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
       T~"Non"
     ),
     `Scope 2025`=case_when(
-      !is.na(`Scope 2025`)~`Scope 2024`,
+      !is.na(`Scope 2025`) & Filiere=="Sco."~`Scope 2025`,
       Périmètre=="Total"~"Total",
       `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
       T~"Non"
@@ -1288,13 +1288,13 @@ stats_catalogue_parcoursup_2024_agregation_10_2024_02$stats_catalogue_partenaire
   select(Périmètre,`Niveau de formation`,`Type diplôme`,Filiere,Certificateur,`Scope 2024`,`Scope 2025`,everything()) %>% 
   mutate(
     `Scope 2024`=case_when(
-      !is.na(`Scope 2024`)~`Scope 2024`,
+      !is.na(`Scope 2024`) & Filiere=="Sco."~`Scope 2024`,
       Périmètre=="Total"~"Total",
       `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
       T~"Non"
     ),
     `Scope 2025`=case_when(
-      !is.na(`Scope 2025`)~`Scope 2024`,
+      !is.na(`Scope 2025`) & Filiere=="Sco."~`Scope 2025`,
       Périmètre=="Total"~"Total",
       `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
       T~"Non"
