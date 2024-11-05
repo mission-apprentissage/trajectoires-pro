@@ -389,7 +389,7 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
 
 ## Parcoursup 10_2024----
 
-source("script_prepa_ps_2025.R")
+source("parcoursup/script_prepa_ps_2025.R")
 
 rmarkdown::render("stats_catalogue_generique.Rmd", 
                   params = list(
@@ -407,6 +407,29 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                   output_file = "parcoursup_10_2024.html"
 )
 
+
+
+## Parcoursup agregation 02_2024_ET_10_2024----
+
+source("parcoursup/script_prepa_ps_2025_agreagation_02_2024_ET_10_2024.R")
+
+rmarkdown::render("stats_catalogue_generique.Rmd", 
+                  params = list(
+                    catalogue_init=NULL,
+                    type_source = NULL,
+                    type_voeux= "parcoursup",
+                    nom_catalogue= "Parcoursup",
+                    afficher_stats_voeux=TRUE,
+                    stats_catalogue=stats_catalogue_parcoursup_2024_agregation_10_2024_02,
+                    afficher_stats_voeux_synthese_2024=TRUE,
+                    stats_catalogue_synthese_2024=stats_catalogue_parcoursup_2024_agregation_10_2024_02_synthese_scope_2024,
+                    nom_catalogue_detail = "Parcoursup - Agrégation des catalogues Février et Octobre 2024",
+                    lien_drive_catalogue ="https://docs.google.com/spreadsheets/d/1ShIzmTuVb7ZRBqXMlskqrx8OQVSB7N1i/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true"
+                  ),
+                  output_format = "html_document",
+                  output_dir = "parcoursup",
+                  output_file = "parcoursup_agregation_02_2024_ET_10_2024.html"
+)
 
 
 # Catalogue apprentissage  ----
