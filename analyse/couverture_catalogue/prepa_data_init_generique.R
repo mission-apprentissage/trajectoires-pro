@@ -15,6 +15,28 @@ n_mef <- read_csv2(file.path(chemin_racine_data,"n_mef_.csv"))
 n_formation_diplome <- read_delim(file.path(chemin_racine_data,"BCN/n_formation_diplome_.csv"),delim = ";", escape_double = FALSE, trim_ws = TRUE)
 n_niveau_formation_diplome <- read_csv2(file.path(chemin_racine_data,"BCN/n_niveau_formation_diplome_.csv"))
 
+n_diplome_sise <- read_csv2(file.path(chemin_racine_data,"BCN/n_diplome_sise_.csv"))
+
+## Catalogue des MNE ----
+
+catalogue_mne <- read_csv2(file.path(chemin_racine_data,"catalogue MNE/formation_2024-10-07T13_25_04.773Z.csv"))
+catalogue_mne <- catalogue_mne %>% 
+  mutate_all(str_remove_all,"=") %>% 
+  mutate_all(str_remove_all,"\"")
+
+## Données onisep ----
+ideo_formations_initiales_en_france <- read_csv2(file.path(chemin_racine_data,"onisep/ideo-formations_initiales_en_france.csv"))
+
+ideo_formations_initiales_en_france_simpli <- ideo_formations_initiales_en_france %>% 
+  select(`code RNCP`,`URL et ID Onisep`) %>% 
+  drop_na() %>% 
+  mutate(
+    ideo=str_remove(`URL et ID Onisep`,"https://www.onisep.fr/http/redirection/formation/slug/")
+  ) %>% 
+  select(`code RNCP`,ideo)
+
+
+
 ## CertifInfos
 
 opendata_certifinfo <- data.table::fread(file.path(chemin_racine_data,"Certif_Infos/opendata-certifinfo-01072024.csv"),
