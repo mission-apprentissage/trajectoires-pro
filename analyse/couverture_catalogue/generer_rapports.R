@@ -421,6 +421,8 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                     nom_catalogue= "Parcoursup",
                     afficher_stats_voeux=TRUE,
                     stats_catalogue=stats_catalogue_parcoursup_2024_agregation_10_2024_02,
+                    afficher_stats_voeux_synthese_2024=TRUE,
+                    stats_catalogue_synthese_2024=stats_catalogue_parcoursup_2024_agregation_10_2024_02_synthese_scope_2024,
                     nom_catalogue_detail = "Parcoursup - Agrégation des catalogues Février et Octobre 2024",
                     lien_drive_catalogue ="https://docs.google.com/spreadsheets/d/1ShIzmTuVb7ZRBqXMlskqrx8OQVSB7N1i/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true"
                   ),
