@@ -5,15 +5,78 @@ library(rmarkdown)
 
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
-chemin_racine_data <- "../../../../0- data" 
+chemin_racine <- "../../../.."
+chemin_racine_data <- file.path(chemin_racine,"0- data")
 source("prepa_data_init_generique.R")
 
 
 ## Parcoursup 10_2024----
 
+parcoursup_2024_02 <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/listesFormationsInsertJeunes_toutesFormations_020224.xls"))
 parcoursup_2024_10 <- read_excel(file.path(chemin_racine_data,"parcoursup/2024/listeFormationsInserJeunes_finSession2024_01_10_2024.xls"))
 
-parcoursup_nomenclature_de_ref <- parcoursup_2024_10 %>% 
+parcoursup_campagne_2025 <- parcoursup_2024_10 %>% 
+  mutate(present_oct=T)%>%
+  left_join(
+    parcoursup_2024_02 %>% 
+      setNames(paste0(names(.),"_fev")) %>% 
+      mutate(present_fev=T),
+    by=c("CODEFORMATIONACCUEIL"="CODEFORMATIONACCUEIL_fev")
+  ) %>% 
+  mutate(
+    present_fev=ifelse(is.na(present_fev),F,present_fev),
+    present_oct=ifelse(is.na(present_oct),F,present_oct)
+  ) %>% 
+  mutate(
+    verif=case_when(
+      UAI_GES==UAI_GES_fev & UAI_COMPOSANTE==UAI_COMPOSANTE_fev& UAI_AFF==UAI_AFF_fev & 
+        CODEFORMATION==CODEFORMATION_fev & CODESPÉCIALITÉ==CODESPÉCIALITÉ_fev~T
+    )
+  )  %>% 
+  mutate(verif=ifelse(is.na(verif),F,T)) %>% 
+  mutate(
+    CODEMEF=case_when(
+      is.na(CODEMEF)~CODEMEF_fev,
+      T~CODEMEF
+    ),
+    CODECFD=case_when(
+      is.na(CODECFD)~CODECFD_fev,
+      T~CODECFD
+    ),
+    CODESISE=CODESISE,
+    LISTE_IDEO=LISTE_IDEO,
+    ID_RCO=case_when(
+      is.na(ID_RCO)~ID_RCO_fev,
+      T~ID_RCO
+    ),
+    LISTE_RNCP=case_when(
+      is.na(LISTE_RNCP)~LISTE_RNCP_fev,
+      T~LISTE_RNCP
+    ),
+    NBDEDEMANDES=case_when(
+      is.na(NBDEDEMANDES)~NBDEDEMANDES_fev,
+      T~NBDEDEMANDES
+    )
+  ) %>% 
+  select(names(parcoursup_2024_10),present_fev,present_oct) %>% 
+  bind_rows(
+    parcoursup_2024_02 %>% 
+      mutate(present_fev=T,
+             present_oct=F) %>% 
+      filter(!CODEFORMATIONACCUEIL %in% parcoursup_2024_10$CODEFORMATIONACCUEIL)
+  ) %>% 
+  filter(present_oct)
+
+parcoursup_campagne_2025 <-parcoursup_campagne_2025 %>% 
+  select(-NBDEDEMANDES) %>% 
+  left_join(
+    parcoursup_2024_10 %>% 
+      select(CODEFORMATIONACCUEIL,NBDEDEMANDES),
+    by="CODEFORMATIONACCUEIL"
+  )
+
+
+parcoursup_nomenclature_de_ref <- parcoursup_campagne_2025 %>% 
   distinct(CODECFD,LISTE_RNCP,LISTE_IDEO,CODESISE) %>% 
   mutate(
     nomenclature_de_ref=case_when(
@@ -70,11 +133,11 @@ parcoursup_nomenclature_de_ref_renseigne <-   parcoursup_nomenclature_de_ref %>%
       mutate(niveau_formation_via_RNCP=as.numeric(niveau_formation_via_RNCP)) %>% 
       distinct(id,niveau_formation_via_RNCP,lib_type_formation_via_RNCP) %>%
       mutate(qualite_RNCP=ifelse(is.na(lib_type_formation_via_RNCP),"Correspondance impossible via RNCP","Correspondance possible via RNCP"),
-           qualite_RNCP=factor(qualite_RNCP,levels=c("Correspondance possible via RNCP","Correspondance impossible via RNCP"))) %>% 
+             qualite_RNCP=factor(qualite_RNCP,levels=c("Correspondance possible via RNCP","Correspondance impossible via RNCP"))) %>% 
       group_by(id) %>% 
       nest() %>% 
       mutate(data=map(data,function(df){
-
+        
         temp <- df %>%
           distinct() %>% 
           filter(as.numeric(qualite_RNCP)==min(as.numeric(qualite_RNCP))) 
@@ -120,7 +183,7 @@ parcoursup_nomenclature_de_ref_renseigne <-   parcoursup_nomenclature_de_ref %>%
       mutate(niveau_formation_via_IDEO=as.numeric(niveau_formation_via_IDEO)) %>% 
       distinct(id,niveau_formation_via_IDEO,lib_type_formation_via_IDEO) %>%
       mutate(qualite_IDEO=ifelse(is.na(lib_type_formation_via_IDEO),"Correspondance impossible via IDEO","Correspondance possible via IDEO"),
-           qualite_IDEO=factor(qualite_IDEO,levels=c("Correspondance possible via IDEO","Correspondance impossible via IDEO"))) %>% 
+             qualite_IDEO=factor(qualite_IDEO,levels=c("Correspondance possible via IDEO","Correspondance impossible via IDEO"))) %>% 
       group_by(id) %>% 
       nest() %>% 
       mutate(data=map(data,function(df){
@@ -165,7 +228,7 @@ parcoursup_nomenclature_de_ref_renseigne <-   parcoursup_nomenclature_de_ref %>%
       mutate(niveau_formation_via_SISE=as.numeric(niveau_formation_via_SISE)) %>% 
       distinct(id,niveau_formation_via_SISE,lib_type_formation_via_SISE) %>%
       mutate(qualite_SISE=ifelse(is.na(lib_type_formation_via_SISE),"Correspondance impossible via SISE","Correspondance possible via SISE"),
-           qualite_SISE=factor(qualite_SISE,levels=c("Correspondance possible via SISE","Correspondance impossible via SISE"))) %>% 
+             qualite_SISE=factor(qualite_SISE,levels=c("Correspondance possible via SISE","Correspondance impossible via SISE"))) %>% 
       group_by(id) %>% 
       nest() %>% 
       mutate(data=map(data,function(df){
@@ -264,7 +327,8 @@ parcoursup_nomenclature_de_ref_renseigne <- parcoursup_nomenclature_de_ref_rense
 ### Parcoursup dans InserSup (calculé initialement)----
 
 listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS <- read_excel("C:/Users/arnau/d-sidd Dropbox/Arnaud milet/0_beta/1- Exposition/Groupe-002 - Parcoursup/003 - 4 - Prepa ParcourSup 2025/listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS.xlsx")
-
+listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS <- listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
+  filter(CODEFORMATIONACCUEIL %in% parcoursup_campagne_2025$CODEFORMATIONACCUEIL)
 
 parcoursup_nomenclature_de_ref_renseigne <- parcoursup_nomenclature_de_ref_renseigne %>% 
   filter(niveau_formation!="Niveau inconnu") %>% 
@@ -284,7 +348,7 @@ parcoursup_nomenclature_de_ref_renseigne <- parcoursup_nomenclature_de_ref_rense
 
 
 
-parcoursup_2024_10_param<- parcoursup_2024_10 %>% 
+parcoursup_campagne_2025_param<- parcoursup_campagne_2025 %>% 
   filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
   left_join(
     parcoursup_nomenclature_de_ref_renseigne %>% 
@@ -310,7 +374,7 @@ catalogue_mne <- catalogue_mne %>%
 
 ### Parcoursup dans InserJeunes ----
 
-parcoursup_2024_ij <- parcoursup_2024_10_param %>% 
+parcoursup_2024_ij <- parcoursup_campagne_2025_param %>% 
   rowwise() %>% 
   filter(!any(is.na(CODECFD),is.na(CODEMEF))) %>% 
   ungroup() %>% 
@@ -342,7 +406,7 @@ parcoursup_2024_ij_inverse <- parcoursup_2024_ij %>%
 
 #### MNE ----
 
-parcoursup_2024_ij_mne <- parcoursup_2024_10_param %>% 
+parcoursup_2024_ij_mne <- parcoursup_campagne_2025_param %>% 
   select(UAI_GES,UAI_AFF,UAI_COMPOSANTE,CODEFORMATIONACCUEIL,ID_RCO,APPRENTISSAGEOUSCOLAIRE) %>% 
   left_join(
     catalogue_mne %>% 
@@ -376,12 +440,12 @@ parcoursup_2024_ij_mne <- parcoursup_2024_10_param %>%
   drop_na() %>% 
   setNames(c("TYPE_UAI","UAI","MEFSTAT11","Filiere","CODEFORMATIONACCUEIL")) %>% 
   mutate(appariement="mne")
-  
+
 
 
 #### MNE - inverse ----
 
-parcoursup_2024_ij_mne_inverse <- parcoursup_2024_10_param %>% 
+parcoursup_2024_ij_mne_inverse <- parcoursup_campagne_2025_param %>% 
   select(UAI_GES,UAI_AFF,UAI_COMPOSANTE,CODEFORMATIONACCUEIL,ID_RCO,APPRENTISSAGEOUSCOLAIRE) %>% 
   left_join(
     catalogue_mne %>% 
@@ -423,7 +487,7 @@ parcoursup_2024_ij_mne_inverse <- parcoursup_2024_10_param %>%
 
 #### RNCP ----
 
-parcoursup_2024_ij_rncp <- parcoursup_2024_10_param %>% 
+parcoursup_2024_ij_rncp <- parcoursup_campagne_2025_param %>% 
   select(UAI_GES,UAI_AFF,UAI_COMPOSANTE,CODEFORMATIONACCUEIL,LISTE_RNCP,APPRENTISSAGEOUSCOLAIRE)%>% 
   mutate(
     LISTE_RNCP=map(LISTE_RNCP,function(x){
@@ -467,7 +531,7 @@ parcoursup_2024_ij_rncp <- parcoursup_2024_10_param %>%
 
 
 
-parcoursup_2024_ij_inverse_rncp <- parcoursup_2024_10_param %>% 
+parcoursup_2024_ij_inverse_rncp <- parcoursup_campagne_2025_param %>% 
   select(UAI_GES,UAI_AFF,UAI_COMPOSANTE,CODEFORMATIONACCUEIL,LISTE_RNCP,APPRENTISSAGEOUSCOLAIRE)%>% 
   mutate(
     LISTE_RNCP=map(LISTE_RNCP,function(x){
@@ -513,7 +577,7 @@ parcoursup_2024_ij_inverse_rncp <- parcoursup_2024_10_param %>%
 
 #### IDEO ----
 
-parcoursup_2024_ij_ideo <- parcoursup_2024_10_param %>% 
+parcoursup_2024_ij_ideo <- parcoursup_campagne_2025_param %>% 
   select(UAI_GES,UAI_AFF,UAI_COMPOSANTE,CODEFORMATIONACCUEIL,LISTE_IDEO,APPRENTISSAGEOUSCOLAIRE) %>% 
   drop_na() %>% 
   mutate(
@@ -559,7 +623,7 @@ parcoursup_2024_ij_ideo <- parcoursup_2024_10_param %>%
   mutate(appariement="ideo")
 
 
-parcoursup_2024_ij_ideo_inverse <- parcoursup_2024_10_param %>% 
+parcoursup_2024_ij_ideo_inverse <- parcoursup_campagne_2025_param %>% 
   select(UAI_GES,UAI_AFF,UAI_COMPOSANTE,CODEFORMATIONACCUEIL,LISTE_IDEO,APPRENTISSAGEOUSCOLAIRE) %>% 
   drop_na() %>% 
   mutate(
@@ -615,7 +679,7 @@ parcoursup_2024_ij_ensemble_analyse <- bind_rows(
   parcoursup_2024_ij_normal, 
   parcoursup_2024_ij_rncp, 
   parcoursup_2024_ij_inverse_rncp
-  ) %>% 
+) %>% 
   mutate(TYPE_UAI=factor(TYPE_UAI,levels=c("UAI_COMPOSANTE","UAI_AFF","UAI_GES")),
          appariement=factor(appariement,levels=c("normal","rncp","ideo","mne","inverse","rncp-inverse","ideo-inverse","mne-inverse")) 
   ) %>% 
@@ -624,7 +688,7 @@ parcoursup_2024_ij_ensemble_analyse <- bind_rows(
   group_by(UAI,MEFSTAT11,Filiere,CODEFORMATIONACCUEIL) %>% 
   filter(as.numeric(appariement)==min(as.numeric(appariement))) %>% 
   ungroup()
-  
+
 
 # parcoursup_2024_ij_ensemble_analyse_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_ij_ensemble_analyse,type_source = "affelnet")
 
@@ -634,7 +698,7 @@ map(c("normal","rncp","ideo","mne","inverse","rncp-inverse","ideo-inverse","mne-
   print(val_appariemment)
   if(val_appariemment=="normal"){
     temp <<- expo_mef_catalogue_partenaire(catalogue_init = parcoursup_2024_ij_ensemble_analyse %>% 
-                                                                                     filter(appariement==val_appariemment),type_source = "affelnet")
+                                             filter(appariement==val_appariemment),type_source = "affelnet")
   }else{
     temp <<- parcoursup_2024_ij_ensemble_analyse %>% 
       filter(appariement==val_appariemment,
@@ -685,10 +749,10 @@ parcoursup_2024_ij_renseigne <- temp  %>%
   unnest() %>% 
   ungroup()  %>% 
   filter(!CODEFORMATIONACCUEIL %in% (listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
-                                           select(CODEFORMATIONACCUEIL) %>% 
+                                       select(CODEFORMATIONACCUEIL) %>% 
                                        pull(CODEFORMATIONACCUEIL)
-                                       ))
-  
+  ))
+
 
 
 
@@ -697,7 +761,7 @@ parcoursup_2024_ij_renseigne <- temp  %>%
 
 
 ### Parcoursup pas dans InserJeunes et pas dans  InserSup ----
-parcoursup_2024_pas_ij_pas_isup <- parcoursup_2024_10_param %>% 
+parcoursup_2024_pas_ij_pas_isup <- parcoursup_campagne_2025_param %>% 
   filter(!CODEFORMATIONACCUEIL %in% (parcoursup_2024_ij_renseigne %>% 
                                        select(CODEFORMATIONACCUEIL) %>% 
                                        bind_rows(
@@ -732,9 +796,13 @@ parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij <- parcoursup_2024_pas_ij_pas_is
 parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
   select(-perimetre,-type_formation,-libelle_type_diplome) %>% 
   left_join(
-    parcoursup_2024_10_param %>% 
-      mutate(LIBFORMATION=str_split_fixed(LIBFORMATION," - ",2)[,1],
-             LIBFORMATION=str_to_upper(LIBFORMATION)) %>% 
+    parcoursup_campagne_2025_param %>% 
+      mutate(
+        LIBFORMATION=case_when(
+          str_sub(LIBFORMATION,1,3)%in%c("BTS","BUT")~LIBFORMATION,
+          T~ str_to_upper(str_split_fixed(LIBFORMATION," - ",2)[,1])
+        )
+      )%>% 
       select(CODEFORMATIONACCUEIL,LIBFORMATION,niveau_formation,qualite_code) %>% 
       rename(lib_type_formation=LIBFORMATION) %>% 
       mutate(
@@ -766,10 +834,10 @@ stats_catalogue_pas_ij_pas_isup_et_ij$stats_catalogue_partenaire <- stats_catalo
   left_join(
     stats_catalogue_pas_ij_pas_isup_et_ij$stats_catalogue_partenaire %>%
       filter(`Niveau de formation`!="Problème de qualité du code formation en entrée") %>% 
-      distinct(Périmètre ,`Niveau de formation`,`Type diplôme`,Filiere) %>% 
-      group_by(across(c("Type diplôme","Filiere"))) %>% 
+      distinct(Périmètre ,`Niveau de formation`,`Type diplôme`) %>% 
+      group_by(`Type diplôme`) %>% 
       slice(1),
-    by=c("Type diplôme","Filiere")
+    by=c("Type diplôme")
   ) %>% 
   mutate(
     Périmètre=ifelse(is.na(Périmètre),"Inconnu",Périmètre),
@@ -819,10 +887,10 @@ stats_catalogue_pas_ij_pas_isup_et_ij$stats_catalogue_partenaire_voeux <- stats_
   left_join(
     stats_catalogue_pas_ij_pas_isup_et_ij$stats_catalogue_partenaire_voeux %>%
       filter(`Niveau de formation`!="Problème de qualité du code formation en entrée") %>% 
-      distinct(Périmètre ,`Niveau de formation`,`Type diplôme`,Filiere) %>% 
-      group_by(across(c("Type diplôme","Filiere"))) %>% 
+      distinct(Périmètre ,`Niveau de formation`,`Type diplôme`) %>% 
+      group_by(`Type diplôme`) %>% 
       slice(1),
-    by=c("Type diplôme","Filiere")
+    by=c("Type diplôme")
   ) %>% 
   mutate(
     Périmètre=ifelse(is.na(Périmètre),"Inconnu",Périmètre),
@@ -1056,21 +1124,21 @@ stats_catalogue_isup$stats_catalogue_partenaire_voeux <- listeFormationsInserJeu
   )
 
 
-stats_catalogue_parcoursup_2024_10 <- NULL
-stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire <- bind_rows(
+stats_catalogue_parcoursup_campagne_2025 <- NULL
+stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire <- bind_rows(
   stats_catalogue_pas_ij_pas_isup_et_ij$stats_catalogue_partenaire,
   stats_catalogue_isup$stats_catalogue_partenaire
 )
 
 
-stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire <- stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire %>% 
+stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire <- stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire %>% 
   filter(`Type diplôme`!="Total") %>% 
   arrange(`Niveau de formation`) %>% 
   mutate(`Part du  catalogue`=prop.table(`Nombre de formations`))
 
-stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire <- stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire %>% 
+stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire <- stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire %>% 
   bind_rows(
-    stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire %>% 
+    stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire %>% 
       select_if(is.numeric) %>% 
       summarise_all(sum,na.rm=T) %>% 
       mutate(
@@ -1129,19 +1197,19 @@ stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire <- stats_catalogue
 
 
 
-stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- bind_rows(
+stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux <- bind_rows(
   stats_catalogue_pas_ij_pas_isup_et_ij$stats_catalogue_partenaire_voeux,
   stats_catalogue_isup$stats_catalogue_partenaire_voeux
 )
 
-stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux %>% 
+stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux <- stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux %>% 
   filter(`Type diplôme`!="Total") %>% 
   arrange(`Niveau de formation`) %>% 
   mutate(`Part du  catalogue`=prop.table(`Demandes tous voeux`))
 
-stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux %>% 
+stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux <- stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux %>% 
   bind_rows(
-    stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux %>% 
+    stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux %>% 
       select_if(is.numeric) %>% 
       summarise_all(sum,na.rm=T) %>% 
       mutate(
@@ -1151,7 +1219,7 @@ stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- stats_cat
         Filiere="Total",
         "Couverture (%)"=`Couverture (nb)`/`Demandes tous voeux`,
         "Formations non associées à une famille de métiers - Effectifs couverts (%)"=`Formations non associées à une famille de métiers - Effectifs couverts (nb)`/`Demandes tous voeux`,
-
+        
         "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Demandes tous voeux`,
         "Dont couvert par l'UAI formateur (%)"=`Dont couvert par l'UAI formateur (nb)`/`Demandes tous voeux`,
         "Dont couvert par l'UAI Gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Demandes tous voeux`,
@@ -1197,6 +1265,278 @@ stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- stats_cat
   ))
 
 
+correspondance_formation_certificateur <- read_excel(file.path(chemin_racine,"Groupe-002 - Parcoursup/003 - 4 - Prepa ParcourSup 2025/correspondance_formation_certificateur.xlsx"))
+
+stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire <- stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire %>% 
+  left_join(
+    correspondance_formation_certificateur,
+    by=c("Type diplôme","Filiere")
+  ) %>% 
+  select(Périmètre,`Niveau de formation`,`Type diplôme`,Filiere,Certificateur,`Scope campagne 2024`,`Scope campagne 2025`,everything()) %>% 
+  mutate(
+    `Scope campagne 2024`=case_when(
+      !is.na(`Scope campagne 2024`) & Filiere=="Sco."~`Scope campagne 2024`,
+      Périmètre=="Total"~"Total",
+      `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
+      T~"Non"
+    ),
+    `Scope campagne 2025`=case_when(
+      !is.na(`Scope campagne 2025`) & Filiere=="Sco."~`Scope campagne 2025`,
+      Périmètre=="Total"~"Total",
+      `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
+      T~"Non"
+    ),
+    Certificateur=ifelse(Périmètre=="Total","Total",Certificateur)
+  )
+
+
+stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux <- stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux %>% 
+  left_join(
+    correspondance_formation_certificateur,
+    by=c("Type diplôme","Filiere")
+  ) %>% 
+  select(Périmètre,`Niveau de formation`,`Type diplôme`,Filiere,Certificateur,`Scope campagne 2024`,`Scope campagne 2025`,everything()) %>% 
+  mutate(
+    `Scope campagne 2024`=case_when(
+      !is.na(`Scope campagne 2024`) & Filiere=="Sco."~`Scope campagne 2024`,
+      Périmètre=="Total"~"Total",
+      `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
+      T~"Non"
+    ),
+    `Scope campagne 2025`=case_when(
+      !is.na(`Scope campagne 2025`) & Filiere=="Sco."~`Scope campagne 2025`,
+      Périmètre=="Total"~"Total",
+      `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
+      T~"Non"
+    ),
+    Certificateur=ifelse(Périmètre=="Total","Total",Certificateur)
+  )
+
+
+
+stats_catalogue_parcoursup_campagne_2025_synthese <- NULL
+stats_catalogue_parcoursup_campagne_2025_synthese$stats_catalogue_partenaire <- stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire %>%
+  filter(Périmètre!="Total") %>%
+  group_by(`Scope campagne 2024`) %>%
+  select_if(is.numeric) %>% 
+  summarise_all(sum,na.rm=T) %>%
+  mutate(
+    "Couverture (%)"=`Couverture (nb)`/`Nombre de formations`,
+    
+    "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Nombre de formations`,
+    "Dont couvert par l'UAI formateur (%)"=`Dont couvert par l'UAI formateur (nb)`/`Nombre de formations`,
+    "Dont couvert par l'UAI Gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Nombre de formations`,
+    
+    "Non couvert (%)"=`Non couvert (nb)`/`Nombre de formations`,
+    "Dont sous le seuil de 20 élèves (%)"=`Dont sous le seuil de 20 élèves (nb)`/`Nombre de formations`,
+    "Non couvert - Nouvelles formations (%)"=`Non couvert - Nouvelles formations (nb)`/`Nombre de formations`,
+    "Non couvert - code certif inconnu (%)"=`Non couvert - code certif inconnu (nb)`/`Nombre de formations`,
+    "Non couvert - Autres ministères certificateurs (%)"=`Non couvert - Autres ministères certificateurs (nb)`/`Nombre de formations`,
+    "Non couvert - UAI inconnu (%)"=`Non couvert - UAI inconnu (nb)`/`Nombre de formations`,
+    "Territoires mal couverts (%)"=`Territoires mal couverts (nb)`/`Nombre de formations`,
+    "Non couvert - Problème de qualité du code formation en entrée (%)"=`Non couvert - Problème de qualité du code formation en entrée (nb)`/`Nombre de formations`,
+    "Non couvert - sans raison évidente (%)"=`Non couvert - sans raison évidente (nb)`/`Nombre de formations`
+  ) %>% 
+  filter(`Scope campagne 2024`=="Oui") %>% 
+  select(c("Nombre de formations", "Part du  catalogue", 
+           "Couverture (nb)", "Couverture (%)", 
+           
+           "Dont couvert par l'UAI lieu de formation (nb)",
+           "Dont couvert par l'UAI lieu de formation (%)",
+           "Dont couvert par l'UAI formateur (nb)",
+           "Dont couvert par l'UAI formateur (%)",
+           "Dont couvert par l'UAI Gestionnaire (nb)",
+           "Dont couvert par l'UAI Gestionnaire (%)",
+           
+           "Non couvert (nb)", "Non couvert (%)", "Dont sous le seuil de 20 élèves (nb)", 
+           "Dont sous le seuil de 20 élèves (%)", "Non couvert - Nouvelles formations (nb)", 
+           "Non couvert - Nouvelles formations (%)", "Non couvert - code certif inconnu (nb)", 
+           "Non couvert - code certif inconnu (%)", "Non couvert - Autres ministères certificateurs (nb)", 
+           "Non couvert - Autres ministères certificateurs (%)", "Non couvert - UAI inconnu (nb)", 
+           "Non couvert - UAI inconnu (%)", 
+           
+           "Territoires mal couverts (nb)","Territoires mal couverts (%)",
+           
+           "Non couvert - Problème de qualité du code formation en entrée (nb)", 
+           "Non couvert - Problème de qualité du code formation en entrée (%)",
+           
+           "Non couvert - sans raison évidente (nb)",
+           "Non couvert - sans raison évidente (%)"
+  )) %>% 
+  ungroup() %>% 
+  mutate(Scope="Scope campagne 2024") %>% 
+  bind_rows(
+    stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire %>%
+      filter(Périmètre!="Total") %>%
+      group_by(`Scope campagne 2025`) %>%
+      select_if(is.numeric) %>% 
+      summarise_all(sum,na.rm=T) %>%
+      mutate(
+        "Couverture (%)"=`Couverture (nb)`/`Nombre de formations`,
+        
+        "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Nombre de formations`,
+        "Dont couvert par l'UAI formateur (%)"=`Dont couvert par l'UAI formateur (nb)`/`Nombre de formations`,
+        "Dont couvert par l'UAI Gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Nombre de formations`,
+        
+        "Non couvert (%)"=`Non couvert (nb)`/`Nombre de formations`,
+        "Dont sous le seuil de 20 élèves (%)"=`Dont sous le seuil de 20 élèves (nb)`/`Nombre de formations`,
+        "Non couvert - Nouvelles formations (%)"=`Non couvert - Nouvelles formations (nb)`/`Nombre de formations`,
+        "Non couvert - code certif inconnu (%)"=`Non couvert - code certif inconnu (nb)`/`Nombre de formations`,
+        "Non couvert - Autres ministères certificateurs (%)"=`Non couvert - Autres ministères certificateurs (nb)`/`Nombre de formations`,
+        "Non couvert - UAI inconnu (%)"=`Non couvert - UAI inconnu (nb)`/`Nombre de formations`,
+        "Territoires mal couverts (%)"=`Territoires mal couverts (nb)`/`Nombre de formations`,
+        "Non couvert - Problème de qualité du code formation en entrée (%)"=`Non couvert - Problème de qualité du code formation en entrée (nb)`/`Nombre de formations`,
+        "Non couvert - sans raison évidente (%)"=`Non couvert - sans raison évidente (nb)`/`Nombre de formations`
+      ) %>% 
+      filter(`Scope campagne 2025`=="Oui") %>% 
+      select(c("Nombre de formations", "Part du  catalogue", 
+               "Couverture (nb)", "Couverture (%)", 
+               
+               "Dont couvert par l'UAI lieu de formation (nb)",
+               "Dont couvert par l'UAI lieu de formation (%)",
+               "Dont couvert par l'UAI formateur (nb)",
+               "Dont couvert par l'UAI formateur (%)",
+               "Dont couvert par l'UAI Gestionnaire (nb)",
+               "Dont couvert par l'UAI Gestionnaire (%)",
+               
+               "Non couvert (nb)", "Non couvert (%)", "Dont sous le seuil de 20 élèves (nb)", 
+               "Dont sous le seuil de 20 élèves (%)", "Non couvert - Nouvelles formations (nb)", 
+               "Non couvert - Nouvelles formations (%)", "Non couvert - code certif inconnu (nb)", 
+               "Non couvert - code certif inconnu (%)", "Non couvert - Autres ministères certificateurs (nb)", 
+               "Non couvert - Autres ministères certificateurs (%)", "Non couvert - UAI inconnu (nb)", 
+               "Non couvert - UAI inconnu (%)", 
+               
+               "Territoires mal couverts (nb)","Territoires mal couverts (%)",
+               
+               "Non couvert - Problème de qualité du code formation en entrée (nb)", 
+               "Non couvert - Problème de qualité du code formation en entrée (%)",
+               
+               "Non couvert - sans raison évidente (nb)",
+               "Non couvert - sans raison évidente (%)"
+      )) %>% 
+      ungroup() %>% 
+      mutate(Scope="Scope campagne 2025")    
+  ) %>% 
+  bind_rows(
+    stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire %>%
+      filter(Périmètre=="Total") %>% 
+      select(-Périmètre,-`Niveau de formation`,-`Type diplôme`,-Filiere,-Certificateur,-`Scope campagne 2024`,-`Scope campagne 2025`) %>% 
+      mutate(Scope="Ensemble catalogue")
+  ) %>% 
+  select(Scope,everything())
+
+
+
+stats_catalogue_parcoursup_campagne_2025_synthese$stats_catalogue_partenaire_voeux <- stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux %>%
+  filter(Périmètre!="Total") %>%
+  group_by(`Scope campagne 2024`) %>%
+  select_if(is.numeric) %>% 
+  summarise_all(sum,na.rm=T) %>%
+  mutate(
+    "Couverture (%)"=`Couverture (nb)`/`Demandes tous voeux`,
+    
+    "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Demandes tous voeux`,
+    "Dont couvert par l'UAI formateur (%)"=`Dont couvert par l'UAI formateur (nb)`/`Demandes tous voeux`,
+    "Dont couvert par l'UAI Gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Demandes tous voeux`,
+    
+    "Non couvert (%)"=`Non couvert (nb)`/`Demandes tous voeux`,
+    "Dont sous le seuil de 20 élèves (%)"=`Dont sous le seuil de 20 élèves (nb)`/`Demandes tous voeux`,
+    "Non couvert - Nouvelles formations (%)"=`Non couvert - Nouvelles formations (nb)`/`Demandes tous voeux`,
+    "Non couvert - code certif inconnu (%)"=`Non couvert - code certif inconnu (nb)`/`Demandes tous voeux`,
+    "Non couvert - Autres ministères certificateurs (%)"=`Non couvert - Autres ministères certificateurs (nb)`/`Demandes tous voeux`,
+    "Non couvert - UAI inconnu (%)"=`Non couvert - UAI inconnu (nb)`/`Demandes tous voeux`,
+    "Territoires mal couverts (%)"=`Territoires mal couverts (nb)`/`Demandes tous voeux`,
+    "Non couvert - Problème de qualité du code formation en entrée (%)"=`Non couvert - Problème de qualité du code formation en entrée (nb)`/`Demandes tous voeux`,
+    "Non couvert - sans raison évidente (%)"=`Non couvert - sans raison évidente (nb)`/`Demandes tous voeux`
+  ) %>% 
+  filter(`Scope campagne 2024`=="Oui") %>% 
+  select(c("Demandes tous voeux", "Part du  catalogue", 
+           "Couverture (nb)", "Couverture (%)", 
+           
+           "Dont couvert par l'UAI lieu de formation (nb)",
+           "Dont couvert par l'UAI lieu de formation (%)",
+           "Dont couvert par l'UAI formateur (nb)",
+           "Dont couvert par l'UAI formateur (%)",
+           "Dont couvert par l'UAI Gestionnaire (nb)",
+           "Dont couvert par l'UAI Gestionnaire (%)",
+           
+           "Non couvert (nb)", "Non couvert (%)", "Dont sous le seuil de 20 élèves (nb)", 
+           "Dont sous le seuil de 20 élèves (%)", "Non couvert - Nouvelles formations (nb)", 
+           "Non couvert - Nouvelles formations (%)", "Non couvert - code certif inconnu (nb)", 
+           "Non couvert - code certif inconnu (%)", "Non couvert - Autres ministères certificateurs (nb)", 
+           "Non couvert - Autres ministères certificateurs (%)", "Non couvert - UAI inconnu (nb)", 
+           "Non couvert - UAI inconnu (%)", 
+           
+           "Territoires mal couverts (nb)","Territoires mal couverts (%)",
+           
+           "Non couvert - Problème de qualité du code formation en entrée (nb)", 
+           "Non couvert - Problème de qualité du code formation en entrée (%)",
+           
+           "Non couvert - sans raison évidente (nb)",
+           "Non couvert - sans raison évidente (%)"
+  )) %>% 
+  ungroup() %>% 
+  mutate(Scope="Scope campagne 2024") %>% 
+  bind_rows(
+    stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux %>%
+      filter(Périmètre!="Total") %>%
+      group_by(`Scope campagne 2025`) %>%
+      select_if(is.numeric) %>% 
+      summarise_all(sum,na.rm=T) %>%
+      mutate(
+        "Couverture (%)"=`Couverture (nb)`/`Demandes tous voeux`,
+        
+        "Dont couvert par l'UAI lieu de formation (%)"=`Dont couvert par l'UAI lieu de formation (nb)`/`Demandes tous voeux`,
+        "Dont couvert par l'UAI formateur (%)"=`Dont couvert par l'UAI formateur (nb)`/`Demandes tous voeux`,
+        "Dont couvert par l'UAI Gestionnaire (%)"=`Dont couvert par l'UAI Gestionnaire (nb)`/`Demandes tous voeux`,
+        
+        "Non couvert (%)"=`Non couvert (nb)`/`Demandes tous voeux`,
+        "Dont sous le seuil de 20 élèves (%)"=`Dont sous le seuil de 20 élèves (nb)`/`Demandes tous voeux`,
+        "Non couvert - Nouvelles formations (%)"=`Non couvert - Nouvelles formations (nb)`/`Demandes tous voeux`,
+        "Non couvert - code certif inconnu (%)"=`Non couvert - code certif inconnu (nb)`/`Demandes tous voeux`,
+        "Non couvert - Autres ministères certificateurs (%)"=`Non couvert - Autres ministères certificateurs (nb)`/`Demandes tous voeux`,
+        "Non couvert - UAI inconnu (%)"=`Non couvert - UAI inconnu (nb)`/`Demandes tous voeux`,
+        "Territoires mal couverts (%)"=`Territoires mal couverts (nb)`/`Demandes tous voeux`,
+        "Non couvert - Problème de qualité du code formation en entrée (%)"=`Non couvert - Problème de qualité du code formation en entrée (nb)`/`Demandes tous voeux`,
+        "Non couvert - sans raison évidente (%)"=`Non couvert - sans raison évidente (nb)`/`Demandes tous voeux`
+      ) %>% 
+      filter(`Scope campagne 2025`=="Oui") %>% 
+      select(c("Demandes tous voeux", "Part du  catalogue", 
+               "Couverture (nb)", "Couverture (%)", 
+               
+               "Dont couvert par l'UAI lieu de formation (nb)",
+               "Dont couvert par l'UAI lieu de formation (%)",
+               "Dont couvert par l'UAI formateur (nb)",
+               "Dont couvert par l'UAI formateur (%)",
+               "Dont couvert par l'UAI Gestionnaire (nb)",
+               "Dont couvert par l'UAI Gestionnaire (%)",
+               
+               "Non couvert (nb)", "Non couvert (%)", "Dont sous le seuil de 20 élèves (nb)", 
+               "Dont sous le seuil de 20 élèves (%)", "Non couvert - Nouvelles formations (nb)", 
+               "Non couvert - Nouvelles formations (%)", "Non couvert - code certif inconnu (nb)", 
+               "Non couvert - code certif inconnu (%)", "Non couvert - Autres ministères certificateurs (nb)", 
+               "Non couvert - Autres ministères certificateurs (%)", "Non couvert - UAI inconnu (nb)", 
+               "Non couvert - UAI inconnu (%)", 
+               
+               "Territoires mal couverts (nb)","Territoires mal couverts (%)",
+               
+               "Non couvert - Problème de qualité du code formation en entrée (nb)", 
+               "Non couvert - Problème de qualité du code formation en entrée (%)",
+               
+               "Non couvert - sans raison évidente (nb)",
+               "Non couvert - sans raison évidente (%)"
+      )) %>% 
+      ungroup() %>% 
+      mutate(Scope="Scope campagne 2025")    
+  ) %>% 
+  bind_rows(
+    stats_catalogue_parcoursup_campagne_2025$stats_catalogue_partenaire_voeux %>%
+      filter(Périmètre=="Total") %>% 
+      select(-Périmètre,-`Niveau de formation`,-`Type diplôme`,-Filiere,-Certificateur,-`Scope campagne 2024`,-`Scope campagne 2025`) %>% 
+      mutate(Scope="Ensemble catalogue")
+  ) %>% 
+  select(Scope,everything())
+
 #Le sup semble couvert sur l'établissement gestionnaire: https://dossier.parcoursup.fr/Candidats/public/fiches/afficherFicheFormation?g_ta_cod=24415
 #
 #Université de Montpellier, Antenne de Perpignan (66)
@@ -1210,7 +1550,7 @@ stats_catalogue_parcoursup_2024_10$stats_catalogue_partenaire_voeux <- stats_cat
 #
 #Après vérification, aucun uai des 131 antennes présentes dans PS n'ont de stats pour leurs UAI (91 antennes ont des stats en remontant au gestionnaire)
 listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>%
-filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+  filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
   filter(UAI_GES!=UAI_COMPOSANTE) %>% 
   mutate(
     `Type diplôme`=case_when(
@@ -1225,3 +1565,4 @@ filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>%
                 filter(filiere=="superieur") %>% 
                 distinct(uai) %>% 
                 pull(uai)))
+
