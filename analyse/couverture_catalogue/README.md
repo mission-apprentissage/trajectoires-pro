@@ -18,5 +18,6 @@ Nous voulons savoir plus précisément ce qui est contenu dans notre base et la 
 -   Parcoursup:
     -   [Catalogue Parcoursup - Juillet 2024](parcoursup/parcoursup_07_2024.html)
     -   [Catalogue Parcoursup - Octobre 2024](parcoursup/parcoursup_10_2024.html)
+    -   [Catalogue Parcoursup - Agrégation des catalogues Février et Octobre 2024](parcoursup/parcoursup_agregation_02_2024_ET_10_2024.html)
 -   Catalogue de l'apprentissage des ministères éducatifs:
     -   [Catalogue de l'apprentissage des ministères éducatifs - Juillet 2024](catalogue_formations_apprentissage/catalogue_formations_apprentissage_07_2024.html)

@@ -177,8 +177,8 @@ Le Bac Pro GA (Gestion Administration, CFD 40030001) a été remplacé par le Ba
 
 Pour le millésime 2021, nous n'avons pas de données pour le Bac Pro AGORA nous associons donc les données 2021 du Bac Pro GA au Bac Pro AGORA.
 
-[Donnée 2021 Bac Pro AGORA](https://exposition-recette.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/40030004?millesime=2021) :
-Ces données correspondent donc aux [données 2021 du Bac Pro GA](https://exposition-recette.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/40030001?millesime=2021)
+[Donnée 2021 Bac Pro AGORA](https://exposition.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/40030004?millesime=2021) :
+Ces données correspondent donc aux [données 2021 du Bac Pro GA](https://exposition.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/40030001?millesime=2021)
 
 Il est possible de savoir si les données proviennent d'une formation historique via l'attribut `donnee_source` de la réponse.
 
@@ -193,8 +193,8 @@ Il est possible de savoir si les données proviennent d'une formation historique
 
 Le CAP Sérrurier Métallier (CFD 50025431) a remplacé le CAP Métallerie (CFD 50025420). Pour le millésime 2021, nous n'avons pas de données pour le CAP Métallerie. Nous associons donc les données 2021 du CAP Sérrurier Métallier au CAP Métallerie.
 
-[Donnée 2021 CAP Métallerie](https://exposition-recette.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/50025420?millesime=2021) :
-Ces données correspondent donc aux [données 2021 du CAP Sérrurier Métallier](https://exposition-recette.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/50025431?millesime=2021)
+[Donnée 2021 CAP Métallerie](https://exposition.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/50025420?millesime=2021) :
+Ces données correspondent donc aux [données 2021 du CAP Sérrurier Métallier](https://exposition.inserjeunes.beta.gouv.fr/api/inserjeunes/certifications/50025431?millesime=2021)
 
 Il est possible de savoir si les données proviennent d'une formation plus récente via l'attribut `donnee_source` de la réponse.
 

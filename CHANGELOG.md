@@ -1,3 +1,10 @@
+# [1.22.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.21.2...v1.22.0) (2024-11-05)
+
+
+### Features
+
+* Insersup nouveau millesime ([#296](https://github.com/mission-apprentissage/trajectoires-pro/issues/296)) ([b35522b](https://github.com/mission-apprentissage/trajectoires-pro/commit/b35522bcc12e254f5a15f1c1fd503deaa5de7d9c))
+
 ## [1.21.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.21.1...v1.21.2) (2024-10-21)
 
 
