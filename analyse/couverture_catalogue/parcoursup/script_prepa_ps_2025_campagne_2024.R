@@ -1274,24 +1274,14 @@ stats_catalogue_parcoursup_campagne_2024$stats_catalogue_partenaire <- stats_cat
   ) %>% 
   select(Périmètre,`Niveau de formation`,`Type diplôme`,Filiere,Certificateur,`Scope campagne 2024`,`Scope campagne 2025`,everything()) %>% 
   mutate(
-<<<<<<< HEAD:analyse/couverture_catalogue/parcoursup/script_prepa_ps_2025_campagne_2024.R
     `Scope campagne 2024`=case_when(
       !is.na(`Scope campagne 2024`) & Filiere=="Sco."~`Scope campagne 2024`,
-=======
-    `Scope 2024`=case_when(
-      !is.na(`Scope 2024`) & Filiere=="Sco."~`Scope 2024`,
->>>>>>> main:analyse/couverture_catalogue/parcoursup/script_prepa_ps_2025_agreagation_02_2024_ET_10_2024.R
       Périmètre=="Total"~"Total",
       `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
       T~"Non"
     ),
-<<<<<<< HEAD:analyse/couverture_catalogue/parcoursup/script_prepa_ps_2025_campagne_2024.R
     `Scope campagne 2025`=case_when(
       !is.na(`Scope campagne 2025`) & Filiere=="Sco."~`Scope campagne 2025`,
-=======
-    `Scope 2025`=case_when(
-      !is.na(`Scope 2025`) & Filiere=="Sco."~`Scope 2025`,
->>>>>>> main:analyse/couverture_catalogue/parcoursup/script_prepa_ps_2025_agreagation_02_2024_ET_10_2024.R
       Périmètre=="Total"~"Total",
       `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
       T~"Non"
@@ -1307,24 +1297,14 @@ stats_catalogue_parcoursup_campagne_2024$stats_catalogue_partenaire_voeux <- sta
   ) %>% 
   select(Périmètre,`Niveau de formation`,`Type diplôme`,Filiere,Certificateur,`Scope campagne 2024`,`Scope campagne 2025`,everything()) %>% 
   mutate(
-<<<<<<< HEAD:analyse/couverture_catalogue/parcoursup/script_prepa_ps_2025_campagne_2024.R
     `Scope campagne 2024`=case_when(
       !is.na(`Scope campagne 2024`) & Filiere=="Sco."~`Scope campagne 2024`,
-=======
-    `Scope 2024`=case_when(
-      !is.na(`Scope 2024`) & Filiere=="Sco."~`Scope 2024`,
->>>>>>> main:analyse/couverture_catalogue/parcoursup/script_prepa_ps_2025_agreagation_02_2024_ET_10_2024.R
       Périmètre=="Total"~"Total",
       `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
       T~"Non"
     ),
-<<<<<<< HEAD:analyse/couverture_catalogue/parcoursup/script_prepa_ps_2025_campagne_2024.R
     `Scope campagne 2025`=case_when(
       !is.na(`Scope campagne 2025`) & Filiere=="Sco."~`Scope campagne 2025`,
-=======
-    `Scope 2025`=case_when(
-      !is.na(`Scope 2025`) & Filiere=="Sco."~`Scope 2025`,
->>>>>>> main:analyse/couverture_catalogue/parcoursup/script_prepa_ps_2025_agreagation_02_2024_ET_10_2024.R
       Périmètre=="Total"~"Total",
       `Niveau de formation` %in% 4:5 & Filiere=="App."~"Oui",
       T~"Non"

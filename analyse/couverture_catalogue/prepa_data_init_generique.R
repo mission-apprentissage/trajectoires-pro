@@ -246,6 +246,7 @@ data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
          ),
          millesime=str_sub(millesime,-4),
          Couverture=case_when(
+           nb_annee_term < 20 ~ "Sous le seuil de 20 élèves",
            !(`Couverture Taux En Emploi 6 Mois` & `Couverture Taux Autres 6 Mois` & `Couverture Taux En poursuite`)  ~ "Non couvert",
            (`Couverture Taux En Emploi 6 Mois` & `Couverture Taux Autres 6 Mois` & `Couverture Taux En poursuite`)& Avant_apres_continuum!="Sous le seuil de 20 élèves"  ~ "Couvert",
            millesime == max(millesime) & str_detect(Avant_apres_continuum, "continuum") ~ "Couvert",

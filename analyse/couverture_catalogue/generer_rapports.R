@@ -431,6 +431,93 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                   output_file = "parcoursup_campagne_2024.html"
 )
 
+parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+  filter(Couverture=="Non couvert") %>% 
+  distinct(certificateur_valideur_simpli,type_territoire,Nouvelle_formation,presence_UAI_ACCE,presence_Code_Scolarité_certif_info)
+
+### exemples ----
+#### UAI ---- 
+parcoursup_2024_02 %>% 
+  filter(CODEFORMATIONACCUEIL%in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Couverture=="Non couvert") %>% 
+      filter(is.na(presence_UAI_ACCE)) %>% 
+      pull(CODEFORMATIONACCUEIL) 
+  )) %>% 
+  select(UAI_COMPOSANTE,LIB_COMPOSANTE) %>%
+  setNames(c("uai","lib_uai")) %>% 
+  bind_rows(
+    parcoursup_2024_02 %>% 
+      filter(CODEFORMATIONACCUEIL%in% (
+        parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+          filter(Couverture=="Non couvert") %>% 
+          filter(is.na(presence_UAI_ACCE)) %>% 
+          pull(CODEFORMATIONACCUEIL) 
+      )) %>% 
+      select(UAI_AFF,LIB_AFF) %>% 
+      setNames(c("uai","lib_uai"))
+  ) %>% 
+  distinct() %>% 
+  View()
+
+
+parcoursup_2024_02 %>% 
+  filter(CODEFORMATIONACCUEIL%in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(certificateur_valideur_simpli=="Autres ministères certificateurs") %>% 
+      filter(Couverture=="Non couvert") %>% 
+      pull(CODEFORMATIONACCUEIL) 
+  )) %>% 
+  group_by(CODEFORMATION,LIBFORMATION,CODESPÉCIALITÉ,LIBSPÉCIALITÉ) %>% 
+  summarise(nb=n()) %>% 
+  ungroup() %>% 
+  mutate(part=prop.table(nb)) %>% 
+  arrange(desc(part)) %>% 
+  View()
+
+
+
+parcoursup_2024_02 %>% 
+  filter(CODEFORMATIONACCUEIL%in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Nouvelle_formation) %>% 
+      filter(Couverture=="Non couvert") %>% 
+      pull(CODEFORMATIONACCUEIL) 
+  )) %>% 
+  group_by(CODEFORMATION,LIBFORMATION,CODESPÉCIALITÉ,LIBSPÉCIALITÉ) %>% 
+  summarise(nb=n()) %>% 
+  ungroup() %>% 
+  mutate(part=prop.table(nb)) %>% 
+  arrange(desc(part)) %>% 
+  View()
+
+
+
+
+parcoursup_2024_02 %>% 
+  filter(CODEFORMATIONACCUEIL%in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(type_territoire=="Territoire mal couvert") %>% 
+      filter(Couverture=="Non couvert") %>% 
+      pull(CODEFORMATIONACCUEIL) 
+  )) %>% 
+  group_by(ACADÉMIE) %>% 
+  summarise(nb=n()) %>% 
+  ungroup() %>% 
+  mutate(part=prop.table(nb)) %>% 
+  arrange(desc(part)) %>% 
+  View()
+
+
+parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+    filter(Couverture=="Non couvert") %>% 
+    filter(scope)  %>% 
+    select(UAI,MEFSTAT11,Filiere,CODEFORMATIONACCUEIL,FORMATION_DIPLOME,data,LIBELLE_COURT) %>% 
+    unnest() %>% 
+    select(UAI,MEFSTAT11,LIBELLE_COURT,LIBELLE_LONG_200,Filiere,CODEFORMATIONACCUEIL,FORMATION_DIPLOME,contains("nb"),contains("taux")) 
+
+
+# write_csv2(parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert,file = file.path(chemin_racine,"Groupe-002 - Parcoursup/003 - 4 - Prepa ParcourSup 2025/parcoursup_2024_scope_non_couvert_sans_raison_a_transmettre.csv"))
 
 ## Parcoursup campagne 2025----
 
