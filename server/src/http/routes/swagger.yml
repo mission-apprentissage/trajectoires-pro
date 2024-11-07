@@ -519,7 +519,7 @@ components:
       description: Permet de filtrer la recherche avec une ou plusieurs UAI séparées par des virgules.
       schema:
         type: string
-        pattern: "^[0-9]{7}[A-Z]{1}$"
+        pattern: "^([0-9]{7}[A-Z]{1},)*[0-9]{7}[A-Z]{1}$"
 
     regions:
       name: regions
@@ -1180,12 +1180,14 @@ components:
         uai_type:
           type: string
           description: Typologie de l'UAI (lieu de formation, formateur, gestionnaire ou inconnu)
+          enum: [ "lieu_formation", "formateur", "gestionnaire", "inconnu" ]
         uai_donnee:
           type: string
           description: UAI de provenance de la donnée
         uai_donnee_type:
           type: string
           description: Typologie de l'UAI (lieu de formation, formateur, gestionnaire ou inconnu)
+          enum: [ "lieu_formation", "formateur", "gestionnaire", "inconnu" ]
         uai_lieu_formation:
           type: array
           description: Tableau des UAIs des lieux de formations associés à la formation dans le cas ou le type de l'UAI est formateur ou gestionnaire
@@ -1395,8 +1397,8 @@ components:
           schema:
             type: string
             example: |
-              code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-              50034303;apprentissage;2019;self;50034303;9;3;3;3;4;0;9;67;67;67;56;33;33;33;44;0;20
+              code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+              50034303;50034303;apprentissage;2019;self;50034303;9;3;3;3;4;0;9;67;67;67;56;33;33;33;44;0;20
 
     CertificationResponse:
       description: Une certification avec ses statistiques
@@ -1422,8 +1424,8 @@ components:
           schema:
             type: string
             example: |
-              region;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-              Auvergne-Rhône-Alpes;01022103;apprentissage;2018_2019;self;01022103;106;55;48;55;46;38;67;12;19;12;21;52;45;52;43;36;
+              region;code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+              Auvergne-Rhône-Alpes;01022103;01022103;apprentissage;2018_2019;self;01022103;106;55;48;55;46;38;67;12;19;12;21;52;45;52;43;36;
 
 
     RegionaleResponse:
@@ -1450,8 +1452,8 @@ components:
           schema:
             type: string
             example: |
-              uai;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-              0010826T;01022103;apprentissage;2019_2020;self;01022103;9;5;;;4;4;5;0;;;11;56;;;44;44;
+              uai;uai_type;uai_donnee;uai_donnee_type;code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+              0010826T;lieu_formation;self;0010826T;01022103;01022103;apprentissage;2019_2020;self;01022103;9;5;;;4;4;5;0;;;11;56;;;44;44;
 
     FormationResponse:
       description: Les statistiques d'une formation

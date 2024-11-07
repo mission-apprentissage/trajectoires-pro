@@ -251,6 +251,7 @@ describe("regionalesRoutes", () => {
         region: { code: "11", nom: "Île-de-France" },
         millesime: "2018_2019",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 19,
         nb_poursuite_etudes: 1,
@@ -281,8 +282,8 @@ describe("regionalesRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `region;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-Île-de-France;12345678;apprentissage;2018_2019;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
+        `region;code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+Île-de-France;12345678;12345678;apprentissage;2018_2019;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
 `
       );
     });
@@ -293,6 +294,7 @@ describe("regionalesRoutes", () => {
         region: { code: "11", nom: "Île-de-France" },
         millesime: "2018_2019",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 100,
         nb_poursuite_etudes: 1,
@@ -323,8 +325,8 @@ describe("regionalesRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `region;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-Île-de-France;12345678;apprentissage;2018_2019;self;12345678;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
+        `region;code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+Île-de-France;12345678;12345678;apprentissage;2018_2019;self;12345678;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
 `
       );
     });
