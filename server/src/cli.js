@@ -118,8 +118,12 @@ cli
   .command("computeContinuumStats")
   .description("Calcule les données statistiques manquantes pour les anciens/nouveaux diplomes")
   .argument("[stats]", "Le nom des stats à importer (formations,certifications,regionales)", asArray)
-  .action((stats) => {
-    runScript(() => computeContinuumStats({ stats }));
+  .option(
+    "--millesime [millesime]",
+    "Spécifie un millésime à importer (attention les millésimes nationales et formations/regionales sont différents"
+  )
+  .action((stats, options) => {
+    runScript(() => computeContinuumStats({ stats, millesime: options.millesime }));
   });
 
 cli
