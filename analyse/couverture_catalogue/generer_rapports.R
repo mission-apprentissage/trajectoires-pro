@@ -444,7 +444,6 @@ parcoursup_2024_02 %>%
       filter(is.na(presence_UAI_ACCE)) %>% 
       pull(CODEFORMATIONACCUEIL) 
   )) %>% 
-<<<<<<< HEAD
   left_join(
     correspondance_formation_certificateur %>% 
       mutate(Filiere=ifelse(Filiere=="App.","Apprentissage","Scolaire")),
@@ -453,29 +452,11 @@ parcoursup_2024_02 %>%
   filter(`Scope campagne 2024`=="Oui") %>% 
   group_by(LIBFORMATION,APPRENTISSAGEOUSCOLAIRE) %>% 
   summarise(nb=n())
-=======
-  select(UAI_COMPOSANTE,LIB_COMPOSANTE) %>%
-  setNames(c("uai","lib_uai")) %>% 
-  bind_rows(
-    parcoursup_2024_02 %>% 
-      filter(CODEFORMATIONACCUEIL%in% (
-        parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
-          filter(Couverture=="Non couvert") %>% 
-          filter(is.na(presence_UAI_ACCE)) %>% 
-          pull(CODEFORMATIONACCUEIL) 
-      )) %>% 
-      select(UAI_AFF,LIB_AFF) %>% 
-      setNames(c("uai","lib_uai"))
-  ) %>% 
-  distinct() %>% 
-  View()
->>>>>>> main
 
 
 parcoursup_2024_02 %>% 
   filter(CODEFORMATIONACCUEIL%in% (
     parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
-<<<<<<< HEAD
       filter(Couverture=="Non couvert") %>% 
       filter(is.na(presence_UAI_ACCE)) %>% 
       pull(CODEFORMATIONACCUEIL) 
@@ -505,20 +486,7 @@ parcoursup_2024_02 %>%
   filter(`Scope campagne 2024`=="Oui") %>% 
   group_by(LIBFORMATION,APPRENTISSAGEOUSCOLAIRE) %>% 
   summarise(nb=n())
-=======
-      filter(certificateur_valideur_simpli=="Autres ministères certificateurs") %>% 
-      filter(Couverture=="Non couvert") %>% 
-      pull(CODEFORMATIONACCUEIL) 
-  )) %>% 
-  group_by(CODEFORMATION,LIBFORMATION,CODESPÉCIALITÉ,LIBSPÉCIALITÉ) %>% 
-  summarise(nb=n()) %>% 
-  ungroup() %>% 
-  mutate(part=prop.table(nb)) %>% 
-  arrange(desc(part)) %>% 
-  View()
 
-
->>>>>>> main
 
 parcoursup_2024_02 %>% 
   filter(CODEFORMATIONACCUEIL%in% (
@@ -535,7 +503,6 @@ parcoursup_2024_02 %>%
   View()
 
 
-<<<<<<< HEAD
 #Territoire mal couvert
 
 
@@ -554,8 +521,6 @@ parcoursup_2024_02 %>%
   filter(`Scope campagne 2024`=="Oui") %>% 
   group_by(LIBFORMATION,APPRENTISSAGEOUSCOLAIRE) %>% 
   summarise(nb=n())
-=======
->>>>>>> main
 
 
 parcoursup_2024_02 %>% 
@@ -572,7 +537,6 @@ parcoursup_2024_02 %>%
   arrange(desc(part)) %>% 
   View()
 
-<<<<<<< HEAD
 ### Non couvert sans bonnes raison -----
 parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert <- parcoursup_2024_02 %>% 
   filter(CODEFORMATIONACCUEIL %in% (
@@ -732,18 +696,7 @@ exemple_pb_sans_raison_evidente <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_
   unnest() %>% 
   select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) %>%
   ungroup() 
-=======
 
-parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
-    filter(Couverture=="Non couvert") %>% 
-    filter(scope)  %>% 
-    select(UAI,MEFSTAT11,Filiere,CODEFORMATIONACCUEIL,FORMATION_DIPLOME,data,LIBELLE_COURT) %>% 
-    unnest() %>% 
-    select(UAI,MEFSTAT11,LIBELLE_COURT,LIBELLE_LONG_200,Filiere,CODEFORMATIONACCUEIL,FORMATION_DIPLOME,contains("nb"),contains("taux")) 
-
-
-# write_csv2(parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert,file = file.path(chemin_racine,"Groupe-002 - Parcoursup/003 - 4 - Prepa ParcourSup 2025/parcoursup_2024_scope_non_couvert_sans_raison_a_transmettre.csv"))
->>>>>>> main
 
 ## Parcoursup campagne 2025----
 
