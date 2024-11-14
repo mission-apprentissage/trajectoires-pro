@@ -444,6 +444,16 @@ parcoursup_2024_02 %>%
       filter(is.na(presence_UAI_ACCE)) %>% 
       pull(CODEFORMATIONACCUEIL) 
   )) %>% 
+<<<<<<< HEAD
+  left_join(
+    correspondance_formation_certificateur %>% 
+      mutate(Filiere=ifelse(Filiere=="App.","Apprentissage","Scolaire")),
+    by=c("LIBFORMATION"="Type diplôme","APPRENTISSAGEOUSCOLAIRE"="Filiere")
+  ) %>% 
+  filter(`Scope campagne 2024`=="Oui") %>% 
+  group_by(LIBFORMATION,APPRENTISSAGEOUSCOLAIRE) %>% 
+  summarise(nb=n())
+=======
   select(UAI_COMPOSANTE,LIB_COMPOSANTE) %>%
   setNames(c("uai","lib_uai")) %>% 
   bind_rows(
@@ -459,11 +469,43 @@ parcoursup_2024_02 %>%
   ) %>% 
   distinct() %>% 
   View()
+>>>>>>> main
 
 
 parcoursup_2024_02 %>% 
   filter(CODEFORMATIONACCUEIL%in% (
     parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+<<<<<<< HEAD
+      filter(Couverture=="Non couvert") %>% 
+      filter(is.na(presence_UAI_ACCE)) %>% 
+      pull(CODEFORMATIONACCUEIL) 
+  )) %>% 
+  left_join(
+    correspondance_formation_certificateur %>% 
+      mutate(Filiere=ifelse(Filiere=="App.","Apprentissage","Scolaire")),
+    by=c("LIBFORMATION"="Type diplôme","APPRENTISSAGEOUSCOLAIRE"="Filiere")
+  ) %>% 
+  filter(`Scope campagne 2025`=="Oui") %>% 
+  group_by(LIBFORMATION,APPRENTISSAGEOUSCOLAIRE) %>% 
+  summarise(nb=n())
+
+#Nouvelle formation 
+parcoursup_2024_02 %>% 
+  filter(CODEFORMATIONACCUEIL%in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Couverture=="Non couvert") %>% 
+      filter(Nouvelle_formation) %>% 
+      pull(CODEFORMATIONACCUEIL) 
+  )) %>% 
+  left_join(
+    correspondance_formation_certificateur %>% 
+      mutate(Filiere=ifelse(Filiere=="App.","Apprentissage","Scolaire")),
+    by=c("LIBFORMATION"="Type diplôme","APPRENTISSAGEOUSCOLAIRE"="Filiere")
+  ) %>% 
+  filter(`Scope campagne 2024`=="Oui") %>% 
+  group_by(LIBFORMATION,APPRENTISSAGEOUSCOLAIRE) %>% 
+  summarise(nb=n())
+=======
       filter(certificateur_valideur_simpli=="Autres ministères certificateurs") %>% 
       filter(Couverture=="Non couvert") %>% 
       pull(CODEFORMATIONACCUEIL) 
@@ -476,6 +518,7 @@ parcoursup_2024_02 %>%
   View()
 
 
+>>>>>>> main
 
 parcoursup_2024_02 %>% 
   filter(CODEFORMATIONACCUEIL%in% (
@@ -492,6 +535,27 @@ parcoursup_2024_02 %>%
   View()
 
 
+<<<<<<< HEAD
+#Territoire mal couvert
+
+
+parcoursup_2024_02 %>% 
+  filter(CODEFORMATIONACCUEIL%in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Couverture=="Non couvert") %>% 
+      filter(type_territoire=="Territoire mal couvert") %>% 
+      pull(CODEFORMATIONACCUEIL) 
+  )) %>% 
+  left_join(
+    correspondance_formation_certificateur %>% 
+      mutate(Filiere=ifelse(Filiere=="App.","Apprentissage","Scolaire")),
+    by=c("LIBFORMATION"="Type diplôme","APPRENTISSAGEOUSCOLAIRE"="Filiere")
+  ) %>% 
+  filter(`Scope campagne 2024`=="Oui") %>% 
+  group_by(LIBFORMATION,APPRENTISSAGEOUSCOLAIRE) %>% 
+  summarise(nb=n())
+=======
+>>>>>>> main
 
 
 parcoursup_2024_02 %>% 
@@ -508,6 +572,167 @@ parcoursup_2024_02 %>%
   arrange(desc(part)) %>% 
   View()
 
+<<<<<<< HEAD
+### Non couvert sans bonnes raison -----
+parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert <- parcoursup_2024_02 %>% 
+  filter(CODEFORMATIONACCUEIL %in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Couverture=="Non couvert") %>% 
+      filter(Nouvelle_formation=="FALSE" | is.na(Nouvelle_formation)) %>% 
+      pull(CODEFORMATIONACCUEIL)
+  )) %>% 
+  left_join(
+    correspondance_formation_certificateur %>% 
+      mutate(Filiere=ifelse(Filiere=="App.","Apprentissage","Scolaire")),
+    by=c("LIBFORMATION"="Type diplôme","APPRENTISSAGEOUSCOLAIRE"="Filiere")
+  ) 
+
+
+# write_csv2(parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert,file = file.path(chemin_racine,"Groupe-002 - Parcoursup/003 - 4 - Prepa ParcourSup 2025/parcoursup_2024_scope_non_couvert_sans_raison_a_transmettre.csv"))
+
+#### Problème UAI ----
+
+exemple_pb_uai <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert %>% 
+  filter(CODEFORMATIONACCUEIL %in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Couverture=="Non couvert") %>% 
+      filter(Nouvelle_formation=="FALSE" | is.na(Nouvelle_formation)) %>% 
+      filter(is.na(presence_UAI_ACCE)) %>% 
+      pull(CODEFORMATIONACCUEIL)
+    
+  )) %>% 
+  filter(`Scope campagne 2025`=="Oui") %>% 
+  group_by(LIBFORMATION ,APPRENTISSAGEOUSCOLAIRE ) %>% 
+  nest() %>% 
+  mutate(data=map(data,function(df){
+    df %>% 
+      arrange(desc(NBDEDEMANDES)) %>% 
+      slice(1)
+  })
+  ) %>%
+  unnest() %>% 
+  select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) 
+
+#### Probleme qualité du code SISE ----
+
+exemple_pb_qualite_sise <- listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
+  filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+  mutate(
+    `Type diplôme`=case_when(
+      str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+      str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+    ),
+    Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App.")
+  ) %>% 
+  filter(`Couverture avec code SISE retenu`=="Non couvert") %>% 
+  filter(!is.na(CODESISE)) %>% 
+  slice(1) %>% 
+  bind_rows(
+    listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
+      filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+        ),
+        Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App.")
+      ) %>% 
+      filter(`Couverture avec code SISE retenu`=="Non couvert") %>% 
+      filter(is.na(CODESISE),!is.na(`Code SISE retenu`)) %>% 
+      slice(1)    
+  ) %>% 
+  bind_rows(
+    listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
+      filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+        ),
+        Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App.")
+      ) %>% 
+      filter(`Couverture avec code SISE retenu`=="Couvert avec plusieurs SISE") %>% 
+      slice(1) 
+  ) %>% 
+  select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) 
+
+#### Probleme code certif  ----
+
+exemple_pb_code_certif <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert %>% 
+  filter(CODEFORMATIONACCUEIL %in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Couverture=="Non couvert") %>% 
+      filter(presence_Code_Scolarité_certif_info) %>% 
+      pull(CODEFORMATIONACCUEIL)
+    
+  )) %>% 
+  filter(!UAI_COMPOSANTE %in% exemple_pb_uai$UAI_COMPOSANTE) %>% 
+  filter(`Scope campagne 2025`=="Oui") %>% 
+  group_by(LIBFORMATION ,APPRENTISSAGEOUSCOLAIRE ) %>% 
+  nest() %>% 
+  mutate(data=map(data,function(df){
+    df %>% 
+      arrange(desc(NBDEDEMANDES)) %>% 
+      slice(1)
+  })
+  ) %>%
+  unnest() %>% 
+  select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) 
+
+
+#### Problème territoire ----
+
+set.seed(42)
+
+exemple_pb_territoire <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert %>% 
+  filter(CODEFORMATIONACCUEIL %in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Couverture=="Non couvert") %>% 
+      filter(certificateur_valideur_simpli!="Autres ministères certificateurs") %>% 
+      filter(type_territoire=="Territoire mal couvert") %>% 
+      pull(CODEFORMATIONACCUEIL)
+    
+  )) %>% 
+  filter(!UAI_COMPOSANTE %in% c(exemple_pb_uai$UAI_COMPOSANTE,exemple_pb_code_certif$UAI_COMPOSANTE)) %>% 
+  filter(`Scope campagne 2025`=="Oui") %>% 
+  filter(APPRENTISSAGEOUSCOLAIRE=="Scolaire") %>% 
+  group_by(LIBFORMATION ,APPRENTISSAGEOUSCOLAIRE,ACADÉMIE ) %>% 
+  nest() %>% 
+  mutate(data=map(data,function(df){
+    df %>% 
+      arrange(desc(NBDEDEMANDES)) %>% 
+      slice(1)
+  })
+  ) %>%
+  unnest() %>% 
+  select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) %>%
+  ungroup() %>% 
+  sample_n(3)
+
+#### Problème sans raison évidente ----
+
+exemple_pb_sans_raison_evidente <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert %>% 
+  filter(CODEFORMATIONACCUEIL %in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Couverture=="Non couvert") %>% 
+      filter(scope) %>% 
+      pull(CODEFORMATIONACCUEIL)
+    
+  )) %>% 
+  filter(!UAI_COMPOSANTE %in% c(exemple_pb_uai$UAI_COMPOSANTE,exemple_pb_code_certif$UAI_COMPOSANTE)) %>% 
+  filter(`Scope campagne 2024`=="Oui") %>% 
+  group_by(LIBFORMATION ,APPRENTISSAGEOUSCOLAIRE ) %>% 
+  nest() %>% 
+  mutate(data=map(data,function(df){
+    df %>% 
+      arrange(desc(NBDEDEMANDES)) %>% 
+      slice(1)
+  })
+  ) %>%
+  unnest() %>% 
+  select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) %>%
+  ungroup() 
+=======
 
 parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
     filter(Couverture=="Non couvert") %>% 
@@ -518,6 +743,7 @@ parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert <- parcoursup_
 
 
 # write_csv2(parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert,file = file.path(chemin_racine,"Groupe-002 - Parcoursup/003 - 4 - Prepa ParcourSup 2025/parcoursup_2024_scope_non_couvert_sans_raison_a_transmettre.csv"))
+>>>>>>> main
 
 ## Parcoursup campagne 2025----
 

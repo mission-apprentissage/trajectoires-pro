@@ -991,19 +991,23 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
         ) 
     }
   }else if(type_voeux=="parcoursup"){
-    catalogue_partenaire_renseigne_voeux <- catalogue_partenaire_renseigne %>% 
-      filter(is.na(CODEFORMATIONACCUEIL)) %>% 
-      mutate(!!sym(var_effectifs):=as.numeric(NA)) %>% 
-      bind_rows(
-        catalogue_partenaire_renseigne %>% 
-          filter(!is.na(CODEFORMATIONACCUEIL))%>% 
-          left_join(
-            voeux_parcoursup_affelnet_simpli_2023 %>%
-              select(c(CODEFORMATIONACCUEIL,all_of(var_effectifs)))%>% 
-              distinct(),
-            by="CODEFORMATIONACCUEIL"
-          )
-      )
+    if("Demandes tous voeux" %in% names(catalogue_partenaire_renseigne)){
+      catalogue_partenaire_renseigne_voeux <- catalogue_partenaire_renseigne 
+    }else{
+      catalogue_partenaire_renseigne_voeux <- catalogue_partenaire_renseigne %>% 
+        filter(is.na(CODEFORMATIONACCUEIL)) %>% 
+        mutate(!!sym(var_effectifs):=as.numeric(NA)) %>% 
+        bind_rows(
+          catalogue_partenaire_renseigne %>% 
+            filter(!is.na(CODEFORMATIONACCUEIL))%>% 
+            left_join(
+              voeux_parcoursup_affelnet_simpli_2023 %>%
+                select(c(CODEFORMATIONACCUEIL,all_of(var_effectifs)))%>% 
+                distinct(),
+              by="CODEFORMATIONACCUEIL"
+            )
+        )
+    }
   }
     
   
