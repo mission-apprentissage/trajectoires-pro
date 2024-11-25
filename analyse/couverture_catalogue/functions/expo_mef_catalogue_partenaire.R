@@ -10,8 +10,8 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
       ) %>% 
       left_join(
         n_mef %>%
-          filter(year(as.Date(DATE_FERMETURE,format="%d/%m/%Y"))>2024 | is.na(DATE_FERMETURE)) %>%
-          filter(year(as.Date(DATE_OUVERTURE,format="%d/%m/%Y"))<=2024 | is.na(DATE_OUVERTURE)) %>%
+          # filter(year(as.Date(DATE_FERMETURE,format="%d/%m/%Y"))>2024 | is.na(DATE_FERMETURE)) %>%
+          # filter(year(as.Date(DATE_OUVERTURE,format="%d/%m/%Y"))<=2024 | is.na(DATE_OUVERTURE)) %>%
           distinct(MEF_STAT_11,FORMATION_DIPLOME,DUREE_DISPOSITIF),
         by=c("MEFSTAT11"="MEF_STAT_11")
       ) %>% 
@@ -44,8 +44,8 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
                FORMATION_DIPLOME) %>% 
       left_join(
         n_mef %>%
-          filter(year(as.Date(DATE_FERMETURE,format="%d/%m/%Y"))>2024 | is.na(DATE_FERMETURE)) %>%
-          filter(year(as.Date(DATE_OUVERTURE,format="%d/%m/%Y"))<=2024 | is.na(DATE_OUVERTURE)) %>%
+          # filter(year(as.Date(DATE_FERMETURE,format="%d/%m/%Y"))>2024 | is.na(DATE_FERMETURE)) %>%
+          # filter(year(as.Date(DATE_OUVERTURE,format="%d/%m/%Y"))<=2024 | is.na(DATE_OUVERTURE)) %>%
           distinct(MEF_STAT_11,FORMATION_DIPLOME) %>% 
           rename(FORMATION_DIPLOME_annee_terminale=FORMATION_DIPLOME),
         by=c("MEFSTAT11_annee_terminale"="MEF_STAT_11")
@@ -265,7 +265,277 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
         (!is.na(presence_UAI_ACCE) & !(!Nouvelle_formation & is.na(presence_Code_Scolarité_certif_info)) & !Nouvelle_formation & type_territoire !="Territoire mal couvert"& certificateur_valideur_simpli=="Ministère de l'éducation nationale ou Ministère de l'agriculture")~T,
         T~F)
       )
-  }else if( type_source %in% c("superieur") ){
+    
+    }else if( type_source %in% c("cqlp") ){
+      
+      # cqlp ----
+      catalogue_partenaire_renseigne<- catalogue_init %>% 
+        left_join(
+          famillemetiers_2024 %>% 
+            select(`MEFSTAT11 2DE PRO Affelnet`,`MEFSTAT11 TERMINALE PRO IJ`,`Famille de métiers`),
+          by=c("MEFSTAT11"="MEFSTAT11 2DE PRO Affelnet")
+        )  %>% 
+        left_join(
+          n_mef %>%
+            # filter(year(as.Date(DATE_FERMETURE,format="%d/%m/%Y"))>2024 | is.na(DATE_FERMETURE)) %>%
+            # filter(year(as.Date(DATE_OUVERTURE,format="%d/%m/%Y"))<=2024 | is.na(DATE_OUVERTURE)) %>%
+            distinct(MEF_STAT_11,DUREE_DISPOSITIF),
+          by=c("MEFSTAT11"="MEF_STAT_11")
+        ) %>%
+        mutate(
+          MEFSTAT11_annee_terminale = case_when(
+            type_source %in% c("affelnet","cqlp")~ paste0(
+              str_sub(MEFSTAT11, 1, 3),
+              DUREE_DISPOSITIF,
+              str_sub(MEFSTAT11, 5, 11)
+            ),
+            type_source=="onisep" & Filiere=="Apprentissage" ~ NA,
+            type_source=="onisep" & Filiere=="Scolaire" ~ MEFSTAT11
+          ),
+          FORMATION_DIPLOME = case_when(
+            type_source=="cqlp"~ FORMATION_DIPLOME,
+            type_source=="affelnet"~ FORMATION_DIPLOME,
+            type_source=="onisep" & Filiere=="Apprentissage" ~ MEFSTAT11,
+            type_source=="onisep" & Filiere=="Scolaire" ~FORMATION_DIPLOME
+          ), 
+          famillemetiers=case_when(
+            Filiere=="Apprentissage"~"Hors famille de métiers",
+            MEFSTAT11%in%famillemetiers_2024$`MEFSTAT11 2DE PRO Affelnet` ~ "Famille de métiers",
+            T~"Hors famille de métiers"),
+          MEFSTAT11_annee_terminale=ifelse(is.na(`Famille de métiers`),MEFSTAT11_annee_terminale,`MEFSTAT11 TERMINALE PRO IJ`),
+          code_certification=ifelse(Filiere=="Scolaire",MEFSTAT11_annee_terminale,FORMATION_DIPLOME )) %>%   
+        select(-`MEFSTAT11 TERMINALE PRO IJ`,-`Famille de métiers`) %>%  
+        distinct(across(setdiff(names(catalogue_init),"code_certification")),
+                 MEFSTAT11_annee_terminale,
+                 code_certification,
+                 famillemetiers,
+                 FORMATION_DIPLOME)  %>% 
+        left_join(
+          n_mef %>%
+            # filter(year(as.Date(DATE_FERMETURE,format="%d/%m/%Y"))>2024 | is.na(DATE_FERMETURE)) %>%
+            # filter(year(as.Date(DATE_OUVERTURE,format="%d/%m/%Y"))<=2024 | is.na(DATE_OUVERTURE)) %>%
+            distinct(MEF_STAT_11,FORMATION_DIPLOME) %>% 
+            rename(FORMATION_DIPLOME_annee_terminale=FORMATION_DIPLOME),
+          by=c("MEFSTAT11_annee_terminale"="MEF_STAT_11")
+        ) %>%
+        left_join(
+          n_formation_diplome %>%
+            select(FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME,GROUPE_SPECIALITE,LETTRE_SPECIALITE,LIBELLE_COURT,LIBELLE_LONG_200,LIBELLE_STAT_33),
+          by="FORMATION_DIPLOME"
+        ) %>%  
+        left_join(
+          n_niveau_formation_diplome %>% 
+            select(NIVEAU_FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP),
+          by="NIVEAU_FORMATION_DIPLOME"
+        ) %>% 
+        left_join(
+          ensemble_data_formationsStats %>%
+            select(-`Clé ministere educatif`,-NIVEAU_FORMATION_DIPLOME,-code_formation_diplome,-niveau_diplome,-NIVEAU_QUALIFICATION_RNCP) %>%
+            distinct(),
+          by=c("UAI","code_certification")) %>% 
+        group_by(across(setdiff(names(catalogue_init),"code_certification")),famillemetiers,FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP,LIBELLE_COURT) %>% 
+        nest() %>% 
+        mutate(
+          type_formation=case_when(
+            is.na(NIVEAU_QUALIFICATION_RNCP)|NIVEAU_QUALIFICATION_RNCP==99~"Niveau inconnu",
+            T~NIVEAU_QUALIFICATION_RNCP
+          ),
+          # type_formation=case_when(
+          #   as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%0:4 ~ "Avant le bac",
+          #   as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%5:8 ~ "Après le bac",
+          #   is.na(NIVEAU_QUALIFICATION_RNCP)|NIVEAU_QUALIFICATION_RNCP==99~"Inconnu"
+          # ),
+          # type_formation=factor(type_formation,levels=c("Avant le bac","Après le bac","Inconnu")),
+          libelle_type_diplome=case_when(
+            str_detect(LIBELLE_COURT,"DIP3-CNAM")~"Titre professionnel homologué",
+            str_detect(LIBELLE_COURT,"TH3")~"Titre professionnel homologué",
+            str_detect(LIBELLE_COURT,"TH4")~"Titre professionnel homologué",
+            str_detect(LIBELLE_COURT,"TH5")~"Titre professionnel homologué",
+            str_detect(LIBELLE_COURT,"DIV-2")~"Autres diplômes",
+            str_detect(LIBELLE_COURT,"DIV-3")~"Autres diplômes",
+            str_detect(LIBELLE_COURT,"DIV-4")~"Autres diplômes",
+            str_detect(LIBELLE_COURT,"DIV-5")~"Autres diplômes",
+            str_detect(LIBELLE_COURT,"BPA")~"BPA",
+            str_detect(LIBELLE_COURT,"CSA")~"CSA",
+            str_detect(LIBELLE_COURT,"CS")~"CS",
+            str_detect(LIBELLE_COURT,"ASSIMI.BTS")~"BTS",
+            type_formation=="Niveau inconnu"~"Inconnu",
+            T~LIBELLE_COURT
+          )) %>% 
+        ungroup()    
+      
+      catalogue_partenaire_renseigne <- catalogue_init %>% 
+        left_join(catalogue_partenaire_renseigne,
+                  by=setdiff(names(catalogue_init),"code_certification"))
+      
+      
+      catalogue_partenaire_renseigne <-catalogue_partenaire_renseigne  %>% 
+        mutate(Couvert=map_lgl(data,~any(.$Couverture=="Couvert")),
+               Sous_seuil=map_lgl(data,~any(.$Couverture=="Sous le seuil de 20 élèves")),
+               Non_couvert=map_lgl(data,~all(is.na(.$Couverture)))
+        ) %>% 
+        mutate(
+          Couverture=case_when(
+            Couvert~"Couvert",
+            Sous_seuil~"Sous le seuil de 20 élèves",
+            TRUE~"Non couvert"
+          )
+        ) %>% 
+        select(-Couvert,-Sous_seuil,-Non_couvert) %>% 
+        mutate(
+          type_uai_lieu_formation=map_lgl(data,~any(.$uai_donnee_type=="lieu_formation")),
+          type_uai_formateur=map_lgl(data,~any(.$uai_donnee_type=="formateur")),
+          type_uai_gestionnaire=map_lgl(data,~any(.$uai_donnee_type=="gestionnaire")),
+          type_uai_inconnu=map_lgl(data,~any(.$uai_donnee_type=="inconnu"))
+        ) %>% 
+        mutate(
+          type_uai=case_when(
+            type_uai_lieu_formation ~"UAI Lieu formation - Couvert + sous le seuil",
+            type_uai_formateur~"UAI Formateur - Couvert + sous le seuil",
+            type_uai_gestionnaire~"UAI Gestionnaire - Couvert + sous le seuil",
+            type_uai_inconnu~"Inconnu",
+            TRUE~"Non couvert"
+          )
+        ) %>% 
+        select(-type_uai_lieu_formation,-type_uai_formateur,-type_uai_gestionnaire,-type_uai_inconnu) %>% 
+        left_join(
+          catalogue_partenaire_renseigne %>% 
+            unnest() %>%
+            left_join(
+              opendata_certifinfo %>%
+                filter(!is.na(Code_Scolarité)) %>%
+                distinct(Code_Scolarité,valideur,certificateur),
+              by=c("FORMATION_DIPLOME_annee_terminale"="Code_Scolarité")
+            ) %>% 
+            mutate(
+              certificateur_annee_terminale=case_when(
+                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
+                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
+                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
+                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
+                certificateur==""~NA,
+                T~certificateur
+              ),
+              valideur_annee_terminale=case_when(
+                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
+                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
+                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
+                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
+                valideur==""~NA,
+                T~valideur
+              )
+            ) %>% 
+            distinct(across(setdiff(names(catalogue_init),"code_certification")), famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
+            left_join(
+              opendata_certifinfo %>% 
+                filter(!is.na(Code_Scolarité)) %>% 
+                distinct(Code_Scolarité,valideur,certificateur),
+              by=c("FORMATION_DIPLOME"="Code_Scolarité")
+            ) %>% 
+            mutate(
+              certificateur=case_when(
+                str_detect(str_to_lower(certificateur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
+                str_detect(str_to_lower(certificateur),"agriculture")~"Ministère de l'agriculture",
+                str_detect(str_to_lower(certificateur),"éducation nationale")~"Ministère de l'éducation nationale",
+                # Filiere=="Scolaire"~"Ministère de l'éducation nationale"
+                certificateur==""~NA,
+                T~certificateur
+              ),
+              certificateur=case_when(
+                !is.na(certificateur)~certificateur,
+                T~certificateur_annee_terminale
+              ),
+              valideur=case_when(
+                str_detect(str_to_lower(valideur),"enseignement superieur")~"Ministère de l'enseignement supérieur et de la recherche",
+                str_detect(str_to_lower(valideur),"agriculture")~"Ministère de l'agriculture",
+                str_detect(str_to_lower(valideur),"éducation nationale")~"Ministère de l'éducation nationale",
+                # Filiere=="Scolaire"~"Ministère de l'éducation nationale",
+                valideur==""~NA,
+                T~valideur
+              ),
+              valideur=case_when(
+                !is.na(valideur)~valideur,
+                T~valideur_annee_terminale
+              ),
+              certificateur_valideur=case_when(
+                !is.na(certificateur)~certificateur,
+                T~valideur
+              ),
+              certificateur_valideur_simpli=case_when(
+                str_detect(certificateur_valideur,"Ministère de l'agriculture")|str_detect(certificateur_valideur,"Ministère de l'éducation nationale")~"Ministère de l'éducation nationale ou Ministère de l'agriculture",
+                T~"Autres ministères certificateurs"
+              ),
+              certificateur_valideur_simpli=factor(certificateur_valideur_simpli,levels = c("Ministère de l'éducation nationale ou Ministère de l'agriculture","Autres ministères certificateurs"))
+            ) %>% 
+            group_by(across(setdiff(names(catalogue_init),"code_certification"))) %>% 
+            filter(as.numeric(certificateur_valideur_simpli)==min(as.numeric(certificateur_valideur_simpli)))%>% 
+            distinct(across(setdiff(names(catalogue_init),"code_certification")), certificateur_valideur_simpli),
+          by=setdiff(names(catalogue_init),"code_certification")
+        ) %>% 
+        left_join(
+          ACCE_UAI %>% 
+            distinct(numero_uai,academie),
+          by=c("UAI"="numero_uai")
+        ) %>% 
+        mutate(
+          type_territoire = case_when(
+            str_sub(academie,1,1)=="4"~"Territoire mal couvert",
+            T ~ "Territoire normalement couvert"
+          )
+        ) %>% 
+        select(-academie) %>% 
+        left_join(
+          n_formation_diplome %>% 
+            # mutate(Nouvelle_formation=ifelse(is.na(ANCIEN_DIPLOME_1),T,F)) %>% 
+            mutate(
+              Nouvelle_formation=case_when(
+                DATE_PREMIERE_SESSION>2022~T,
+                T~F)
+            ) %>% 
+            distinct(FORMATION_DIPLOME,Nouvelle_formation),
+          by="FORMATION_DIPLOME"
+        ) %>%  
+        left_join(
+          ACCE_UAI %>% 
+            distinct(numero_uai) %>% 
+            mutate(presence_UAI_ACCE=T),
+          by=c("UAI"="numero_uai")
+        ) %>%
+        left_join(
+          unnest(.) %>% 
+            distinct(famillemetiers,FORMATION_DIPLOME,FORMATION_DIPLOME_annee_terminale) %>% 
+            mutate(FORMATION_DIPLOME_annee_terminale=ifelse(famillemetiers=="Hors famille de métiers",FORMATION_DIPLOME,FORMATION_DIPLOME_annee_terminale)) %>% 
+            left_join(
+              n_mef %>% 
+                mutate(MEF_STAT_9_annee_terminale=paste0(str_sub(MEF_STAT_9,1,3),DUREE_DISPOSITIF,str_sub(MEF_STAT_9,5,9))) %>% 
+                select(FORMATION_DIPLOME,MEF_STAT_9_annee_terminale) %>% 
+                left_join(
+                  n_mef %>% 
+                    select(FORMATION_DIPLOME,MEF_STAT_9) %>% 
+                    rename(FORMATION_DIPLOME_annee_terminale_ok=FORMATION_DIPLOME),
+                  by=c("MEF_STAT_9_annee_terminale"="MEF_STAT_9")
+                ) %>% 
+                distinct(FORMATION_DIPLOME,FORMATION_DIPLOME_annee_terminale_ok),
+              by=c("FORMATION_DIPLOME_annee_terminale"="FORMATION_DIPLOME")
+            ) %>% 
+            left_join(
+              opendata_certifinfo %>% 
+                filter(!is.na(Code_Scolarité)) %>% 
+                distinct(Code_Scolarité) %>% 
+                mutate(presence_Code_Scolarité_certif_info=T),
+              by=c("FORMATION_DIPLOME_annee_terminale_ok"="Code_Scolarité")
+            )  %>% 
+            filter(presence_Code_Scolarité_certif_info)  %>% 
+            distinct(FORMATION_DIPLOME,presence_Code_Scolarité_certif_info),
+          by="FORMATION_DIPLOME"
+        ) %>% 
+        mutate(scope=case_when(
+          (!is.na(presence_UAI_ACCE) & !(!Nouvelle_formation & is.na(presence_Code_Scolarité_certif_info)) & !Nouvelle_formation & type_territoire !="Territoire mal couvert"& certificateur_valideur_simpli=="Ministère de l'éducation nationale ou Ministère de l'agriculture")~T,
+          T~F)
+        )
+      
+      
+    }else if( type_source %in% c("superieur") ){
     #superieur ----
     
     catalogue_partenaire_renseigne <-catalogue_init %>% 

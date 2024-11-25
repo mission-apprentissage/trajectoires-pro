@@ -11,7 +11,7 @@ library(DT)
 # Données ----
 
 ## Données BCN ----
-n_mef <- read_csv2(file.path(chemin_racine_data,"n_mef_.csv"))
+n_mef <- read_csv2(file.path(chemin_racine_data,"BCN/n_mef.csv"))
 n_formation_diplome <- read_delim(file.path(chemin_racine_data,"BCN/n_formation_diplome_.csv"),delim = ";", escape_double = FALSE, trim_ws = TRUE)
 n_niveau_formation_diplome <- read_csv2(file.path(chemin_racine_data,"BCN/n_niveau_formation_diplome_.csv"))
 
