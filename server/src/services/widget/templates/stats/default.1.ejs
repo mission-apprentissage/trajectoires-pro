@@ -281,12 +281,18 @@
 
     @media screen and (max-width: <%=options.responsiveWidth %>) {
       :root {
-        --body-width: min(calc(var(--widget-width) * 0.8 / <%=maxEleves %>), 30px);
+        --body-width: 50px;
         --body-height: calc(var(--body-width) * 1.8125);
 
         --body-icon-width: calc(var(--body-width) * 0.4);
         --body-icon-left: calc(var(--body-width) * 0.29);
         --body-icon-top: calc(var(--body-width) * 0.5);
+      }
+
+
+      .body-group {
+        flex-wrap: wrap;
+        justify-content: normal;
       }
 
       .bodies {
@@ -331,6 +337,17 @@
       .block-title .icon {
         width: 22px;
         height: 22px;
+      }
+    }
+
+    @media screen and (max-width: 19em) {
+      :root {
+        --body-width: 30px;
+        --body-height: calc(var(--body-width) * 1.8125);
+
+        --body-icon-width: calc(var(--body-width) * 0.4);
+        --body-icon-left: calc(var(--body-width) * 0.29);
+        --body-icon-top: calc(var(--body-width) * 0.5);
       }
     }
   </style>
