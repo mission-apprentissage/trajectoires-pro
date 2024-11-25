@@ -517,7 +517,7 @@ parcoursup_2024_02 %>%
   summarise(nb=n()) %>% 
   ungroup() %>% 
   mutate(part=prop.table(nb)) %>% 
-  arrange(desc(part)) %
+  arrange(desc(part)) 
 
 
 ### Non couvert sans bonnes raison -----
@@ -680,19 +680,37 @@ exemple_pb_sans_raison_evidente <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_
   unnest() %>% 
   select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) %>%
   ungroup() 
-=======
+
 
 parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
     filter(Couverture=="Non couvert") %>% 
     filter(scope)  %>% 
     select(UAI,MEFSTAT11,Filiere,CODEFORMATIONACCUEIL,FORMATION_DIPLOME,data,LIBELLE_COURT) %>% 
     unnest() %>% 
-    select(UAI,MEFSTAT11,LIBELLE_COURT,LIBELLE_LONG_200,Filiere,CODEFORMATIONACCUEIL,FORMATION_DIPLOME,contains("nb"),contains("taux")) 
->>>>>>> main
+    select(UAI,MEFSTAT11,LIBELLE_COURT,LIBELLE_LONG_200,Filiere,CODEFORMATIONACCUEIL,FORMATION_DIPLOME,contains("nb"),contains("taux"))  %>% 
+  left_join(
+    parcoursup_campagne_2024 %>% 
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale",
+          T~LIBFORMATION
+        )
+      ) %>% 
+      left_join(
+        correspondance_formation_certificateur %>% 
+          mutate(Filiere=ifelse(Filiere=="Sco.","Scolaire","Apprentissage")),
+        by=c("Type diplôme","APPRENTISSAGEOUSCOLAIRE"="Filiere")
+      ) %>% 
+      select(CODEFORMATIONACCUEIL,LIBFORMATION,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE,`Scope campagne 2024`, `Scope campagne 2025`),
+    by="CODEFORMATIONACCUEIL"
+  )
+
+
+
 
 
 # write_csv2(parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert,file = file.path(chemin_racine,"Groupe-002 - Parcoursup/003 - 4 - Prepa ParcourSup 2025/parcoursup_2024_scope_non_couvert_sans_raison_a_transmettre.csv"))
->>>>>>> main
 
 #### Problème UAI ----
 
@@ -715,11 +733,50 @@ exemple_pb_uai <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couv
   })
   ) %>%
   unnest() %>% 
-  select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) 
+  select(LIBFORMATION,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) 
 
 #### Probleme qualité du code SISE ----
 
-exemple_pb_qualite_sise <- listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
+liste_pb_qualite_sise <- parcoursup_campagne_2024_sup_a_transmettre_PS %>% 
+  filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+  mutate(
+    `Type diplôme`=case_when(
+      str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+      str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+    ),
+    Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App.")
+  ) %>% 
+  filter(`Couverture avec code SISE retenu`=="Non couvert") %>% 
+  filter(!is.na(CODESISE)) %>% 
+  bind_rows(
+    parcoursup_campagne_2024_sup_a_transmettre_PS %>% 
+      filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+        ),
+        Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App.")
+      ) %>% 
+      filter(`Couverture avec code SISE retenu`=="Non couvert") %>% 
+      filter(is.na(CODESISE),!is.na(`Code SISE retenu`)) 
+  ) %>% 
+  bind_rows(
+    parcoursup_campagne_2024_sup_a_transmettre_PS %>% 
+      filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
+      mutate(
+        `Type diplôme`=case_when(
+          str_sub(LIBFORMATION,1,2)=="LP"~"Licence professionnelle",
+          str_sub(LIBFORMATION,1,7)=="Licence"~"Licence générale"
+        ),
+        Filiere=ifelse(APPRENTISSAGEOUSCOLAIRE=="Scolaire","Sco.","App.")
+      ) %>% 
+      filter(`Couverture avec code SISE retenu`=="Couvert avec plusieurs SISE") 
+    ) %>%  
+  select(LIBFORMATION,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE,`Code SISE retenu`,CODEFORMATIONACCUEIL) %>% 
+  distinct()
+
+exemple_pb_qualite_sise <- parcoursup_campagne_2024_sup_a_transmettre_PS %>% 
   filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
   mutate(
     `Type diplôme`=case_when(
@@ -732,7 +789,7 @@ exemple_pb_qualite_sise <- listeFormationsInserJeunes_finSession2024_01_10_2024_
   filter(!is.na(CODESISE)) %>% 
   slice(1) %>% 
   bind_rows(
-    listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
+    parcoursup_campagne_2024_sup_a_transmettre_PS %>% 
       filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
       mutate(
         `Type diplôme`=case_when(
@@ -746,7 +803,7 @@ exemple_pb_qualite_sise <- listeFormationsInserJeunes_finSession2024_01_10_2024_
       slice(1)    
   ) %>% 
   bind_rows(
-    listeFormationsInserJeunes_finSession2024_01_10_2024_a_transmettre_PS %>% 
+    parcoursup_campagne_2024_sup_a_transmettre_PS %>% 
       filter(FORMATION_PARAMÉTRÉE=="Paramétrée") %>% 
       mutate(
         `Type diplôme`=case_when(
@@ -758,7 +815,7 @@ exemple_pb_qualite_sise <- listeFormationsInserJeunes_finSession2024_01_10_2024_
       filter(`Couverture avec code SISE retenu`=="Couvert avec plusieurs SISE") %>% 
       slice(1) 
   ) %>% 
-  select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) 
+  select(LIBFORMATION,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE,`Code SISE retenu`,CODEFORMATIONACCUEIL) 
 
 #### Probleme code certif  ----
 
@@ -781,7 +838,7 @@ exemple_pb_code_certif <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_
   })
   ) %>%
   unnest() %>% 
-  select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) 
+  select(LIBFORMATION,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) 
 
 
 #### Problème territoire ----
@@ -823,8 +880,13 @@ exemple_pb_sans_raison_evidente <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_
       pull(CODEFORMATIONACCUEIL)
     
   )) %>% 
-  filter(!UAI_COMPOSANTE %in% c(exemple_pb_uai$UAI_COMPOSANTE,exemple_pb_code_certif$UAI_COMPOSANTE)) %>% 
+  # filter(!UAI_COMPOSANTE %in% c(exemple_pb_uai$UAI_COMPOSANTE,exemple_pb_code_certif$UAI_COMPOSANTE)) %>% 
   filter(`Scope campagne 2024`=="Oui") %>% 
+  left_join(
+    parcoursup_campagne_2024 %>% 
+      select(CODEFORMATIONACCUEIL,LIBSPÉCIALITÉ,NBDEDEMANDES),
+    by="CODEFORMATIONACCUEIL"
+  ) %>% 
   group_by(LIBFORMATION ,APPRENTISSAGEOUSCOLAIRE ) %>% 
   nest() %>% 
   mutate(data=map(data,function(df){
@@ -834,9 +896,66 @@ exemple_pb_sans_raison_evidente <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_
   })
   ) %>%
   unnest() %>% 
-  select(LIBFORMATION,,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) %>%
+  select(LIBFORMATION,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) %>%
   ungroup() 
 
+
+exemple_pb_sans_raison_evidente_apprentissage <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert %>% 
+  filter(CODEFORMATIONACCUEIL %in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Couverture=="Non couvert") %>% 
+      filter(scope) %>% 
+      pull(CODEFORMATIONACCUEIL)
+    
+  )) %>% 
+  filter(Filiere=="Apprentissage") %>% 
+  # filter(!UAI_COMPOSANTE %in% c(exemple_pb_uai$UAI_COMPOSANTE,exemple_pb_code_certif$UAI_COMPOSANTE)) %>% 
+  filter(`Scope campagne 2024`=="Oui") %>% 
+  left_join(
+    parcoursup_campagne_2024 %>% 
+      select(CODEFORMATIONACCUEIL,LIBSPÉCIALITÉ,NBDEDEMANDES),
+    by="CODEFORMATIONACCUEIL"
+  ) %>% 
+  group_by(LIBFORMATION ,APPRENTISSAGEOUSCOLAIRE ) %>% 
+  nest() %>% 
+  mutate(data=map(data,function(df){
+    df %>% 
+      arrange(desc(NBDEDEMANDES)) %>% 
+      slice(1)
+  })
+  ) %>%
+  unnest() %>% 
+  select(LIBFORMATION,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) %>%
+  ungroup() 
+
+
+exemple_pb_sans_raison_evidente_scolaire <- parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij_scope_non_couvert %>% 
+  filter(CODEFORMATIONACCUEIL %in% (
+    parcoursup_2024_renseigne_pas_ij_pas_isup_et_ij %>% 
+      filter(Couverture=="Non couvert") %>% 
+      filter(scope) %>% 
+      pull(CODEFORMATIONACCUEIL)
+    
+  )) %>% 
+  filter(Filiere=="Scolaire") %>% 
+  # filter(!UAI_COMPOSANTE %in% c(exemple_pb_uai$UAI_COMPOSANTE,exemple_pb_code_certif$UAI_COMPOSANTE)) %>% 
+  filter(`Scope campagne 2024`=="Oui") %>% 
+  left_join(
+    parcoursup_campagne_2024 %>% 
+      select(CODEFORMATIONACCUEIL,LIBSPÉCIALITÉ,NBDEDEMANDES),
+    by="CODEFORMATIONACCUEIL"
+  ) %>% 
+  group_by(LIBFORMATION ,APPRENTISSAGEOUSCOLAIRE,FORMATION_DIPLOME ) %>% 
+  nest() %>% 
+  mutate(data=map(data,function(df){
+    df %>% 
+      arrange(desc(NBDEDEMANDES)) %>% 
+      slice(1)
+  })
+  ) %>%
+  unnest() %>% 
+  select(LIBFORMATION,LIBSPÉCIALITÉ,APPRENTISSAGEOUSCOLAIRE,contains("UAI"),LIB_COMPOSANTE, LIB_AFF,ACADÉMIE) %>%
+  ungroup() 
 
 ## Parcoursup campagne 2025----
 
@@ -1046,6 +1165,69 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                   output_dir = "catalogue_formations_apprentissage",
                   output_file = "catalogue_formations_apprentissage_07_2024.html"
 )
+
+# CQLP  ----
+source("cqlp/script_cqlp_2024_11.R")
+
+FormationEtablissement <- read_csv(file.path(chemin_racine_data,"Donnees IJ/metabase/Recette - CQLP/FormationEtablissement.csv"))
+Formation <- read_csv(file.path(chemin_racine_data,"Donnees IJ/metabase/Recette - CQLP/Formation.csv"))
+Etablissement <- read_csv(file.path(chemin_racine_data,"Donnees IJ/metabase/Recette - CQLP/Etablissement.csv"))
+
+
+catalogue_cqlp_simpli <- FormationEtablissement %>% 
+  left_join(
+    Formation %>% 
+      select(ID,Cfd,Mef11,Voie) %>% 
+      mutate(code_certification=ifelse(Voie=="scolaire",Mef11,Cfd)),
+    by=c("FormationId"="ID")
+  ) %>% 
+  left_join(
+    Etablissement %>% 
+      select(ID,Uai),
+    by=c("EtablissementId"="ID")
+  ) %>% 
+  filter(str_detect(Millesime,"2024")) %>% 
+  select(Uai,Mef11,Cfd,Voie,code_certification)%>% 
+  setNames(c("UAI","MEFSTAT11","FORMATION_DIPLOME","Filiere","code_certification")) %>% 
+  mutate(Filiere=ifelse(Filiere=="apprentissage","Apprentissage","Scolaire"))
+
+catalogue_cqlp_simpli_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = catalogue_cqlp_simpli,type_source = "cqlp")
+
+catalogue_cqlp_simpli_renseigne %>%
+  filter(is.na(type_formation)) %>% 
+  select(Filiere,type_formation,MEFSTAT11,FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP)
+# select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,perimetre,libelle_type_diplome) 
+# ungroup() %>% 
+#   group_by(perimetre,type_formation,libelle_type_diplome,Filiere) %>% 
+#   summarise("Nombre de formations"=n()) 
+
+# catalogue_partenaire_renseigne %>%
+#   filter(is.na(type_formation)) 
+#   select(Filiere,type_formation,MEFSTAT11,FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP)
+
+catalogue_init %>% 
+  left_join(catalogue_partenaire_renseigne %>% 
+              select(-MEFSTAT11,-FORMATION_DIPLOME,-Filiere),
+            by=c("UAI","code_certification")) %>% 
+  filter(is.na(type_formation)) %>% 
+  select(names(catalogue_cqlp_simpli)) %>% 
+  slice(1)
+  View()
+  select(Filiere,type_formation,MEFSTAT11,FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP)
+
+catalogue_init %>% 
+  left_join(catalogue_partenaire_renseigne,
+            by=setdiff(names(catalogue_init),"CFD")) %>% 
+  filter(is.na(type_formation)) %>% 
+  select(CFD,FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP)
+
+
+
+stats_catalogue_cqlp_simpli <- expo_mef_stats_catalogue_partenaire(
+  catalogue_partenaire_renseigne = catalogue_cqlp_simpli_renseigne,
+  type_voeux="affelnet"
+)  
+
 
 
 

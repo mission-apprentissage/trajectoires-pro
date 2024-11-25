@@ -20,3 +20,6 @@ Nous voulons savoir plus précisément ce qui est contenu dans notre base et la 
     -   [Catalogue Parcoursup - Campagne 2025](parcoursup/parcoursup_campagne_2025.html)
 -   Catalogue de l'apprentissage des ministères éducatifs:
     -   [Catalogue de l'apprentissage des ministères éducatifs - Juillet 2024](catalogue_formations_apprentissage/catalogue_formations_apprentissage_07_2024.html)
+-   C'est qui le pro?
+    -   [Catalogue CQLP - Novembre 2024](cqlp/couverture_cqlp.html)
+
