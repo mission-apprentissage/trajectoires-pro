@@ -1192,6 +1192,7 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
 
 
 
+
 setwd(here::here())
 
 
