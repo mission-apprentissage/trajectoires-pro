@@ -1169,64 +1169,26 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
 # CQLP  ----
 source("cqlp/script_cqlp_2024_11.R")
 
-FormationEtablissement <- read_csv(file.path(chemin_racine_data,"Donnees IJ/metabase/Recette - CQLP/FormationEtablissement.csv"))
-Formation <- read_csv(file.path(chemin_racine_data,"Donnees IJ/metabase/Recette - CQLP/Formation.csv"))
-Etablissement <- read_csv(file.path(chemin_racine_data,"Donnees IJ/metabase/Recette - CQLP/Etablissement.csv"))
+
+rmarkdown::render("stats_catalogue_generique.Rmd", 
+                  params = list(
+                    catalogue_init=NULL,
+                    type_source = NULL,
+                    type_voeux= "affelnet",
+                    nom_catalogue= "CQLP",
+                    afficher_stats_voeux=FALSE,
+                    stats_catalogue=stats_catalogue_cqlp_simpli,
+                    afficher_stats_synthese=FALSE,
+                    stats_catalogue_synthese=NULL,
+                    nom_catalogue_detail = "CQLP",
+                    lien_drive_catalogue =NULL
+                  ),
+                  output_format = "html_document",
+                  output_dir = "cqlp",
+                  output_file = "couverture_cqlp.html"
+)
 
 
-catalogue_cqlp_simpli <- FormationEtablissement %>% 
-  left_join(
-    Formation %>% 
-      select(ID,Cfd,Mef11,Voie) %>% 
-      mutate(code_certification=ifelse(Voie=="scolaire",Mef11,Cfd)),
-    by=c("FormationId"="ID")
-  ) %>% 
-  left_join(
-    Etablissement %>% 
-      select(ID,Uai),
-    by=c("EtablissementId"="ID")
-  ) %>% 
-  filter(str_detect(Millesime,"2024")) %>% 
-  select(Uai,Mef11,Cfd,Voie,code_certification)%>% 
-  setNames(c("UAI","MEFSTAT11","FORMATION_DIPLOME","Filiere","code_certification")) %>% 
-  mutate(Filiere=ifelse(Filiere=="apprentissage","Apprentissage","Scolaire"))
-
-catalogue_cqlp_simpli_renseigne <- expo_mef_catalogue_partenaire(catalogue_init = catalogue_cqlp_simpli,type_source = "cqlp")
-
-catalogue_cqlp_simpli_renseigne %>%
-  filter(is.na(type_formation)) %>% 
-  select(Filiere,type_formation,MEFSTAT11,FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP)
-# select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,perimetre,libelle_type_diplome) 
-# ungroup() %>% 
-#   group_by(perimetre,type_formation,libelle_type_diplome,Filiere) %>% 
-#   summarise("Nombre de formations"=n()) 
-
-# catalogue_partenaire_renseigne %>%
-#   filter(is.na(type_formation)) 
-#   select(Filiere,type_formation,MEFSTAT11,FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP)
-
-catalogue_init %>% 
-  left_join(catalogue_partenaire_renseigne %>% 
-              select(-MEFSTAT11,-FORMATION_DIPLOME,-Filiere),
-            by=c("UAI","code_certification")) %>% 
-  filter(is.na(type_formation)) %>% 
-  select(names(catalogue_cqlp_simpli)) %>% 
-  slice(1)
-  View()
-  select(Filiere,type_formation,MEFSTAT11,FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP)
-
-catalogue_init %>% 
-  left_join(catalogue_partenaire_renseigne,
-            by=setdiff(names(catalogue_init),"CFD")) %>% 
-  filter(is.na(type_formation)) %>% 
-  select(CFD,FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP)
-
-
-
-stats_catalogue_cqlp_simpli <- expo_mef_stats_catalogue_partenaire(
-  catalogue_partenaire_renseigne = catalogue_cqlp_simpli_renseigne,
-  type_voeux="affelnet"
-)  
 
 
 
