@@ -194,7 +194,7 @@ export default () => {
           ...validators.uai(),
           ...validators.codeCertification(),
           ...validators.universe(),
-          millesime: Joi.string().default(null),
+          ...validators.millesime(null),
           ...validators.svg(),
         }
       );
@@ -232,7 +232,7 @@ export default () => {
           hash: Joi.string(),
           ...validators.uai(),
           ...validators.codeCertification(),
-          millesime: Joi.string().default(""),
+          ...validators.millesime(null),
           ...validators.widget("stats"),
         }
       );
@@ -291,7 +291,7 @@ export default () => {
         {
           ...validators.uai(),
           ...validators.codeCertification(),
-          millesime: Joi.string().default(null),
+          ...validators.millesime(null),
           ...validators.widget("stats"),
         }
       );
