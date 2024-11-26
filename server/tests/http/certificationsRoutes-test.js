@@ -244,6 +244,7 @@ describe("certificationsRoutes", () => {
       await insertCertificationsStats({
         millesime: "2020",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 19,
         nb_poursuite_etudes: 1,
@@ -274,8 +275,8 @@ describe("certificationsRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-12345678;apprentissage;2020;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
+        `code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+12345678;12345678;apprentissage;2020;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
 `
       );
     });
@@ -285,6 +286,7 @@ describe("certificationsRoutes", () => {
       await insertCertificationsStats({
         millesime: "2020",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 100,
         nb_poursuite_etudes: 1,
@@ -315,8 +317,8 @@ describe("certificationsRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-12345678;apprentissage;2020;self;12345678;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
+        `code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+12345678;12345678;apprentissage;2020;self;12345678;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
 `
       );
     });

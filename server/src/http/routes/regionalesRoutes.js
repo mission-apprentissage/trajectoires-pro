@@ -79,6 +79,7 @@ export default () => {
         columns: {
           region: (f) => f.region.nom,
           code_certification: (f) => f.code_certification,
+          code_formation_diplome: (f) => f.code_formation_diplome,
           filiere: (f) => f.filiere,
           millesime: (f) => f.millesime,
           donnee_source_type: (f) => f.donnee_source.type,

@@ -46,7 +46,7 @@ describe("importFormationsSupStats", () => {
     });
 
     const stats = await importFormationsSupStats({
-      parameters: [{ millesime: "2020_2021" }],
+      millesimes: ["2020_2021"],
     });
 
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });

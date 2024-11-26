@@ -109,3 +109,6 @@ dist
 trajectoires-pro.Rproj
 .Rhistory
 .Rdata
+
+# VS code
+.vscode
