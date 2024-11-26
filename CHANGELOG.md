@@ -1,3 +1,10 @@
+# [1.23.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.22.0...v1.23.0) (2024-11-26)
+
+
+### Features
+
+* ajout des cfds dans l'export csv ([#305](https://github.com/mission-apprentissage/trajectoires-pro/issues/305)) ([6b0cadc](https://github.com/mission-apprentissage/trajectoires-pro/commit/6b0cadc8508cfac108e315b386987e02e04f3f5a))
+
 # [1.22.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.21.2...v1.22.0) (2024-11-05)
 
 
