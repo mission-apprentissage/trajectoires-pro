@@ -92,9 +92,7 @@ export async function getBCNTable(tableName, options = {}) {
   let stream =
     options[tableName] ||
     compose(
-      await fetchStream(
-        `https://infocentre.pleiade.education.fr/bcn/index.php/export/CSV?n=${tableName}&separator=%7C`
-      ),
+      await fetchStream(`https://bcn.depp.education.fr/bcn/index.php/export/CSV?n=${tableName}&separator=%7C`),
       iconv.decodeStream("iso-8859-1")
     );
 

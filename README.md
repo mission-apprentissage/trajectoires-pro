@@ -91,9 +91,9 @@ yarn cli importRomes
 - `importAll` : Effectue toute les taches d'importations et de calculs des données.
 - `importBCN` : Importation des formations depuis la BCN.
   - Importation des fichiers de la BCN
-    - [N_FORMATION_DIPLOME](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/N_FORMATION_DIPLOME)
-    - [V_FORMATION_DIPLOME](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/V_FORMATION_DIPLOME)
-    - [N_MEF](https://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/N_MEF)
+    - [N_FORMATION_DIPLOME](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_FORMATION_DIPLOME)
+    - [V_FORMATION_DIPLOME](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/V_FORMATION_DIPLOME)
+    - [N_MEF](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_MEF)
   - Création des liens de continuités ([cf](#continuit%C3%A9-des-donn%C3%A9es-dans-le-cadre-de-la-renovation-des-formations)) entre les formations
 - `importRomes` :
   - Importation des codes ROMEs depuis l'API [api.data.gouv] (Voir [dataset](https://www.data.gouv.fr/fr/datasets/repertoire-operationnel-des-metiers-et-des-emplois-rome/))

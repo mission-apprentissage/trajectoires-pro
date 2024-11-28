@@ -12,7 +12,7 @@ function createNock(baseUrl, options = {}) {
 }
 
 export function mockBCN(callback, options) {
-  let client = createNock(`https://infocentre.pleiade.education.fr/bcn/index.php/export`, options);
+  let client = createNock(`https://bcn.depp.education.fr/bcn/index.php/export`, options);
   callback(client);
 
   return client;
