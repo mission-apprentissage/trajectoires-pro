@@ -106,6 +106,7 @@ export async function importFormationsSupStats(options = {}) {
               code_certification: formationStats.diplome,
               type: "self",
             },
+            libelle_etablissement: formationStats.uo_lib,
             "_meta.insersup": {
               etablissement_libelle: formationStats.uo_lib,
               etablissement_actuel_libelle: formationStats.uo_lib_actuel,

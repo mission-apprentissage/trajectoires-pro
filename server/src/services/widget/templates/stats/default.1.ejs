@@ -106,6 +106,13 @@
       vertical-align: text-top;
     }
 
+
+    .block-title .description {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 28px;
+    }
+
     .body-description {
       margin-bottom: 10px;
     }
@@ -274,12 +281,18 @@
 
     @media screen and (max-width: <%=options.responsiveWidth %>) {
       :root {
-        --body-width: min(calc(var(--widget-width) * 0.8 / <%=maxEleves %>), 30px);
+        --body-width: 50px;
         --body-height: calc(var(--body-width) * 1.8125);
 
         --body-icon-width: calc(var(--body-width) * 0.4);
         --body-icon-left: calc(var(--body-width) * 0.29);
         --body-icon-top: calc(var(--body-width) * 0.5);
+      }
+
+
+      .body-group {
+        flex-wrap: wrap;
+        justify-content: normal;
       }
 
       .bodies {
@@ -289,7 +302,7 @@
         flex-direction: column;
         gap: 2px;
         margin-bottom: 10px;
-        margin-left: 10px;
+        margin-left: 0px;
         ;
       }
 
@@ -314,7 +327,27 @@
 
     @media screen and (max-width: 30em) {
       .block-title {
-        font-size: 12px;
+        font-size: 16px;
+      }
+
+      .block-title .description {
+        font-size: 20px;
+      }
+
+      .block-title .icon {
+        width: 22px;
+        height: 22px;
+      }
+    }
+
+    @media screen and (max-width: 19em) {
+      :root {
+        --body-width: 45px;
+        --body-height: calc(var(--body-width) * 1.8125);
+
+        --body-icon-width: calc(var(--body-width) * 0.4);
+        --body-icon-left: calc(var(--body-width) * 0.29);
+        --body-icon-top: calc(var(--body-width) * 0.5);
       }
     }
   </style>
@@ -427,7 +460,7 @@
     <% } %>
 
     <div class="card-footer">
-      Données issues du dispositif <a target="_blank" href="https://beta.gouv.fr/startups/exposition-ij.html"><%= data.filiere === "superieur" ? "InserSup" : "InserJeunes" %></a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/"> D’où viennent ces données ?</a>
+      Données issues du dispositif <a target="_blank" class="external-small" href="https://beta.gouv.fr/startups/exposition-ij.html"><%= data.filiere === "superieur" ? "InserSup" : "InserJeunes" %></a> promotions <%= millesimesDouble ? millesimes[0] + " et " + millesimes[1] : millesimes[0] %>. <a target="_blank" class="external-small" href="https://documentation.exposition.inserjeunes.beta.gouv.fr/"> D’où viennent ces données ?</a>
     </div>
   </div>
 </body>

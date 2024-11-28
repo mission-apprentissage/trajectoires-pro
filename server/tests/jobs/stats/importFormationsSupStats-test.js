@@ -55,6 +55,7 @@ describe("importFormationsSupStats", () => {
       code_certification: "2500200",
       code_certification_type: "sise",
       libelle: "METIERS DE L'ENSEIGNEMENT",
+      libelle_etablissement: "Université Côte d'Azur",
       millesime: "2020_2021",
       filiere: "superieur",
       date_fermeture: new Date("2023-01-01T00:00:00.000Z"),
