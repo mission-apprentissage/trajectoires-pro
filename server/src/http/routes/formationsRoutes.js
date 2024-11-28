@@ -2,6 +2,7 @@ import express from "express";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import Joi from "joi";
+import { flatten } from "lodash-es";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
 import { addCsvHeaders, addJsonHeaders, sendStats, sendImageOnError } from "#src/http/utils/responseUtils.js";
@@ -15,7 +16,11 @@ import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import {
   getLastMillesimesFormations,
   getLastMillesimesFormationsSup,
+  getLastMillesimesFormationsYearFor,
+  getMillesimeFormationsFrom,
+  getMillesimeFormationsYearFrom,
   transformDisplayStat,
+  isMillesimesYearSingle,
 } from "#src/common/stats.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
 import BCNSiseRepository from "#src/common/repositories/bcnSise.js";
@@ -36,7 +41,12 @@ async function formationStats({ uai, codeCertificationWithType, millesime }) {
   const result = await FormationStatsRepository.first({
     uai,
     code_certification: code_certification,
-    millesime: formatMillesime(millesime),
+    millesime: [
+      millesime,
+      isMillesimesYearSingle(millesime)
+        ? getMillesimeFormationsFrom(millesime)
+        : getMillesimeFormationsYearFrom(millesime),
+    ],
   });
 
   if (!result) {
@@ -99,12 +109,35 @@ export default () => {
           ...(millesimes.length === 0
             ? {
                 $or: [
-                  { filiere: "superieur", millesime: getLastMillesimesFormationsSup() },
-                  { filiere: { $ne: "superieur" }, millesime: getLastMillesimesFormations() },
+                  {
+                    filiere: "superieur",
+                    millesime: {
+                      $in: [
+                        getMillesimeFormationsYearFrom(getLastMillesimesFormationsSup()),
+                        getLastMillesimesFormationsSup(),
+                      ],
+                    },
+                  },
+                  {
+                    filiere: { $ne: "superieur" },
+                    millesime: {
+                      $in: [
+                        getMillesimeFormationsYearFrom(getLastMillesimesFormations()),
+                        getLastMillesimesFormations(),
+                      ],
+                    },
+                  },
                 ],
               }
             : {
-                millesime: millesimes,
+                millesime: flatten(
+                  millesimes.map((m) => {
+                    return [
+                      m,
+                      isMillesimesYearSingle(m) ? getMillesimeFormationsFrom(m) : getMillesimeFormationsYearFrom(m),
+                    ];
+                  })
+                ),
               }),
         },
         {
@@ -161,15 +194,14 @@ export default () => {
           ...validators.uai(),
           ...validators.codeCertification(),
           ...validators.universe(),
-          millesime: Joi.string().default(null),
+          ...validators.millesime(null),
           ...validators.svg(),
         }
       );
       const codeCertificationWithType = formatCodeCertificationWithType(code_certification);
-      const millesime =
-        millesimeBase ||
-        (codeCertificationWithType.filiere === "superieur" && getLastMillesimesFormationsSup()) ||
-        getLastMillesimesFormations();
+      const millesime = formatMillesime(
+        millesimeBase || getLastMillesimesFormationsYearFor(codeCertificationWithType.filiere)
+      );
 
       return sendImageOnError(
         async () => {
@@ -200,21 +232,20 @@ export default () => {
           hash: Joi.string(),
           ...validators.uai(),
           ...validators.codeCertification(),
-          millesime: Joi.string().default(""),
+          ...validators.millesime(null),
           ...validators.widget("stats"),
         }
       );
 
       const codeCertificationWithType = formatCodeCertificationWithType(code_certification);
-      const millesime =
-        millesimeBase ||
-        (codeCertificationWithType.filiere === "superieur" && getLastMillesimesFormationsSup()) ||
-        getLastMillesimesFormations();
+      const millesime = formatMillesime(
+        millesimeBase || getLastMillesimesFormationsYearFor(codeCertificationWithType.filiere)
+      );
 
       try {
         const stats = await formationStats({ uai, codeCertificationWithType, millesime });
         const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
-        const data = await formatDataWidget({ stats, millesime, etablissement });
+        const data = await formatDataWidget({ stats, etablissement });
 
         const widget = await getUserWidget({
           hash,
@@ -240,7 +271,7 @@ export default () => {
           options,
           data: {
             error: err.name,
-            millesimes: formatMillesime(millesime).split("_"),
+            millesimes: millesime.split("_"),
             code_certification,
             uai,
           },
@@ -260,7 +291,7 @@ export default () => {
         {
           ...validators.uai(),
           ...validators.codeCertification(),
-          millesime: Joi.string().default(null),
+          ...validators.millesime(null),
           ...validators.widget("stats"),
         }
       );

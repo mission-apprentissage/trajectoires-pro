@@ -84,12 +84,33 @@ export function getLastMillesimesFormationsSup() {
   return config.millesimes.formationsSup[config.millesimes.formationsSup.length - 1];
 }
 
+export function getLastMillesimesFormationsFor(filiere) {
+  return filiere === "superieur" ? getLastMillesimesFormationsSup() : getLastMillesimesFormations();
+}
+
+export function getLastMillesimesFormationsYearFor(filiere) {
+  const millesime = filiere === "superieur" ? getLastMillesimesFormationsSup() : getLastMillesimesFormations();
+  return millesime.split("_")[1];
+}
+
+export function getMillesimeFormationsFrom(millesime) {
+  return `${parseInt(millesime) - 1}_${millesime}`;
+}
+
+export function getMillesimeFormationsYearFrom(millesime) {
+  return millesime.split("_")[1];
+}
+
 export function getMillesimesRegionales() {
   return config.millesimes.regionales;
 }
 
 export function getLastMillesimesRegionales() {
   return config.millesimes.regionales[config.millesimes.regionales.length - 1];
+}
+
+export function isMillesimesYearSingle(millesime) {
+  return millesime.split("_").length === 1 ? true : false;
 }
 
 function divide({ dividend, divisor }) {

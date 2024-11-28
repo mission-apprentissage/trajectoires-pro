@@ -80,6 +80,22 @@ const customJoi = Joi.extend(
 
       return { value, errors: errors ? helpers.error("codes_certification.invalid") : null };
     },
+  }),
+
+  (joi) => ({
+    type: "millesime",
+    base: joi.string(),
+    messages: {
+      "millesime.invalid": "{{#label}} must have format XXXX or XXXX-1_XXXX",
+    },
+    validate(value, helpers) {
+      const part = value.match(/^([0-9]{4})(_([0-9]{4}))?$/);
+      if (!part || (part[3] && parseInt(part[3]) < parseInt(part[1]))) {
+        return { value, errors: helpers.error("millesime.invalid") };
+      }
+
+      return { value, errors: null };
+    },
   })
 );
 
@@ -164,6 +180,12 @@ export function region() {
   };
 }
 
+export function millesime(defaultMillesime = null) {
+  return {
+    millesime: customJoi.millesime().default(defaultMillesime),
+  };
+}
+
 export function exports() {
   return {
     ext: Joi.string().valid("json", "csv").default("json"),
@@ -209,7 +231,7 @@ export function vues() {
 
 export function statsList(defaultMillesimes = []) {
   return {
-    millesimes: arrayOf(Joi.string().required()).default(defaultMillesimes),
+    millesimes: arrayOf(customJoi.millesime().required()).default(defaultMillesimes),
     code_certifications: customJoi.codesCertification(),
     ...universe("code_certifications"),
     ...exports(),

@@ -1,6 +1,7 @@
 import { StatsRepository } from "./base.js";
 import { dbCollection } from "#src/common/db/mongodb.js";
 import { name } from "#src/common/db/collections/formationsStats.js";
+import { getMillesimeFormationsYearFrom } from "#src/common/stats.js";
 
 export class FormationStatsRepository extends StatsRepository {
   constructor() {
@@ -32,6 +33,44 @@ export class FormationStatsRepository extends StatsRepository {
       .toArray();
 
     return result ? result.map((data) => data.millesime) : [];
+  }
+
+  // Retourne les formations du supérieur possédant un millésime aggregé et un millésime unique
+  async findMillesimeInDouble(millesime, filiere = "superieur") {
+    const millesimeYear = getMillesimeFormationsYearFrom(millesime);
+
+    return await dbCollection(this.getCollection())
+      .aggregate([
+        { $match: { filiere, millesime: millesimeYear } },
+        {
+          $lookup: {
+            from: this.getCollection(),
+            localField: "uai",
+            foreignField: "uai",
+            as: "others",
+            let: { code_certification_base: "$code_certification" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$filiere", filiere] },
+                      { $eq: ["$$code_certification_base", "$code_certification"] },
+                      { $eq: ["$millesime", millesime] },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          $match: {
+            "others.0": { $exists: true },
+          },
+        },
+      ])
+      .toArray();
   }
 }
 

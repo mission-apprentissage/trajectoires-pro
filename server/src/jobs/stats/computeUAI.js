@@ -56,6 +56,18 @@ async function computeUAIBase(millesime, result, handleError) {
       async (stats) => {
         const { uai, code_formation_diplome, millesime, filiere } = stats;
 
+        // On ne connait pas le type de l'uai pour le supérieur
+        if (filiere === "superieur") {
+          return {
+            uai: stats.uai,
+            uai_type: "inconnu",
+            uai_donnee: stats.uai,
+            uai_donnee_type: "inconnu",
+            code_certification: stats.code_certification,
+            millesime: millesime,
+          };
+        }
+
         // Le lieu de formation, le formateur et le gestionnaire sont identiques pour la voie scolaire
         if (filiere !== "apprentissage") {
           return {

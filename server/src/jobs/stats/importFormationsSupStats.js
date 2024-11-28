@@ -9,6 +9,7 @@ import { findRegionByNom, findAcademieByNom } from "#src/services/regions.js";
 import { computeCustomStats, getMillesimesFormationsSup, INSERSUP_STATS_NAMES } from "#src/common/stats.js";
 import { getCertificationSupInfo } from "#src/common/certification.js";
 import { InserSup } from "#src/services/dataEnseignementSup/InserSup.js";
+import FormationStatsRepository from "#src/common/repositories/formationStats.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -21,6 +22,21 @@ function formatStats(stats) {
     nb_annee_term: stats.nb_diplomes, // InserSup devrait mettre à jour ces données,
     //pour le moment on considère que le nombre en années terminale est le nombre de diplomées
   };
+}
+
+async function checkMillesimeInDouble(jobStats, millesimes) {
+  for (const millesime of millesimes) {
+    const results = await FormationStatsRepository.findMillesimeInDouble(millesime);
+    for (const result of results) {
+      jobStats.failed++;
+      const formatted = {
+        ...pick(result, ["uai", "code_certification", "filiere"]),
+        millesimes: [result.millesime, ...result.others.map((r) => r.millesime)],
+      };
+      logger.error(`Millésime en double pour : `, formatted);
+      jobStats.error = `Millésime en double pour : ${JSON.stringify(formatted)}`;
+    }
+  }
 }
 
 export async function importFormationsSupStats(options = {}) {
@@ -142,6 +158,11 @@ export async function importFormationsSupStats(options = {}) {
       { parallel: 10 }
     )
   );
+
+  // Vérifie que l'on a pas un mélange millésime unique/aggregé pour une même année/formation
+  // Actuellement le cas n'existe pas, on met une alerte au cas ou
+  // Si le cas apparait : modifier les routes bulks pour envoyer l'information suivant les règles de priorités des millésimes
+  await checkMillesimeInDouble(jobStats, millesimes);
 
   return jobStats;
 }

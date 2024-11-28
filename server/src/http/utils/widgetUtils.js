@@ -1,7 +1,7 @@
 import { buildDescriptionFiliere, buildDescription } from "#src/common/stats.js";
 import { formatMillesime } from "#src/http/utils/formatters.js";
 
-export async function formatDataWidget({ stats, millesime, region = null, etablissement = null }) {
+export async function formatDataWidget({ stats, region = null, etablissement = null }) {
   const description = buildDescription(stats);
 
   const data = {
@@ -12,7 +12,7 @@ export async function formatDataWidget({ stats, millesime, region = null, etabli
       { name: "emploi", value: stats.taux_en_emploi_6_mois },
       { name: "autres", value: stats.taux_autres_6_mois },
     ],
-    millesimes: formatMillesime(millesime).split("_"),
+    millesimes: formatMillesime(stats.millesime).split("_"),
     description,
     // TODO: fix libelle BCN
     formationLibelle: stats.libelle,

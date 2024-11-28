@@ -123,7 +123,7 @@ export default () => {
         {
           ...validators.codesCertifications(),
           ...validators.universe(),
-          millesime: Joi.string().default(getLastMillesimes()),
+          ...validators.millesime(getLastMillesimes()),
           ...validators.vues(),
           ...validators.svg(),
         },
@@ -164,7 +164,7 @@ export default () => {
           hash: Joi.string(),
           ...validators.codesCertifications(),
           ...validators.universe(),
-          millesime: Joi.string().default(getLastMillesimes()),
+          ...validators.millesime(getLastMillesimes()),
           ...validators.vues(),
           ...validators.widget("stats"),
         },
@@ -236,7 +236,7 @@ export default () => {
         {
           ...validators.codesCertifications(),
           ...validators.universe(),
-          millesime: Joi.string().default(null),
+          ...validators.millesime(null),
           ...validators.vues(),
           ...validators.widget("stats"),
         },
