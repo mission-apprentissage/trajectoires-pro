@@ -1,3 +1,10 @@
+# [1.24.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.23.0...v1.24.0) (2024-11-28)
+
+
+### Features
+
+* millesime unique pour Insersup ([#314](https://github.com/mission-apprentissage/trajectoires-pro/issues/314)) ([ad3efe3](https://github.com/mission-apprentissage/trajectoires-pro/commit/ad3efe39a82083c4b80f54389584f9612f40e41b))
+
 # [1.23.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.22.0...v1.23.0) (2024-11-26)
 
 
