@@ -1,12 +1,18 @@
 import { Readable } from "stream";
-import { omit, pick, merge } from "lodash-es";
+import { pick, merge } from "lodash-es";
 import { upsert } from "#src/common/db/mongodb.js";
 import { InserJeunes } from "#src/services/inserjeunes/InserJeunes.js";
 import { flattenArray, oleoduc, transformData, writeData, filterData } from "oleoduc";
 import { regionalesStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
-import { computeCustomStats, getMillesimesRegionales, INSERJEUNES_IGNORED_STATS_NAMES } from "#src/common/stats.js";
+import {
+  computeCustomStats,
+  getMillesimesRegionales,
+  INSERJEUNES_IGNORED_STATS_NAMES,
+  INSERJEUNES_STATS_NAMES,
+  getUnknownIJFields,
+} from "#src/common/stats.js";
 import { getCertificationInfo } from "#src/common/certification.js";
 import { getRegions, findRegionByCodeRegionAcademique } from "#src/services/regions.js";
 
@@ -60,6 +66,20 @@ export async function importRegionalesStats(options = {}) {
     flattenArray(),
     //Filtre la filiere agricole (non gérer actuellement)
     filterData(({ stats: { filiere } }) => filiere !== "agricole"),
+    transformData((data) => {
+      const unknownFields = getUnknownIJFields(data.stats, [
+        "code_certification",
+        "millesime",
+        "filiere",
+        ...INSERJEUNES_STATS_NAMES,
+        ...INSERJEUNES_IGNORED_STATS_NAMES,
+      ]);
+      if (unknownFields) {
+        logger.error(`Champs ${unknownFields.join(", ")} inconnus dans l'API InserJeunes`);
+      }
+
+      return data;
+    }),
     writeData(
       async ({ params: { region }, stats: regionaleStats }) => {
         const query = {
@@ -71,7 +91,7 @@ export async function importRegionalesStats(options = {}) {
 
         try {
           const certification = await getCertificationInfo(regionaleStats.code_certification);
-          const stats = omit(regionaleStats, INSERJEUNES_IGNORED_STATS_NAMES);
+          const stats = pick(regionaleStats, INSERJEUNES_STATS_NAMES);
           const customStats = computeCustomStats(regionaleStats);
 
           // Delete data compute with continuum job (= when type is not self)
@@ -87,6 +107,7 @@ export async function importRegionalesStats(options = {}) {
               "_meta.updated_on": new Date(),
             },
             $set: omitNil({
+              ...pick(regionaleStats, ["code_certification", "millesime", "filiere"]),
               ...stats,
               ...customStats,
               ...certification,

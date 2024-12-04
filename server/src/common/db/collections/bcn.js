@@ -1,5 +1,6 @@
 import { date, object, objectId, string, arrayOf } from "./jsonSchema/jsonSchemaTypes.js";
 import { diplomeSchema } from "./jsonSchema/diplomeSchema.js";
+import { familleMetierSchema } from "./jsonSchema/familleMetierSchema.js";
 import { metaSchema, metaImportSchema } from "./jsonSchema/metaSchema.js";
 
 export const name = "bcn";
@@ -20,6 +21,7 @@ export function schema() {
       libelle_long: string(),
       libelle_long_ancien: string(),
       diplome: diplomeSchema(),
+      familleMetier: familleMetierSchema(),
       _meta: metaSchema([metaImportSchema()]),
       date_ouverture: date(),
       date_premiere_session: string(),

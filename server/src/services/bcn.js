@@ -1,7 +1,9 @@
 import { compose, transformData, writeData, oleoduc } from "oleoduc";
 import { fetchStream } from "#src/common/utils/httpUtils.js";
 import iconv from "iconv-lite";
+import { createReadStream } from "fs";
 import { parseCsv } from "#src/common/utils/csvUtils.js";
+import config from "#src/config.js";
 
 export const ANCIENS_NIVEAUX_MAPPER = {
   5: "3", // CAP
@@ -106,4 +108,42 @@ export async function getBCNTable(tableName, options = {}) {
     ),
     parseCsv({ delimiter: "|" })
   );
+}
+
+export async function getFamilleMetier(filePath = null) {
+  const familleMetier = [];
+  const stream = compose(createReadStream(filePath || config.bcn.files.familleMetier));
+  await oleoduc(
+    stream,
+    parseCsv({ delimiter: ";" }),
+    writeData(async (data) => {
+      familleMetier.push({
+        code: data.FAMILLE_METIER,
+        libelle: data.LIBELLE_EDITION,
+      });
+    })
+  );
+
+  return familleMetier;
+}
+
+export async function getFamilleMetierSecondeCommune(options) {
+  const secondeCommune = [];
+
+  await oleoduc(
+    await getBCNTable("N_LIEN_MEF_FAMILLE_METIER", options),
+    writeData((data) => {
+      secondeCommune.push({
+        code: data["FAMILLE_METIER"],
+        mef: data["MEF"],
+      });
+    })
+  );
+
+  return secondeCommune;
+}
+
+export function getLienFamilleMetier(filePath = null) {
+  const stream = compose(createReadStream(filePath || config.bcn.files.lienFamilleMetier));
+  return compose(stream, parseCsv({ delimiter: ";" }));
 }
