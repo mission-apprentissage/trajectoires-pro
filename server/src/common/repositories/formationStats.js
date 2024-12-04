@@ -72,6 +72,22 @@ export class FormationStatsRepository extends StatsRepository {
       ])
       .toArray();
   }
+
+  async findUniqueUAI(millesime) {
+    return await dbCollection(this.getCollection())
+      .aggregate([
+        { $match: { millesime } },
+        {
+          $group: {
+            _id: "$uai",
+            uai: { $first: "$uai" },
+            region: { $first: "$region" },
+            academie: { $first: "$academie" },
+          },
+        },
+      ])
+      .stream();
+  }
 }
 
 export default new FormationStatsRepository();

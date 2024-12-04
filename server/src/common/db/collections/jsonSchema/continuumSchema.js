@@ -13,5 +13,5 @@ export function fields() {
 }
 
 export function required() {
-  return ["donnee_source"];
+  return [];
 }

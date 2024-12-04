@@ -23,6 +23,9 @@ export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "DEVENIR_part_autre_situation_6_mois",
   "DEVENIR_part_en_emploi_6_mois",
   "DEVENIR_part_poursuite_etudes",
+  "salaire_TS_Q1_12_mois",
+  "salaire_TS_Q2_12_mois",
+  "salaire_TS_Q3_12_mois",
 ];
 
 export const INSERSUP_STATS_NAMES = [
@@ -316,4 +319,12 @@ export function transformDisplayStat(isStream = false) {
     return flow(rules);
   }
   return transformData((data) => flow(rules)(data));
+}
+
+export function getUnknownIJFields(stats, keys) {
+  const unknownFields = Object.keys(stats).filter((s) => !keys.find((k) => k === s));
+  if (unknownFields.length === 0) {
+    return null;
+  }
+  return unknownFields;
 }

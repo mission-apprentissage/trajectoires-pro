@@ -1,0 +1,128 @@
+import { Readable } from "stream";
+import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
+import { upsert } from "#src/common/db/mongodb.js";
+import { getLoggerWithContext } from "#src/common/logger.js";
+import { omitNil } from "#src/common/utils/objectUtils.js";
+import { getMillesimes, getMillesimesFormations, getMillesimesRegionales } from "#src/common/stats.js";
+import { getCertificationInfo } from "#src/common/certification.js";
+import { pick } from "lodash-es";
+import { certificationsStats, regionalesStats, formationsStats } from "#src/common/db/collections/collections.js";
+import CertificationStatsRepository from "#src/common/repositories/certificationStats.js";
+import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
+import FormationStatsRepository from "#src/common/repositories/formationStats.js";
+
+const logger = getLoggerWithContext("import");
+
+const statCollections = {
+  formations: {
+    collection: () => formationsStats(),
+    repository: () => FormationStatsRepository,
+    millesimes: getMillesimesFormations,
+    baseData: (stats) => pick(stats, ["filiere", "uai", "region", "academie"]),
+    keys: ["uai"],
+  },
+  certifications: {
+    collection: () => certificationsStats(),
+    repository: () => CertificationStatsRepository,
+    millesimes: getMillesimes,
+    baseData: (stats) => pick(stats, ["filiere"]),
+    keys: [],
+  },
+  regionales: {
+    collection: () => regionalesStats(),
+    repository: () => RegionaleStatsRepository,
+    millesimes: getMillesimesRegionales,
+    baseData: (stats) => pick(stats, ["filiere", "region"]),
+    keys: ["region.code"],
+  },
+};
+
+export async function importAnneesNonTerminales(options = {}) {
+  const jobStats = { created: 0, updated: 0, failed: 0 };
+  const statsType = options.stats || ["certifications", "formations", "regionales"];
+  const millesimesFilter = options.millesimes || null;
+
+  await oleoduc(
+    Readable.from(statsType),
+    flattenArray(),
+    transformData((statType) => {
+      const millesimes = millesimesFilter ? millesimesFilter : statCollections[statType].millesimes();
+      return millesimes.map((millesime) => ({
+        statType,
+        millesime,
+      }));
+    }),
+    flattenArray(),
+    writeData(async (data) => {
+      const { statType, millesime } = data;
+      await oleoduc(
+        await statCollections[data.statType].repository().find({
+          filiere: "pro",
+          millesime: millesime,
+          "donnee_source.type": { $exists: true },
+        }),
+        transformData((stats) => {
+          const previousYearStats = [];
+          for (let year = stats.code_certification[3] - 1; year > 0; year--) {
+            const previousMef = stats.code_certification.substr(0, 3) + year + stats.code_certification.substr(3 + 1);
+            previousYearStats.push({
+              stats,
+              code_certification: previousMef,
+            });
+          }
+          return previousYearStats;
+        }),
+        flattenArray(),
+        writeData(async ({ code_certification, stats }) => {
+          const query = {
+            millesime: stats.millesime,
+            code_certification: code_certification,
+            ...pick(stats, statCollections[statType].keys),
+          };
+
+          try {
+            const certification = await getCertificationInfo(code_certification);
+            if (!certification) {
+              logger.error(`Certification ${code_certification} pour ${stats.code_formation_diplome} inconnue.`);
+              jobStats.failed++;
+              return;
+            }
+
+            const res = await upsert(statCollections[statType].collection(), query, {
+              $setOnInsert: {
+                "_meta.date_import": new Date(),
+                "_meta.created_on": new Date(),
+                "_meta.updated_on": new Date(),
+              },
+              $set: omitNil({
+                millesime: stats.millesime,
+                code_certification,
+                ...certification,
+                ...statCollections[statType].baseData(stats),
+                certificationsTerminales: [pick(stats, ["code_certification"])],
+              }),
+            });
+
+            if (res.upsertedCount) {
+              logger.info(`Nouvelle année ${statType}/${code_certification} ajoutée`, query);
+              jobStats.created++;
+            } else if (res.modifiedCount) {
+              jobStats.updated++;
+              logger.debug(`Nouvelle année ${statType}/${code_certification} mise à jour`, query);
+            } else {
+              logger.trace(`Nouvelle année ${statType}/${code_certification} déjà à jour`, query);
+            }
+          } catch (e) {
+            logger.error(
+              { err: e, query },
+              `Impossible d'importer les stats pour l'année' ${statType}/${code_certification}`
+            );
+            jobStats.failed++;
+          }
+        })
+      );
+    })
+  );
+
+  return jobStats;
+}
