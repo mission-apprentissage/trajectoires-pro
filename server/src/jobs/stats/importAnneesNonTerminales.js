@@ -5,7 +5,7 @@ import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { getMillesimes, getMillesimesFormations, getMillesimesRegionales } from "#src/common/stats.js";
 import { getCertificationInfo } from "#src/common/certification.js";
-import { pick } from "lodash-es";
+import { get, pick } from "lodash-es";
 import { certificationsStats, regionalesStats, formationsStats } from "#src/common/db/collections/collections.js";
 import CertificationStatsRepository from "#src/common/repositories/certificationStats.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
@@ -77,7 +77,10 @@ export async function importAnneesNonTerminales(options = {}) {
           const query = {
             millesime: stats.millesime,
             code_certification: code_certification,
-            ...pick(stats, statCollections[statType].keys),
+            ...statCollections[statType].keys.reduce((acc, key) => {
+              acc[key] = get(stats, key);
+              return acc;
+            }, {}),
           };
 
           try {
@@ -104,18 +107,18 @@ export async function importAnneesNonTerminales(options = {}) {
             });
 
             if (res.upsertedCount) {
-              logger.info(`Nouvelle année ${statType}/${code_certification} ajoutée`, query);
+              logger.info(`Nouvelle année pour la formation ${statType}/${code_certification} ajoutée`, query);
               jobStats.created++;
             } else if (res.modifiedCount) {
               jobStats.updated++;
-              logger.debug(`Nouvelle année ${statType}/${code_certification} mise à jour`, query);
+              logger.debug(`Nouvelle année pour la formation ${statType}/${code_certification} mise à jour`, query);
             } else {
-              logger.trace(`Nouvelle année ${statType}/${code_certification} déjà à jour`, query);
+              logger.trace(`Nouvelle année pour la formation ${statType}/${code_certification} déjà à jour`, query);
             }
           } catch (e) {
             logger.error(
               { err: e, query },
-              `Impossible d'importer les stats pour l'année' ${statType}/${code_certification}`
+              `Impossible d'importer une nouvelle année pour la formation ${statType}/${code_certification}`
             );
             jobStats.failed++;
           }
