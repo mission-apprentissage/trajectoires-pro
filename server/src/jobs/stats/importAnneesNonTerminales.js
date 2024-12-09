@@ -1,5 +1,6 @@
 import { Readable } from "stream";
 import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
+import streamToArray from "stream-to-array";
 import { upsert } from "#src/common/db/mongodb.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
@@ -10,6 +11,7 @@ import { certificationsStats, regionalesStats, formationsStats } from "#src/comm
 import CertificationStatsRepository from "#src/common/repositories/certificationStats.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
+import BCNMefRepository from "#src/common/repositories/bcnMef.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -37,6 +39,28 @@ const statCollections = {
   },
 };
 
+async function getCertificationForYear(year, { code_certification, code_formation_diplome }) {
+  const previousMef = code_certification.substr(0, 3) + year + code_certification.substr(3 + 1);
+  const certification = await getCertificationInfo(previousMef);
+
+  if (certification) {
+    return certification;
+  }
+
+  const certificationsFromMef = await streamToArray(
+    await BCNMefRepository.find({
+      formation_diplome: code_formation_diplome,
+      annee_dispositif: `${year}`,
+    })
+  );
+
+  if (certificationsFromMef.length === 1) {
+    return await getCertificationInfo(certificationsFromMef[0].mef_stat_11);
+  }
+
+  return null;
+}
+
 export async function importAnneesNonTerminales(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
   const statsType = options.stats || ["certifications", "formations", "regionales"];
@@ -61,19 +85,25 @@ export async function importAnneesNonTerminales(options = {}) {
           millesime: millesime,
           "donnee_source.type": { $exists: true },
         }),
-        transformData((stats) => {
+        transformData(async (stats) => {
           const previousYearStats = [];
           for (let year = stats.code_certification[3] - 1; year > 0; year--) {
-            const previousMef = stats.code_certification.substr(0, 3) + year + stats.code_certification.substr(3 + 1);
-            previousYearStats.push({
-              stats,
-              code_certification: previousMef,
-            });
+            const previousCertification = await getCertificationForYear(
+              year,
+              pick(stats, ["code_formation_diplome", "code_certification"])
+            );
+            if (previousCertification) {
+              previousYearStats.push({
+                stats,
+                certification: previousCertification,
+                code_certification: previousCertification.code_certification,
+              });
+            }
           }
           return previousYearStats;
         }),
         flattenArray(),
-        writeData(async ({ code_certification, stats }) => {
+        writeData(async ({ code_certification, certification, stats }) => {
           const query = {
             millesime: stats.millesime,
             code_certification: code_certification,
@@ -84,7 +114,6 @@ export async function importAnneesNonTerminales(options = {}) {
           };
 
           try {
-            const certification = await getCertificationInfo(code_certification);
             if (!certification) {
               logger.error(`Certification ${code_certification} pour ${stats.code_formation_diplome} inconnue.`);
               jobStats.failed++;
