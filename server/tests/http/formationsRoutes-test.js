@@ -955,6 +955,54 @@ describe("formationsRoutes", () => {
       });
     });
 
+    it("Vérifie qu'on peut obtenir une année non terminale", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats(
+        {
+          uai: "0751234J",
+          code_certification: "12345678910",
+          code_formation_diplome: "12345678",
+          filiere: "pro",
+          certificationsTerminales: [{ code_certification: "32220000000" }],
+        },
+        false
+      );
+
+      const response = await httpClient.get(`/api/inserjeunes/formations/0751234J-12345678910`);
+
+      assert.strictEqual(response.status, 200);
+      assert.deepStrictEqual(response.data, {
+        millesime: "2018_2019",
+        code_certification: "12345678910",
+        code_certification_type: "mef11",
+        code_formation_diplome: "12345678",
+        libelle: "LIBELLE",
+        libelle_etablissement: "Lycée",
+        filiere: "pro",
+        diplome: { code: "4", libelle: "BAC" },
+        certificationsTerminales: [{ code_certification: "32220000000" }],
+        donnee_source: {
+          code_certification: "12345678910",
+          type: "self",
+        },
+        academie: {
+          code: "01",
+          nom: "Paris",
+        },
+        region: {
+          code: "11",
+          nom: "Île-de-France",
+        },
+        uai: "0751234J",
+        formation_fermee: false,
+        _meta: {
+          titre: "Certification 12345678910, établissement 0751234J",
+          details:
+            "Données InserJeunes pour la certification 12345678910 (BAC filière pro) dispensée par l'établissement 0751234J, pour le millésime 2018_2019",
+        },
+      });
+    });
+
     it("Ne retourne pas de stats par défaut si il n'y a pas de données pour le millésime le plus récent", async () => {
       const { httpClient } = await startServer();
       await insertCFD({ code_certification: "12345678" });
