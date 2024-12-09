@@ -1,4 +1,4 @@
-import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
+import { filterData, flattenArray, oleoduc, transformData, writeData } from "oleoduc";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
@@ -22,12 +22,20 @@ export async function importBCNFamilleMetier(options = {}) {
       const bcnMef = await BCNMefRepository.first({
         mef: data["MEF"],
       });
+      if (!bcnMef) {
+        return null;
+      }
+
       const bcn = await BCNRepository.first({
         code_certification: bcnMef.mef_stat_11,
       });
+      if (!bcn) {
+        return null;
+      }
 
       return { data, bcn };
     }),
+    filterData((d) => d),
     transformData(async (data) => {
       const formationWithContinuum = await BCNRepository.cfdsParentAndChildren(data.bcn.code_certification);
       return formationWithContinuum.map((f) => {
