@@ -1,7 +1,7 @@
 import { compose, flattenArray, mergeStreams, oleoduc, transformData, writeData, filterData } from "oleoduc";
 import { createReadStream } from "fs";
 import { Readable } from "stream";
-import { omit, pick, merge } from "lodash-es";
+import { pick, merge } from "lodash-es";
 import { upsert } from "#src/common/db/mongodb.js";
 import path from "path";
 import { parseCsv } from "#src/common/utils/csvUtils.js";
@@ -11,7 +11,13 @@ import { formationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { findRegionByNom, findAcademieByCode } from "#src/services/regions.js";
-import { computeCustomStats, getMillesimesFormations, INSERJEUNES_IGNORED_STATS_NAMES } from "#src/common/stats.js";
+import {
+  computeCustomStats,
+  getMillesimesFormations,
+  INSERJEUNES_STATS_NAMES,
+  INSERJEUNES_IGNORED_STATS_NAMES,
+  getUnknownIJFields,
+} from "#src/common/stats.js";
 import { getCertificationInfo } from "#src/common/certification.js";
 import { getDirname } from "#src/common/utils/esmUtils.js";
 import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
@@ -126,6 +132,21 @@ export async function importFormationsStats(options = {}) {
       { parallel: 10 }
     ),
     flattenArray(),
+    transformData((data) => {
+      const unknownFields = getUnknownIJFields(data.stats, [
+        "uai",
+        "code_certification",
+        "millesime",
+        "filiere",
+        ...INSERJEUNES_STATS_NAMES,
+        ...INSERJEUNES_IGNORED_STATS_NAMES,
+      ]);
+      if (unknownFields) {
+        logger.error(`Champs ${unknownFields.join(", ")} inconnus dans l'API InserJeunes`);
+      }
+
+      return data;
+    }),
     writeData(
       async ({ params, stats: formationStats }) => {
         const query = {
@@ -137,7 +158,7 @@ export async function importFormationsStats(options = {}) {
 
         try {
           const certification = await getCertificationInfo(formationStats.code_certification);
-          const stats = omit(formationStats, INSERJEUNES_IGNORED_STATS_NAMES);
+          const stats = pick(formationStats, INSERJEUNES_STATS_NAMES);
           const customStats = computeCustomStats(formationStats);
 
           // Delete data compute with continuum job (= when type is not self)
@@ -153,6 +174,7 @@ export async function importFormationsStats(options = {}) {
               "_meta.updated_on": new Date(),
             },
             $set: omitNil({
+              ...pick(formationStats, ["code_certification", "uai", "millesime", "filiere"]),
               ...stats,
               ...customStats,
               ...certification,

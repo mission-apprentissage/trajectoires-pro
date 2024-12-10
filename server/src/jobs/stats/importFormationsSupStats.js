@@ -102,7 +102,7 @@ export async function importFormationsSupStats(options = {}) {
 
         try {
           const certification = await getCertificationSupInfo(formationStats.diplome);
-          const stats = omitNil(pick(formatStats(formationStats), INSERSUP_STATS_NAMES));
+          const stats = omitNil(pick(formatStats(formationStats), ["uai", "millesime", ...INSERSUP_STATS_NAMES]));
           const customStats = computeCustomStats(stats);
 
           // Delete data compute with continuum job (= when type is not self)

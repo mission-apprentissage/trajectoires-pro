@@ -14,16 +14,21 @@ export function metaIJSchema() {
   return object(
     {
       date_import: date(),
-      inserjeunes: object({
-        taux_poursuite_etudes: integer(),
-        taux_emploi_24_mois: integer(),
-        taux_emploi_18_mois: integer(),
-        taux_emploi_12_mois: integer(),
-        taux_emploi_6_mois: integer(),
-        DEVENIR_part_autre_situation_6_mois: integer(),
-        DEVENIR_part_en_emploi_6_mois: integer(),
-        DEVENIR_part_poursuite_etudes: integer(),
-      }),
+      inserjeunes: object(
+        {
+          taux_poursuite_etudes: integer(),
+          taux_emploi_24_mois: integer(),
+          taux_emploi_18_mois: integer(),
+          taux_emploi_12_mois: integer(),
+          taux_emploi_6_mois: integer(),
+          DEVENIR_part_autre_situation_6_mois: integer(),
+          DEVENIR_part_en_emploi_6_mois: integer(),
+          DEVENIR_part_poursuite_etudes: integer(),
+        },
+        {
+          additionalProperties: true,
+        }
+      ),
     },
     { required: ["date_import"] }
   );
