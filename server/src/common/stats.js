@@ -26,6 +26,9 @@ export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "salaire_TS_Q1_12_mois",
   "salaire_TS_Q2_12_mois",
   "salaire_TS_Q3_12_mois",
+  "salaire_TS_Q1_12_mois_prec",
+  "salaire_TS_Q2_12_mois_prec",
+  "salaire_TS_Q3_12_mois_prec",
 ];
 
 export const INSERSUP_STATS_NAMES = [
