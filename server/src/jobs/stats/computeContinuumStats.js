@@ -213,7 +213,7 @@ export async function computeContinuumStats(options = {}) {
 
   await oleoduc(
     mergeStreams(stats.map(streamStats)),
-    filterData(({ data }) => data?.donnee_source.type === "self" && (!millesime || data.millesime === millesime)),
+    filterData(({ data }) => data?.donnee_source?.type === "self" && (!millesime || data.millesime === millesime)),
     transformData(async ({ data, statName }) => {
       const query = { ...getQueryForStats({ data, statName, millesime: data.millesime }) };
 
