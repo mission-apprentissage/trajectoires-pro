@@ -1056,6 +1056,18 @@ components:
         taux_autres_24_mois:
           type: number
           nullable: true
+        salaire_12_mois_q1:
+          type: number
+          nullable: true
+          description: "en euros, 1er quartile du salaire net mensuel à 12 mois des sortants en emploi retrouvés dans la Base Tous Salariés (BTS)"
+        salaire_12_mois_q2:
+          type: number
+          description: "en euros, 2ème quartile du salaire net mensuel à 12 mois des sortants en emploi retrouvés dans la Base Tous Salariés (BTS)"
+          nullable: true
+        salaire_12_mois_q3:
+          type: number
+          nullable: true
+          description: "en euros, 3ème quartile du salaire net mensuel à 12 mois des sortants en emploi retrouvés dans la Base Tous Salariés (BTS)"
         _meta:
           $ref: "#/components/schemas/Meta"
 

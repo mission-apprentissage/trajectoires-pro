@@ -471,6 +471,9 @@ describe("computeUAI", () => {
           taux_autres_12_mois: 14,
           taux_autres_18_mois: 15,
           taux_autres_24_mois: 16,
+          salaire_12_mois_q1: 17,
+          salaire_12_mois_q2: 18,
+          salaire_12_mois_q3: 19,
         });
 
         await insertFormationsStats({
@@ -495,6 +498,9 @@ describe("computeUAI", () => {
           taux_autres_12_mois: 15,
           taux_autres_18_mois: 16,
           taux_autres_24_mois: 17,
+          salaire_12_mois_q1: 18,
+          salaire_12_mois_q2: 19,
+          salaire_12_mois_q3: 20,
         });
 
         const result = await computeUAI();
@@ -549,6 +555,9 @@ describe("computeUAI", () => {
               taux_autres_12_mois: 14,
               taux_autres_18_mois: 15,
               taux_autres_24_mois: 16,
+              salaire_12_mois_q1: 17,
+              salaire_12_mois_q2: 18,
+              salaire_12_mois_q3: 19,
             },
             {
               uai: "ABCD1234",
@@ -578,6 +587,9 @@ describe("computeUAI", () => {
               taux_autres_12_mois: 15,
               taux_autres_18_mois: 16,
               taux_autres_24_mois: 17,
+              salaire_12_mois_q1: 18,
+              salaire_12_mois_q2: 19,
+              salaire_12_mois_q3: 20,
             },
           ]
         );

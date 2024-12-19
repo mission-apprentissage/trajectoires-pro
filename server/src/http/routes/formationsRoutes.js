@@ -21,6 +21,7 @@ import {
   getMillesimeFormationsYearFrom,
   transformDisplayStat,
   isMillesimesYearSingle,
+  ALL_WITHOUT_INCOME,
 } from "#src/common/stats.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
 import BCNSiseRepository from "#src/common/repositories/bcnSise.js";
@@ -161,7 +162,7 @@ export default () => {
             millesime: (f) => f.millesime,
             donnee_source_type: (f) => f.donnee_source.type,
             donnee_source_code_certification: (f) => f.donnee_source.code_certification,
-            ...getStatsAsColumns(),
+            ...getStatsAsColumns(ALL_WITHOUT_INCOME),
           },
           mapper: (v) => (v === null ? "null" : v),
         });

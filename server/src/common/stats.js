@@ -13,6 +13,9 @@ export const INSERJEUNES_STATS_NAMES = [
   "nb_poursuite_etudes",
   "nb_sortant",
   "taux_rupture_contrats",
+  "salaire_12_mois_q1",
+  "salaire_12_mois_q2",
+  "salaire_12_mois_q3",
 ];
 export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "taux_poursuite_etudes",
@@ -63,6 +66,7 @@ export const CUSTOM_STATS_NAMES = [
 ];
 
 export const ALL = /.*/;
+export const ALL_WITHOUT_INCOME = /^(?!salaire_).*/;
 export const TAUX = /^taux_.*$/;
 export const VALEURS = /^nb_.*$/;
 

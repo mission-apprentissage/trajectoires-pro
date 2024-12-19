@@ -16,6 +16,6 @@ export function parseCsv(options = {}) {
   });
 }
 
-export function getStatsAsColumns() {
-  return getStats(ALL, (statName) => (f) => f[statName]);
+export function getStatsAsColumns(keyRegex = ALL) {
+  return getStats(keyRegex, (statName) => (f) => f[statName]);
 }
