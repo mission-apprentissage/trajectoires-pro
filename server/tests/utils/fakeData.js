@@ -19,7 +19,7 @@ import {
   users,
   CAFormations,
 } from "#src/common/db/collections/collections.js";
-import { ALL, getStatsCompute } from "#src/common/stats.js";
+import { ALL, ALL_WITHOUT_INCOME, getStatsCompute } from "#src/common/stats.js";
 import { hashPassword } from "#src/services/auth/auth.js";
 import { ObjectId } from "mongodb";
 
@@ -80,7 +80,7 @@ export function insertRegionalesStats(custom = {}, withStat = true) {
         code_formation_diplome: createCodeFormationDiplome(),
         libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },
-        ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
+        ...(withStat ? getStatsCompute(ALL_WITHOUT_INCOME, () => generateStatValue()) : {}),
         donnee_source: {
           code_certification,
           type: "self",
@@ -115,7 +115,7 @@ export function insertFormationsStats(custom = {}, withStat = true) {
           code_formation_diplome: createCodeFormationDiplome(),
           libelle: "LIBELLE",
           diplome: { code: "4", libelle: "BAC" },
-          ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
+          ...(withStat ? getStatsCompute(ALL_WITHOUT_INCOME, () => generateStatValue()) : {}),
           region: { code: "11", nom: "Île-de-France" },
           academie: {
             code: "01",

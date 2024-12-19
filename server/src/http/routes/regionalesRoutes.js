@@ -15,7 +15,7 @@ import {
   sendImageOnError,
 } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import { getLastMillesimesRegionales, transformDisplayStat } from "#src/common/stats.js";
+import { ALL_WITHOUT_INCOME, getLastMillesimesRegionales, transformDisplayStat } from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import { ErrorRegionaleNotFound, ErrorNoDataForMillesime, ErrorFormationNotExist } from "#src/http/errors.js";
@@ -84,7 +84,7 @@ export default () => {
           millesime: (f) => f.millesime,
           donnee_source_type: (f) => f.donnee_source.type,
           donnee_source_code_certification: (f) => f.donnee_source.code_certification,
-          ...getStatsAsColumns(),
+          ...getStatsAsColumns(ALL_WITHOUT_INCOME),
         },
         mapper: (v) => (v === null ? "null" : v),
       });
