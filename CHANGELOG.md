@@ -1,3 +1,10 @@
+# [1.26.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.25.0...v1.26.0) (2024-12-23)
+
+
+### Features
+
+* millesimes 2023 et salaires ([#317](https://github.com/mission-apprentissage/trajectoires-pro/issues/317)) ([2e96fe9](https://github.com/mission-apprentissage/trajectoires-pro/commit/2e96fe904bc8016e8afd671a59bee3cb0c7e067e))
+
 # [1.25.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.24.0...v1.25.0) (2024-12-23)
 
 
