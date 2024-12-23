@@ -1,3 +1,10 @@
+# [1.25.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.24.0...v1.25.0) (2024-12-23)
+
+
+### Features
+
+* familles de métiers ([#315](https://github.com/mission-apprentissage/trajectoires-pro/issues/315)) ([8f30046](https://github.com/mission-apprentissage/trajectoires-pro/commit/8f30046af3519a367be51f6e1b860053760c3595))
+
 # [1.24.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.23.0...v1.24.0) (2024-11-28)
 
 
