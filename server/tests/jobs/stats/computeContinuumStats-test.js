@@ -39,6 +39,9 @@ describe("computeContinuumStats", () => {
     taux_en_emploi_6_mois: 90,
     taux_en_formation: 10,
     taux_rupture_contrats: 10,
+    salaire_12_mois_q1: 19,
+    salaire_12_mois_q2: 20,
+    salaire_12_mois_q3: 21,
   };
 
   const DEFAULT_STATS_VARIANT = {
@@ -59,6 +62,9 @@ describe("computeContinuumStats", () => {
     taux_en_emploi_6_mois: 50,
     taux_en_formation: 25,
     taux_rupture_contrats: 10,
+    salaire_12_mois_q1: 19,
+    salaire_12_mois_q2: 20,
+    salaire_12_mois_q3: 21,
   };
 
   describe("Certifications", () => {
