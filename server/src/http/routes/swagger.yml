@@ -747,6 +747,8 @@ components:
       examples:
         scolaire:
           value: "MEFSTAT11:32221031409"
+        scolaire - seconde commune:
+          value: "MEFSTAT11:23810031211"
         apprentissage:
           value: "CFD:32031409"
 
@@ -767,6 +769,8 @@ components:
       examples:
         scolaire:
           value: "MEFSTAT11:32221031409"
+        scolaire - seconde commune:
+          value: "MEFSTAT11:23810030003"
         apprentissage:
           value: "CFD:32031409"
         superieur:
@@ -789,6 +793,8 @@ components:
       examples:
         scolaire:
           value: "MEFSTAT11:32221031409"
+        scolaire - seconde commune:
+          value: "MEFSTAT11:23810031211"
         apprentissage:
           value: "CFD:32031409"
 
@@ -916,14 +922,60 @@ components:
               * ancienne : les données proviennent d'une certification plus ancienne
               * nouvelle : les données proviennent d'une certification plus récente
 
+    FamilleMetier:
+      type: object
+      required:
+        - code
+        - libelle
+        - isAnneeCommune
+      description:
+        Présent si la certification fait partie d'une famille de métier.
+      properties:
+        code:
+          type: string
+          description: |
+            Le code de la famille de métiers défini sur la BCN.
+            Les codes au format "XXX_temp" ne sont pas présent sur la BCN, leur code est temporaire.
+        libelle:
+          type: string
+          description: Nom de la famille de métier
+        isAnneeCommune:
+          type: boolean
+          description: |
+            Indique si la certification correspond à l'année commune (Ex: seconde commune pour un bac PRO)
+
+    CertificationsTerminales:
+      description: |
+        Présent si le code de certification ne correspond pas à une dernière année.
+
+        Le tableau contient :
+          - Pour une seconde commune : l'ensemble des code de certifications des dernières années de spécialités ayant des statistiques.
+          - Pour le reste : un tableau n'ayant que le code de certification de la dernière année.
+      type: array
+      items:
+        type: object
+        required:
+          - code_certification
+        properties:
+          code_certification:
+            type: string
+            description: |
+              Code de certification d'une dernière année.
     Certification:
       type: object
       description: |
         Statistiques pour une certification.
-
+        <br /><br />
         Les taux retournés sont :
           * null quand les effectifs (nb_annee_term) sont < 20
           * absent si l'on ne peut pas les calculer (données manquantes)
+
+        Le champ "familleMetier" est présent lorsque la certification fait partie d'une famille de métier.
+        <br /><br />
+        Le champ "certificationsTerminales" est présent lorsque que le code de certification ne correspond pas à une dernière années :
+          - Il contient les codes de certifications de dernière année possédant des statistique.
+          - /!\ Lorsqu'il est présent, aucune statistique n'est envoyé, pour les récupérer il est nécessaire d'interroger
+          l'API avec les codes de dernières année
       required:
         - millesime
         - code_certification
@@ -952,6 +1004,10 @@ components:
           type: boolean
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
+        familleMetier:
+          $ref: "#/components/schemas/FamilleMetier"
+        certificationsTerminales:
+          $ref: "#/components/schemas/CertificationsTerminales"
         diplome:
           type: object
           properties:
@@ -1007,10 +1063,17 @@ components:
       type: object
       description: |
         Statistiques d'une certification pour une région.
-
+        <br /><br /> 
         Les taux retournés sont :
           * null quand les effectifs (nb_annee_term) sont < 20
           * absent si l'on ne peut pas les calculer (données manquantes)
+
+        Le champ "familleMetier" est présent lorsque la certification fait partie d'une famille de métier.
+        <br /><br />
+        Le champ "certificationsTerminales" est présent lorsque que le code de certification ne correspond pas à une dernière années :
+          - Il contient les codes de certifications de dernière année possédant des statistique.
+          - /!\ Lorsqu'il est présent, aucune statistique n'est envoyé, pour les récupérer il est nécessaire d'interroger
+          l'API avec les codes de dernières année
       required:
         - millesime
         - code_certification
@@ -1090,12 +1153,19 @@ components:
       type: object
       description: |
         Statistiques d'une certification pour une formation.
-
+        <br /><br /> 
+        /!\ Pour le supérieur, nb_annee_term correspond au nombre de diplomés uniquement
+        <br /><br />
         Les taux retournés sont :
           * null quand les effectifs (nb_annee_term) sont < 20
           * absent si l'on ne peut pas les calculer (données manquantes)
-
-        /!\ Pour le supérieur, nb_annee_term correspond au nombre de diplomés uniquement
+        <br /><br />
+        Le champ "familleMetier" est présent lorsque la certification fait partie d'une famille de métier.
+        <br /><br />
+        Le champ "certificationsTerminales" est présent lorsque que le code de certification ne correspond pas à une dernière années :
+          - Il contient les codes de certifications de dernière année possédant des statistique.
+          - /!\ Lorsqu'il est présent, aucune statistique n'est envoyé, pour les récupérer il est nécessaire d'interroger
+          l'API avec les codes de dernières année
       required:
         - uai
         - millesime

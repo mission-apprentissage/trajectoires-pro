@@ -1,6 +1,6 @@
 import { flatMap } from "lodash-es";
 
-const REGIONS = [
+export const REGIONS = [
   {
     code: "00",
     code_region_academique: "00",
