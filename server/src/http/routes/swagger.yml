@@ -1169,8 +1169,6 @@ components:
       type: object
       description: |
         Statistiques d'une certification pour une formation.
-        <br /><br /> 
-        /!\ Pour le supérieur, nb_annee_term correspond au nombre de diplomés uniquement
         <br /><br />
         Les taux retournés sont :
           * null quand les effectifs (nb_annee_term) sont < 20
