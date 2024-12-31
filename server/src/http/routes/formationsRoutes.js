@@ -117,25 +117,13 @@ export default () => {
           code_certification: code_certifications,
           ...(millesimes.length === 0
             ? {
-                $or: [
-                  {
-                    filiere: "superieur",
-                    millesime: {
-                      $in: [
-                        getMillesimeFormationsYearFrom(getLastMillesimesFormationsSup()),
-                        getLastMillesimesFormationsSup(),
-                      ],
-                    },
-                  },
-                  {
-                    filiere: { $ne: "superieur" },
-                    millesime: {
-                      $in: [
-                        getMillesimeFormationsYearFrom(getLastMillesimesFormations()),
-                        getLastMillesimesFormations(),
-                      ],
-                    },
-                  },
+                millesimeSup: [
+                  getMillesimeFormationsYearFrom(getLastMillesimesFormationsSup()),
+                  getLastMillesimesFormationsSup(),
+                ],
+                millesimeSco: [
+                  getMillesimeFormationsYearFrom(getLastMillesimesFormations()),
+                  getLastMillesimesFormations(),
                 ],
               }
             : {

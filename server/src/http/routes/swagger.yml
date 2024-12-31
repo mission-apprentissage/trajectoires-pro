@@ -49,7 +49,7 @@ paths:
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/millesimes"
-        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/code_certifications_with_sise"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
       responses:
@@ -70,7 +70,7 @@ paths:
         - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/millesimes"
-        - $ref: "#/components/parameters/code_certifications"
+        - $ref: "#/components/parameters/code_certifications_with_sise"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/items_par_page"
         - $ref: "#/components/parameters/ext"
@@ -88,7 +88,7 @@ paths:
     get:
       description: Obtenir les statistiques d'une certification
       parameters:
-        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/code_certification_with_sise"
         - $ref: "#/components/parameters/millesime"
         - $ref: "#/components/parameters/vue"
       responses:
@@ -122,7 +122,7 @@ paths:
     get:
       description: Génère une image SVG (widget) avec les statistiques d'une certification
       parameters:
-        - $ref: "#/components/parameters/code_certification"
+        - $ref: "#/components/parameters/code_certification_with_sise"
         - $ref: "#/components/parameters/millesime"
         - $ref: "#/components/parameters/vue"
         - $ref: "#/components/parameters/direction"
@@ -780,12 +780,16 @@ components:
       name: codes_certifications
       description: | 
         Un ou plusieurs codes de certification séparés par des virgules ou des |.
-
+        <br /><br/>
+        /!\ On ne peut pas mélanger le codes SISE et CFD/MEFSTAT11. Il n'est également pas possible de mettre plusieurs codes SISE.
+        <br /><br/>
         Un code certification peut-être :
           * un code formation diplome (CFD) pour la voie apprentissage, précédé de "CFD:"<br />
           Exemple: "CFD:12345678"
           * un code MEFSTAT11 pour la voie scolaire, précédé de "MEFSTAT11:"<br />
           Exemple: "MEFSTAT11:12345678910"
+          * un code SISE pour le supérieur, précédé de "SISE:"<br />
+          Exemple: "SISE:1234567"
       in: path
       required: true
       schema:
