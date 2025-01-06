@@ -1219,9 +1219,6 @@ components:
           type: number
         nb_annee_term:
           type: number
-        nb_diplome:
-          type: number
-          description: Uniquement pour le supérieur
         nb_poursuite_etudes:
           type: number
         nb_en_emploi_24_mois:

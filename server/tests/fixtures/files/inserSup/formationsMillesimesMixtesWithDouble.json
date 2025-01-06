@@ -35,7 +35,8 @@
         "diplome": "2500200",
         "date_inser": 18,
         "nationalite": "ensemble",
-        "genre": "ensemble"
+        "genre": "ensemble",
+        "obtention_diplome": "ensemble"
     },
     {
         "date_jeu": "2023_S2",
@@ -73,7 +74,8 @@
         "diplome": "2500200",
         "date_inser": 6,
         "nationalite": "ensemble",
-        "genre": "ensemble"
+        "genre": "ensemble",
+        "obtention_diplome": "ensemble"
     },
     {
         "date_jeu": "2023_S2",
@@ -111,7 +113,8 @@
         "diplome": "2500200",
         "date_inser": 12,
         "nationalite": "ensemble",
-        "genre": "ensemble"
+        "genre": "ensemble",
+        "obtention_diplome": "ensemble"
     },
     {
         "date_jeu": "2023_S2",
@@ -148,7 +151,8 @@
         "diplome": "2500200",
         "date_inser": 12,
         "nationalite": "ensemble",
-        "genre": "ensemble"
+        "genre": "ensemble",
+        "obtention_diplome": "ensemble"
     },
     {
         "date_jeu": "2023_S2",
@@ -185,7 +189,8 @@
         "diplome": "2500200",
         "date_inser": 6,
         "nationalite": "ensemble",
-        "genre": "ensemble"
+        "genre": "ensemble",
+        "obtention_diplome": "ensemble"
     },
     {
         "date_jeu": "2023_S2",
@@ -222,7 +227,8 @@
         "diplome": "2500200",
         "date_inser": 18,
         "nationalite": "ensemble",
-        "genre": "ensemble"
+        "genre": "ensemble",
+        "obtention_diplome": "ensemble"
     },
     {
         "date_jeu": "2023_S2",
@@ -259,7 +265,8 @@
         "diplome": "2500200",
         "date_inser": 24,
         "nationalite": "ensemble",
-        "genre": "ensemble"
+        "genre": "ensemble",
+        "obtention_diplome": "ensemble"
     },
     {
         "date_jeu": "2023_S2",
@@ -296,7 +303,8 @@
         "diplome": "2500200",
         "date_inser": 18,
         "nationalite": "ensemble",
-        "genre": "ensemble"
+        "genre": "ensemble",
+        "obtention_diplome": "ensemble"
     },
     {
         "date_jeu": "2023_S2",
@@ -333,7 +341,8 @@
         "diplome": "2500200",
         "date_inser": 6,
         "nationalite": "ensemble",
-        "genre": "ensemble"
+        "genre": "ensemble",
+        "obtention_diplome": "ensemble"
     },
     {
         "date_jeu": "2023_S2",
@@ -370,6 +379,7 @@
         "diplome": "2500200",
         "date_inser": 12,
         "nationalite": "ensemble",
-        "genre": "ensemble"
+        "genre": "ensemble",
+        "obtention_diplome": "ensemble"
     }
 ]

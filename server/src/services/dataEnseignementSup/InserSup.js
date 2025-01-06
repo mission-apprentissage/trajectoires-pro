@@ -61,17 +61,6 @@ function mergeApiStats(statsStream, millesime) {
           return acc;
         }
 
-        // On ne garde que le nombre de diplomés si la stat n'est que sur les diplômés
-        if (stat.obtention_diplome === "diplômé") {
-          acc[stat.promo.join("_")] = merge(acc[stat.promo.join("_")], {
-            nb_diplomes:
-              stat.nb_sortants !== null && stat.nb_poursuivants !== null
-                ? stat.nb_sortants + stat.nb_poursuivants
-                : null,
-          });
-          return acc;
-        }
-
         acc[stat.promo.join("_")] = merge(acc[stat.promo.join("_")], {
           ...stat,
           nb_annee_term:
@@ -105,7 +94,6 @@ function mergeApiStats(statsStream, millesime) {
         ...pickBy(stats.salaire, (_, key) => key.match(/salaire_12_mois/)),
         nb_poursuite_etudes: stats.nb_poursuivants,
         nb_sortant: stats.nb_sortants,
-        nb_diplome: stats.nb_diplomes,
         nb_annee_term: stats.nb_annee_term,
       };
     }),
@@ -128,7 +116,13 @@ class InserSup {
     return mergeApiStats(
       compose(
         Readable.from(etablissementStats),
-        filterData((stats) => stats.diplome !== "all" && stats.nationalite === "ensemble" && stats.genre === "ensemble")
+        filterData(
+          (stats) =>
+            stats.diplome !== "all" &&
+            stats.nationalite === "ensemble" &&
+            stats.genre === "ensemble" &&
+            stats.obtention_diplome === "ensemble"
+        )
       ),
       millesime
     );
@@ -139,7 +133,13 @@ class InserSup {
     const results = await mergeApiStats(
       compose(
         Readable.from(certificationsStats),
-        filterData((stats) => stats.diplome !== "all" && stats.nationalite === "ensemble" && stats.genre === "ensemble")
+        filterData(
+          (stats) =>
+            stats.diplome !== "all" &&
+            stats.nationalite === "ensemble" &&
+            stats.genre === "ensemble" &&
+            stats.obtention_diplome === "ensemble"
+        )
       ),
       millesime
     );
