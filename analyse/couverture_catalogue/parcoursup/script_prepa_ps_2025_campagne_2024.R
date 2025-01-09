@@ -366,8 +366,7 @@ parcoursup_campagne_2024_param<- parcoursup_campagne_2024 %>%
 
 ### Catalogue des MNE ----
 
-catalogue_mne <- read_csv2(file.path(chemin_racine_data,"catalogue MNE/formation_2024-10-07T13_25_04.773Z.csv"))
-
+catalogue_mne <- read_csv2(file.path(chemin_racine_data,"catalogue MNE/catalogue_mne.csv"))
 catalogue_mne <- catalogue_mne %>% 
   mutate_all(str_remove_all,"=") %>% 
   mutate_all(str_remove_all,"\"")
@@ -1276,7 +1275,7 @@ stats_catalogue_parcoursup_campagne_2024$stats_catalogue_partenaire_voeux <- sta
   ))
 
 
-correspondance_formation_certificateur <- read_excel(file.path(chemin_racine,"Groupe-002 - Parcoursup/003 - 4 - Prepa ParcourSup 2025/correspondance_formation_certificateur.xlsx"))
+correspondance_formation_certificateur <- read_excel(file.path(chemin_racine,"Groupe-002 - Parcoursup/002 - 4 - Prepa ParcourSup 2025/correspondance_formation_certificateur.xlsx"))
 
 stats_catalogue_parcoursup_campagne_2024$stats_catalogue_partenaire <- stats_catalogue_parcoursup_campagne_2024$stats_catalogue_partenaire %>% 
   left_join(
@@ -1579,3 +1578,27 @@ parcoursup_campagne_2024_sup_a_transmettre_PS %>%
                 distinct(uai) %>% 
                 pull(uai)))
 
+
+stats_catalogue_parcoursup_campagne_2024$stats_catalogue_partenaire <- stats_catalogue_parcoursup_campagne_2024$stats_catalogue_partenaire %>% 
+  mutate(`Non couvert - sans raison évidente (nb)`=`Non couvert (nb)`-`Dont sous le seuil de 20 élèves (nb)`-`Non couvert - Nouvelles formations (nb)`-`Non couvert - code certif inconnu (nb)`-`Non couvert - Autres ministères certificateurs (nb)`-`Non couvert - UAI inconnu (nb)` -`Territoires mal couverts (nb)`-`Non couvert - Problème de qualité du code formation en entrée (nb)`,
+         "Non couvert - sans raison évidente (%)"=`Non couvert - sans raison évidente (nb)`/`Nombre de formations`
+  )
+
+
+stats_catalogue_parcoursup_campagne_2024$stats_catalogue_partenaire_voeux <- stats_catalogue_parcoursup_campagne_2024$stats_catalogue_partenaire_voeux %>%
+  mutate(`Non couvert - sans raison évidente (nb)`=`Non couvert (nb)`-`Dont sous le seuil de 20 élèves (nb)`-`Non couvert - Nouvelles formations (nb)`-`Non couvert - code certif inconnu (nb)`-`Non couvert - Autres ministères certificateurs (nb)`-`Non couvert - UAI inconnu (nb)` -`Territoires mal couverts (nb)`-`Non couvert - Problème de qualité du code formation en entrée (nb)`,
+         "Non couvert - sans raison évidente (%)"=`Non couvert - sans raison évidente (nb)`/`Demandes tous voeux`
+  )
+
+
+
+stats_catalogue_parcoursup_campagne_2024_synthese$stats_catalogue_partenaire <- stats_catalogue_parcoursup_campagne_2024_synthese$stats_catalogue_partenaire %>% 
+  mutate(`Non couvert - sans raison évidente (nb)`=`Non couvert (nb)`-`Dont sous le seuil de 20 élèves (nb)`-`Non couvert - Nouvelles formations (nb)`-`Non couvert - code certif inconnu (nb)`-`Non couvert - UAI inconnu (nb)` -`Territoires mal couverts (nb)`-`Non couvert - Problème de qualité du code formation en entrée (nb)`,
+         "Non couvert - sans raison évidente (%)"=`Non couvert - sans raison évidente (nb)`/`Nombre de formations`
+  )
+
+
+stats_catalogue_parcoursup_campagne_2024_synthese$stats_catalogue_partenaire_voeux <- stats_catalogue_parcoursup_campagne_2024_synthese$stats_catalogue_partenaire_voeux %>% 
+  mutate(`Non couvert - sans raison évidente (nb)`=`Non couvert (nb)`-`Dont sous le seuil de 20 élèves (nb)`-`Non couvert - Nouvelles formations (nb)`-`Non couvert - code certif inconnu (nb)`-`Non couvert - UAI inconnu (nb)` -`Territoires mal couverts (nb)`-`Non couvert - Problème de qualité du code formation en entrée (nb)`,
+         "Non couvert - sans raison évidente (%)"=`Non couvert - sans raison évidente (nb)`/`Demandes tous voeux`
+  )
