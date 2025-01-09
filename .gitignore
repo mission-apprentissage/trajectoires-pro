@@ -107,6 +107,7 @@ dist
 # R
 .Rproj.user/
 trajectoires-pro.Rproj
+script_prepa_ps_2025_campagne_2025.R
 .Rhistory
 .Rdata
 

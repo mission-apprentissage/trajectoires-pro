@@ -19,7 +19,7 @@ n_diplome_sise <- read_csv2(file.path(chemin_racine_data,"BCN/n_diplome_sise_.cs
 
 ## Catalogue des MNE ----
 
-catalogue_mne <- read_csv2(file.path(chemin_racine_data,"catalogue MNE/formation_2024-10-07T13_25_04.773Z.csv"))
+catalogue_mne <- read_csv2(file.path(chemin_racine_data,"catalogue MNE/catalogue_mne.csv"))
 catalogue_mne <- catalogue_mne %>% 
   mutate_all(str_remove_all,"=") %>% 
   mutate_all(str_remove_all,"\"")
@@ -39,15 +39,16 @@ ideo_formations_initiales_en_france_simpli <- ideo_formations_initiales_en_franc
 
 ## CertifInfos
 
-opendata_certifinfo <- data.table::fread(file.path(chemin_racine_data,"Certif_Infos/opendata-certifinfo-01072024.csv"),
+
+opendata_certifinfo <- data.table::fread(file.path(chemin_racine_data,"Certif_Infos/opendata-certifinfo.csv"),
                                          encoding ="Latin-1" )
 
-inserJeune_sise_rncp <- read_csv2(file.path(chemin_racine_data,"RCO/2024_09_12/inserJeune-sise-rncp.csv"), 
+#Se connecter au bucket mis à jour une fois par mois par le RCO en utilisant WinSCP
+inserJeune_sise_rncp <- read_csv2(file.path(chemin_racine_data,"RCO/2025_01_01/inserJeune-sise-rncp.csv"), 
                                   skip = 1)
 
-inserJeune_certifinfo <- read_csv2(file.path(chemin_racine_data,"RCO/2024_09_12/inserJeune-certifinfo.csv"), 
+inserJeune_certifinfo <- read_csv2(file.path(chemin_racine_data,"RCO/2025_01_01/inserJeune-certifinfo.csv"), 
                                    skip = 1)
-
 
 inserJeune_certifinfo_correspondance <- inserJeune_certifinfo %>%
   select(`Code Certifinfo`,`Intitule Certifinfo`,`Code RNCP`,`Code Onisep`,`Code Onisep Ideo`,`Code Sise`,`Code Sise`,`Code scolarité`) %>% 
@@ -62,7 +63,8 @@ table_de_passage_codes_certifications_et_formations <- read_delim(file.path(chem
 
 ## ACCE
 
-ACCE_UAI <- data.table::fread(file.path(chemin_racine_data,"ACCE/Extraction ACCE 11-07-2023/ACCE_UAI.csv"),
+
+ACCE_UAI <- data.table::fread(file.path(chemin_racine_data,"ACCE/Extraction ACCE.csv"),
                               encoding = "Latin-1") %>% 
   mutate(academie=str_pad(academie,side = "left",pad="0",width=2))
 
