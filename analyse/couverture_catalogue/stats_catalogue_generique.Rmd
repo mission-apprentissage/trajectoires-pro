@@ -24,6 +24,7 @@ params:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,warning = FALSE,error = FALSE,message = FALSE)
+library(DT)
 
 if(!is.null(params$stats_catalogue)){
   stats_catalogue <- params$stats_catalogue
