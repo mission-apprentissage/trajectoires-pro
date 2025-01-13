@@ -519,7 +519,7 @@ components:
       description: Permet de filtrer la recherche avec une ou plusieurs UAI séparées par des virgules.
       schema:
         type: string
-        pattern: "^[0-9]{7}[A-Z]{1}$"
+        pattern: "^([0-9]{7}[A-Z]{1},)*[0-9]{7}[A-Z]{1}$"
 
     regions:
       name: regions
@@ -747,6 +747,8 @@ components:
       examples:
         scolaire:
           value: "MEFSTAT11:32221031409"
+        scolaire - seconde commune:
+          value: "MEFSTAT11:23810031211"
         apprentissage:
           value: "CFD:32031409"
 
@@ -767,6 +769,8 @@ components:
       examples:
         scolaire:
           value: "MEFSTAT11:32221031409"
+        scolaire - seconde commune:
+          value: "MEFSTAT11:23810030003"
         apprentissage:
           value: "CFD:32031409"
         superieur:
@@ -789,6 +793,8 @@ components:
       examples:
         scolaire:
           value: "MEFSTAT11:32221031409"
+        scolaire - seconde commune:
+          value: "MEFSTAT11:23810031211"
         apprentissage:
           value: "CFD:32031409"
 
@@ -916,14 +922,60 @@ components:
               * ancienne : les données proviennent d'une certification plus ancienne
               * nouvelle : les données proviennent d'une certification plus récente
 
+    FamilleMetier:
+      type: object
+      required:
+        - code
+        - libelle
+        - isAnneeCommune
+      description:
+        Présent si la certification fait partie d'une famille de métier.
+      properties:
+        code:
+          type: string
+          description: |
+            Le code de la famille de métiers défini sur la BCN.
+            Les codes au format "XXX_temp" ne sont pas présent sur la BCN, leur code est temporaire.
+        libelle:
+          type: string
+          description: Nom de la famille de métier
+        isAnneeCommune:
+          type: boolean
+          description: |
+            Indique si la certification correspond à l'année commune (Ex: seconde commune pour un bac PRO)
+
+    CertificationsTerminales:
+      description: |
+        Présent si le code de certification ne correspond pas à une dernière année.
+
+        Le tableau contient :
+          - Pour une seconde commune : l'ensemble des code de certifications des dernières années de spécialités ayant des statistiques.
+          - Pour le reste : un tableau n'ayant que le code de certification de la dernière année.
+      type: array
+      items:
+        type: object
+        required:
+          - code_certification
+        properties:
+          code_certification:
+            type: string
+            description: |
+              Code de certification d'une dernière année.
     Certification:
       type: object
       description: |
         Statistiques pour une certification.
-
+        <br /><br />
         Les taux retournés sont :
           * null quand les effectifs (nb_annee_term) sont < 20
           * absent si l'on ne peut pas les calculer (données manquantes)
+
+        Le champ "familleMetier" est présent lorsque la certification fait partie d'une famille de métier.
+        <br /><br />
+        Le champ "certificationsTerminales" est présent lorsque que le code de certification ne correspond pas à une dernière années :
+          - Il contient les codes de certifications de dernière année possédant des statistique.
+          - /!\ Lorsqu'il est présent, aucune statistique n'est envoyé, pour les récupérer il est nécessaire d'interroger
+          l'API avec les codes de dernières année
       required:
         - millesime
         - code_certification
@@ -952,6 +1004,10 @@ components:
           type: boolean
         donnee_source:
           $ref: "#/components/schemas/DonneeSource"
+        familleMetier:
+          $ref: "#/components/schemas/FamilleMetier"
+        certificationsTerminales:
+          $ref: "#/components/schemas/CertificationsTerminales"
         diplome:
           type: object
           properties:
@@ -1000,6 +1056,18 @@ components:
         taux_autres_24_mois:
           type: number
           nullable: true
+        salaire_12_mois_q1:
+          type: number
+          nullable: true
+          description: "en euros, 1er quartile du salaire net mensuel à 12 mois des sortants en emploi retrouvés dans la Base Tous Salariés (BTS)"
+        salaire_12_mois_q2:
+          type: number
+          description: "en euros, 2ème quartile du salaire net mensuel à 12 mois des sortants en emploi retrouvés dans la Base Tous Salariés (BTS)"
+          nullable: true
+        salaire_12_mois_q3:
+          type: number
+          nullable: true
+          description: "en euros, 3ème quartile du salaire net mensuel à 12 mois des sortants en emploi retrouvés dans la Base Tous Salariés (BTS)"
         _meta:
           $ref: "#/components/schemas/Meta"
 
@@ -1007,10 +1075,17 @@ components:
       type: object
       description: |
         Statistiques d'une certification pour une région.
-
+        <br /><br /> 
         Les taux retournés sont :
           * null quand les effectifs (nb_annee_term) sont < 20
           * absent si l'on ne peut pas les calculer (données manquantes)
+
+        Le champ "familleMetier" est présent lorsque la certification fait partie d'une famille de métier.
+        <br /><br />
+        Le champ "certificationsTerminales" est présent lorsque que le code de certification ne correspond pas à une dernière années :
+          - Il contient les codes de certifications de dernière année possédant des statistique.
+          - /!\ Lorsqu'il est présent, aucune statistique n'est envoyé, pour les récupérer il est nécessaire d'interroger
+          l'API avec les codes de dernières année
       required:
         - millesime
         - code_certification
@@ -1090,12 +1165,19 @@ components:
       type: object
       description: |
         Statistiques d'une certification pour une formation.
-
+        <br /><br /> 
+        /!\ Pour le supérieur, nb_annee_term correspond au nombre de diplomés uniquement
+        <br /><br />
         Les taux retournés sont :
           * null quand les effectifs (nb_annee_term) sont < 20
           * absent si l'on ne peut pas les calculer (données manquantes)
-
-        /!\ Pour le supérieur, nb_annee_term correspond au nombre de diplomés uniquement
+        <br /><br />
+        Le champ "familleMetier" est présent lorsque la certification fait partie d'une famille de métier.
+        <br /><br />
+        Le champ "certificationsTerminales" est présent lorsque que le code de certification ne correspond pas à une dernière années :
+          - Il contient les codes de certifications de dernière année possédant des statistique.
+          - /!\ Lorsqu'il est présent, aucune statistique n'est envoyé, pour les récupérer il est nécessaire d'interroger
+          l'API avec les codes de dernières année
       required:
         - uai
         - millesime
@@ -1180,12 +1262,14 @@ components:
         uai_type:
           type: string
           description: Typologie de l'UAI (lieu de formation, formateur, gestionnaire ou inconnu)
+          enum: [ "lieu_formation", "formateur", "gestionnaire", "inconnu" ]
         uai_donnee:
           type: string
           description: UAI de provenance de la donnée
         uai_donnee_type:
           type: string
           description: Typologie de l'UAI (lieu de formation, formateur, gestionnaire ou inconnu)
+          enum: [ "lieu_formation", "formateur", "gestionnaire", "inconnu" ]
         uai_lieu_formation:
           type: array
           description: Tableau des UAIs des lieux de formations associés à la formation dans le cas ou le type de l'UAI est formateur ou gestionnaire
@@ -1395,8 +1479,8 @@ components:
           schema:
             type: string
             example: |
-              code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-              50034303;apprentissage;2019;self;50034303;9;3;3;3;4;0;9;67;67;67;56;33;33;33;44;0;20
+              code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+              50034303;50034303;apprentissage;2019;self;50034303;9;3;3;3;4;0;9;67;67;67;56;33;33;33;44;0;20
 
     CertificationResponse:
       description: Une certification avec ses statistiques
@@ -1422,8 +1506,8 @@ components:
           schema:
             type: string
             example: |
-              region;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-              Auvergne-Rhône-Alpes;01022103;apprentissage;2018_2019;self;01022103;106;55;48;55;46;38;67;12;19;12;21;52;45;52;43;36;
+              region;code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+              Auvergne-Rhône-Alpes;01022103;01022103;apprentissage;2018_2019;self;01022103;106;55;48;55;46;38;67;12;19;12;21;52;45;52;43;36;
 
 
     RegionaleResponse:
@@ -1450,8 +1534,8 @@ components:
           schema:
             type: string
             example: |
-              uai;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-              0010826T;01022103;apprentissage;2019_2020;self;01022103;9;5;;;4;4;5;0;;;11;56;;;44;44;
+              uai;uai_type;uai_donnee;uai_donnee_type;code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+              0010826T;lieu_formation;self;0010826T;01022103;01022103;apprentissage;2019_2020;self;01022103;9;5;;;4;4;5;0;;;11;56;;;44;44;
 
     FormationResponse:
       description: Les statistiques d'une formation

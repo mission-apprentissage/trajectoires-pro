@@ -5,9 +5,15 @@ import { upsert } from "#src/common/db/mongodb.js";
 import { certificationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
-import { computeCustomStats, getMillesimes, INSERJEUNES_IGNORED_STATS_NAMES } from "#src/common/stats.js";
+import {
+  computeCustomStats,
+  getMillesimes,
+  INSERJEUNES_IGNORED_STATS_NAMES,
+  INSERJEUNES_STATS_NAMES,
+  getUnknownIJFields,
+} from "#src/common/stats.js";
 import { getCertificationInfo } from "#src/common/certification.js";
-import { omit, pick, merge } from "lodash-es";
+import { pick, merge } from "lodash-es";
 
 const logger = getLoggerWithContext("import");
 
@@ -38,6 +44,20 @@ export async function importCertificationsStats(options = {}) {
       { parallel: 4 }
     ),
     flattenArray(),
+    transformData((stats) => {
+      const unknownFields = getUnknownIJFields(stats, [
+        "code_certification",
+        "millesime",
+        "filiere",
+        ...INSERJEUNES_STATS_NAMES,
+        ...INSERJEUNES_IGNORED_STATS_NAMES,
+      ]);
+      if (unknownFields) {
+        logger.error(`Champs ${unknownFields.join(", ")} inconnus dans l'API InserJeunes`);
+      }
+
+      return stats;
+    }),
     writeData(
       async (certificationStats) => {
         const query = {
@@ -47,7 +67,7 @@ export async function importCertificationsStats(options = {}) {
 
         try {
           const certification = await getCertificationInfo(certificationStats.code_certification);
-          const stats = omit(certificationStats, INSERJEUNES_IGNORED_STATS_NAMES);
+          const stats = pick(certificationStats, INSERJEUNES_STATS_NAMES);
           const customStats = computeCustomStats(certificationStats);
 
           // Delete data compute with continuum job (= when type is not self)
@@ -63,6 +83,7 @@ export async function importCertificationsStats(options = {}) {
               "_meta.updated_on": new Date(),
             },
             $set: omitNil({
+              ...pick(certificationStats, ["code_certification", "millesime", "filiere"]),
               ...stats,
               ...customStats,
               ...certification,

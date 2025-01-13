@@ -91,6 +91,7 @@ export default () => {
         extensionTransformer = transformIntoCSV({
           columns: {
             code_certification: (f) => f.code_certification,
+            code_formation_diplome: (f) => f.code_formation_diplome,
             filiere: (f) => f.filiere,
             millesime: (f) => f.millesime,
             donnee_source_type: (f) => f.donnee_source.type,
@@ -122,7 +123,7 @@ export default () => {
         {
           ...validators.codesCertifications(),
           ...validators.universe(),
-          millesime: Joi.string().default(getLastMillesimes()),
+          ...validators.millesime(getLastMillesimes()),
           ...validators.vues(),
           ...validators.svg(),
         },
@@ -163,7 +164,7 @@ export default () => {
           hash: Joi.string(),
           ...validators.codesCertifications(),
           ...validators.universe(),
-          millesime: Joi.string().default(getLastMillesimes()),
+          ...validators.millesime(getLastMillesimes()),
           ...validators.vues(),
           ...validators.widget("stats"),
         },
@@ -235,7 +236,7 @@ export default () => {
         {
           ...validators.codesCertifications(),
           ...validators.universe(),
-          millesime: Joi.string().default(null),
+          ...validators.millesime(null),
           ...validators.vues(),
           ...validators.widget("stats"),
         },

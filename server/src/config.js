@@ -81,11 +81,23 @@ const config = {
       etablissements: path.join(getDirname(import.meta.url), "../data/", "acce_etablissements.csv"),
     },
   },
+  bcn: {
+    files: {
+      familleMetier: path.join(getDirname(import.meta.url), "..", "data", "bcn", "n_famille_metier_spec_pro.csv"),
+      lienFamilleMetier: path.join(getDirname(import.meta.url), "..", "data", "bcn", "n_lien_mef_famille_metier.csv"),
+    },
+  },
   millesimes: {
-    default: env.get("TRAJECTOIRES_PRO_MILLESIMES").default("2020,2021,2022").asArray(),
-    formations: env.get("TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS").default("2019_2020,2020_2021,2021_2022").asArray(),
-    formationsSup: env.get("MILLESIMES_FORMATIONS_SUP").default("2020_2021,2021_2022").asArray(),
-    regionales: env.get("TRAJECTOIRES_PRO_MILLESIMES_REGIONALES").default("2019_2020,2020_2021,2021_2022").asArray(),
+    default: env.get("TRAJECTOIRES_PRO_MILLESIMES").default("2020,2021,2022,2023").asArray(),
+    formations: env
+      .get("TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS")
+      .default("2019_2020,2020_2021,2021_2022,2022_2023")
+      .asArray(),
+    formationsSup: env.get("MILLESIMES_FORMATIONS_SUP").default("2019_2020,2020_2021,2021_2022").asArray(),
+    regionales: env
+      .get("TRAJECTOIRES_PRO_MILLESIMES_REGIONALES")
+      .default("2019_2020,2020_2021,2021_2022,2022_2023")
+      .asArray(),
   },
   widget: {
     plausibleDomain: env

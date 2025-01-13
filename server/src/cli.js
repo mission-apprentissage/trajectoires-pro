@@ -23,6 +23,9 @@ import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
 import { computeUAI } from "./jobs/stats/computeUAI.js";
 import * as UserJob from "./jobs/user/user.js";
 import { importBCNSise } from "./jobs/bcn/importBCNSise.js";
+import { importBCNFamilleMetier } from "./jobs/bcn/importBCNFamilleMetier.js";
+import { importSecondeCommune } from "./jobs/stats/importSecondeCommune.js";
+import { importAnneesNonTerminales } from "./jobs/stats/importAnneesNonTerminales.js";
 
 async function importBCNCommand() {
   const statsBCN = await importBCN();
@@ -31,6 +34,7 @@ async function importBCNCommand() {
   const statsContinuum = await importBCNContinuum();
   const statsMefContinuum = await computeBCNMEFContinuum();
   const statsBCNLibelle = await importLibelle();
+  const statsBCNFamilleMetier = await importBCNFamilleMetier();
 
   return {
     statsBCN,
@@ -39,6 +43,7 @@ async function importBCNCommand() {
     statsContinuum,
     statsMefContinuum,
     statsBCNLibelle,
+    statsBCNFamilleMetier,
   };
 }
 
@@ -53,6 +58,15 @@ async function importRomesCommand() {
     statsCfdRomes,
     statsRomeMetiers,
     statsCfdMetiers,
+  };
+}
+
+async function importAnneesNonTerminalesCommand(options = {}) {
+  const statsAnneesNonTerminales = await importAnneesNonTerminales(options);
+  const statsSecondeCommune = await importSecondeCommune(options);
+  return {
+    statsAnneesNonTerminales,
+    statsSecondeCommune,
   };
 }
 
@@ -100,6 +114,21 @@ cli
   });
 
 cli
+  .command("importAnneesNonTerminales")
+  .description("Importe les secondes communes avec des données pour leurs spécialités")
+  .argument("[stats]", "Le nom des stats à importer (formations,certifications,regionales)", asArray)
+  .option(
+    "--millesime [millesime]",
+    "Spécifie un millésime à importer (attention les millésimes nationales et formations/regionales sont différents"
+  )
+  .action((stats, options) => {
+    runScript(() => {
+      const millesimes = options.millesime ? [options.millesime] : null;
+      return importAnneesNonTerminalesCommand({ stats, millesimes });
+    });
+  });
+
+cli
   .command("importSupStats")
   .description("Importe les données statistiques de l'API InserSup")
   .argument("[stats]", "Le nom des stats à importer (formations)", asArray)
@@ -118,8 +147,12 @@ cli
   .command("computeContinuumStats")
   .description("Calcule les données statistiques manquantes pour les anciens/nouveaux diplomes")
   .argument("[stats]", "Le nom des stats à importer (formations,certifications,regionales)", asArray)
-  .action((stats) => {
-    runScript(() => computeContinuumStats({ stats }));
+  .option(
+    "--millesime [millesime]",
+    "Spécifie un millésime à importer (attention les millésimes nationales et formations/regionales sont différents"
+  )
+  .action((stats, options) => {
+    runScript(() => computeContinuumStats({ stats, millesime: options.millesime }));
   });
 
 cli
@@ -141,6 +174,7 @@ cli
         importStats: await importStats(),
         importSupStats: await importSupStats(),
         computeContinuumStats: await computeContinuumStats(),
+        importAnneesNonTerminales: await importAnneesNonTerminalesCommand(),
         importCatalogueApprentissage: await importCAFormations(),
         computeUAI: await computeUAI(),
         importRomes: await importRomesCommand(),

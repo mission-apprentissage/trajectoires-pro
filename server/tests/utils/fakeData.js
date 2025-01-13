@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublished-import
 import { merge } from "lodash-es";
 import { createUAI } from "#src/common/utils/validationUtils.js";
+import { omitNil } from "#src/common/utils/objectUtils.js";
 import { generateCodeCertification, generateStatValue } from "./testUtils.js";
 import {
   bcn,
@@ -18,7 +19,7 @@ import {
   users,
   CAFormations,
 } from "#src/common/db/collections/collections.js";
-import { ALL, getStatsCompute } from "#src/common/stats.js";
+import { ALL, ALL_WITHOUT_INCOME, getStatsCompute } from "#src/common/stats.js";
 import { hashPassword } from "#src/services/auth/auth.js";
 import { ObjectId } from "mongodb";
 
@@ -79,7 +80,7 @@ export function insertRegionalesStats(custom = {}, withStat = true) {
         code_formation_diplome: createCodeFormationDiplome(),
         libelle: "LIBELLE",
         diplome: { code: "4", libelle: "BAC" },
-        ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
+        ...(withStat ? getStatsCompute(ALL_WITHOUT_INCOME, () => generateStatValue()) : {}),
         donnee_source: {
           code_certification,
           type: "self",
@@ -101,35 +102,37 @@ export function insertFormationsStats(custom = {}, withStat = true) {
     code_certification.length === 11 ? "mef11" : code_certification.length === 7 ? "sise" : "cfd";
 
   return formationsStats().insertOne(
-    merge(
-      {},
-      {
-        uai: createUAI(faker.helpers.replaceSymbols("075####")),
-        libelle_etablissement: "Lycée",
-        millesime: "2018_2019",
-        filiere: "apprentissage",
-        code_certification,
-        code_certification_type,
-        code_formation_diplome: createCodeFormationDiplome(),
-        libelle: "LIBELLE",
-        diplome: { code: "4", libelle: "BAC" },
-        ...(withStat ? getStatsCompute(ALL, () => generateStatValue()) : {}),
-        region: { code: "11", nom: "Île-de-France" },
-        academie: {
-          code: "01",
-          nom: "Paris",
-        },
-        donnee_source: {
+    omitNil(
+      merge(
+        {},
+        {
+          uai: createUAI(faker.helpers.replaceSymbols("075####")),
+          libelle_etablissement: "Lycée",
+          millesime: "2018_2019",
+          filiere: "apprentissage",
           code_certification,
-          type: "self",
+          code_certification_type,
+          code_formation_diplome: createCodeFormationDiplome(),
+          libelle: "LIBELLE",
+          diplome: { code: "4", libelle: "BAC" },
+          ...(withStat ? getStatsCompute(ALL_WITHOUT_INCOME, () => generateStatValue()) : {}),
+          region: { code: "11", nom: "Île-de-France" },
+          academie: {
+            code: "01",
+            nom: "Paris",
+          },
+          donnee_source: {
+            code_certification,
+            type: "self",
+          },
+          _meta: {
+            date_import: new Date(),
+            created_on: new Date(),
+            updated_on: new Date(),
+          },
         },
-        _meta: {
-          date_import: new Date(),
-          created_on: new Date(),
-          updated_on: new Date(),
-        },
-      },
-      custom
+        custom
+      )
     )
   );
 }

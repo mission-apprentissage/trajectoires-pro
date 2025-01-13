@@ -57,6 +57,7 @@ class InserSup {
         const statsByMillesime = stats.reduce((acc, stat) => {
           acc[stat.promo.join("_")] = acc[stat.promo.join("_")] ?? {
             ...stat,
+            millesime: stat.promo.join("_"),
             nb_diplomes: stat.nb_sortants + stat.nb_poursuivants,
             nb_en_emploi: {},
           };
@@ -72,55 +73,20 @@ class InserSup {
       }),
       // Aggregate two millesimes
       transformData((stats) => {
-        // When the stats is already on two millesimes
-        if (stats[millesime]) {
-          return stats[millesime];
-        }
-        // We don't want to aggregate when stats are only available by millesimes for now
-        return null;
-
-        // const statsMerged = Object.values(stats).reduce((acc, stat) => {
-        //   if (!acc) {
-        //     return {
-        //       ...stat,
-        //       nb_en_emploi: mapValues(stat.nb_en_emploi, (v) => [v]),
-        //     };
-        //   }
-
-        //   return {
-        //     ...acc,
-        //     promo: [...acc.promo, ...stat.promo],
-        //     nb_poursuivants: acc.nb_poursuivants + stat.nb_poursuivants,
-        //     nb_sortants: acc.nb_sortants + stat.nb_sortants,
-        //     nb_diplomes: acc.nb_diplomes + stat.nb_diplomes,
-        //     nb_en_emploi: mergeWith(
-        //       acc.nb_en_emploi,
-        //       mapValues(stat.nb_en_emploi, (v) => [v]),
-        //       (objValue, srcValue) => objValue.concat(srcValue)
-        //     ),
-        //   };
-        // }, null);
-
-        // if (statsMerged.promo.length !== 2) {
-        //   return null;
-        // }
-
-        // // Remove value that not exist on both millesime
-        // statsMerged.nb_en_emploi = mapValues(statsMerged.nb_en_emploi, (v) => {
-        //   if (v.length !== 2 || v.some((v) => v === null)) {
-        //     return null;
-        //   }
-        //   return v.reduce((s, v) => s + v, 0);
-        // });
-
-        // return statsMerged;
+        return Object.values(stats).filter((stats) => {
+          return (
+            stats.millesime === millesime ||
+            stats.millesime === millesimePart[0] ||
+            stats.millesime === millesimePart[1]
+          );
+        });
       }),
+      flattenArray(),
       // Format data
       transformData((stats) => {
         return {
           ...stats,
           ...stats.nb_en_emploi,
-          millesime,
         };
       }),
       writeData((stats) => {

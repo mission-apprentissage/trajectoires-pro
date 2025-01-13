@@ -13,6 +13,9 @@ export const INSERJEUNES_STATS_NAMES = [
   "nb_poursuite_etudes",
   "nb_sortant",
   "taux_rupture_contrats",
+  "salaire_12_mois_q1",
+  "salaire_12_mois_q2",
+  "salaire_12_mois_q3",
 ];
 export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "taux_poursuite_etudes",
@@ -23,6 +26,12 @@ export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "DEVENIR_part_autre_situation_6_mois",
   "DEVENIR_part_en_emploi_6_mois",
   "DEVENIR_part_poursuite_etudes",
+  "salaire_TS_Q1_12_mois",
+  "salaire_TS_Q2_12_mois",
+  "salaire_TS_Q3_12_mois",
+  "salaire_TS_Q1_12_mois_prec",
+  "salaire_TS_Q2_12_mois_prec",
+  "salaire_TS_Q3_12_mois_prec",
 ];
 
 export const INSERSUP_STATS_NAMES = [
@@ -57,6 +66,7 @@ export const CUSTOM_STATS_NAMES = [
 ];
 
 export const ALL = /.*/;
+export const ALL_WITHOUT_INCOME = /^(?!salaire_).*/;
 export const TAUX = /^taux_.*$/;
 export const VALEURS = /^nb_.*$/;
 
@@ -84,12 +94,33 @@ export function getLastMillesimesFormationsSup() {
   return config.millesimes.formationsSup[config.millesimes.formationsSup.length - 1];
 }
 
+export function getLastMillesimesFormationsFor(filiere) {
+  return filiere === "superieur" ? getLastMillesimesFormationsSup() : getLastMillesimesFormations();
+}
+
+export function getLastMillesimesFormationsYearFor(filiere) {
+  const millesime = filiere === "superieur" ? getLastMillesimesFormationsSup() : getLastMillesimesFormations();
+  return millesime.split("_")[1];
+}
+
+export function getMillesimeFormationsFrom(millesime) {
+  return `${parseInt(millesime) - 1}_${millesime}`;
+}
+
+export function getMillesimeFormationsYearFrom(millesime) {
+  return millesime.split("_")[1];
+}
+
 export function getMillesimesRegionales() {
   return config.millesimes.regionales;
 }
 
 export function getLastMillesimesRegionales() {
   return config.millesimes.regionales[config.millesimes.regionales.length - 1];
+}
+
+export function isMillesimesYearSingle(millesime) {
+  return millesime.split("_").length === 1 ? true : false;
 }
 
 function divide({ dividend, divisor }) {
@@ -295,4 +326,12 @@ export function transformDisplayStat(isStream = false) {
     return flow(rules);
   }
   return transformData((data) => flow(rules)(data));
+}
+
+export function getUnknownIJFields(stats, keys) {
+  const unknownFields = Object.keys(stats).filter((s) => !keys.find((k) => k === s));
+  if (unknownFields.length === 0) {
+    return null;
+  }
+  return unknownFields;
 }

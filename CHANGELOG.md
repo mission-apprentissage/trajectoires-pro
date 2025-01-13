@@ -1,3 +1,31 @@
+# [1.26.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.25.0...v1.26.0) (2024-12-23)
+
+
+### Features
+
+* millesimes 2023 et salaires ([#317](https://github.com/mission-apprentissage/trajectoires-pro/issues/317)) ([2e96fe9](https://github.com/mission-apprentissage/trajectoires-pro/commit/2e96fe904bc8016e8afd671a59bee3cb0c7e067e))
+
+# [1.25.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.24.0...v1.25.0) (2024-12-23)
+
+
+### Features
+
+* familles de métiers ([#315](https://github.com/mission-apprentissage/trajectoires-pro/issues/315)) ([8f30046](https://github.com/mission-apprentissage/trajectoires-pro/commit/8f30046af3519a367be51f6e1b860053760c3595))
+
+# [1.24.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.23.0...v1.24.0) (2024-11-28)
+
+
+### Features
+
+* millesime unique pour Insersup ([#314](https://github.com/mission-apprentissage/trajectoires-pro/issues/314)) ([ad3efe3](https://github.com/mission-apprentissage/trajectoires-pro/commit/ad3efe39a82083c4b80f54389584f9612f40e41b))
+
+# [1.23.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.22.0...v1.23.0) (2024-11-26)
+
+
+### Features
+
+* ajout des cfds dans l'export csv ([#305](https://github.com/mission-apprentissage/trajectoires-pro/issues/305)) ([6b0cadc](https://github.com/mission-apprentissage/trajectoires-pro/commit/6b0cadc8508cfac108e315b386987e02e04f3f5a))
+
 # [1.22.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.21.2...v1.22.0) (2024-11-05)
 
 

@@ -251,6 +251,7 @@ describe("regionalesRoutes", () => {
         region: { code: "11", nom: "Île-de-France" },
         millesime: "2018_2019",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 19,
         nb_poursuite_etudes: 1,
@@ -281,8 +282,8 @@ describe("regionalesRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `region;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-Île-de-France;12345678;apprentissage;2018_2019;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
+        `region;code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+Île-de-France;12345678;12345678;apprentissage;2018_2019;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
 `
       );
     });
@@ -293,6 +294,7 @@ describe("regionalesRoutes", () => {
         region: { code: "11", nom: "Île-de-France" },
         millesime: "2018_2019",
         code_certification: "12345678",
+        code_formation_diplome: "12345678",
         filiere: "apprentissage",
         nb_annee_term: 100,
         nb_poursuite_etudes: 1,
@@ -323,8 +325,8 @@ describe("regionalesRoutes", () => {
       assert.strictEqual(response.headers["content-type"], "text/csv; charset=UTF-8");
       assert.deepStrictEqual(
         response.data,
-        `region;code_certification;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-Île-de-France;12345678;apprentissage;2018_2019;self;12345678;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
+        `region;code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
+Île-de-France;12345678;12345678;apprentissage;2018_2019;self;12345678;100;4;3;2;5;1;6;14;15;16;13;11;10;9;12;8;7
 `
       );
     });
@@ -743,6 +745,48 @@ describe("regionalesRoutes", () => {
         code_formation_diplome: "12345679",
         filiere: "apprentissage",
         formation_fermee: false,
+      });
+    });
+
+    it("Vérifie qu'on peut obtenir une année non terminale", async () => {
+      const { httpClient } = await startServer();
+      await insertRegionalesStats(
+        {
+          region: { code: "11", nom: "Île-de-France" },
+          code_certification: "12345678910",
+          code_formation_diplome: "12345678",
+          filiere: "pro",
+          certificationsTerminales: [{ code_certification: "32220000000" }],
+        },
+        false
+      );
+
+      const response = await httpClient.get(`/api/inserjeunes/regionales/11/certifications/12345678910`);
+
+      assert.strictEqual(response.status, 200);
+      assert.deepStrictEqual(response.data, {
+        millesime: "2018_2019",
+        code_certification: "12345678910",
+        code_certification_type: "mef11",
+        code_formation_diplome: "12345678",
+        libelle: "LIBELLE",
+        filiere: "pro",
+        diplome: { code: "4", libelle: "BAC" },
+        certificationsTerminales: [{ code_certification: "32220000000" }],
+        donnee_source: {
+          code_certification: "12345678910",
+          type: "self",
+        },
+        region: {
+          code: "11",
+          nom: "Île-de-France",
+        },
+        formation_fermee: false,
+        _meta: {
+          titre: "Certification 12345678910",
+          details:
+            "Données InserJeunes pour la certification 12345678910 (BAC filière pro) pour le millésime 2018_2019 et la région Île-de-France",
+        },
       });
     });
 

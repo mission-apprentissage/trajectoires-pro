@@ -30,6 +30,14 @@ export async function FormationsInserSup(twoMillesimes = false) {
   return readJson("../fixtures/files/inserSup/formations.json");
 }
 
+export async function FormationsInserSupMillesimesMixtes(withDouble = false) {
+  if (withDouble) {
+    return readJson("../fixtures/files/inserSup/formationsMillesimesMixtesWithDouble.json");
+  }
+
+  return readJson("../fixtures/files/inserSup/formationsMillesimesMixtes.json");
+}
+
 export async function FormationsInserSupInvalid() {
   return readJson("../fixtures/files/inserSup/formationsInvalid.json");
 }

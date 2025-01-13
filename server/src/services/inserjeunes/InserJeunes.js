@@ -85,6 +85,25 @@ function computeMissingStats() {
   });
 }
 
+function renameStats() {
+  return transformData((data) => {
+    const statsToRename = {
+      salaire_TS_Q1_12_mois: "salaire_12_mois_q1",
+      salaire_TS_Q2_12_mois: "salaire_12_mois_q2",
+      salaire_TS_Q3_12_mois: "salaire_12_mois_q3",
+    };
+
+    return {
+      ...data,
+      ...Object.fromEntries(
+        Object.entries(data)
+          .filter(([k]) => statsToRename[k])
+          .map(([k, d]) => [statsToRename[k], d])
+      ),
+    };
+  });
+}
+
 async function transformApiStats(statsFromApi, groupBy) {
   let stats = [];
   await oleoduc(
@@ -94,6 +113,7 @@ async function transformApiStats(statsFromApi, groupBy) {
     groupBy,
     flattenArray(),
     computeMissingStats(),
+    renameStats(),
     writeData((data) => {
       stats.push(data);
     })

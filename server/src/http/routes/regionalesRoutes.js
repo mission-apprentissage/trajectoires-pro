@@ -15,7 +15,7 @@ import {
   sendImageOnError,
 } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import { getLastMillesimesRegionales, transformDisplayStat } from "#src/common/stats.js";
+import { ALL_WITHOUT_INCOME, getLastMillesimesRegionales, transformDisplayStat } from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import { ErrorRegionaleNotFound, ErrorNoDataForMillesime, ErrorFormationNotExist } from "#src/http/errors.js";
@@ -79,11 +79,12 @@ export default () => {
         columns: {
           region: (f) => f.region.nom,
           code_certification: (f) => f.code_certification,
+          code_formation_diplome: (f) => f.code_formation_diplome,
           filiere: (f) => f.filiere,
           millesime: (f) => f.millesime,
           donnee_source_type: (f) => f.donnee_source.type,
           donnee_source_code_certification: (f) => f.donnee_source.code_certification,
-          ...getStatsAsColumns(),
+          ...getStatsAsColumns(ALL_WITHOUT_INCOME),
         },
         mapper: (v) => (v === null ? "null" : v),
       });
@@ -160,7 +161,7 @@ export default () => {
           ...validators.region(),
           ...validators.codesCertifications(),
           ...validators.universe(),
-          millesime: Joi.string().default(getLastMillesimesRegionales()),
+          ...validators.millesime(getLastMillesimesRegionales()),
           ...validators.vues(),
           ...validators.svg(),
         },
@@ -202,7 +203,7 @@ export default () => {
           ...validators.region(),
           ...validators.codesCertifications(),
           ...validators.universe(),
-          millesime: Joi.string().default(getLastMillesimesRegionales()),
+          ...validators.millesime(getLastMillesimesRegionales()),
           ...validators.vues(),
           ...validators.widget("stats"),
         },
@@ -279,7 +280,7 @@ export default () => {
           ...validators.region(),
           ...validators.codesCertifications(),
           ...validators.universe(),
-          millesime: Joi.string().default(null),
+          ...validators.millesime(null),
           ...validators.vues(),
           ...validators.widget("stats"),
         },
