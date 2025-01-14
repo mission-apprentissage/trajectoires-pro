@@ -1,4 +1,10 @@
-expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet"){
+expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet",millesime_couverture=NULL){
+  
+  if(is.null(millesime_couverture)){
+    ensemble_data_formationsStats <- ensemble_data_formationsStats %>% 
+      filter(millesime==millesime_couverture)
+  }
+  
   
   #affelenet / onisep ----
   if( type_source %in% c("onisep","affelnet") ){
@@ -628,7 +634,9 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
               T~valideur
             )
           ) %>% 
-          distinct(across(names(catalogue_init)), famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, type_formation, libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
+          distinct(across(names(catalogue_init)), famillemetiers, FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME, LIBELLE_COURT, NIVEAU_QUALIFICATION_RNCP, 
+                   # type_formation, 
+                   libelle_type_diplome,certificateur_annee_terminale,valideur_annee_terminale)  %>% 
           left_join(
             opendata_certifinfo %>% 
               filter(!is.na(Code_Scolarité)) %>% 
@@ -714,7 +722,8 @@ expo_mef_catalogue_partenaire <- function(catalogue_init,type_source="affelnet")
       mutate(
         scope=case_when(
           (!is.na(presence_UAI_ACCE) & !(!Nouvelle_formation & is.na(presence_Code_Scolarité_certif_info)) & !Nouvelle_formation & type_territoire !="Territoire mal couvert"& certificateur_valideur_simpli=="Ministère de l'éducation nationale ou Ministère de l'agriculture")~T,
-          T~F)
+          T~F),
+        type_formation="06"
       )
 
   }
@@ -741,8 +750,8 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
   ##stats_catalogue_partenaire ----
   
   stats_catalogue_partenaire <- catalogue_partenaire_renseigne %>%
-    select(UAI,MEFSTAT11,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,perimetre,libelle_type_diplome) %>% 
-    ungroup() %>% 
+    select(UAI,MEFSTAT11,CODEFORMATIONACCUEIL,famillemetiers,FORMATION_DIPLOME,Filiere,NIVEAU_FORMATION_DIPLOME,LIBELLE_COURT,NIVEAU_QUALIFICATION_RNCP,type_formation,perimetre,libelle_type_diplome) %>% 
+    ungroup() %>%
     group_by(perimetre,type_formation,libelle_type_diplome,Filiere) %>% 
     summarise("Nombre de formations"=n()) %>% 
     ungroup() %>% 
@@ -814,7 +823,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
     ) %>% 
     left_join(catalogue_partenaire_renseigne %>% 
                 # filter(type_uai!="Non couvert") %>% 
-                filter(Couverture=="Couvert") %>% 
+                filter(Couverture=="Couvert",type_uai!="Non couvert") %>% 
                 group_by(perimetre,type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
                 summarise(nb=n()) %>% 
                 mutate(part=prop.table(nb),
@@ -986,7 +995,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
     left_join(
       catalogue_partenaire_renseigne %>% 
         # filter(type_uai!="Non couvert") %>% 
-        filter(Couverture=="Couvert") %>%
+        filter(Couverture=="Couvert",type_uai!="Non couvert") %>%
         group_by(type_uai) %>%
         summarise(nb=n())  %>% 
         mutate(part=prop.table(nb),
@@ -1357,7 +1366,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
     ) %>% 
     left_join(catalogue_partenaire_renseigne_voeux %>% 
                 # filter(type_uai!="Non couvert") %>% 
-                filter(Couverture=="Couvert") %>% 
+                filter(Couverture=="Couvert",type_uai!="Non couvert") %>% 
                 group_by(perimetre,type_formation,libelle_type_diplome,Filiere,type_uai) %>% 
                 summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
                 mutate(part=prop.table(nb),
@@ -1525,7 +1534,7 @@ expo_mef_stats_catalogue_partenaire <- function(catalogue_partenaire_renseigne,t
     ) %>%  
     bind_cols(catalogue_partenaire_renseigne_voeux %>% 
                 # filter(type_uai!="Non couvert") %>% 
-                filter(Couverture=="Couvert") %>%
+                filter(Couverture=="Couvert",type_uai!="Non couvert") %>%
                 group_by(type_uai) %>% 
                 summarise(nb=sum(!!sym(var_effectifs),na.rm=T)) %>% 
                 mutate(part=prop.table(nb),
