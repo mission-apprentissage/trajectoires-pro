@@ -15,6 +15,9 @@ chemin_projet <- "C:/Users/arnau/d-sidd Dropbox/Arnaud milet/0_beta/1- Expositio
 # source("2_script_appariement_ps_2025/3_0_script_prepa_ps_2025_import_data.R")
 # rm(list=ls())
 load(file.path(chemin_projet,"prepa_ps_2025.RData"))
+chemin_racine_data <- "../../../../0- data" 
+
+source(file.path(chemin_projet,"3_0_script_prepa_ps_2025_patch_insersup_api.R"))
 
 source(file.path(chemin_projet,"3_1_script_prepa_ps_2025_prepa_data.R"))
 source(file.path(chemin_projet,"3_2_script_prepa_ps_2025_focus_ij.R"))
@@ -22,5 +25,5 @@ source(file.path(chemin_projet,"3_3_script_prepa_ps_2025_focus_sup.R"))
 source(file.path(chemin_projet,"3_4_script_prepa_ps_2025_ajout_remuneration.R"))
 source(file.path(chemin_projet,"3_5_script_prepa_ps_2025_raison_non_couverture_non_ij_non_sup.R"))
 source(file.path(chemin_projet,"3_6_script_prepa_ps_2025_appariement_sies_passage_reussite.R"))
-source(file.path(chemin_projet,"3_7_script_prepa_ps_2025_debug_continuum.R"))
+#source(file.path(chemin_projet,"3_7_script_prepa_ps_2025_debug_continuum.R"))
 source(file.path(chemin_projet,"3_8_script_prepa_ps_2025_analyse_couverture.R"))
