@@ -798,7 +798,7 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                     afficher_stats_synthese=TRUE,
                     stats_catalogue_synthese=stats_catalogue_parcoursup_campagne_2025_synthese,
                     nom_catalogue_detail = "Parcoursup - campagne 2025 paramétrée au 6/01/2025",
-                    lien_drive_catalogue ="https://docs.google.com/spreadsheets/d/1ShIzmTuVb7ZRBqXMlskqrx8OQVSB7N1i/edit?usp=drive_link&ouid=107607241761816962784&rtpof=true&sd=true"
+                    lien_drive_catalogue = NA
                   ),
                   output_format = "html_document",
                   output_dir = "parcoursup",
