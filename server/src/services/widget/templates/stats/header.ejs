@@ -30,14 +30,14 @@
     const documentBottom = document?.documentElement?.offsetHeight;
     document.documentElement.style.height = "";
     if (modalBottom > documentBottom) {
-      document.documentElement.style.height = modalBottom + "px";
+      document.body.style.height = (modalBottom + 12) + "px";
     }
   }
 
   function closeModal() {
     document.querySelector('#modal-description').style.display = "none";
     document.querySelector('.container').style.visibility = "visible";
-    document.documentElement.style.height = "";
+    document.body.style.height = "";
   }
 </script>
 
