@@ -24,11 +24,20 @@
       document.querySelector('#modal-description').style.position = "absolute";
       document.querySelector('.container').style.visibility = "hidden";
     }
+
+    // Modal height fix
+    const modalBottom = document.getElementById("modal-description")?.getBoundingClientRect()?.bottom + window.scrollY;
+    const documentBottom = document?.documentElement?.offsetHeight;
+    document.documentElement.style.height = "";
+    if (modalBottom > documentBottom) {
+      document.documentElement.style.height = modalBottom + "px";
+    }
   }
 
   function closeModal() {
     document.querySelector('#modal-description').style.display = "none";
     document.querySelector('.container').style.visibility = "visible";
+    document.documentElement.style.height = "";
   }
 </script>
 
