@@ -22,13 +22,13 @@
     } else {
       document.querySelector('#modal-description').style.display = "block";
       document.querySelector('#modal-description').style.position = "absolute";
-      document.querySelector('.container').style.display = "none";
+      document.querySelector('.container').style.visibility = "hidden";
     }
   }
 
   function closeModal() {
     document.querySelector('#modal-description').style.display = "none";
-    document.querySelector('.container').style.display = "block";
+    document.querySelector('.container').style.visibility = "visible";
   }
 </script>
 

@@ -4,7 +4,10 @@
 
 <script>
   setInterval(() => {
-    document.documentElement && parent.postMessage(document.documentElement.offsetHeight, '*');
+    // Modal fix
+    const modalBottom = document.getElementById("modal-description")?.getBoundingClientRect()?.bottom;
+    const documentBottom = document?.documentElement?.offsetHeight;
+    document.documentElement && parent.postMessage(Math.max(modalBottom, documentBottom), '*');
   }, 50);
 
   function collapse(id, btnExpandId, btnCollapseId) {
