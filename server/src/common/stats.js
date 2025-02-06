@@ -340,7 +340,7 @@ export function getUnknownIJFields(stats, keys) {
 export async function statsAnneeTerminale(method, certification, params, paramsFormatter = (params) => params) {
   const { millesime } = params;
   const certificationsTerminales = certification.certificationsTerminales;
-  if (certificationsTerminales.length === 1 && certification.familleMetier.isAnneeCommune !== true) {
+  if (certificationsTerminales.length === 1 && certification?.familleMetier?.isAnneeCommune !== true) {
     return await method({
       ...paramsFormatter({
         codes_certifications: certificationsTerminales.map((d) => d.code_certification),
