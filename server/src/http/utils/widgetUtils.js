@@ -1,11 +1,12 @@
 import { buildDescriptionFiliere, buildDescription } from "#src/common/stats.js";
 import { formatMillesime } from "#src/http/utils/formatters.js";
 
-export async function formatDataWidget({ stats, region = null, etablissement = null }) {
+export function formatDataWidget({ stats, region = null, etablissement = null }) {
   const description = buildDescription(stats);
 
   const data = {
-    type: "",
+    type: stats?.familleMetier?.isAnneeCommune ? "anneeCommune" : "",
+    code_certification: stats.code_certification,
     filiere: stats.filiere,
     taux: [
       { name: "formation", value: stats.taux_en_formation },
@@ -18,6 +19,17 @@ export async function formatDataWidget({ stats, region = null, etablissement = n
     formationLibelle: stats.libelle,
     region,
     etablissementLibelle: etablissement?.appellation_officielle,
+    familleMetier: stats.familleMetier,
+    certificationsTerminales: stats.certificationsTerminales
+      ? stats.certificationsTerminales.map((certificationTerminale, index) => ({
+          ...formatDataWidget({
+            stats: { ...certificationTerminale, certificationsTerminales: null },
+            region,
+            etablissement,
+          }),
+          order: index + 1,
+        }))
+      : null,
   };
 
   return data;

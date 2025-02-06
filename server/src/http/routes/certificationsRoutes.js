@@ -15,14 +15,14 @@ import {
   sendImageOnError,
 } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import { getLastMillesimes, transformDisplayStat } from "#src/common/stats.js";
+import { getLastMillesimes, transformDisplayStat, statsAnneeTerminale } from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import CertificationsRepository from "#src/common/repositories/certificationStats.js";
 import { ErrorNoDataForMillesime, ErrorCertificationNotFound, ErrorCertificationsNotFound } from "#src/http/errors.js";
-import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
+import { getUserWidget, getUserStatsWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataFilieresWidget, formatDataWidget } from "#src/http/utils/widgetUtils.js";
 
-async function certificationStats({ codes_certifications, millesime }) {
+async function certificationStats({ codes_certifications, millesime, fetchAnneesTerminales = false }) {
   const code_certification = codes_certifications[0];
 
   const result = await CertificationsRepository.first({ code_certification, millesime });
@@ -35,6 +35,11 @@ async function certificationStats({ codes_certifications, millesime }) {
 
     const millesimesAvailable = await CertificationsRepository.findMillesime({ code_certification });
     throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
+  }
+
+  // Récupère les données de l'année terminale automatiquement
+  if (fetchAnneesTerminales && result.certificationsTerminales) {
+    return await statsAnneeTerminale(certificationStats, result, { millesime });
   }
 
   const stats = transformDisplayStat()(result);
@@ -192,11 +197,13 @@ export default () => {
           return res.status(200).send(widget);
         }
 
-        const stats = await certificationStats({ codes_certifications, millesime });
-        const data = await formatDataWidget({ stats, millesime });
-        const widget = await getUserWidget({
+        const stats = await certificationStats({ codes_certifications, millesime, fetchAnneesTerminales: true });
+        const data = formatDataWidget({ stats, millesime });
+
+        const widget = await getUserStatsWidget({
+          code_certification: codes_certifications[0],
+          millesime,
           hash,
-          name: "stats",
           theme,
           options,
           data,
