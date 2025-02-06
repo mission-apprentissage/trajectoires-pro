@@ -5,8 +5,8 @@
 <script>
   setInterval(() => {
     // Modal fix
-    const modalBottom = document.getElementById("modal-description")?.getBoundingClientRect()?.bottom;
-    const documentBottom = document?.documentElement?.offsetHeight;
+    const modalBottom = document.getElementById("modal-description")?.getBoundingClientRect()?.bottom || 0;
+    const documentBottom = document?.documentElement?.offsetHeight || 0;
     document.documentElement && parent.postMessage(Math.max(modalBottom, documentBottom), '*');
   }, 50);
 

@@ -26,8 +26,8 @@
     }
 
     // Modal height fix
-    const modalBottom = document.getElementById("modal-description")?.getBoundingClientRect()?.bottom + window.scrollY;
-    const documentBottom = document?.documentElement?.offsetHeight;
+    const modalBottom = (document.getElementById("modal-description")?.getBoundingClientRect()?.bottom || 0) + window.scrollY;
+    const documentBottom = document?.documentElement?.offsetHeight || 0;
     document.documentElement.style.height = "";
     if (modalBottom > documentBottom) {
       document.body.style.height = (modalBottom + 12) + "px";
