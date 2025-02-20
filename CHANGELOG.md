@@ -1,3 +1,10 @@
+## [1.26.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.26.0...v1.26.1) (2025-01-28)
+
+
+### Bug Fixes
+
+* accepter les lettres dans les mefstats11 ([#322](https://github.com/mission-apprentissage/trajectoires-pro/issues/322)) ([30fece2](https://github.com/mission-apprentissage/trajectoires-pro/commit/30fece2681e6d2910f713fe56b75ff053ab97860))
+
 # [1.26.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.25.0...v1.26.0) (2024-12-23)
 
 
