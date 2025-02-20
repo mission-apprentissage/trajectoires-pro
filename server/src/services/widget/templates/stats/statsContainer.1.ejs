@@ -21,16 +21,7 @@
     <%- await include('../common/title.ejs'); %>
     <% } %>
 
-    <!-- Résumé -->
-
-    <ul id="resume" class="border-grey">
-      <% for (const certificationTerminale of data.certificationsTerminales) { %>
-      <li> <%= certificationTerminale.order %>.
-        Après <%= certificationTerminale.formationLibelle %>
-      </li>
-      <% } %>
-    </ul>
-
+    <div class="mt-30"></div>
 
     <% for (const widget of data.widgets) { %>
     <%- widget %>

@@ -13,20 +13,28 @@
     document.querySelector('#modal-description .body-' + type + '-enable').style.display = "flex";
 
 
-    const parent = ref.closest(".containerStats");
+    const parent = ref.closest(".hideByModal");
+    const modal = document.querySelector("#modal-description");
     if (parent) {
-      const parentPos = parent.getBoundingClientRect();
-      document.querySelector('#modal-description').style.display = "block";
-      document.querySelector('#modal-description').style.position = "absolute";
-      document.querySelector('#modal-description').style.top = (parentPos.top + window.scrollY) + "px";
+      // Display old element
+      const parentOld = modal.parentElement.querySelector(".hideByModal");
+      if (parentOld) {
+        parentOld.style.display = "block";
+      }
+
+      // Move modal in parent
+      parent.style.display = "none";
+      parent.insertAdjacentElement("beforebegin", modal);
+      modal.style.display = "block";
+      modal.style.position = "static";
     } else {
-      document.querySelector('#modal-description').style.display = "block";
-      document.querySelector('#modal-description').style.position = "absolute";
+      modal.style.display = "block";
+      modal.style.position = "absolute";
       document.querySelector('.container').style.visibility = "hidden";
     }
 
     // Modal height fix
-    const modalBottom = (document.getElementById("modal-description")?.getBoundingClientRect()?.bottom || 0) + window.scrollY;
+    const modalBottom = (modal?.getBoundingClientRect()?.bottom || 0) + window.scrollY;
     const documentBottom = document?.documentElement?.offsetHeight || 0;
     document.documentElement.style.height = "";
     if (modalBottom > documentBottom) {
@@ -35,7 +43,13 @@
   }
 
   function closeModal() {
-    document.querySelector('#modal-description').style.display = "none";
+    const modal = document.querySelector("#modal-description");
+    const parent = modal.parentElement.querySelector(".hideByModal");
+    if (parent) {
+      parent.style.display = "block";
+    }
+    modal.style.display = "none";
+    document.body.insertAdjacentElement("afterbegin", modal);
     document.querySelector('.container').style.visibility = "visible";
     document.body.style.height = "";
   }
