@@ -1,0 +1,15 @@
+<%- await include('../common/variables'); %>
+<%- await include('./variables'); %>
+<div class="containerStats">
+  <div class="hideByModal">
+    <div class="title fr-h5 padding-right-10">
+      <div class="link-internal" onclick="collapse('#data-<%= data.code_certification %>', '#data-expand-<%= data.code_certification %>', '#data-expand-collapse-<%= data.code_certification %>')">
+        <div class="blue-marine"><%= data.order ? data.order + "." : "" %> Après <%= data.formationLibelle.toLowerCase() %></div>
+      </div>
+    </div>
+
+    <div id="data-<%= data.code_certification %>" class="collapse-hide collapse-show">
+      <%- await include('./stats.1.ejs'); %>
+    </div>
+  </div>
+</div>

@@ -32,14 +32,8 @@ const computeTaux = (taux) => {
 
 if (data.type == "filieres") {
     taux = {apprentissage: computeTaux(data.apprentissage.taux), pro: computeTaux(data.pro.taux)};
-    maxElevesApprentissage = Object.keys(taux.apprentissage).reduce((acc, key) => 
-        taux.apprentissage[key].eleves > acc ? taux.apprentissage[key].eleves : acc, 0);
-    maxElevesPro = Object.keys(taux.pro).reduce((acc, key) => 
-        taux.pro[key].eleves > acc ? taux.pro[key].eleves : acc, 0);
-    maxEleves = Math.max(maxElevesApprentissage, maxElevesPro);
-} else {
+   } else {
     taux = computeTaux(data.taux);
-    maxEleves = Object.keys(taux).reduce((acc, key) => taux[key].eleves > acc ? taux[key].eleves : acc, 0);
 }
 
 infos = {emploi: {}, formation: {}, autres: {}};

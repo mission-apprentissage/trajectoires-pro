@@ -1,0 +1,33 @@
+<% if (data.type == "filieres") { %>
+<div class="title black title-filieres">Par la voie scolaire</div>
+<div class="card">
+  <div class="card-data">
+    <% if (!data.pro.exist) { %>
+    <div>
+      <div class="details-title">Nous ne disposons pas de données pour la voie scolaire.</div>
+    </div>
+    <% } else { %>
+    <%- await include('./personas.1.ejs', { taux: taux.pro}); %>
+    <% } %>
+  </div>
+</div>
+<div class="title black">Par la voie apprentissage</div>
+<div class="card">
+  <div class="card-data">
+    <% if (!data.apprentissage.exist) { %>
+    <div>
+      <div class="details-title">Nous ne disposons pas de données pour la voie apprentissage.</div>
+    </div>
+    <% } else { %>
+    <%- await include('./personas.1.ejs', { taux: taux.apprentissage, exist: data.apprentissage.exist }); %>
+    <% } %>
+  </div>
+</div>
+
+<% } else { %>
+<div class="card">
+  <div class="card-data">
+    <%- await include('./personas.1.ejs', {exist: true}); %>
+  </div>
+</div>
+<% } %>

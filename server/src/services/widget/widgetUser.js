@@ -5,6 +5,7 @@ import { ErrorWidgetDoesNotExist } from "./error.js";
 import { ErrorUserDoesNotExist } from "#src/services/user/error.js";
 import config from "#src/config.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
+import { formatMillesime } from "#src/http/utils/formatters.js";
 
 const IFRAME_ON_LOAD_JS = UglifyJs.minify(
   `(function load(f) {
@@ -53,7 +54,7 @@ export async function getUserWidget({
     );
   }
 
-  return renderWidget({
+  return await renderWidget({
     widget: widget,
     data,
     options,
@@ -61,6 +62,95 @@ export async function getUserWidget({
       user: user.username,
       ...plausibleCustomProperties,
     },
+  });
+}
+
+async function getUserWidgetWithError({
+  code_certification,
+  millesime,
+  hash,
+  name,
+  nameError = "error",
+  theme = "default",
+  data = {},
+  options = {},
+  plausibleCustomProperties = {},
+}) {
+  try {
+    return await getUserWidget({
+      hash,
+      name,
+      theme,
+      options,
+      data,
+      plausibleCustomProperties,
+    });
+  } catch (err) {
+    return await getUserWidget({
+      hash,
+      name: nameError,
+      theme,
+      options,
+      data: {
+        ...data,
+        error: err.name,
+        millesimes: formatMillesime(millesime).split("_"),
+        code_certification,
+      },
+    });
+  }
+}
+
+export async function getUserStatsWidget({
+  code_certification,
+  millesime,
+  hash,
+  theme = "default",
+  data = {},
+  options = {},
+  plausibleCustomProperties = {},
+}) {
+  if (data?.familleMetier?.isAnneeCommune) {
+    let widgets = [];
+    for (const certificationTerminale of data.certificationsTerminales) {
+      widgets.push(
+        await getUserWidgetWithError({
+          code_certification: certificationTerminale.code_certification,
+          millesime,
+          name: "statsOnly",
+          nameError: "errorStatsOnly",
+          hash,
+          theme,
+          data: certificationTerminale,
+          options,
+          plausibleCustomProperties,
+        })
+      );
+    }
+
+    return await getUserWidgetWithError({
+      code_certification,
+      millesime,
+      name: "statsContainer",
+      nameError: "error",
+      hash,
+      theme,
+      data: { ...data, widgets },
+      options,
+      plausibleCustomProperties,
+    });
+  }
+
+  return getUserWidgetWithError({
+    code_certification,
+    millesime,
+    name: "stats",
+    nameError: "error",
+    hash,
+    theme,
+    data,
+    options,
+    plausibleCustomProperties,
   });
 }
 

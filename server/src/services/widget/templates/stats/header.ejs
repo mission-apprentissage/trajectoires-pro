@@ -1,0 +1,377 @@
+<script>
+  var types = ["emploi", "formation", "autres"];
+
+  function showModal(ref, type) {
+    types.forEach(type => {
+      document.querySelector('#modal-description .description-' + type).style.display = "none";
+      document.querySelector('#modal-description .title-' + type).style.display = "none";
+      document.querySelector('#modal-description .body-' + type + '-enable').style.display = "none";
+    })
+
+    document.querySelector('#modal-description .description-' + type).style.display = "block";
+    document.querySelector('#modal-description .title-' + type).style.display = "flex";
+    document.querySelector('#modal-description .body-' + type + '-enable').style.display = "flex";
+
+
+    const parent = ref.closest(".hideByModal");
+    const modal = document.querySelector("#modal-description");
+    if (parent) {
+      // Display old element
+      const parentOld = modal.parentElement.querySelector(".hideByModal");
+      if (parentOld) {
+        parentOld.style.display = "block";
+      }
+
+      // Move modal in parent
+      parent.style.display = "none";
+      parent.insertAdjacentElement("beforebegin", modal);
+      modal.style.display = "block";
+      modal.style.position = "static";
+    } else {
+      modal.style.display = "block";
+      modal.style.position = "absolute";
+      document.querySelector('.container').style.visibility = "hidden";
+    }
+
+    // Modal height fix
+    const modalBottom = (modal?.getBoundingClientRect()?.bottom || 0) + window.scrollY;
+    const documentBottom = document?.documentElement?.offsetHeight || 0;
+    document.documentElement.style.height = "";
+    if (modalBottom > documentBottom) {
+      document.body.style.height = (modalBottom + 12) + "px";
+    }
+  }
+
+  function closeModal() {
+    const modal = document.querySelector("#modal-description");
+    const parent = modal.parentElement.querySelector(".hideByModal");
+    if (parent) {
+      parent.style.display = "block";
+    }
+    modal.style.display = "none";
+    document.body.insertAdjacentElement("afterbegin", modal);
+    document.querySelector('.container').style.visibility = "visible";
+    document.body.style.height = "";
+  }
+</script>
+
+<style>
+  :root {
+    --body-width: calc(var(--widget-width) * 0.075);
+    --body-height: calc(var(--body-width) * 1.8125);
+
+    --body-icon-width: calc(var(--widget-width) * 0.03);
+    --body-icon-left: calc(var(--widget-width) * 0.022);
+    --body-icon-top: calc(var(--widget-width) * 0.04);
+  }
+
+  #modal-description {
+    z-index: 999;
+    position: absolute;
+  }
+
+  .card-modal .title {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    gap: 0.5rem
+  }
+
+  .card-modal .title .icon {
+    width: 32px;
+    height: 32px;
+    vertical-align: text-top;
+  }
+
+  .badge {
+    align-items: center;
+    background-color: #e8edff;
+    border-radius: 4px;
+    padding: 0px 6px;
+    width: fit-content;
+  }
+
+  .badge .label {
+    color: #0063cb;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 20px;
+  }
+
+  .blocks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    flex: 1;
+  }
+
+  .block-title {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-size: 14px;
+  }
+
+  .block-title .icon {
+    margin-right: 4px;
+    width: 20px;
+    height: 20px;
+    vertical-align: text-top;
+  }
+
+
+  .block-title .description {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+  }
+
+  .body-description {
+    margin-bottom: 10px;
+  }
+
+  .body-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .body {
+    position: relative;
+  }
+
+  .body svg {
+    width: var(--body-width);
+    height: var(--body-height)
+  }
+
+
+  .body .icon {
+    position: absolute;
+    left: var(--body-icon-left);
+    top: var(--body-icon-top);
+    width: var(--body-icon-width);
+    height: var(--body-icon-width);
+  }
+
+  .modal .body svg {
+    width: 40px;
+    height: 73px;
+  }
+
+  .modal .body .icon {
+    position: absolute;
+    left: 10px;
+    top: 19px;
+    width: 19px;
+    height: 19px;
+  }
+
+  .modal .card .bodies {
+    padding-top: 0;
+  }
+
+
+  .modal-link:hover {
+    cursor: pointer;
+  }
+
+  .button {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .button a {
+    background-color: #000091;
+    padding: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    color: #f5f5fe;
+  }
+
+  .description {
+    text-align: justify;
+    font-size: 14px;
+  }
+
+  .description-more {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1.5rem;
+  }
+
+  .description-more a {
+    background-image: none;
+    font-weight: 500;
+  }
+
+  .icon-link {
+    width: 16px;
+    height: 16px;
+  }
+
+
+  .card-modal .close {
+    color: #000091;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: right;
+  }
+
+  .card-modal .close:hover {
+    cursor: pointer;
+  }
+
+  .modal {
+    display: none;
+    border-radius: 4px;
+    background: var(--light-decisions-background-background-alt-blue-france, #F5F5FE);
+    /* shadow / light / raised */
+    box-shadow: 0px 2px 6px 0px rgba(0, 0, 18, 0.16);
+    margin: 6px;
+  }
+
+  .modal .card {
+    margin-top: 0px;
+    padding: 0px;
+
+  }
+
+  .modal .card .card-modal {
+    padding-left: 3rem;
+    padding-right: 3rem;
+    padding-bottom: 2rem;
+  }
+
+  .title-filieres {
+    margin-top: 10px;
+  }
+
+  .card .bodies {
+    padding-top: 15px;
+  }
+
+  .modal .card .bodies {
+    margin-left: 0rem;
+  }
+
+
+  @media screen and (max-width: 40em) {
+    .blocks {
+      gap: 5px;
+    }
+
+    .description-more {
+      justify-content: center;
+    }
+  }
+
+  @media screen and (min-width: <%=options.responsiveWidth %>) {
+    .bodies {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 10px;
+      ;
+    }
+
+    .body-description {
+      display: none;
+    }
+
+    .card-modal .bodies {
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+
+    .onlyMobile {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: <%=options.responsiveWidth %>) {
+    :root {
+      --body-width: 50px;
+      --body-height: calc(var(--body-width) * 1.8125);
+
+      --body-icon-width: calc(var(--body-width) * 0.4);
+      --body-icon-left: calc(var(--body-width) * 0.29);
+      --body-icon-top: calc(var(--body-width) * 0.5);
+    }
+
+
+    .body-group {
+      flex-wrap: wrap;
+      justify-content: normal;
+    }
+
+    .bodies {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 10px;
+      margin-left: 0px;
+      ;
+    }
+
+    .blocks {
+      display: none;
+    }
+
+    .body-grey {
+      display: none;
+    }
+
+    .card-modal .body-grey .body {
+      display: none;
+    }
+
+    .modal .card .card-modal {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      padding-bottom: 1rem;
+    }
+  }
+
+  @media screen and (max-width: 30em) {
+    .block-title {
+      font-size: 16px;
+    }
+
+    .block-title .description {
+      font-size: 20px;
+    }
+
+    .block-title .icon {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  @media screen and (max-width: 19em) {
+    :root {
+      --body-width: 45px;
+      --body-height: calc(var(--body-width) * 1.8125);
+
+      --body-icon-width: calc(var(--body-width) * 0.4);
+      --body-icon-left: calc(var(--body-width) * 0.29);
+      --body-icon-top: calc(var(--body-width) * 0.5);
+    }
+  }
+</style>

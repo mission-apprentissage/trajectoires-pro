@@ -25,7 +25,7 @@
     <% } %>
   </div>
   <div class="body-description">
-    <div class="block modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].value == 0 ? "grey-variant" : infos[key].colorText %>" onClick="showModal('<%= key %>')">
+    <div class="block modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].value == 0 ? "grey-variant" : infos[key].colorText %>" onClick="showModal(this, '<%= key %>')">
       <div class="block-title">
         <div>
           <div class="description"><%= taux[key].description %></div>
@@ -42,7 +42,7 @@
 <div class="blocks">
   <% for (const key of ["emploi", "formation", "autres"]) { %>
   <% if (taux[key].value > 0) { %>
-  <div onClick="showModal('<%= key %>')" class="block block-<%= key %> modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].value == 0 ? "grey-variant" : infos[key].colorText %>">
+  <div onClick="showModal(this, '<%= key %>')" class="block block-<%= key %> modal-link plausible-event-name=Modal+Open+<%= key %> <%= taux[key].value == 0 ? "grey-variant" : infos[key].colorText %>">
     <div class="block-title">
       <div class="description"><%= taux[key].description %></div>
       <div>

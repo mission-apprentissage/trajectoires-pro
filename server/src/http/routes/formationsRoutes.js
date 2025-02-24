@@ -22,6 +22,7 @@ import {
   transformDisplayStat,
   isMillesimesYearSingle,
   ALL_WITHOUT_INCOME,
+  statsAnneeTerminale,
 } from "#src/common/stats.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
 import BCNSiseRepository from "#src/common/repositories/bcnSise.js";
@@ -33,10 +34,10 @@ import {
   ErrorFormationNotExist,
   ErrorEtablissementNotExist,
 } from "#src/http/errors.js";
-import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
+import { getUserWidget, getIframe, getUserStatsWidget } from "#src/services/widget/widgetUser.js";
 import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
 
-async function formationStats({ uai, codeCertificationWithType, millesime }) {
+async function formationStats({ uai, codeCertificationWithType, millesime, fetchAnneesTerminales = false }) {
   const { type, code_certification } = codeCertificationWithType;
 
   const result = await FormationStatsRepository.first({
@@ -76,6 +77,13 @@ async function formationStats({ uai, codeCertificationWithType, millesime }) {
 
     const millesimesAvailable = await FormationStatsRepository.findMillesime({ uai, code_certification });
     throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
+  }
+
+  // Récupère les données de l'année terminale automatiquement
+  if (fetchAnneesTerminales && result.certificationsTerminales) {
+    return await statsAnneeTerminale(formationStats, result, { uai, millesime }, (params) => {
+      return { codeCertificationWithType: { code_certification: params.codes_certifications[0], type }, ...params };
+    });
   }
 
   const stats = transformDisplayStat()(result);
@@ -244,13 +252,14 @@ export default () => {
       );
 
       try {
-        const stats = await formationStats({ uai, codeCertificationWithType, millesime });
+        const stats = await formationStats({ uai, codeCertificationWithType, millesime, fetchAnneesTerminales: true });
         const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
-        const data = await formatDataWidget({ stats, etablissement });
+        const data = formatDataWidget({ stats, etablissement });
 
-        const widget = await getUserWidget({
+        const widget = await getUserStatsWidget({
+          code_certification: codeCertificationWithType.code_certification,
+          millesime,
           hash,
-          name: "stats",
           theme,
           options,
           data,
