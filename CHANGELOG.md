@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.27.0...v1.28.0) (2025-02-24)
+
+
+### Features
+
+* insersup salaires ([#326](https://github.com/mission-apprentissage/trajectoires-pro/issues/326)) ([9d3224e](https://github.com/mission-apprentissage/trajectoires-pro/commit/9d3224e91d61e201aa16ddf6224fe2deac2c9454))
+
 # [1.27.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.26.1...v1.27.0) (2025-02-24)
 
 
