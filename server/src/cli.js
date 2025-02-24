@@ -131,7 +131,7 @@ cli
 cli
   .command("importSupStats")
   .description("Importe les données statistiques de l'API InserSup")
-  .argument("[stats]", "Le nom des stats à importer (formations)", asArray)
+  .argument("[stats]", "Le nom des stats à importer (certifications,formations)", asArray)
   .option(
     "--millesime [millesime]",
     "Spécifie un millésime à importer (attention les millésimes nationales et formations/regionales sont différents"

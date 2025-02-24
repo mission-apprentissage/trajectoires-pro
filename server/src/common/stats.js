@@ -44,6 +44,9 @@ export const INSERSUP_STATS_NAMES = [
   "nb_poursuite_etudes",
   "nb_sortant",
   "nb_diplome",
+  "salaire_12_mois_q1",
+  "salaire_12_mois_q2",
+  "salaire_12_mois_q3",
 ];
 export const INSERSUP_META = [
   "etablissement_libelle",
@@ -77,6 +80,18 @@ export function getMillesimes() {
 
 export function getLastMillesimes() {
   return config.millesimes.default[config.millesimes.default.length - 1];
+}
+
+export function getMillesimesSup() {
+  return config.millesimes.defaultSup;
+}
+
+export function getLastMillesimesSup() {
+  return config.millesimes.defaultSup[config.millesimes.defaultSup.length - 1];
+}
+
+export function getLastMillesimesFor(filiere) {
+  return filiere === "superieur" ? getLastMillesimesSup() : getLastMillesimes();
 }
 
 export function getMillesimesFormations() {

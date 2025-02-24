@@ -33,7 +33,7 @@ class DataEnseignementSupApi extends RateLimitedApi {
       .dataset(config.dataenseignementsup.datasets.insersup)
       .export("json")
       .refine('source:"insersup"')
-      .where("NOT etablissement:'UNIV'")
+      .where((filter) => odsApi.all(filter, "NOT etablissement:'UNIV'", "NOT etablissement:'all'"))
       .groupBy("etablissement")
       .toString();
 
@@ -47,6 +47,18 @@ class DataEnseignementSupApi extends RateLimitedApi {
       .export("json")
       .refine('source:"insersup"')
       .where(`etablissement:'${uai}'`)
+      .toString();
+
+    const results = await this.getWithRetry(query);
+    return results;
+  }
+
+  async fetchCertificationsStats(millesime) {
+    const query = fromCatalog()
+      .dataset(config.dataenseignementsup.datasets.insersup)
+      .export("json")
+      .refine('source:"insersup"')
+      .where(odsApi.all(`promo: '${millesime}'`, "uo_lib: 'National'"))
       .toString();
 
     const results = await this.getWithRetry(query);
