@@ -1,3 +1,10 @@
+# [1.27.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.26.1...v1.27.0) (2025-02-24)
+
+
+### Features
+
+* widget familles de metiers ([#325](https://github.com/mission-apprentissage/trajectoires-pro/issues/325)) ([9f14dbb](https://github.com/mission-apprentissage/trajectoires-pro/commit/9f14dbb3328e965f167c8cdc5812ead5787d9f6d))
+
 ## [1.26.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.26.0...v1.26.1) (2025-01-28)
 
 
