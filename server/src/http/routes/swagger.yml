@@ -117,59 +117,6 @@ paths:
         404:
           $ref: "#/components/responses/404-Code-Certification"
 
-
-  /api/inserjeunes/certifications/{code_certification}.svg:
-    get:
-      description: Génère une image SVG (widget) avec les statistiques d'une certification
-      parameters:
-        - $ref: "#/components/parameters/code_certification_with_sise"
-        - $ref: "#/components/parameters/millesime"
-        - $ref: "#/components/parameters/vue"
-        - $ref: "#/components/parameters/direction"
-        - $ref: "#/components/parameters/theme"
-        - $ref: "#/components/parameters/imageOnError"
-      responses:
-        200:
-          $ref: "#/components/responses/SVGResponse"
-        400:
-          $ref: "#/components/responses/400"
-        401:
-          $ref: "#/components/responses/401"
-        404:
-          $ref: "#/components/responses/404-Code-Certification"
-
-  /api/inserjeunes/certifications/{codes_certifications}.svg:
-    get:
-      description: Génère une image SVG (widget) avec les statistiques agrégées de plusieurs certifications sous la forme d'une vue par filière (pro et apprentissage).
-      parameters:
-        - $ref: "#/components/parameters/multiple_codes_certifications"
-        - $ref: "#/components/parameters/millesime"
-        - $ref: "#/components/parameters/direction"
-        - $ref: "#/components/parameters/theme"
-        - $ref: "#/components/parameters/imageOnError"
-      responses:
-        200:
-          $ref: "#/components/responses/SVGResponse"
-        400:
-          $ref: "#/components/responses/400"
-        401:
-          $ref: "#/components/responses/401"
-        404:
-          $ref: "#/components/responses/404-Code-Certification"
-
-  /api/inserjeunes/certifications/{codes_certifications}/widget:
-    get:
-      description: Retourne le code à utiliser pour intégrer le widget
-      security:
-        - BearerAuth: [ ]
-      parameters:
-        - $ref: "#/components/parameters/codes_certifications"
-        - $ref: "#/components/parameters/millesime"
-        - $ref: "#/components/parameters/vue"
-      responses:
-        200:
-          $ref: "#/components/responses/CertificationWidgetResponse"
-
   /api/inserjeunes/regionales:
     get:
       description: Rechercher des statistiques régionales
@@ -295,61 +242,6 @@ paths:
         404:
           $ref: "#/components/responses/404-Code-Regionale"
 
-  /api/inserjeunes/regionales/{code_region}/certifications/{code_certification}.svg:
-    get:
-      description: Génère une image SVG (widget) avec les statistiques d'une certification
-      parameters:
-        - $ref: "#/components/parameters/code_region"
-        - $ref: "#/components/parameters/code_certification"
-        - $ref: "#/components/parameters/millesimePeriode"
-        - $ref: "#/components/parameters/vue"
-        - $ref: "#/components/parameters/direction"
-        - $ref: "#/components/parameters/theme"
-        - $ref: "#/components/parameters/imageOnError"
-      responses:
-        200:
-          $ref: "#/components/responses/SVGResponse"
-        400:
-          $ref: "#/components/responses/400"
-        401:
-          $ref: "#/components/responses/401"
-        404:
-          $ref: "#/components/responses/404-Code-Regionale"
-
-  /api/inserjeunes/regionales/{code_region}/certifications/{codes_certifications}.svg:
-    get:
-      description: Génère une image SVG (widget) avec les  statistiques agrégées de plusieurs certifications sous la forme d'une vue par filière (pro et apprentissage).
-      parameters:
-        - $ref: "#/components/parameters/code_region"
-        - $ref: "#/components/parameters/multiple_codes_certifications"
-        - $ref: "#/components/parameters/millesimePeriode"
-        - $ref: "#/components/parameters/direction"
-        - $ref: "#/components/parameters/theme"
-        - $ref: "#/components/parameters/imageOnError"
-      responses:
-        200:
-          $ref: "#/components/responses/SVGResponse"
-        400:
-          $ref: "#/components/responses/400"
-        401:
-          $ref: "#/components/responses/401"
-        404:
-          $ref: "#/components/responses/404-Code-Regionale"
-
-  /api/inserjeunes/regionales/{code_region}/certifications/{codes_certifications}/widget:
-    get:
-      description: Retourne le code à utiliser pour intégrer le widget
-      security:
-        - BearerAuth: [ ]
-      parameters:
-        - $ref: "#/components/parameters/code_region"
-        - $ref: "#/components/parameters/codes_certifications"
-        - $ref: "#/components/parameters/millesimePeriode"
-        - $ref: "#/components/parameters/vue"
-      responses:
-        200:
-          $ref: "#/components/responses/RegionaleWidgetResponse"
-
   /api/inserjeunes/formations:
     get:
       description: Rechercher des statistiques de formations
@@ -415,39 +307,6 @@ paths:
           $ref: "#/components/responses/401"
         404:
           $ref: "#/components/responses/404-Code-Formation"
-
-  /api/inserjeunes/formations/{uai}-{code_certification}.svg:
-    get:
-      description: Génère une image SVG (widget) avec les statistiques d'une formation
-      parameters:
-        - $ref: "#/components/parameters/uai_with_sise"
-        - $ref: "#/components/parameters/code_certification_with_sise"
-        - $ref: "#/components/parameters/millesimeFormationPeriode"
-        - $ref: "#/components/parameters/direction"
-        - $ref: "#/components/parameters/theme"
-        - $ref: "#/components/parameters/imageOnError"
-      responses:
-        200:
-          $ref: "#/components/responses/SVGResponse"
-        400:
-          $ref: "#/components/responses/400"
-        401:
-          $ref: "#/components/responses/401"
-        404:
-          $ref: "#/components/responses/404-Code-Formation"
-
-  /api/inserjeunes/formations/{uai}-{code_certification}/widget:
-    get:
-      description: Retourne le code à utiliser pour intégrer le widget
-      security:
-        - BearerAuth: [ ]
-      parameters:
-        - $ref: "#/components/parameters/uai_with_sise"
-        - $ref: "#/components/parameters/code_certification_with_sise"
-        - $ref: "#/components/parameters/millesimeFormationPeriode"
-      responses:
-        200:
-          $ref: "#/components/responses/FormationWidgetResponse"
 
 components:
   parameters:
