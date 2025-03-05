@@ -5,6 +5,7 @@ import { generateCodeCertification } from "./testUtils.js";
 import { DataGouvApi } from "#src/services/dataGouv/DataGouvApi.js";
 import { CatalogueApprentissageApi } from "#src/services/catalogueApprentissage/CatalogueApprentissageApi.js";
 import * as Fixtures from "#tests/utils/fixtures.js";
+import { InserSupApi } from "#src/services/insersup/InsersupApi.js";
 
 function createNock(baseUrl, options = {}) {
   let client = nock(baseUrl);
@@ -258,5 +259,14 @@ export function mockInserJeunesApi(callback, options) {
     },
   });
 
+  return client;
+}
+
+export function mockInsersupApi(response, options) {
+  let client = createNock(InserSupApi.baseApiUrl, options);
+  client
+    .get(`/`)
+    .query(() => true)
+    .reply(200, response);
   return client;
 }

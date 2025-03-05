@@ -12,3 +12,5 @@ process.env.DIAGORIENTE_CLIENT_SECRET = "secret";
 process.env.TRAJECTOIRES_PRO_AUTH_JWT_SECRET = "jwt_secret";
 process.env.CATALOGUE_APPRENTISSAGE_USERNAME = "username";
 process.env.CATALOGUE_APPRENTISSAGE_PASSWORD = "password";
+process.env.TRAJECTOIRES_PRO_INSERSUP_BASE_URL = "https://insersup";
+process.env.TRAJECTOIRES_PRO_INSERSUP_API_KEY = "secret";
