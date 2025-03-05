@@ -35,6 +35,12 @@ const config = {
       key: env.get("TRAJECTOIRES_PRO_API_KEY").required().asString(),
     },
   },
+  inserSup: {
+    api: {
+      baseUrl: env.get("TRAJECTOIRES_PRO_INSERSUP_BASE_URL").required().asString(),
+      key: env.get("TRAJECTOIRES_PRO_INSERSUP_API_KEY").required().asString(),
+    },
+  },
   diagoriente: {
     api: {
       baseUrl: env.get("DIAGORIENTE_BASE_URL").default("https://oplc.diagoriente.beta.gouv.fr/graphql").asString(),

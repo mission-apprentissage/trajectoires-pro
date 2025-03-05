@@ -1,15 +1,15 @@
-import { flattenArray, oleoduc, transformData, writeData } from "oleoduc";
-import { Readable } from "stream";
+import { filterData, oleoduc, transformData, writeData } from "oleoduc";
 import { pick, merge } from "lodash-es";
 import { upsert } from "#src/common/db/mongodb.js";
 import { formationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
-import { findRegionByNom, findAcademieByNom } from "#src/services/regions.js";
+import { findAcademieByCode, findRegionByCodeInsee } from "#src/services/regions.js";
 import { computeCustomStats, getMillesimesFormationsSup, INSERSUP_STATS_NAMES } from "#src/common/stats.js";
 import { getCertificationSupInfo } from "#src/common/certification.js";
-import { InserSup } from "#src/services/dataEnseignementSup/InserSup.js";
+import { InserSupApi } from "#src/services/insersup/InsersupApi.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
+import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -17,7 +17,6 @@ async function checkMillesimeInDouble(jobStats, millesimes) {
   for (const millesime of millesimes) {
     const results = await FormationStatsRepository.findMillesimeInDouble(millesime);
     for (const result of results) {
-      jobStats.failed++;
       const formatted = {
         ...pick(result, ["uai", "code_certification", "filiere"]),
         millesimes: [result.millesime, ...result.others.map((r) => r.millesime)],
@@ -28,12 +27,77 @@ async function checkMillesimeInDouble(jobStats, millesimes) {
   }
 }
 
+function formatData(data) {
+  const formatMillesime = (data) => {
+    const cumulImpossible = /\*\*/.test(data.nb_sortants);
+    const hasCumul = /\*/.test(data.nb_sortants);
+
+    if (cumulImpossible || !hasCumul) {
+      return data.annee_universitaire.split("-")[1];
+    }
+    return data.annee_universitaire.replace("-", "_");
+  };
+  const formatInt = (str) => (str === "nd" || str === "na" ? null : parseInt(str.replaceAll("*", "")));
+
+  const formatted = {
+    uai: data.etablissement,
+    code_certification: data.diplome,
+    millesime: formatMillesime(data),
+    nb_poursuite_etudes: formatInt(data.nb_poursuivants),
+    nb_annee_term: formatInt(data.nb_inscrits),
+    nb_diplome: formatInt(data.nb_diplomes),
+    nb_sortant: formatInt(data.nb_sortants),
+    nb_en_emploi_24_mois: formatInt(data.nb_in_dsn_24),
+    nb_en_emploi_18_mois: formatInt(data.nb_in_dsn_18),
+    nb_en_emploi_12_mois: formatInt(data.nb_in_dsn_12),
+    nb_en_emploi_6_mois: formatInt(data.nb_in_dsn_6),
+    salaire_12_mois_q1: formatInt(data.salaire_q1_national_diplome_12),
+    salaire_12_mois_q2: formatInt(data.salaire_q2_national_diplome_12),
+    salaire_12_mois_q3: formatInt(data.salaire_q3_national_diplome_12),
+    libelle_etablissement: data.denomination_principale,
+    _meta: {
+      insersup: {
+        etablissement_libelle: data.denomination_principale,
+        etablissement_actuel_libelle: data.denomination_principale,
+        type_diplome: data.type_diplome_long,
+        domaine_disciplinaire: data.domaine,
+        secteur_disciplinaire: data.secteur_disciplinaire,
+        discipline: data.discipline,
+      },
+    },
+  };
+
+  return formatted;
+}
+
+async function verifyExistOtherDiscipline(formationStats) {
+  const metaInsersup = formationStats._meta.insersup;
+  const millesimePart = formationStats.millesime.split("_");
+
+  const existOtherDiscip = await FormationStatsRepository.first({
+    uai: formationStats.uai,
+    code_certification: formationStats.code_certification,
+    filiere: "superieur",
+    millesime: { $regex: new RegExp(`${millesimePart[millesimePart.length - 1]}$`) },
+    $or: [
+      { "_meta.insersup.domaine_disciplinaire": { $ne: metaInsersup.domaine_disciplinaire } },
+      { "_meta.insersup.secteur_disciplinaire": { $ne: metaInsersup.secteur_disciplinaire } },
+      { "_meta.insersup.discipline": { $ne: metaInsersup.discipline } },
+    ],
+  });
+
+  if (existOtherDiscip) {
+    return true;
+  }
+  return false;
+}
+
 export async function importFormationsSupStats(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
 
   // Set a default retry for the InserJeunes API
   const insersupOptions = merge({ apiOptions: { retry: { retries: 5 } } }, options.insersupOptions || {});
-  const insersup = options.insersup || new InserSup(insersupOptions);
+  const insersup = options.insersup || new InserSupApi(insersupOptions);
   const millesimes = options.millesimes || getMillesimesFormationsSup();
 
   function handleError(e, context) {
@@ -45,118 +109,106 @@ export async function importFormationsSupStats(options = {}) {
   logger.info(`Import des stats pour ${millesimes.length} millesime...`);
 
   await oleoduc(
-    Readable.from(await insersup.getEtablissements()),
-    flattenArray(),
-    transformData((etablissement) => {
-      return millesimes.map((millesime) => ({
-        millesime,
-        etablissement,
-      }));
+    await insersup.fetchEtablissementStats(),
+    transformData(formatData),
+    filterData((data) => {
+      for (const millesime of millesimes) {
+        const millesimePart = millesime.split("_");
+        if (data.millesime === millesime || millesimePart.includes(data.millesime)) {
+          return true;
+        }
+      }
+      return false;
     }),
-    flattenArray(),
-    transformData(
-      ({ millesime, etablissement }) => {
-        return insersup.getFormationsStatsStream(etablissement.etablissement, millesime);
-      },
-      { parallel: 10 }
-    ),
-    flattenArray(),
-    writeData(async (stream) => {
-      await oleoduc(
-        stream,
-        transformData(
-          (stats) => {
-            const region = findRegionByNom(stats.reg_nom);
-            if (!region) {
-              handleError(new Error(`Région inconnue pour l'établissement ${stats.etablissement}`));
-              return null;
-            }
+    transformData(async (stats) => {
+      const acce = await AcceEtablissementRepository.first({ numero_uai: stats.uai });
+      if (!acce) {
+        handleError(new Error(`Etablissement ${stats.uai} inconnu dans l'ACCE`));
+      }
 
-            const academie = findAcademieByNom(stats.aca_nom);
-            if (!academie) {
-              handleError(new Error(`Académie inconnue pour l'établissement ${stats.etablissement}`));
-              return null;
-            }
+      const region = findRegionByCodeInsee(acce.departement_insee_3);
+      if (!region) {
+        handleError(new Error(`Région ${acce.departement_insee_3} inconnue pour l'établissement ${stats.uai}`));
+        return null;
+      }
 
-            return {
-              stats: stats,
-              data: {
-                region,
-                academie,
-              },
-            };
+      const academie = findAcademieByCode(acce.academie);
+      if (!academie) {
+        handleError(new Error(`Académie ${acce.academie} inconnue pour l'établissement ${stats.uai}`));
+        return null;
+      }
+
+      return {
+        stats: stats,
+        data: {
+          region,
+          academie,
+        },
+      };
+    }),
+    writeData(async ({ data, stats: formationStats }) => {
+      const query = {
+        uai: formationStats.uai,
+        code_certification: formationStats.code_certification,
+        millesime: formationStats.millesime,
+        filiere: "superieur",
+      };
+
+      try {
+        const certification = await getCertificationSupInfo(formationStats.code_certification);
+        const stats = omitNil(pick(formationStats, ["uai", "millesime", ...INSERSUP_STATS_NAMES]));
+        const customStats = computeCustomStats(stats);
+
+        // Delete data compute with continuum job (= when type is not self)
+        await formationsStats().deleteOne({
+          ...query,
+          "donnee_source.type": { $ne: "self" },
+        });
+
+        // TODO: gérer les secteur disciplinaire (un même SISE avec plusieurs données différentes)
+        // Pour le moment on n'en conserve qu'un seul
+        if (await verifyExistOtherDiscipline(formationStats)) {
+          logger.info("La formation existe déjà dans une autre discipline", query);
+          return;
+        }
+
+        const formatted = {
+          ...query,
+          ...stats,
+          ...customStats,
+          ...certification,
+          filiere: "superieur",
+          region: pick(data.region, ["code", "nom"]),
+          academie: pick(data.academie, ["code", "nom"]),
+          donnee_source: {
+            code_certification: formationStats.code_certification,
+            type: "self",
           },
-          { parallel: 10 }
-        ),
-        writeData(
-          async ({ data, stats: formationStats }) => {
-            const query = {
-              uai: formationStats.etablissement,
-              code_certification: formationStats.diplome,
-              millesime: formationStats.millesime,
-              filiere: "superieur",
-            };
-            let formatted = null;
+          libelle_etablissement: formationStats.libelle_etablissement,
+          "_meta.insersup": omitNil(formationStats._meta.insersup),
+        };
 
-            try {
-              const certification = await getCertificationSupInfo(formationStats.diplome);
-              const stats = omitNil(pick(formationStats, ["uai", "millesime", ...INSERSUP_STATS_NAMES]));
-              const customStats = computeCustomStats(stats);
-
-              // Delete data compute with continuum job (= when type is not self)
-              await formationsStats().deleteOne({
-                ...query,
-                "donnee_source.type": { $ne: "self" },
-              });
-
-              formatted = {
-                ...query,
-                ...stats,
-                ...customStats,
-                ...certification,
-                filiere: "superieur",
-                region: pick(data.region, ["code", "nom"]),
-                academie: pick(data.academie, ["code", "nom"]),
-                donnee_source: {
-                  code_certification: formationStats.diplome,
-                  type: "self",
-                },
-                libelle_etablissement: formationStats.uo_lib,
-                "_meta.insersup": omitNil({
-                  etablissement_libelle: formationStats.uo_lib,
-                  etablissement_actuel_libelle: formationStats.uo_lib_actuel,
-                  type_diplome: formationStats.type_diplome_long,
-                  domaine_disciplinaire: formationStats.dom_lib,
-                  secteur_disciplinaire: formationStats.sectdis_lib,
-                  discipline: formationStats.discipli_lib,
-                }),
-              };
-
-              const res = await upsert(formationsStats(), query, {
-                $setOnInsert: {
-                  "_meta.date_import": new Date(),
-                  "_meta.created_on": new Date(),
-                  "_meta.updated_on": new Date(),
-                },
-                $set: omitNil(formatted),
-              });
-
-              if (res.upsertedCount) {
-                logger.info("Nouvelle stats de formation ajoutée", query);
-                jobStats.created++;
-              } else if (res.modifiedCount) {
-                jobStats.updated++;
-                logger.debug("Stats de formation mise à jour", query);
-              } else {
-                logger.trace("Stats de formation déjà à jour", query);
-              }
-            } catch (e) {
-              handleError(e, { query, formatted });
-            }
+        const res = await upsert(formationsStats(), query, {
+          $setOnInsert: {
+            "_meta.date_import": new Date(),
+            "_meta.created_on": new Date(),
+            "_meta.updated_on": new Date(),
           },
-          { parallel: 1 }
-        )
-      );
+          $set: omitNil(formatted),
+        });
+
+        if (res.upsertedCount) {
+          logger.info("Nouvelle stats de formation ajoutée", query);
+          jobStats.created++;
+        } else if (res.modifiedCount) {
+          jobStats.updated++;
+          logger.debug("Stats de formation mise à jour", query);
+        } else {
+          logger.trace("Stats de formation déjà à jour", query);
+        }
+      } catch (e) {
+        handleError(e, { query, formationStats });
+      }
     })
   );
 
