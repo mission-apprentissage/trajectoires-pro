@@ -296,9 +296,11 @@ function transformDisplayStatRules() {
       message: (data) => data,
     },
     {
-      // Remplace les taux par null si le nbr en année terminales < 20
+      // Remplace les taux et les nombres par null si le nbr en année terminales < 20
+      // On conserve le nbr en année terminales
       cond: (data) => data && data.nb_annee_term < 20,
-      transformation: (data) => mapValues(data, (o, k) => (TAUX.test(k) ? null : o)),
+      transformation: (data) =>
+        mapValues(data, (o, k) => (k !== "nb_annee_term" && (TAUX.test(k) || VALEURS.test(k)) ? null : o)),
       message: (data) =>
         merge(data, {
           _meta: {

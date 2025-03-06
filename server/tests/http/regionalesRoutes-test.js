@@ -195,7 +195,7 @@ describe("regionalesRoutes", () => {
       assert.strictEqual(response.data.regionales[0].code_certification, "12345678");
     });
 
-    it("Vérifie que l'on met les taux à null pour les effectifs < 20", async () => {
+    it("Vérifie que l'on met les taux et les nombres à null pour les effectifs < 20", async () => {
       const { httpClient } = await startServer();
       await insertRegionalesStats({
         code_certification: "12345678",
@@ -237,6 +237,12 @@ describe("regionalesRoutes", () => {
         taux_autres_12_mois: null,
         taux_autres_18_mois: null,
         taux_autres_24_mois: null,
+        nb_poursuite_etudes: null,
+        nb_en_emploi_24_mois: null,
+        nb_en_emploi_18_mois: null,
+        nb_en_emploi_12_mois: null,
+        nb_en_emploi_6_mois: null,
+        nb_sortant: null,
       });
       assert.deepNestedInclude(response.data, {
         "_meta.messages": [
@@ -245,7 +251,7 @@ describe("regionalesRoutes", () => {
       });
     });
 
-    it("Vérifie que l'on met les taux à null pour les effectifs < 20 au format CSV", async () => {
+    it("Vérifie que l'on met les taux et les nombres à null pour les effectifs < 20 au format CSV", async () => {
       const { httpClient } = await startServer();
       await insertRegionalesStats({
         region: { code: "11", nom: "Île-de-France" },
@@ -283,7 +289,7 @@ describe("regionalesRoutes", () => {
       assert.deepStrictEqual(
         response.data,
         `region;code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-Île-de-France;12345678;12345678;apprentissage;2018_2019;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
+Île-de-France;12345678;12345678;apprentissage;2018_2019;self;12345678;19;null;null;null;null;null;null;null;null;null;null;null;null;null;null;null;null
 `
       );
     });

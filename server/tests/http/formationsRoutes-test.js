@@ -357,7 +357,7 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.data.pagination.total, 1);
     });
 
-    it("Vérifie que l'on met les taux à null pour les effectifs < 20", async () => {
+    it("Vérifie que l'on met les taux et les nombres à null pour les effectifs < 20", async () => {
       const { httpClient } = await startServer();
       await insertCFD({ code_certification: "12345678" });
       await insertAcceEtablissement({ numero_uai: "0751234J" });
@@ -403,6 +403,12 @@ describe("formationsRoutes", () => {
         taux_autres_12_mois: null,
         taux_autres_18_mois: null,
         taux_autres_24_mois: null,
+        nb_poursuite_etudes: null,
+        nb_en_emploi_24_mois: null,
+        nb_en_emploi_18_mois: null,
+        nb_en_emploi_12_mois: null,
+        nb_en_emploi_6_mois: null,
+        nb_sortant: null,
       });
       assert.deepNestedInclude(response.data, {
         "_meta.messages": [
@@ -411,7 +417,7 @@ describe("formationsRoutes", () => {
       });
     });
 
-    it("Vérifie que l'on met les taux à null pour les effectifs < 20 au format CSV", async () => {
+    it("Vérifie que l'on met les taux et les nombres à null pour les effectifs < 20 au format CSV", async () => {
       const { httpClient } = await startServer();
       await insertFormationsStats({
         uai: "0751234J",
@@ -447,7 +453,7 @@ describe("formationsRoutes", () => {
       assert.deepStrictEqual(
         response.data,
         `uai;uai_type;uai_donnee;uai_donnee_type;code_certification;code_formation_diplome;filiere;millesime;donnee_source_type;donnee_source_code_certification;nb_annee_term;nb_en_emploi_12_mois;nb_en_emploi_18_mois;nb_en_emploi_24_mois;nb_en_emploi_6_mois;nb_poursuite_etudes;nb_sortant;taux_autres_12_mois;taux_autres_18_mois;taux_autres_24_mois;taux_autres_6_mois;taux_en_emploi_12_mois;taux_en_emploi_18_mois;taux_en_emploi_24_mois;taux_en_emploi_6_mois;taux_en_formation;taux_rupture_contrats
-0751234J;;;;12345678;12345678;apprentissage;2018_2019;self;12345678;19;4;3;2;5;1;6;null;null;null;null;null;null;null;null;null;null
+0751234J;;;;12345678;12345678;apprentissage;2018_2019;self;12345678;19;null;null;null;null;null;null;null;null;null;null;null;null;null;null;null;null
 `
       );
     });
