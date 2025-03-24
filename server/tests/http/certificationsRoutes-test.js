@@ -1784,7 +1784,6 @@ describe("certificationsRoutes", () => {
       assert.strictEqual(response.status, 200);
 
       const dom = new JSDOM(response.data);
-
       const emploiBlock = dom.window.document.querySelector(".block-emploi");
       expect(emploiBlock).to.contain.text("TRAVAILLENT");
       expect(emploiBlock).to.contain.text("30%");

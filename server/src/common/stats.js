@@ -3,6 +3,7 @@ import { transformData } from "oleoduc";
 import { $field, $percentage, $removeNullOrZero, $removeWhenAllNull } from "./utils/mongodbUtils.js";
 import { percentage } from "./utils/numberUtils.js";
 import config from "#src/config.js";
+import { formatMillesime } from "#src/http/utils/formatters.js";
 
 export const INSERJEUNES_STATS_NAMES = [
   "nb_annee_term",
@@ -43,6 +44,9 @@ export const INSERSUP_STATS_NAMES = [
   "nb_poursuite_etudes",
   "nb_sortant",
   "nb_diplome",
+  "salaire_12_mois_q1",
+  "salaire_12_mois_q2",
+  "salaire_12_mois_q3",
 ];
 export const INSERSUP_META = [
   "etablissement_libelle",
@@ -76,6 +80,18 @@ export function getMillesimes() {
 
 export function getLastMillesimes() {
   return config.millesimes.default[config.millesimes.default.length - 1];
+}
+
+export function getMillesimesSup() {
+  return config.millesimes.defaultSup;
+}
+
+export function getLastMillesimesSup() {
+  return config.millesimes.defaultSup[config.millesimes.defaultSup.length - 1];
+}
+
+export function getLastMillesimesFor(filiere) {
+  return filiere === "superieur" ? getLastMillesimesSup() : getLastMillesimes();
 }
 
 export function getMillesimesFormations() {
@@ -334,4 +350,42 @@ export function getUnknownIJFields(stats, keys) {
     return null;
   }
   return unknownFields;
+}
+
+export async function statsAnneeTerminale(method, certification, params, paramsFormatter = (params) => params) {
+  const { millesime } = params;
+  const certificationsTerminales = certification.certificationsTerminales;
+  if (certificationsTerminales.length === 1 && certification?.familleMetier?.isAnneeCommune !== true) {
+    return await method({
+      ...paramsFormatter({
+        codes_certifications: certificationsTerminales.map((d) => d.code_certification),
+        ...params,
+      }),
+    });
+  }
+
+  const statsByCertificationsTerminales = [];
+  for (const certificationTerminale of certificationsTerminales) {
+    try {
+      statsByCertificationsTerminales.push(
+        await method({
+          ...paramsFormatter({
+            codes_certifications: [certificationTerminale.code_certification],
+            ...params,
+          }),
+        })
+      );
+    } catch (err) {
+      statsByCertificationsTerminales.push({
+        error: err.name,
+        millesimes: formatMillesime(millesime).split("_"),
+        code_certification: certificationTerminale.code_certification,
+      });
+    }
+  }
+
+  return {
+    ...transformDisplayStat()(certification),
+    certificationsTerminales: statsByCertificationsTerminales.sort((a, b) => (a.libelle > b.libelle ? 1 : -1)),
+  };
 }

@@ -51,17 +51,26 @@ async function updateDiplomeList(data) {
   return { isModified, res, resOldDiplome, resNewDiplome };
 }
 
-async function getMefFromCfd(cfd, parentMef) {
+async function getMefFromCfd(cfd, parentMef, parentCfd) {
   const result = await BCNMefRepository.find({
     formation_diplome: cfd,
-    dispositif_formation: parentMef.dispositif_formation,
-  })
-    .then((stream) => toArray(stream))
-    .then((result) =>
-      result.find(({ mef_stat_11 }) => mef_stat_11.substr(0, 4) === parentMef.mef_stat_11.substr(0, 4))
-    );
+  }).then((stream) => toArray(stream));
 
-  return result;
+  if (result.length === 1) {
+    // Vérifie que le CFD du parent ne renvoi qu'un seul mef
+    const resultParent = await BCNMefRepository.find({ formation_diplome: parentCfd.code_formation_diplome }).then(
+      (stream) => toArray(stream)
+    );
+    if (resultParent.length === 1) {
+      return result[0];
+    }
+  }
+
+  const resultByDispositif = result
+    .filter((result) => result.dispositif_formation === parentMef.dispositif_formation)
+    .find(({ mef_stat_11 }) => mef_stat_11.substr(0, 4) === parentMef.mef_stat_11.substr(0, 4));
+
+  return resultByDispositif;
 }
 
 export async function computeBCNMEFContinuum() {
@@ -81,10 +90,14 @@ export async function computeBCNMEFContinuum() {
       }
 
       // Get old MEFs
-      const oldMefs = await Promise.all(diplomeCfd.ancien_diplome.map((oldCfd) => getMefFromCfd(oldCfd, diplomeMef)));
+      const oldMefs = await Promise.all(
+        diplomeCfd.ancien_diplome.map((oldCfd) => getMefFromCfd(oldCfd, diplomeMef, diplomeCfd))
+      );
 
       // Get new MEFs
-      const newMefs = await Promise.all(diplomeCfd.nouveau_diplome.map((newCfd) => getMefFromCfd(newCfd, diplomeMef)));
+      const newMefs = await Promise.all(
+        diplomeCfd.nouveau_diplome.map((newCfd) => getMefFromCfd(newCfd, diplomeMef, diplomeCfd))
+      );
 
       const newData = {
         code_certification: data.code_certification,

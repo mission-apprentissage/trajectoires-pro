@@ -46,6 +46,66 @@ export const WIDGETS = {
       return true;
     },
   },
+  statsOnly: {
+    variant: {
+      default: {
+        currentVersion: 1,
+        versions: [
+          {
+            version: 1,
+            template: path.join(__dirname, "templates", "stats", "statsOnly.1.ejs"),
+          },
+        ],
+      },
+    },
+    options: {
+      noTitle: Joi.boolean().default(false),
+      responsiveWidth: Joi.string()
+        .regex(/^[0-9]+(em|px)/)
+        .default("40em"),
+    },
+    validator: (data) => {
+      const isInvalid = (taux) => !taux || !!taux.find(({ value }) => isNil(value));
+
+      if (data.type === "filieres") {
+        if (isInvalid(data?.pro?.taux) && isInvalid(data?.apprentissage?.taux)) {
+          return false;
+        }
+        return true;
+      }
+
+      if (isInvalid(data?.taux)) {
+        return false;
+      }
+      return true;
+    },
+  },
+  statsContainer: {
+    variant: {
+      default: {
+        currentVersion: 1,
+        versions: [
+          {
+            version: 1,
+            template: path.join(__dirname, "templates", "stats", "statsContainer.1.ejs"),
+          },
+        ],
+      },
+    },
+    options: {
+      noTitle: Joi.boolean().default(false),
+      responsiveWidth: Joi.string()
+        .regex(/^[0-9]+(em|px)/)
+        .default("40em"),
+    },
+    validator: (data) => {
+      if (data.widgets) {
+        return true;
+      }
+
+      return false;
+    },
+  },
   error: {
     variant: {
       default: {
@@ -54,6 +114,23 @@ export const WIDGETS = {
           {
             version: 1,
             template: path.join(__dirname, "templates", "error", "error.1.ejs"),
+          },
+        ],
+      },
+    },
+    options: {
+      noTitle: Joi.boolean().default(false),
+    },
+    validator: () => true,
+  },
+  errorStatsOnly: {
+    variant: {
+      default: {
+        currentVersion: 1,
+        versions: [
+          {
+            version: 1,
+            template: path.join(__dirname, "templates", "error", "errorStatsOnly.1.ejs"),
           },
         ],
       },

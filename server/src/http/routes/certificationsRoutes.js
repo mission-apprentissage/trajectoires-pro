@@ -15,14 +15,20 @@ import {
   sendImageOnError,
 } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import { getLastMillesimes, transformDisplayStat } from "#src/common/stats.js";
+import {
+  getLastMillesimesFor,
+  getLastMillesimes,
+  transformDisplayStat,
+  getLastMillesimesSup,
+  statsAnneeTerminale,
+} from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import CertificationsRepository from "#src/common/repositories/certificationStats.js";
 import { ErrorNoDataForMillesime, ErrorCertificationNotFound, ErrorCertificationsNotFound } from "#src/http/errors.js";
-import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
+import { getUserWidget, getUserStatsWidget, getIframe } from "#src/services/widget/widgetUser.js";
 import { formatDataFilieresWidget, formatDataWidget } from "#src/http/utils/widgetUtils.js";
 
-async function certificationStats({ codes_certifications, millesime }) {
+async function certificationStats({ codes_certifications, millesime, fetchAnneesTerminales = false }) {
   const code_certification = codes_certifications[0];
 
   const result = await CertificationsRepository.first({ code_certification, millesime });
@@ -35,6 +41,11 @@ async function certificationStats({ codes_certifications, millesime }) {
 
     const millesimesAvailable = await CertificationsRepository.findMillesime({ code_certification });
     throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
+  }
+
+  // Récupère les données de l'année terminale automatiquement
+  if (fetchAnneesTerminales && result.certificationsTerminales) {
+    return await statsAnneeTerminale(certificationStats, result, { millesime });
   }
 
   const stats = transformDisplayStat()(result);
@@ -72,13 +83,22 @@ export default () => {
       const { millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
         {
-          ...validators.statsList([getLastMillesimes()]),
+          ...validators.statsList([]),
         },
         { code_certifications: formatCodesCertifications }
       );
 
       let { find, pagination } = await CertificationsRepository.findAndPaginate(
-        { millesime: millesimes.map(formatMillesime), code_certification: code_certifications },
+        {
+          code_certification: code_certifications,
+          millesime: millesimes.map(formatMillesime),
+          ...(millesimes.length === 0
+            ? {
+                millesimeSco: [getLastMillesimes()],
+                millesimeSup: [getLastMillesimesSup()],
+              }
+            : {}),
+        },
         {
           limit: items_par_page,
           page,
@@ -118,17 +138,24 @@ export default () => {
     "/api/inserjeunes/certifications/:codes_certifications.:ext?",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { codes_certifications, millesime, vue, ...options } = await validate(
+      const {
+        codes_certifications,
+        millesime: millesimeBase,
+        vue,
+        ...options
+      } = await validate(
         { ...req.params, ...req.query },
         {
           ...validators.codesCertifications(),
           ...validators.universe(),
-          ...validators.millesime(getLastMillesimes()),
+          ...validators.millesime(null),
           ...validators.vues(),
           ...validators.svg(),
         },
         { codes_certifications: formatCodesCertifications }
       );
+
+      const millesime = formatMillesime(millesimeBase || getLastMillesimesFor(codes_certifications[0].filiere));
 
       if (vue === "filieres" || codes_certifications.length > 1) {
         return sendImageOnError(
@@ -158,18 +185,27 @@ export default () => {
     "/api/inserjeunes/certifications/:codes_certifications/widget/:hash",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
-      const { hash, theme, codes_certifications, millesime, vue, ...options } = await validate(
+      const {
+        hash,
+        theme,
+        codes_certifications,
+        millesime: millesimeBase,
+        vue,
+        ...options
+      } = await validate(
         { ...req.params, ...req.query },
         {
           hash: Joi.string(),
           ...validators.codesCertifications(),
           ...validators.universe(),
-          ...validators.millesime(getLastMillesimes()),
+          ...validators.millesime(null),
           ...validators.vues(),
           ...validators.widget("stats"),
         },
         { codes_certifications: formatCodesCertifications }
       );
+
+      const millesime = formatMillesime(millesimeBase || getLastMillesimesFor(codes_certifications[0].filiere));
 
       try {
         if (vue === "filieres" || codes_certifications.length > 1) {
@@ -192,11 +228,13 @@ export default () => {
           return res.status(200).send(widget);
         }
 
-        const stats = await certificationStats({ codes_certifications, millesime });
-        const data = await formatDataWidget({ stats, millesime });
-        const widget = await getUserWidget({
+        const stats = await certificationStats({ codes_certifications, millesime, fetchAnneesTerminales: true });
+        const data = formatDataWidget({ stats, millesime });
+
+        const widget = await getUserStatsWidget({
+          code_certification: codes_certifications[0],
+          millesime,
           hash,
-          name: "stats",
           theme,
           options,
           data,

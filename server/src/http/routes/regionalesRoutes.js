@@ -15,18 +15,24 @@ import {
   sendImageOnError,
 } from "#src/http/utils/responseUtils.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import { ALL_WITHOUT_INCOME, getLastMillesimesRegionales, transformDisplayStat } from "#src/common/stats.js";
+import {
+  ALL_WITHOUT_INCOME,
+  getLastMillesimesRegionales,
+  transformDisplayStat,
+  statsAnneeTerminale,
+} from "#src/common/stats.js";
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import { ErrorRegionaleNotFound, ErrorNoDataForMillesime, ErrorFormationNotExist } from "#src/http/errors.js";
-import { getUserWidget, getIframe } from "#src/services/widget/widgetUser.js";
+import { getUserWidget, getIframe, getUserStatsWidget } from "#src/services/widget/widgetUser.js";
 import { findRegionByCode } from "#src/services/regions.js";
 import { formatDataFilieresWidget, formatDataWidget } from "#src/http/utils/widgetUtils.js";
 
-async function regionaleStats({ codes_certifications, region, millesime }) {
+async function regionaleStats({ codes_certifications, region, millesime, fetchAnneesTerminales = false }) {
   const code_certification = codes_certifications[0];
 
   const result = await RegionaleStatsRepository.first({ region, code_certification, millesime });
+
   if (!result) {
     const existFormation = await BCNRepository.exist({ code_certification });
     if (!existFormation) {
@@ -40,6 +46,11 @@ async function regionaleStats({ codes_certifications, region, millesime }) {
 
     const millesimesAvailable = await RegionaleStatsRepository.findMillesime({ region, code_certification });
     throw new ErrorNoDataForMillesime(millesime, millesimesAvailable);
+  }
+
+  // Récupère les données de l'année terminale automatiquement
+  if (fetchAnneesTerminales && result.certificationsTerminales) {
+    return await statsAnneeTerminale(regionaleStats, result, { region, millesime });
   }
 
   const stats = transformDisplayStat()(result);
@@ -212,7 +223,11 @@ export default () => {
 
       try {
         if (vue === "filieres" || codes_certifications.length > 1) {
-          const filieresStats = await regionaleFilieresStats({ codes_certifications, millesime, region });
+          const filieresStats = await regionaleFilieresStats({
+            codes_certifications,
+            millesime,
+            region,
+          });
           const data = await formatDataFilieresWidget({ filieresStats, millesime, region: findRegionByCode(region) });
           const widget = await getUserWidget({
             hash,
@@ -231,12 +246,13 @@ export default () => {
           return res.status(200).send(widget);
         }
 
-        const stats = await regionaleStats({ codes_certifications, region, millesime });
-        const data = await formatDataWidget({ stats, millesime, region: stats.region });
+        const stats = await regionaleStats({ codes_certifications, region, millesime, fetchAnneesTerminales: true });
+        const data = formatDataWidget({ stats, millesime, region: stats.region });
 
-        const widget = await getUserWidget({
+        const widget = await getUserStatsWidget({
+          code_certification: codes_certifications[0],
+          millesime,
           hash,
-          name: "stats",
           theme,
           options,
           data,

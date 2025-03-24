@@ -16,8 +16,32 @@ export class CertificationStatsRepository extends StatsRepository {
     return dbCollection(this.getCollection()).find(query).sort({ millesime: -1 }).limit(1).next();
   }
 
-  async findAndPaginate({ millesime, code_certification }, options = { page: 1, limit: 10 }) {
-    const query = this.prepare({ millesime, code_certification });
+  async findAndPaginate(
+    { millesime, code_certification, millesimeSco = [], millesimeSup = [], ...rest },
+    options = { page: 1, limit: 10 }
+  ) {
+    const millesimeCond = [];
+    if (millesimeSco && millesimeSco.length > 0) {
+      millesimeCond.push({
+        filiere: { $ne: "superieur" },
+        millesime: { $in: [...millesimeSco] },
+      });
+    }
+
+    if (millesimeSup && millesimeSup.length > 0) {
+      millesimeCond.push({
+        filiere: "superieur",
+        millesime: { $in: [...millesimeSup] },
+      });
+    }
+
+    const query = this.prepare({
+      millesime,
+      code_certification,
+      ...(millesimeCond.length > 0 ? { $or: millesimeCond } : {}),
+      ...rest,
+    });
+
     return await this._findAndPaginate(query, {
       ...options,
     });

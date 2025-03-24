@@ -17,8 +17,33 @@ export class FormationStatsRepository extends StatsRepository {
     return dbCollection(this.getCollection()).find(query).sort({ millesime: -1 }).limit(1).next();
   }
 
-  async findAndPaginate({ uai, region, millesime, code_certification, ...rest }, options = { page: 1, limit: 10 }) {
-    const query = this.prepare({ uai, "region.code": region, millesime, code_certification, ...rest });
+  async findAndPaginate(
+    { uai, region, millesime, millesimeSco = [], millesimeSup = [], code_certification, ...rest },
+    options = { page: 1, limit: 10 }
+  ) {
+    const millesimeCond = [];
+    if (millesimeSco && millesimeSco.length > 0) {
+      millesimeCond.push({
+        filiere: { $ne: "superieur" },
+        millesime: { $in: [...millesimeSco] },
+      });
+    }
+
+    if (millesimeSup && millesimeSup.length > 0) {
+      millesimeCond.push({
+        filiere: "superieur",
+        millesime: { $in: [...millesimeSup] },
+      });
+    }
+
+    const query = this.prepare({
+      uai,
+      "region.code": region,
+      millesime,
+      code_certification,
+      ...(millesimeCond.length > 0 ? { $or: millesimeCond } : {}),
+      ...rest,
+    });
     return await this._findAndPaginate(query, {
       ...options,
     });

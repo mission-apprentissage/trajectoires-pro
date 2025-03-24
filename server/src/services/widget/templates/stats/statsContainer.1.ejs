@@ -15,18 +15,19 @@
 
 <body style="margin: 0; padding: 0; position: relative;">
   <%- await include('./modal.ejs'); %>
-
   <div class="container">
-
 
     <% if (!options?.noTitle) { %>
     <%- await include('../common/title.ejs'); %>
     <% } %>
-    <!-- <div class="badge">
-      <div class="label">CAP EN 2 ANS</div>
-    </div> -->
 
-    <%- await include('./stats.1.ejs'); %>
+    <div class="mt-30"></div>
+
+    <% for (const widget of data.widgets) { %>
+    <%- widget %>
+    <div class="separator"></div>
+    <% } %>
+
 
     <%- await include('./footer.1.ejs'); %>
 
