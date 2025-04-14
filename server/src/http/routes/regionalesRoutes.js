@@ -1,12 +1,11 @@
 import express from "express";
-import Joi from "joi";
 import { mapValues, isEmpty } from "lodash-es";
 import { compose, transformIntoCSV, transformIntoJSON } from "oleoduc";
 import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
-import { formatMillesime, formatCodesCertifications } from "#src/http/utils/formatters.js";
+import { formatCodesCertifications } from "#src/http/utils/formatters.js";
 import {
   addCsvHeaders,
   addJsonHeaders,
@@ -24,9 +23,6 @@ import {
 import { getStatsAsColumns } from "#src/common/utils/csvUtils.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import { ErrorRegionaleNotFound, ErrorNoDataForMillesime, ErrorFormationNotExist } from "#src/http/errors.js";
-import { getUserWidget, getIframe, getUserStatsWidget } from "#src/services/widget/widgetUser.js";
-import { findRegionByCode } from "#src/services/regions.js";
-import { formatDataFilieresWidget, formatDataWidget } from "#src/http/utils/widgetUtils.js";
 
 async function regionaleStats({ codes_certifications, region, millesime, fetchAnneesTerminales = false }) {
   const code_certification = codes_certifications[0];
@@ -200,117 +196,6 @@ export default () => {
         { type: "regionales", regionCode: region },
         options
       );
-    })
-  );
-
-  router.get(
-    "/api/inserjeunes/regionales/:region/certifications/:codes_certifications/widget/:hash",
-    authMiddleware("public"),
-    tryCatch(async (req, res) => {
-      const { hash, theme, region, codes_certifications, millesime, vue, ...options } = await validate(
-        { ...req.params, ...req.query },
-        {
-          hash: Joi.string(),
-          ...validators.region(),
-          ...validators.codesCertifications(),
-          ...validators.universe(),
-          ...validators.millesime(getLastMillesimesRegionales()),
-          ...validators.vues(),
-          ...validators.widget("stats"),
-        },
-        { codes_certifications: formatCodesCertifications }
-      );
-
-      try {
-        if (vue === "filieres" || codes_certifications.length > 1) {
-          const filieresStats = await regionaleFilieresStats({
-            codes_certifications,
-            millesime,
-            region,
-          });
-          const data = await formatDataFilieresWidget({ filieresStats, millesime, region: findRegionByCode(region) });
-          const widget = await getUserWidget({
-            hash,
-            name: "stats",
-            theme,
-            options,
-            data,
-            plausibleCustomProperties: {
-              type: "regionales",
-              code_certification: codes_certifications.join(";"),
-              millesime,
-            },
-          });
-
-          res.setHeader("content-type", "text/html");
-          return res.status(200).send(widget);
-        }
-
-        const stats = await regionaleStats({ codes_certifications, region, millesime, fetchAnneesTerminales: true });
-        const data = formatDataWidget({ stats, millesime, region: stats.region });
-
-        const widget = await getUserStatsWidget({
-          code_certification: codes_certifications[0],
-          millesime,
-          hash,
-          theme,
-          options,
-          data,
-          plausibleCustomProperties: {
-            type: "regionale",
-            code_certification: codes_certifications[0],
-            millesime,
-            region,
-          },
-        });
-
-        res.setHeader("content-type", "text/html");
-        return res.status(200).send(widget);
-      } catch (err) {
-        const widget = await getUserWidget({
-          hash,
-          name: "error",
-          theme,
-          options,
-          data: {
-            error: err.name,
-            millesimes: formatMillesime(millesime).split("_"),
-            code_certification: codes_certifications[0],
-            region: findRegionByCode(region),
-          },
-        });
-
-        res.setHeader("content-type", "text/html");
-        return res.status(200).send(widget);
-      }
-    })
-  );
-
-  router.get(
-    "/api/inserjeunes/regionales/:region/certifications/:codes_certifications/widget",
-    authMiddleware("private"),
-    tryCatch(async (req, res) => {
-      const { theme, millesime, vue } = await validate(
-        { ...req.params, ...req.query },
-        {
-          ...validators.region(),
-          ...validators.codesCertifications(),
-          ...validators.universe(),
-          ...validators.millesime(null),
-          ...validators.vues(),
-          ...validators.widget("stats"),
-        },
-        { codes_certifications: formatCodesCertifications }
-      );
-
-      const widget = getIframe({
-        user: req.user,
-        parameters: { theme, millesime, vue },
-        path: req.path,
-      });
-
-      res.setHeader("content-type", "text/html");
-      return res.status(200).send(widget);
     })
   );
 

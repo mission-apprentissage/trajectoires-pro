@@ -1,7 +1,6 @@
 import express from "express";
 import { tryCatch } from "#src/http/middlewares/tryCatchMiddleware.js";
 import { authMiddleware } from "#src/http/middlewares/authMiddleware.js";
-import Joi from "joi";
 import { flatten } from "lodash-es";
 import * as validators from "#src/http/utils/validators.js";
 import { validate } from "#src/http/utils/validators.js";
@@ -34,8 +33,6 @@ import {
   ErrorFormationNotExist,
   ErrorEtablissementNotExist,
 } from "#src/http/errors.js";
-import { getUserWidget, getIframe, getUserStatsWidget } from "#src/services/widget/widgetUser.js";
-import { formatDataWidget } from "#src/http/utils/widgetUtils.js";
 
 async function formationStats({ uai, codeCertificationWithType, millesime, fetchAnneesTerminales = false }) {
   const { type, code_certification } = codeCertificationWithType;
@@ -212,97 +209,5 @@ export default () => {
     })
   );
 
-  router.get(
-    "/api/inserjeunes/formations/:uai-:code_certification/widget/:hash",
-    authMiddleware("public"),
-    tryCatch(async (req, res) => {
-      const {
-        hash,
-        theme,
-        uai,
-        code_certification,
-        millesime: millesimeBase,
-        ...options
-      } = await validate(
-        { ...req.params, ...req.query },
-        {
-          hash: Joi.string(),
-          ...validators.uai(),
-          ...validators.codeCertification(),
-          ...validators.millesime(null),
-          ...validators.widget("stats"),
-        }
-      );
-
-      const codeCertificationWithType = formatCodeCertificationWithType(code_certification);
-      const millesime = formatMillesime(
-        millesimeBase || getLastMillesimesFormationsYearFor(codeCertificationWithType.filiere)
-      );
-
-      try {
-        const stats = await formationStats({ uai, codeCertificationWithType, millesime, fetchAnneesTerminales: true });
-        const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
-        const data = formatDataWidget({ stats, etablissement });
-
-        const widget = await getUserStatsWidget({
-          code_certification: codeCertificationWithType.code_certification,
-          millesime,
-          hash,
-          theme,
-          options,
-          data,
-          plausibleCustomProperties: {
-            type: "formation",
-            uai,
-            code_certification,
-            millesime,
-          },
-        });
-
-        res.setHeader("content-type", "text/html");
-        return res.status(200).send(widget);
-      } catch (err) {
-        const widget = await getUserWidget({
-          hash,
-          name: "error",
-          theme,
-          options,
-          data: {
-            error: err.name,
-            millesimes: millesime.split("_"),
-            code_certification,
-            uai,
-          },
-        });
-        res.setHeader("content-type", "text/html");
-        return res.status(200).send(widget);
-      }
-    })
-  );
-
-  router.get(
-    "/api/inserjeunes/formations/:uai-:code_certification/widget",
-    authMiddleware("private"),
-    tryCatch(async (req, res) => {
-      const { theme, millesime } = await validate(
-        { ...req.params, ...req.query },
-        {
-          ...validators.uai(),
-          ...validators.codeCertification(),
-          ...validators.millesime(null),
-          ...validators.widget("stats"),
-        }
-      );
-
-      const widget = getIframe({
-        user: req.user,
-        parameters: { theme, millesime },
-        path: req.path,
-      });
-
-      res.setHeader("content-type", "text/html");
-      return res.status(200).send(widget);
-    })
-  );
   return router;
 };

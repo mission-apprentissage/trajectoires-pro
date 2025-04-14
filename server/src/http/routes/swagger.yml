@@ -1446,42 +1446,6 @@ components:
             type: string
             format: xml
 
-    CertificationWidgetResponse:
-      description: Une iframe qui permet d'intégrer le widget
-      content:
-        "text/html":
-          schema:
-            type: string
-          examples:
-            html:
-              summary: Une iframe permettant d'intégrer le widget
-              value: |
-                <iframe onLoad="JS_CODE" style="width: 100%; height: 0;" src="/api/inserjeunes/certifications/[CODE_CERTIFICATION]/widget/[HASH]?" scrolling="no" frameBorder="0" />
-
-
-    RegionaleWidgetResponse:
-      description: Une iframe qui permet d'intégrer le widget
-      content:
-        "text/html":
-          schema:
-            type: string
-          examples:
-            html:
-              summary: Une iframe permettant d'intégrer le widget
-              value: |
-                <iframe onLoad="JS_CODE" style="width: 100%; height: 0;" src="/api/inserjeunes/regionales/[CODE_REGION]/certifications/[CODE_CERTIFICATION]/widget/[HASH]?" scrolling="no" frameBorder="0" />
-
-    FormationWidgetResponse:
-      description: Une iframe qui permet d'intégrer le widget
-      content:
-        "text/html":
-          schema:
-            type: string
-          examples:
-            html:
-              summary: Une iframe permettant d'intégrer le widget
-              value: |
-                <iframe onLoad="JS_CODE" style="width: 100%; height: 0;" src="/api/inserjeunes/formations/[UAI]-[CODE_CERTIFICATION]/widget/[HASH]?" scrolling="no" frameBorder="0" />
     LoginResponse:
       description: Un json content un Token
       content:
