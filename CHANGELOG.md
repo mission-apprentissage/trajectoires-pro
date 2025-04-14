@@ -1,3 +1,11 @@
+# [1.29.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.28.0...v1.29.0) (2025-04-14)
+
+
+### Features
+
+* ne renvoi pas les nombres pour les effectifs < 20 ([#337](https://github.com/mission-apprentissage/trajectoires-pro/issues/337)) ([4fa5236](https://github.com/mission-apprentissage/trajectoires-pro/commit/4fa52365560ffc4613a0cea03f8fd05ff0c314fc))
+* utilisation de l'api insersup pour les données par établissement ([#328](https://github.com/mission-apprentissage/trajectoires-pro/issues/328)) ([b60788f](https://github.com/mission-apprentissage/trajectoires-pro/commit/b60788f5d4320df3bd56ead74d34f9a3cdda552a))
+
 # [1.28.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.27.0...v1.28.0) (2025-02-24)
 
 
