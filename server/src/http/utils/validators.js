@@ -2,7 +2,6 @@ import Joi from "joi";
 import { mapValues } from "lodash-es";
 import { getRegions, findRegionByCodePostal, getAcademies } from "#src/services/regions.js";
 import { formatArrayParameters } from "./formatters.js";
-import { WIDGETS } from "#src/services/widget/widget.js";
 import { ANCIENS_NIVEAUX_MAPPER } from "#src/services/bcn.js";
 
 const UAI_PATTERN = /^[0-9]{7}[A-Z]{1}$/;
@@ -205,21 +204,6 @@ export function svg() {
     theme: Joi.string().valid("dsfr", "lba"),
     ext: Joi.string().valid("svg"),
     imageOnError: Joi.string().empty(["", null]).valid("true", "false", "empty").default("false"),
-  };
-}
-
-export function widget(type) {
-  return {
-    theme: Joi.string()
-      .empty(["", null])
-      .custom((value, helper) => {
-        if (!WIDGETS[type].variant[value]) {
-          return helper.message(`Le theme ${value} n'existe pas.`);
-        }
-
-        return value;
-      }),
-    ...(WIDGETS[type] && WIDGETS[type].options ? WIDGETS[type].options : {}),
   };
 }
 

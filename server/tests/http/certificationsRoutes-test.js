@@ -4,7 +4,6 @@ import chaiDom from "chai-dom";
 import fs from "fs";
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import MockDate from "mockdate";
-import { JSDOM } from "jsdom";
 import config from "#src/config.js";
 import { startServer } from "#tests/utils/testUtils.js";
 import { insertCertificationsStats, insertCFD, insertMEF, insertUser } from "#tests/utils/fakeData.js";
@@ -1761,126 +1760,6 @@ describe("certificationsRoutes", () => {
           },
         });
       });
-    });
-  });
-
-  describe("Widget v2", async () => {
-    async function createDefaultStats(data = {}, dataCfd = {}) {
-      await insertCFD({ code_certification: "12345678", ...dataCfd });
-      return await insertCertificationsStats({
-        code_certification: "12345678",
-        code_formation_diplome: "12345678",
-        filiere: "apprentissage",
-        taux_en_formation: 50,
-        taux_en_emploi_6_mois: 30,
-        taux_autres_6_mois: 20,
-        nb_annee_term: 20,
-        ...data,
-      });
-    }
-
-    beforeEach(async () => {
-      await insertUser();
-    });
-
-    it("Vérifie qu'on obtient un widget avec un code au format XXX:XXX", async () => {
-      const { httpClient } = await startServer();
-      await createDefaultStats();
-      const response = await httpClient.get("/api/inserjeunes/certifications/CFD:12345678/widget/test");
-      assert.strictEqual(response.status, 200);
-
-      const dom = new JSDOM(response.data);
-      const emploiBlock = dom.window.document.querySelector(".block-emploi");
-      expect(emploiBlock).to.contain.text("TRAVAILLENT");
-      expect(emploiBlock).to.contain.text("30%");
-
-      const formationBlock = dom.window.document.querySelector(".block-formation");
-      expect(formationBlock).to.contain.text("ÉTUDIENT");
-      expect(formationBlock).to.contain.text("50%");
-
-      const autresBlock = dom.window.document.querySelector(".block-autres");
-      expect(autresBlock).to.contain.text("AUTRES PARCOURS");
-      expect(autresBlock).to.contain.text("20%");
-    });
-
-    it("Vérifie qu'on obtient un widget", async () => {
-      const { httpClient } = await startServer();
-      await createDefaultStats();
-      const response = await httpClient.get("/api/inserjeunes/certifications/12345678/widget/test");
-      assert.strictEqual(response.status, 200);
-
-      const dom = new JSDOM(response.data);
-
-      const emploiBlock = dom.window.document.querySelector(".block-emploi");
-      expect(emploiBlock).to.contain.text("TRAVAILLENT");
-      expect(emploiBlock).to.contain.text("30%");
-
-      const formationBlock = dom.window.document.querySelector(".block-formation");
-      expect(formationBlock).to.contain.text("ÉTUDIENT");
-      expect(formationBlock).to.contain.text("50%");
-
-      const autresBlock = dom.window.document.querySelector(".block-autres");
-      expect(autresBlock).to.contain.text("AUTRES PARCOURS");
-      expect(autresBlock).to.contain.text("20%");
-    });
-
-    it("Vérifie qu'on obtient un widget d'erreur quand la formation n'existe pas", async () => {
-      const { httpClient } = await startServer();
-      const response = await httpClient.get("/api/inserjeunes/certifications/12345678/widget/test");
-
-      assert.strictEqual(response.status, 200);
-      assert.include(response.data, "Oups, nous n'avons pas cette information.");
-      assert.include(response.data, "Nous ne disposons pas de données pour cette formation.");
-    });
-
-    it("Vérifie qu'on obtient une erreur quand il n'y a pas de données disponible pour la stats", async () => {
-      const { httpClient } = await startServer();
-      await insertCFD({ code_certification: "12345678" });
-      await insertCertificationsStats(
-        {
-          code_certification: "12345678",
-          code_formation_diplome: "12345678",
-          filiere: "apprentissage",
-          nb_annee_term: 20,
-        },
-        false
-      );
-      const response = await httpClient.get("/api/inserjeunes/certifications/12345678/widget/test");
-
-      assert.strictEqual(response.status, 200);
-      assert.include(response.data, "Oups, nous n'avons pas cette information.");
-      assert.include(response.data, "Il y a aujourd'hui un petit nombre d'élèves");
-    });
-
-    it("Vérifie qu'on obtient une erreur quand les effectifs sont trop faibles", async () => {
-      const { httpClient } = await startServer();
-      await createDefaultStats({ nb_annee_term: 10 });
-
-      const response = await httpClient.get("/api/inserjeunes/certifications/12345678/widget/test");
-
-      assert.strictEqual(response.status, 200);
-      assert.include(response.data, "Oups, nous n'avons pas cette information.");
-      assert.include(response.data, "Il y a aujourd'hui un petit nombre d'élèves");
-    });
-
-    it("Vérifie qu'on obtient une erreur quand il n'y a pas de donnée pour le millésime", async () => {
-      const { httpClient } = await startServer();
-      await createDefaultStats();
-
-      const response = await httpClient.get("/api/inserjeunes/certifications/12345678/widget/test?millesime=2021");
-
-      assert.strictEqual(response.status, 200);
-      assert.include(response.data, "Oups, nous n'avons pas cette information.");
-      assert.include(response.data, "Nous ne disposons pas de données pour les promotions 2021.");
-    });
-
-    it("Vérifie qu'on obtient une erreur quand le hash de l'utilisateur n'existe pas", async () => {
-      const { httpClient } = await startServer();
-
-      const response = await httpClient.get("/api/inserjeunes/certifications/12345678/widget/test2");
-
-      assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.data.message, "Ce widget n'existe pas");
     });
   });
 });

@@ -106,12 +106,6 @@ const config = {
       .default("2019_2020,2020_2021,2021_2022,2022_2023")
       .asArray(),
   },
-  widget: {
-    plausibleDomain: env
-      .get("WIDGET_PLAUSIBLE_DOMAIN")
-      .default("recette.exposition.inserjeunes.incubateur.net")
-      .asString(),
-  },
 };
 
 export default config;
