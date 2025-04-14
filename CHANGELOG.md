@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.29.0...v1.30.0) (2025-04-14)
+
+
+### Features
+
+* suppression du widget v2 ([#339](https://github.com/mission-apprentissage/trajectoires-pro/issues/339)) ([7b3147e](https://github.com/mission-apprentissage/trajectoires-pro/commit/7b3147e82025a8948eb8f2f42c7c649524c82f8f))
+
 # [1.29.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.28.0...v1.29.0) (2025-04-14)
 
 
