@@ -5,7 +5,8 @@ import { importFormationsSupStats } from "./importFormationsSupStats.js";
 import { importCertificationsStats } from "./importCertificationsStats.js";
 import { importCertificationsSupStats } from "./importCertificationsSupStats.js";
 import { importRegionalesStats } from "./importRegionalesStats.js";
-import { InserSup } from "#src/services/dataEnseignementSup/InserSup.js";
+import { InserSup as InserSupData } from "#src/services/dataEnseignementSup/InserSup.js";
+import { InserSupApi } from "#src/services/insersup/InsersupApi.js";
 
 export async function importStats(options = {}) {
   let stats = options.stats || ["certifications", "formations", "regionales"];
@@ -29,12 +30,15 @@ export async function importSupStats(options = {}) {
   let millesimes = options.millesimes || null;
 
   const insersupOptions = { apiOptions: { retry: { retries: 5 } } };
-  const insersup = new InserSup(insersupOptions); //Permet de partager le rate limiter entre les deux imports
+  const insersupData = new InserSupData(insersupOptions); //Permet de partager le rate limiter entre les deux imports
+  const insersupApi = new InserSupApi(insersupOptions);
 
   return promiseAllProps({
     ...(stats.includes("certifications")
-      ? { certifications: importCertificationsSupStats({ insersup, millesimes }) }
+      ? { certifications: importCertificationsSupStats({ insersup: insersupData, millesimes }) }
       : {}),
-    ...(stats.includes("formations") ? { formations: importFormationsSupStats({ insersup, millesimes }) } : {}),
+    ...(stats.includes("formations")
+      ? { formations: importFormationsSupStats({ insersup: insersupApi, millesimes }) }
+      : {}),
   });
 }

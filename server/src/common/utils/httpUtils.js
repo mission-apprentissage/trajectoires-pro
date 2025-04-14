@@ -38,6 +38,21 @@ async function fetchJsonWithRetry(url, options = {}, retryOptions = { retries: 3
   );
 }
 
+async function fetchWithRetry(url, options = {}, retryOptions = { retries: 3 }) {
+  return asyncRetry(
+    async () => {
+      let response = await _fetch(url, { ...options, responseType: "text" });
+      return response.data;
+    },
+    {
+      ...(retryOptions || {}),
+      onRetry: (err) => {
+        logger.error({ err: err, request: err.request, response: err.response }, `Retrying ${url}...`);
+      },
+    }
+  );
+}
+
 async function fetchStreamWithRetry(url, options = {}, retryOptions = { retries: 3 }) {
   return asyncRetry(
     () => {
@@ -57,4 +72,4 @@ async function fetch(url, options = {}) {
   return response;
 }
 
-export { fetch, fetchJson, fetchJsonWithRetry, fetchStream, fetchStreamWithRetry };
+export { fetch, fetchJson, fetchJsonWithRetry, fetchWithRetry, fetchStream, fetchStreamWithRetry };

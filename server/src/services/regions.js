@@ -329,7 +329,7 @@ export function findRegionByCodeRegionAcademique(code) {
 }
 
 export function findRegionByCodeInsee(code) {
-  return REGIONS.find((region) => region.departements.find((d) => code.startsWith(d.code))) || null;
+  return REGIONS.find((region) => region.departements.find((d) => code.replace(/^0/, "").startsWith(d.code))) || null;
 }
 
 export function findRegionByAcademie(code) {
