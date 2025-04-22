@@ -1,0 +1,10 @@
+title: Expo IJ
+description: >- # this means to ignore newlines until "baseurl:"
+  Éclairer les choix d’orientation des jeunes en exposant des données
+  pertinentes relatives aux parcours de formation et à l’insertion professionnelle.
+theme: just-the-docs
+callouts:
+  highlight:
+    color: purple
+  note:
+    color: yellow
