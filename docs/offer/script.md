@@ -24,7 +24,7 @@ L’appariement est réalisé en deux temps :
 
 Le contenu du script d’appariement, en langage R, est disponible dans : 
 
-[Script]({% link offer/script-tech.md %})
+[Script]({{ site.baseurl }}{% link offer/script-tech.md %})
 
 ainsi que la description des différentes étapes.
 
@@ -42,7 +42,7 @@ Aider les établissements qui alimentent le catalogue Parcoursup à renseigner d
 
 #### Comment ? (proposition)
 
-- L’API “Qui forme ?” permet, pour un organisme de formation donné de récupérer la liste des certifications portées et les habilitations déclarées auprès de France compétences. Voir [API QuiForme]({% link data/sources.md %})
+- L’API “Qui forme ?” permet, pour un organisme de formation donné de récupérer la liste des certifications portées et les habilitations déclarées auprès de France compétences. Voir [API QuiForme]({{ site.baseurl }}{% link data/sources.md %})
 - L’interface “établissement” côté PS permet de sélectionner un établissement, puis une certification dans cette base, plutôt que de renseigner un code SISE (champ libre). Les identifiants, dont le SISE, sont stockés par PS en vue de l’appariement.
 
 Prototype : 
@@ -53,17 +53,17 @@ L’application suivante https://dsidd.shinyapps.io/interroger_qui_forme/?uai=07
 
 Les données suivantes ont été utiles au prototypage :
 
-- [ACCE]({% link data/sources.md %}),
-- [Référentiel national des certifications ]({% link data/sources.md %}) du Réseau des Carif-Oref,
-- [Table de passage codes certifications et formations]({% link data/sources.md %}) de l’ONISEP,
-- [N_FORMATION_DIPLOME : Diplômes préparés dans les établissements du secondaire (collèges, lycées) et formations intermédiaires]({% link data/sources.md %}) de la BCN.
+- [ACCE]({{ site.baseurl }}{% link data/sources.md %}),
+- [Référentiel national des certifications ]({{ site.baseurl }}{% link data/sources.md %}) du Réseau des Carif-Oref,
+- [Table de passage codes certifications et formations]({{ site.baseurl }}{% link data/sources.md %}) de l’ONISEP,
+- [N_FORMATION_DIPLOME : Diplômes préparés dans les établissements du secondaire (collèges, lycées) et formations intermédiaires]({{ site.baseurl }}{% link data/sources.md %}) de la BCN.
 
 Les API du Réseau des Carif-Oref sont utiles:
 
-- [API Certif Info]({% link data/sources.md %})
-- [API QuiForme]({% link data/sources.md %})
+- [API Certif Info]({{ site.baseurl }}{% link data/sources.md %})
+- [API QuiForme]({{ site.baseurl }}{% link data/sources.md %})
 
-Fichiers sources de l’application : [interroger_qui_forme.zip]({% link offer/interroger_qui_forme.zip %})
+Fichiers sources de l’application : [interroger_qui_forme.zip]({{ site.baseurl }}{% link offer/interroger_qui_forme.zip %})
 
 ### Maintien et évolution du script
 

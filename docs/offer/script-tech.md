@@ -12,7 +12,7 @@ layout: default
 
 ## FICHIER
 
-[script_appariement_ps.zip]({% link offer/script_appariement_ps.zip %})
+[script_appariement_ps.zip]({{ site.baseurl }}{% link offer/script_appariement_ps.zip %})
 
 ## README - Préparation et appariement des Données Parcoursup 2025
 

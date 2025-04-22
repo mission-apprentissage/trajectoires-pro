@@ -9,4 +9,4 @@ nav_order: 4.3
 
 [Exposition - Documentation](https://documentation.exposition.inserjeunes.beta.gouv.fr/)
 
-[Guide : faire le lien entre votre catalogue et les données InserJeunes]({% link offer/guide-connection.md %})
+[Guide : faire le lien entre votre catalogue et les données InserJeunes]({{ site.baseurl }}{% link offer/guide-connection.md %})

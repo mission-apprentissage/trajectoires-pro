@@ -8,7 +8,7 @@ nav_order: 3.3
 # Traitements des données
 {: .no_toc }
 
-*Notre base de données ([Base de données & Indicateurs]({% link data/content.md %})) est construire en connectant, recoupant et enrichissant diverses sources, dont les bases InserJeunes, InserSup, les tables de la BCN, etc. ([Jeux de données manipulés]({% link data/sources.md %})). Les principaux “traitements” sont décrits ci-dessous.*
+*Notre base de données ([Base de données & Indicateurs]({{ site.baseurl }}{% link data/content.md %})) est construire en connectant, recoupant et enrichissant diverses sources, dont les bases InserJeunes, InserSup, les tables de la BCN, etc. ([Jeux de données manipulés]({{ site.baseurl }}{% link data/sources.md %})). Les principaux “traitements” sont décrits ci-dessous.*
 
 ## Table des matières
 {: .no_toc .text-delta }
@@ -36,7 +36,7 @@ Cette historisation des formations n’est pas encore mise en place sur le péri
 ### Traitement
 {: .no_toc }
 
-- La table N_FORMATION_DIPLOME dispose de champs ancien_diplome_1 à 7 et nouveau_diplome_1 à 7([N_FORMATION_DIPLOME]({% link data/sources.md %})). Il est donc possible de faire le lien entre une formation ancienne et une formation nouvelle et de propager ce lien au niveau des statistiques (associées à un millésime, une formation et un établissement ou une zone géographique).
+- La table N_FORMATION_DIPLOME dispose de champs ancien_diplome_1 à 7 et nouveau_diplome_1 à 7([N_FORMATION_DIPLOME]({{ site.baseurl }}{% link data/sources.md %})). Il est donc possible de faire le lien entre une formation ancienne et une formation nouvelle et de propager ce lien au niveau des statistiques (associées à un millésime, une formation et un établissement ou une zone géographique).
 - Scripts correspondants (disponibles sur [Github](https://github.com/mission-apprentissage/trajectoires-pro)) :
     - server/src/jobs/bcn/importBCNContinuum.js
         - Construit les liens entre les nouveaux et anciens CFDs
@@ -114,9 +114,9 @@ Voir la page dédiée, [Détails sur l’impact de la continuité des données s
 
 Avec la mise à disposition de plus en plus massive des données InserSup, sur la durée, le besoin d’un traitement de type “continuum” pour les données fournies par le SIES va devenir de plus en plus important.
 
-Nous pensons que ce traitement peut se faire en mobilisant les données historisées de Certif-Info (voir [Référentiel national des certifications ]({% link data/sources.md %})).
+Nous pensons que ce traitement peut se faire en mobilisant les données historisées de Certif-Info (voir [Référentiel national des certifications ]({{ site.baseurl }}{% link data/sources.md %})).
 
-Cette solution a fait l’objet d’un test pour la campagne 2025 de ParcourSup. Voir [Script d’appariement du catalogue Parcoursup]({% link offer/script.md %}). 
+Cette solution a fait l’objet d’un test pour la campagne 2025 de ParcourSup. Voir [Script d’appariement du catalogue Parcoursup]({{ site.baseurl }}{% link offer/script.md %}).
 
 ## Familles de métiers et années intermédiaires
 
@@ -145,7 +145,7 @@ Nos travaux permettent donc de **récupérer les indicateurs pour une année int
 ### Traitement
 {: .no_toc }
 
-- cas simple (années intermédiaires) : à l’aide de la table N_MEF de la BCN [**N_MEF** : modules élémentaires de formation (année dans un dispositif de formation)]({% link data/sources.md %}), les statistiques sont associées aux années “non terminales”.
+- cas simple (années intermédiaires) : à l’aide de la table N_MEF de la BCN [**N_MEF** : modules élémentaires de formation (année dans un dispositif de formation)]({{ site.baseurl }}{% link data/sources.md %}), les statistiques sont associées aux années “non terminales”.
     - Scripts correspondants (disponibles sur [Github](https://github.com/mission-apprentissage/trajectoires-pro)) :
         - server/src/jobs/stats/importAnneesNonTerminales.js
             - Permet d’associer les statistiques des années terminales à leur années intermédiaires
@@ -302,8 +302,8 @@ Ce traitement concerne les formations en apprentissage, sur le périmètre Inser
 ### Perspectives
 {: .no_toc }
 
-Intégrer dans l’API, les données de la base ACCE ([ACCE]({% link data/sources.md %})) pour faire le lien entre un UAI fille et un UAI mère, de telle sorte que lorsque le producteur diffuse les données à la maille UAI mère, l’API renvoie les indicateurs à la maille UAI fille.
+Intégrer dans l’API, les données de la base ACCE ([ACCE]({{ site.baseurl }}{% link data/sources.md %})) pour faire le lien entre un UAI fille et un UAI mère, de telle sorte que lorsque le producteur diffuse les données à la maille UAI mère, l’API renvoie les indicateurs à la maille UAI fille.
 
 Ici tous les établissements scolaires sont concernés, donc ce traitement pourra impacter directement les formation du SIES et de la DEPP en voie scolaire comme en apprentissage.
 
-Cette solution a fait l’objet d’un test pour la campagne 2025 de ParcourSup. Voir [Script d’appariement du catalogue Parcoursup]({% link offer/script.md %})
+Cette solution a fait l’objet d’un test pour la campagne 2025 de ParcourSup. Voir [Script d’appariement du catalogue Parcoursup]({{ site.baseurl }}{% link offer/script.md %})

@@ -15,7 +15,7 @@ nav_order: 3.1
 
 ## Contenu
 
-Nous collectons les données diffusées par les services statistiques du **Ministère de l’Éducation nationale et de la jeunesse** **(DEPP)**, du **Ministère de l’Enseignement supérieur, de la Recherche et de l’Innovation (SIES),** du **Ministère du Travail, du Plein emploi et de l'Insertion (DARES)** ainsi que d’autres entités (voir [Jeux de données manipulés]({% link data/sources.md %})).
+Nous collectons les données diffusées par les services statistiques du **Ministère de l’Éducation nationale et de la jeunesse** **(DEPP)**, du **Ministère de l’Enseignement supérieur, de la Recherche et de l’Innovation (SIES),** du **Ministère du Travail, du Plein emploi et de l'Insertion (DARES)** ainsi que d’autres entités (voir [Jeux de données manipulés]({{ site.baseurl }}{% link data/sources.md %})).
 
 Ces données sont connectées, croisées, enrichies et viennent peupler notre propre base de donnée dont l’objectif et de servir de source d’information accessible, fiable, utile et complète pour chacune des étapes du parcours allant du collège à l’emploi (le parcours de formation vers l’emploi).
 

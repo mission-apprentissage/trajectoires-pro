@@ -54,22 +54,22 @@ Pour cela, nous :
 
 Nous collectons les données diffusées par les services statistiques du **Ministère de l’Éducation nationale et de la jeunesse** **(DEPP)**, du **Ministère de l’Enseignement supérieur, de la Recherche et de l’Innovation (SIES),** du **Ministère du Travail, du Plein emploi et de l'Insertion (DARES)** ainsi que d’autres entités.
 
-→ [Jeux de données manipulés]({% link data/sources.md %})
+→ [Jeux de données manipulés]({{ site.baseurl }}{% link data/sources.md %})
 
 Ces données sont connectées, croisées, enrichies…
 
-→ [Traitements des données]({% link data/processing.md %})
+→ [Traitements des données]({{ site.baseurl }}{% link data/processing.md %})
 
 … et viennent peupler notre propre base de donnée dont l’objectif et de servir de source d’informations de référence, fiables, utiles et accessibles pour éclairer les choix d’orientation des jeunes et de leurs accompagnateurs.
 
-→ [Base de données & Indicateurs]({% link data/content.md %})
+→ [Base de données & Indicateurs]({{ site.baseurl }}{% link data/content.md %})
 
 Les indicateurs contenus dans notre base sont diffusés, via une API, auprès des acteurs de l’orientation tels que l’Onisep, Parcoursup, Affelnet, 1jeune1solution, La bonne alternance, l’Étudiant, etc. et viennent enrichir les chemins d’orientation déjà empruntés par les jeunes.
 
-→ [API Exposition]({% link offer/api.md %})
+→ [API Exposition]({{ site.baseurl }}{% link offer/api.md %})
 
 Ces acteurs sont accompagnés pour monter en compétence sur la donnée manipulée, la prise en main de notre API et l’exposition efficace des indicateurs (notamment la conception, les tests, l’analyse de modules de visualisation des données).
 
-→ [Documentation]({% link offer/documentation.md %})
+→ [Documentation]({{ site.baseurl }}{% link offer/documentation.md %})
 
-Plus de détail dans [Plus-value du projet et propositions pour la suite]({% link conclusion/proposals.md %}).
+Plus de détail dans [Plus-value du projet et propositions pour la suite]({{ site.baseurl }}{% link conclusion/proposals.md %}).
