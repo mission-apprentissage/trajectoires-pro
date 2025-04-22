@@ -1,5 +1,7 @@
 ---
 title: "Impact LBA - Mai 2024"
+parent: Analyses data
+nav_order: 2
 subtitle: "Document de travail - Mai 2024"
 output: 
     html_document:
@@ -10,8 +12,6 @@ output:
 
                     
 ---
-
-
 
 ## Les questions
 
