@@ -2,7 +2,7 @@
 title: Attentes concernant la feuille de route des services statistiques
 parent: 🚧 Bilan
 layout: default
-nav_order: 2.7
+nav_order: 2.3
 ---
 
 # Attentes concernant la feuille de route des services statistiques

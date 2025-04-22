@@ -2,7 +2,7 @@
 title: Plus-value du projet et propositions pour la suite
 parent: 🚧 Bilan
 layout: default
-nav_order: 2.6
+nav_order: 2.2
 ---
 
 # Plus-value du projet et propositions pour la suite

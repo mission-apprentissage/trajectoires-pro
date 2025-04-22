@@ -2,7 +2,7 @@
 title: 🚧 Évolutions suggérées
 parent: 🚧 Bilan
 layout: default
-nav_order: 2.5
+nav_order: 2.4
 ---
 
 # Évolutions suggérées

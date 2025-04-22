@@ -2,7 +2,7 @@
 title: '🚧 Enseignements : Déploiement'
 parent: 🚧 Bilan
 layout: default
-nav_order: 2.4
+nav_order: 2.7
 ---
 
 # Enseignements : Déploiement
