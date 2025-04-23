@@ -7,7 +7,7 @@ nav_order: 4.1
 
 # API Exposition
 
-# Description
+## Description
 
 L’API Exposition InserJeunes permet **la récupération des [données InserJeunes]** (dont la “part en emploi à 6 mois” et le “taux en formation”).
 
@@ -22,7 +22,7 @@ Certaines routes, mentionnées par un cadenas, nécessitent une authentification
 
 Le code source de l’API est public et disponible sur [Github].
 
-# Documentation
+## Documentation
 
 Présentation et liste des routes disponibles :
 [Swagger UI]
@@ -30,7 +30,7 @@ Présentation et liste des routes disponibles :
 Code source : 
 [Github]
 
-# Statistiques
+## Statistiques
 
 [Exposition - Statistiques]
 
