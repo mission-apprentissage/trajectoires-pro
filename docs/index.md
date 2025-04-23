@@ -10,7 +10,7 @@ permalink: /
 {: .no_toc }
 
 {: .highlight }
-[Un service numérique public de la mission interministérielle InserJeunes, membre du réseau beta.gouv](https://beta.gouv.fr/startups/exposition-ij.html) .
+Un service numérique public développé par la mission interministérielle InserJeunes, membre du [réseau beta.gouv](https://beta.gouv.fr/), entre Avril 2022 et Mai 2025, dans le but d'éclairer les choix d’orientation des jeunes en exposant des données pertinentes relatives aux parcours de formation et à l’insertion professionnelle.
 
 - TOC
 {:toc}

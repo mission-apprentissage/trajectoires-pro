@@ -5,11 +5,17 @@ layout: default
 ---
 
 # Guide : faire le lien entre votre catalogue et les données InserJeunes
+{: .no_toc }
 
 {: .note }
 Vous disposez d’une base de formations ou d’actions de formation (une formation dans un établissement) et souhaitez y associer les données InserJeunes. Retrouvez ci-dessous quelques pistes pour identifier les codes (CFD, MEFSTAT11, SISE) associées à vos données, qui vous permettront d’appeler l’API InserJeunes.
 
 *Pour en savoir plus sur nos données ou notre API, rendez-vous sur [https://documentation.exposition.inserjeunes.beta.gouv.fr/](https://documentation.exposition.inserjeunes.beta.gouv.fr/).*
+
+## Table des matières
+{: .no_toc .text-delta }
+- TOC
+{:toc}
 
 ## Catalogue de l’apprentissage / données du RCO
 
