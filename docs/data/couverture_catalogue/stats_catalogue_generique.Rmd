@@ -1,0 +1,224 @@
+---
+title: "Base InserJeunes"
+subtitle: "Formations couvertes par la base InserJeunes"
+output: 
+    html_document:
+      toc: true
+      toc_float:
+        toc_collapsed: true
+
+params: 
+    catalogue_init: affelnet_simpli
+    type_source: "affelnet"
+    type_voeux: "affelnet"
+    nom_catalogue: "Affelnet"
+    nom_catalogue_detail: "Catalogue Affelnet 2024 V20240531_Extraction_catalogue_SLA_2024"
+    lien_drive_catalogue: "https://docs.google.com/spreadsheets/d/1i3URB63eaiQJ9UfteY4_PULom_I5f1wK/edit#gid=397487575"
+    catalogue_renseigne: NULL
+    stats_catalogue: NULL
+    afficher_stats_voeux: true
+    afficher_stats_synthese: false
+    stats_catalogue_synthese: NULL
+      
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,warning = FALSE,error = FALSE,message = FALSE)
+library(DT)
+
+if(!is.null(params$stats_catalogue)){
+  stats_catalogue <- params$stats_catalogue
+}else{
+  if(!is.null(params$catalogue_renseigne)){
+    catalogue_renseigne <- params$catalogue_renseigne
+  }else if(params$type_voeux =="affelnet"){
+    catalogue_renseigne <- expo_mef_catalogue_partenaire(
+      catalogue_init = params$catalogue_init,
+      type_source = params$type_source)
+  }
+  stats_catalogue <- expo_mef_stats_catalogue_partenaire(
+    catalogue_partenaire_renseigne = catalogue_renseigne,
+    type_voeux=params$type_voeux
+  )  
+}
+
+```
+
+## `r params$nom_catalogue`
+
+**`r params$nom_catalogue_detail`**: [Lien vers le catalogue](`r params$lien_drive_catalogue`)
+
+*Dernière mise à jour : `r format(Sys.time(), '%d/%m/%Y')`* 
+
+`r if(params$afficher_stats_synthese){"### Synthese"}`
+
+`r if(params$afficher_stats_synthese){"#### Nombre de formations"}`
+```{r}
+if(params$afficher_stats_synthese){
+  
+  stats_catalogue_synthese <- params$stats_catalogue_synthese
+
+  premiere_colonne_numerique <- which(map_dbl(stats_catalogue_synthese$stats_catalogue_partenaire,~is.numeric(.))==1)[1]
+
+  dt_header <- stats_catalogue_synthese$stats_catalogue_partenaire %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(premiere_colonne_numerique:length(.)),as.numeric) %>% 
+  mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  slice(-nrow(.))
+
+
+dt_footer <- stats_catalogue_synthese$stats_catalogue_partenaire %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(premiere_colonne_numerique:length(.)),as.numeric) %>% 
+  mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  slice(nrow(.)) %>% 
+  mutate_if("is.numeric",round,0) %>% 
+  mutate_if("is.numeric",as.character)
+
+
+
+sketch <- htmltools::withTags(table(
+  tableHeader(dt_header),
+  tableFooter(map_chr(dt_footer,~.))))
+
+
+datatable(dt_header,
+          extensions = c('FixedColumns','FixedHeader','Buttons'),
+          container = sketch, 
+          options = list(dom = 'Bt', pageLength = 10000,scrollX = TRUE,
+                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE,
+                         buttons = c('copy', 'csv', 'excel')
+          ),rownames = F)
+
+}
+
+```
+
+
+`r if(params$afficher_stats_synthese & params$afficher_stats_voeux){"#### Nombre de voeux émis"}`
+
+
+```{r}
+if(params$afficher_stats_synthese & params$afficher_stats_voeux){
+  
+  stats_catalogue_synthese <- params$stats_catalogue_synthese
+
+  premiere_colonne_numerique <- which(map_dbl(stats_catalogue_synthese$stats_catalogue_partenaire_voeux,~is.numeric(.))==1)[1]
+
+  dt_header <- stats_catalogue_synthese$stats_catalogue_partenaire_voeux %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(premiere_colonne_numerique:length(.)),as.numeric) %>% 
+  mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  slice(-nrow(.))
+
+
+dt_footer <- stats_catalogue_synthese$stats_catalogue_partenaire_voeux %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(premiere_colonne_numerique:length(.)),as.numeric) %>% 
+  mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  slice(nrow(.)) %>% 
+  mutate_if("is.numeric",round,0) %>% 
+  mutate_if("is.numeric",as.character)
+
+
+
+sketch <- htmltools::withTags(table(
+  tableHeader(dt_header),
+  tableFooter(map_chr(dt_footer,~.))))
+
+
+datatable(dt_header,
+          extensions = c('FixedColumns','FixedHeader','Buttons'),
+          container = sketch, 
+          options = list(dom = 'Bt', pageLength = 10000,scrollX = TRUE,
+                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE,
+                         buttons = c('copy', 'csv', 'excel')
+          ),rownames = F)
+
+}
+
+```
+
+### Détails par type de diplôme
+
+#### Nombre de formations
+
+
+```{r}
+premiere_colonne_numerique <- which(map_dbl(stats_catalogue$stats_catalogue_partenaire,~is.numeric(.))==1)[1]
+
+dt_header <- stats_catalogue$stats_catalogue_partenaire %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(premiere_colonne_numerique:length(.)),as.numeric) %>% 
+  mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  slice(-nrow(.))
+
+
+dt_footer <- stats_catalogue$stats_catalogue_partenaire %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(premiere_colonne_numerique:length(.)),as.numeric) %>% 
+  mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  slice(nrow(.)) %>% 
+  mutate_if("is.numeric",round,0) %>% 
+  mutate_if("is.numeric",as.character)
+
+
+
+sketch <- htmltools::withTags(table(
+  tableHeader(dt_header),
+  tableFooter(map_chr(dt_footer,~.))))
+
+
+datatable(dt_header,
+          extensions = c('FixedColumns','FixedHeader','Buttons'),
+          container = sketch, 
+          options = list(dom = 'Bt', pageLength = 10000,scrollX = TRUE,
+                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE,
+                         buttons = c('copy', 'csv', 'excel')
+          ),rownames = F)
+```
+
+`r if(params$afficher_stats_voeux){"#### Nombre de voeux émis"}`
+
+
+
+```{r}
+if(params$afficher_stats_voeux){
+  
+  premiere_colonne_numerique <- which(map_dbl(stats_catalogue$stats_catalogue_partenaire_voeux,~is.numeric(.))==1)[1]
+
+  dt_header <- stats_catalogue$stats_catalogue_partenaire_voeux %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(premiere_colonne_numerique:length(.)),as.numeric) %>% 
+  mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  slice(-nrow(.))
+
+
+dt_footer <- stats_catalogue$stats_catalogue_partenaire_voeux %>%
+  mutate_all(replace_na,0) %>% 
+  mutate_at(vars(premiere_colonne_numerique:length(.)),as.numeric) %>% 
+  mutate_at(vars(`Part du  catalogue`,contains("(%)")),scales::percent,accuracy=0.1) %>% 
+  slice(nrow(.)) %>% 
+  mutate_if("is.numeric",round,0) %>% 
+  mutate_if("is.numeric",as.character)
+
+
+
+sketch <- htmltools::withTags(table(
+  tableHeader(dt_header),
+  tableFooter(map_chr(dt_footer,~.))))
+
+
+datatable(dt_header,
+          extensions = c('FixedColumns','FixedHeader','Buttons'),
+          container = sketch, 
+          options = list(dom = 'Bt', pageLength = 10000,scrollX = TRUE,
+                         fixedColumns = list(leftColumns = 3),fixedHeader = TRUE,
+                         buttons = c('copy', 'csv', 'excel')
+          ),rownames = F)
+
+}
+
+```
+
+

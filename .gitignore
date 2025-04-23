@@ -113,3 +113,6 @@ script_prepa_ps_2025_campagne_2025.R
 
 # VS code
 .vscode
+
+# Mac
+.DS_Store
