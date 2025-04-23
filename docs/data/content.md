@@ -39,11 +39,11 @@ Les données sont disponibles pour chaque certification / formation :
 
 Les données de rémunération ne sont disponibles aujourd’hui qu’à l’échelle nationale, pour le millésime 2021.
 
-Mode de calcul des indicateurs : [Exposition - Documentation](https://documentation.exposition.inserjeunes.beta.gouv.fr/#154d0d8ec01580f4a3dafe6164a0076c)
+Mode de calcul des indicateurs : [📚 Centre de documentation InserJeunes]({{ site.baseurl }}{% link offer/documentation-general.md %})
 
 ## Couverture
 
-Voir : [Analyses](https://mission-apprentissage.github.io/trajectoires-pro/analyse/couverture_catalogue/base_inserjeunes/base_inserjeunes_production_2024_06.html)
+Voir : [Analyses]({{ site.baseurl }}{% link data/couverture_catalogue/README.md %})
 
 ## Limites
 
