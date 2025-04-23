@@ -20,4 +20,4 @@ Son but est d'éclairer les choix d’orientation des jeunes en exposant des don
 
 Développé entre Avril 2022 et Mai 2025, le projet est en cours de passation aux équipes de l'administration, pour pouvoir continuer à aider les jeunes dans leurs choix d'orientation.
 
-🎬 [Retrouvez le bilan de notre mission]({{ site.baseurl }}{% link conclusion/index.md %})
+🎬 [Parcourir le bilan de notre mission]({{ site.baseurl }}{% link conclusion/index.md %})
