@@ -24,7 +24,7 @@ Dans le cadre de la **rénovation du catalogue des formations**, un certain nomb
 
 **Nous avons pu rétablir le lien qui avait été rompu entre les données recueillies sur une certification avant et après son changement de nom.**
 
-Plus de détails sur la page dédiée de la documentation : [La continuité des données dans le cadre de la rénovation des formations](https://documentation.exposition.inserjeunes.beta.gouv.fr/page/f6e38c4b-0975-40e7-aef5-2e1c41e26450).
+Plus de détails sur la page dédiée de la documentation publique : [La continuité des données dans le cadre de la rénovation des formations]({{ site.baseurl }}{% link offer/documentation-continuum.md %}).
 
 ### Périmètre
 {: .no_toc }
@@ -107,7 +107,7 @@ Lors de la mise en place initiale du continuum, les gains en termes de couvertur
     - Scolaire : +14.5 points
     - Apprentissage : +2.9 points
 
-Voir la page dédiée, [Détails sur l’impact de la continuité des données sur le taux de couverture](https://documentation.exposition.inserjeunes.beta.gouv.fr/page/8010e991-71c8-4cc1-a762-074444343144). Cette étude de couverture a été réalisée avant les travaux sur la gestion des UAI et les familles de métiers.
+Voir la page dédiée de la documentation publique, [Détails sur l’impact de la continuité des données sur le taux de couverture]({{ site.baseurl }}{% link offer/documentation-continuum-impact.md %}). Cette étude de couverture a été réalisée avant les travaux sur la gestion des UAI et les familles de métiers.
 
 ### Perspectives
 {: .no_toc }
