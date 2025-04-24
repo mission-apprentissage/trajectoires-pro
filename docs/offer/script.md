@@ -42,6 +42,11 @@ Aider les établissements qui alimentent le catalogue Parcoursup à renseigner d
 
 #### Comment ? (proposition)
 
+{: .note }
+> Ci-dessous, on utilise les données fournies par l'API QuiForme. C'est un exemple.
+>
+> D'autres sources de données peuvent être utilisées pour alimenter l'outil, notamment des bases issues du SIES référencant l'ensemble des couples SISE - UAI connus, pour avoir une couverture optimale des formations présentes sur Parcoursup.
+
 - L’API “Qui forme ?” permet, pour un organisme de formation donné de récupérer la liste des certifications portées et les habilitations déclarées auprès de France compétences. Voir [API QuiForme]({{ site.baseurl }}{% link data/sources.md %})
 - L’interface “établissement” côté PS permet de sélectionner un établissement, puis une certification dans cette base, plutôt que de renseigner un code SISE (champ libre). Les identifiants, dont le SISE, sont stockés par PS en vue de l’appariement.
 
@@ -49,7 +54,7 @@ Prototype :
 
 Test d’un formulaire identifiant les certifications possibles à partir d’un UAI ou d’un libellé
 
-L’application suivante https://dsidd.shinyapps.io/interroger_qui_forme/?uai=0762762P permet de lister l’ensemble des certifications présentes dans l’outil [QuiForme](https://www.intercariforef.org/rco_search/quiforme)?  La liste de certifications repose donc sur la complétude du catalogue [QuiForme](https://www.intercariforef.org/rco_search/quiforme). 
+L’application suivante [https://dsidd.shinyapps.io/interroger_qui_forme/?uai=0762762P](https://dsidd.shinyapps.io/interroger_qui_forme/?uai=0762762P) permet de lister l’ensemble des certifications présentes dans l’outil [QuiForme](https://www.intercariforef.org/rco_search/quiforme). La liste de certifications repose donc sur la complétude du catalogue [QuiForme](https://www.intercariforef.org/rco_search/quiforme).
 
 Les données suivantes ont été utiles au prototypage :
 
@@ -58,7 +63,7 @@ Les données suivantes ont été utiles au prototypage :
 - [Table de passage codes certifications et formations]({{ site.baseurl }}{% link data/sources.md %}) de l’ONISEP,
 - [N_FORMATION_DIPLOME : Diplômes préparés dans les établissements du secondaire (collèges, lycées) et formations intermédiaires]({{ site.baseurl }}{% link data/sources.md %}) de la BCN.
 
-Les API du Réseau des Carif-Oref sont utiles:
+Les API du Réseau des Carif-Oref utilisées :
 
 - [API Certif Info]({{ site.baseurl }}{% link data/sources.md %})
 - [API QuiForme]({{ site.baseurl }}{% link data/sources.md %})
