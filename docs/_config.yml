@@ -5,11 +5,13 @@ description: >-
 
 theme: just-the-docs
 
+color_scheme: beta
+
 callouts:
   highlight:
-    color: purple
+    color: france
   note:
-    color: yellow
+    color: tilleulverveine
 
 aux_links:
   Page beta.gouv:
