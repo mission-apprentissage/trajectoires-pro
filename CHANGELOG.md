@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.30.0...v1.31.0) (2025-04-28)
+
+
+### Features
+
+* vérification des gh_token ([#349](https://github.com/mission-apprentissage/trajectoires-pro/issues/349)) ([5bddbb0](https://github.com/mission-apprentissage/trajectoires-pro/commit/5bddbb0085a23b5e2ae1bf7f10287bd2cfd18be5))
+
 # [1.30.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.29.0...v1.30.0) (2025-04-14)
 
 
