@@ -276,7 +276,7 @@ Réseau des Carif-Oref
 
 Donnée utilisée pour le script d’appariement permettant de relier les données InserJeunes / InserSup au catalogue Parcoursup.
 
-La suite: Accès à une base historisée via api contenant les champs code CI, CFD, SISE, Formacodes, ROME, Ancien CI, Nouveau CI
+Évolutions suggérées : accès à une base historisée via l'API contenant les champs code CI, CFD, SISE, Formacodes, ROME, Ancien CI, Nouveau CI
 
 ### API Certif Info
 
