@@ -165,8 +165,8 @@ Rendez-vous sur notre page dédiée : [Statistiques InserJeunes](https://statist
 
 ## Les acteurs du dispositif
 
-![InserJeunes](inserjeunes.png){: width="200px" display="inline-block" }
-![DEPP](depp.png){: width="200px" display="inline-block" }
-![InserSup](insersup.png){: width="200px" display="inline-block" }
-![SIES](sies.png){: width="200px" display="inline-block" }
-![DARES](dares.png){: width="200px" display="inline-block" }
+![InserJeunes](logo-inserjeunes.png){: width="200px" display="inline-block" }
+![DEPP](logo-depp.png){: width="200px" display="inline-block" }
+![InserSup](logo-insersup.png){: width="200px" display="inline-block" }
+![SIES](logo-sies.png){: width="200px" display="inline-block" }
+![DARES](logo-dares.png){: width="200px" display="inline-block" }
