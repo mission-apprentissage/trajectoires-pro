@@ -2,7 +2,7 @@
 title: '🚧 Enseignements : Design'
 parent: 🚧 Bilan
 layout: default
-nav_order: 2.5
+nav_order: 2.7
 ---
 
 # Enseignements : Design

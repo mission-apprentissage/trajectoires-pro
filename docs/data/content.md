@@ -41,9 +41,43 @@ Les données de rémunération ne sont disponibles aujourd’hui qu’à l’éc
 
 Mode de calcul des indicateurs : [📚 Centre de documentation InserJeunes]({{ site.baseurl }}{% link offer/documentation-general.md %})
 
-## Couverture
+## Périmètre et Couverture
 
-Voir : [Analyses]({{ site.baseurl }}{% link data/couverture_catalogue/README.md %})
+Depuis 2021, sont produits chaque année par les services statistiques, pour toutes les formations du CAP au BTS dispensées dans des lycées professionnels ou CFA :
+
+- Les taux d’insertion dans l’emploi salarié en France à 6, 12 18 et 24 mois des sortants
+de formation ;
+- Les taux de poursuite d'études ;
+- La valeur ajoutée des établissements, c’est à dire leur capacité à insérer en prenant en compte le profil social des apprenants et le taux de chômage de la zone d’emploi comparativement à des établissements similaires ;
+- Le taux d’interruption en cours de formation ainsi que, pour chaque centre de formation d'apprentis, le taux de rupture des contrats d'apprentissage.
+
+Depuis 2022 les services statistiques ont œuvré à l’évolution du dispositif InserJeunes avec le soutien de la mission InserJeunes sur 2 axes : son enrichissement et son extension. Ces données sont produites, vérifiées et publiées de manière récurrente tous les ans.
+
+### Enrichissement
+
+Après 2 ans de travaux , les résultats notables de l’enrichissement du dispositif portent sur :
+- La prise en compte de l’emploi public dans le taux d’insertion;
+- Le calcul des indicateurs à une maille régionale;
+- La qualification de la stabilité de l’emploi occupé après la formation (CDD, CDI, interim);
+- L’information sur les rémunérations et leur distribution un an après la sortie de formation;
+- Des premières briques sont posées pour mieux qualifier le taux d’insertion dans l’emploi et le taux de poursuite d’études :
+  - Pour obtenir des précisions sur le pourcentage de jeunes qui occupent un emploi en lien avec leur formation, la DEPP a publié une note d'information en juin 2023 et la DARES, a exposé une publication. Ces travaux ponctuels sont les premières étapes à la construction d’indicateurs récurrents attendus en 2025 pour déterminer à une granularité fine si une formation donnée mène à l’emploi pour lequel la formation a préparé le jeune.
+  - Pour des détails sur la constitution du taux de poursuite d’études (réorientation, redoublement, poursuite…), la DEPP a initié d‘importants travaux pour mettre en œuvre un dispositif de suivi de cohortes exhaustif. Ces travaux de base doivent donner lieu à des résultats et des publications en 2025.
+
+### Extension
+
+Au début de la mission, InserJeunes donnait des informations seulement sur les formations de la voie professionnelle du CAP au BTS. Un calendrier ambitieux est depuis déployé pour disposer des débouchés de davantage de niveaux de formation ou de domaines de formation.
+
+Sont couverts fin 2024 :
+- Les licences professionnelles ;
+- Les licences générales ;
+- Les masters ;
+- Les formations de l’enseignement agricole ;
+- Les diplômes proposés par les écoles de commerce et d’ingénieur.
+
+### Contenu détaillé
+
+Le contenu de la base (par type de diplôme couvert, aux diverses mailles) ainsi que des analyses de couvertures détaillées sur les catalogues des ré-utilisateurs (tels que Parcoursup ou Affelnet) sont accessibles sur la page dédiée : [Couverture]({{ site.baseurl }}{% link data/couverture_catalogue/README.md %}).
 
 ## Limites
 

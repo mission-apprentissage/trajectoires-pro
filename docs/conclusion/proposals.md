@@ -163,3 +163,11 @@ Nous préconisons le lancement d’une investigation, avec le soutien de la DINU
 - Pour permettre aux décideurs et cabinets ministériels de retrouver facilement une donnée utile
 
 À noter que certains de ces modules sont déjà développés dans “Orion” ou “C’est qui le pro ?”, ce qui pourrait faciliter la production d’un nouveau site à moindre coût.
+
+### Insister sur le rôle des accompagnateurs via le développement de "C'est qui le pro ?"
+
+Le rôle des accompagnateurs à l’orientation, dans le milieu scolaire ou familial, semble primordial pour améliorer et accélérer la prise en compte des données InserJeunes dans les choix d'orientation.
+
+C’est ce qui a amené la mission à se concentrer sur le projet [C’est qui le pro ?](https://beta.gouv.fr/startups/cestquilepro.html), pour notamment toucher directement les accompagnateurs à l’orientation, professeurs principaux (de 3ème) et psychologues de l'orientation, qui jouent un rôle décisif dans l’accompagnement des plus jeunes.
+
+Cette valorisation, dans un contexte différent, permet une articulation des données InserJeunes avec d’autres informations utiles adaptées pour les accompagnateurs pour préparer une stratégie de choix de formation ancrée dans une réalité terrain.
