@@ -1,7 +1,7 @@
 ---
 title: 'Centre de documentation InserJeunes'
 nav_exclude: true
-layout: default
+layout: minimal
 ---
 
 # 📚 Centre de documentation InserJeunes
@@ -99,7 +99,7 @@ Ils peuvent être au chômage, en inactivité, en indépendant, parties à l’�
 
 **Pour les millésimes 2022 et les suivant,** l’emploi public sera désormais bien comptabilisé dans le nombre d’élèves en emploi pour les formations du CAP au BTS. 
 
-Pour en savoir plus sur ce travail, rendez-vous sur la page dédiée : [Couverture de l’emploi public et du volontariat de service civique](Centre%20de%20documentation%20InserJeunes%20eb8fc2c14348440cb934eef4c7ee0b4e/Couverture%20de%20l%E2%80%99emploi%20public%20et%20du%20volontariat%20de%20154d0d8ec0158049be59d7f7f218f16f.md)
+Pour en savoir plus sur ce travail, rendez-vous sur la page dédiée : [Couverture de l’emploi public et du volontariat de service civique]({{ site.baseurl }}{% link offer/documentation-public-jobs.md %})
 
 ### La continuité des données dans le cadre de la rénovation des formations
 
