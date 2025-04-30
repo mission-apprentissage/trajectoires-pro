@@ -1,7 +1,7 @@
 ---
 title: 'Couverture de l’emploi public et du volontariat de service civique'
 nav_exclude: true
-layout: default
+layout: minimal
 ---
 
 # Couverture de l’emploi public et du volontariat de service civique

@@ -1,7 +1,7 @@
 ---
 title: 'Guide : faire le lien entre votre catalogue et les données InserJeunes'
 nav_exclude: true
-layout: default
+layout: minimal
 ---
 
 # Guide : faire le lien entre votre catalogue et les données InserJeunes

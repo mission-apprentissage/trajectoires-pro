@@ -1,7 +1,7 @@
 ---
 title: 'Détails sur l’impact de la continuité des données sur le taux de couverture'
 nav_exclude: true
-layout: default
+layout: minimal
 ---
 
 # Détails sur l’impact de la continuité des données sur le taux de couverture

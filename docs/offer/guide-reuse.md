@@ -1,7 +1,7 @@
 ---
 title: 'Guide : réutilisation des données InserJeunes sur un site tiers'
 nav_exclude: true
-layout: default
+layout: minimal
 ---
 
 # Réutilisation des données InserJeunes sur un site tiers

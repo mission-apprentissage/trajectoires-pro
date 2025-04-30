@@ -1,7 +1,7 @@
 ---
 title: 'La continuité des données dans le cadre de la rénovation des formations'
 nav_exclude: true
-layout: default
+layout: minimal
 ---
 
 # La continuité des données dans le cadre de la rénovation des formations
