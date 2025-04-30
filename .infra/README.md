@@ -22,7 +22,7 @@
 
 ## Prérequis
 
-Le repository infra est privé car il est contient l'ensemble des données sensibles nécessaires à la mise en place de
+Ce dossier contient l'ensemble des outils nécessaires à la mise en place de
 l'application. Ce projet utilise Ansible 2.7+ pour configurer et déployer l'application.
 
 ### SSH

@@ -1,7 +1,6 @@
 "use client";
 import React, { useCallback } from "react";
 import { useState, useEffect, useMemo } from "react";
-import uFuzzy from "@leeoniya/ufuzzy";
 import { useDebounce } from "usehooks-ts";
 import { BCNResearch } from "#/types/bcn";
 import Container from "#/app/components/Container";
@@ -9,8 +8,6 @@ import ResearchFormations from "#/app/(explorer)/explorer/ResearchFormations";
 import ResearchFormationsResult from "#/app/(explorer)/explorer/ResearchFormationsResult";
 import useFuzzyFilter from "#/hooks/useFuzzyFilter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import Grid from "@mui/material/Grid";
-export const revalidate = 0;
 
 export default function ResearchPage({ formations }: { formations: BCNResearch[] }) {
   const router = useRouter();

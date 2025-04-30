@@ -6,10 +6,6 @@ import * as metricsDescriptor from "./metrics.js";
 import * as bcnDescriptor from "./bcn.js";
 import * as bcnMefDescriptor from "./bcn_mef.js";
 import * as bcnSiseDescriptor from "./bcn_sise.js";
-import * as cfdRomesDescriptor from "./cfdRomes.js";
-import * as romeDescriptor from "./rome.js";
-import * as romeMetierDescriptor from "./romeMetier.js";
-import * as cfdMetiersDescriptor from "./cfdMetiers.js";
 import * as acceEtablissementsDescriptor from "./acceEtablissements.js";
 import * as usersDescriptor from "./users.js";
 import * as catalogueApprentissageFormationsDescriptor from "./catalogueApprentissageFormations.js";
@@ -25,10 +21,6 @@ export function getCollectionDescriptors() {
     bcnDescriptor,
     bcnMefDescriptor,
     bcnSiseDescriptor,
-    cfdRomesDescriptor,
-    romeDescriptor,
-    romeMetierDescriptor,
-    cfdMetiersDescriptor,
     acceEtablissementsDescriptor,
     usersDescriptor,
     catalogueApprentissageFormationsDescriptor,
@@ -65,22 +57,6 @@ export function bcnMef() {
 
 export function bcnSise() {
   return dbCollection(bcnSiseDescriptor.name);
-}
-
-export function cfdRomes() {
-  return dbCollection(cfdRomesDescriptor.name);
-}
-
-export function rome() {
-  return dbCollection(romeDescriptor.name);
-}
-
-export function romeMetier() {
-  return dbCollection(romeMetierDescriptor.name);
-}
-
-export function cfdMetiers() {
-  return dbCollection(cfdMetiersDescriptor.name);
 }
 
 export function acceEtablissements() {

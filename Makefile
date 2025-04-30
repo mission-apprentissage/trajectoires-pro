@@ -5,10 +5,10 @@ install:
 	yarn --cwd ui install --frozen-lockfile
 
 start:
-	docker-compose up --build --force-recreate
+	docker compose up --build --force-recreate
 
 stop:
-	docker-compose stop
+	docker compose stop
 
 test:
 	yarn --cwd server test
@@ -23,6 +23,6 @@ lint:
 	yarn --cwd ui lint
 
 clean:
-	docker-compose kill && docker system prune --force --volumes
+	docker compose kill && docker system prune --force --volumes
 
 ci: install lint coverage

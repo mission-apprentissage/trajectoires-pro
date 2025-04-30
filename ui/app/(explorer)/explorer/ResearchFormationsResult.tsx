@@ -13,7 +13,6 @@ import { Typograhpy, Grid, Box } from "../../components/MaterialUINext";
 import { BCNResearch } from "#/types/bcn";
 import { Certification } from "#/types/certification";
 import { findRegionByCode } from "#/common/regions";
-export const revalidate = 0;
 
 const MILLESIMES = ["2020", "2021", "2022"];
 const MILLESIME_DOUBLE = ["2019_2020", "2020_2021", "2021_2022"];

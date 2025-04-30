@@ -4,5 +4,5 @@ more_clear_headers "X-Powered-By";
 add_header Strict-Transport-Security "max-age=31536000; includeSubdomains" always;
 add_header X-Content-Type-Options "nosniff" always;
 add_header Referrer-Policy "no-referrer-when-downgrade";
-add_header Content-Security-Policy "default-src 'self' https://img.notionusercontent.com/ https://www.notion.so/ https://plausible.io/ https://openmaptiles.github.io/ https://*.inserjeunes.beta.gouv.fr/ https://*.beta.gouv.fr/ https://*.data.gouv.fr/ 'unsafe-inline' data: blob:;";
+add_header Content-Security-Policy $csp;
 add_header X-Robots-Tag $robots;

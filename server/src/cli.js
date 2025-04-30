@@ -11,10 +11,6 @@ import { importBCNContinuum } from "./jobs/bcn/importBCNContinuum.js";
 import { computeBCNMEFContinuum } from "./jobs/bcn/computeBCNMEFContinuum.js";
 import { importLibelle } from "./jobs/bcn/importLibelle.js";
 import { importStats, importSupStats } from "./jobs/stats/importStats.js";
-import { importCfdRomes } from "./jobs/romes/importCfdRomes.js";
-import { importRomes } from "./jobs/romes/importRomes.js";
-import { importCfdMetiers } from "./jobs/romes/importCfdMetiers.js";
-import { importRomeMetiers } from "./jobs/romes/importRomeMetiers.js";
 import { importEtablissements } from "./jobs/etablissements/importEtablissements.js";
 import { importFormations as importCAFormations } from "./jobs/catalogueApprentissage/importFormations.js";
 import { backfillMetrics } from "./jobs/backfillMetrics.js";
@@ -47,20 +43,6 @@ async function importBCNCommand() {
   };
 }
 
-async function importRomesCommand() {
-  const statsRomes = await importRomes();
-  const statsCfdRomes = await importCfdRomes();
-  const statsRomeMetiers = await importRomeMetiers();
-  const statsCfdMetiers = await importCfdMetiers();
-
-  return {
-    statsRomes,
-    statsCfdRomes,
-    statsRomeMetiers,
-    statsCfdMetiers,
-  };
-}
-
 async function importAnneesNonTerminalesCommand(options = {}) {
   const statsAnneesNonTerminales = await importAnneesNonTerminales(options);
   const statsSecondeCommune = await importSecondeCommune(options);
@@ -75,13 +57,6 @@ cli
   .description("Import les CFD et MEF depuis la BCN")
   .action(() => {
     runScript(importBCNCommand);
-  });
-
-cli
-  .command("importRomes")
-  .description("Import les codes ROME depuis Data.gouv et Diagoriente")
-  .action(() => {
-    runScript(importRomesCommand);
   });
 
 cli
@@ -177,7 +152,6 @@ cli
         importAnneesNonTerminales: await importAnneesNonTerminalesCommand(),
         importCatalogueApprentissage: await importCAFormations(),
         computeUAI: await computeUAI(),
-        importRomes: await importRomesCommand(),
       };
     });
   });
