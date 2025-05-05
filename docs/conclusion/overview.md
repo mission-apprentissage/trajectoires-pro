@@ -48,13 +48,13 @@ Ont été réalisés :
 
 9 plateformes utilisent actuellement le widget ou l’API proposées par la mission : [Affelnet](https://affectation3e.phm.education.gouv.fr/pna-public/offre/A19/00812165), [Parcoursup](https://dossierappel.parcoursup.fr/Candidats/public/fiches/afficherFicheFormation?g_ta_cod=26437&typeBac=0&originePc=0), [Onisep.fr](https://www.onisep.fr/ressources/univers-formation/formations/lycees/cap-cuisine) , [La bonne alternance](https://labonnealternance.apprentissage.beta.gouv.fr/formation/115708P01215089042240004750890422400047-91216%23L01/cuisine?romes=G1603%2CG1402%2CG1602%2CG1604%2CG1601%2CG1401), 1 jeune 1 solution, IJ box (outil proposé par le réseau Information Jeunesse), Diagoriente, l’Etudiant et Octopilot.
 
-20 sont envisagées dans le contrat FTAP : 16 autres interlocuteurs (régions, Carif-Oref, edtech, associations) ont été invités à utiliser ces outils, 12 sont en réflexion, dont 3 avec lesquels les échanges sont très avancés.
+20 sont envisagées dans le contrat FTAP : 16 autres interlocuteurs (régions, Carif-Oref, edtech, associations) ont été invités à utiliser ces outils, 12 sont en réflexion, dont 4 avec lesquels les échanges sont très avancés.
 
 Il est difficile de convaincre et d'outiller les conseils régionaux, les outils proposés pour la découverte des métiers et formations étant très hétérogènes. Les edtechs sont intéressées mais disposent souvent d’équipes et de roadmaps restreintes. En outre, le périmètre et la couverture encore partiels représentent un frein pour que ces plateformes se lancent.
 
 500 000 accès aux données sont attendus par mois dans le contrat du FTAP. On comptabilise plus de 650 000 appels à l’API en moyenne par mois en décembre 2024.
 
-[Enseignements : Déploiement]({{ site.baseurl }}{% link conclusion/deployment.md %})
+[Plateformes d'exposition et acquisition]({{ site.baseurl }}{% link conclusion/deployment.md %})
 
 ## Impact
 
