@@ -28,6 +28,7 @@ server {
     listen ${PORT};
     server_name documentation.${SERVER_NAME};
     set $always_redirect ${NGINX_ALWAYS_TLS_REDIRECT};
+    include includes/server.conf;
     location / {
         proxy_pass https://mission-apprentissage.github.io/trajectoires-pro/offer/;
         proxy_set_header Host $host;
@@ -56,6 +57,7 @@ server {
 server {
     listen ${SSL_PORT} ssl http2;
     server_name documentation.${SERVER_NAME};
+    include includes/server.conf;
     location / {
         proxy_pass https://mission-apprentissage.github.io/trajectoires-pro/offer/;
         proxy_set_header Host $host;
