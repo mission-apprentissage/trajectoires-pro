@@ -27,9 +27,3 @@ gh_edit_repository: "https://github.com/mission-apprentissage/trajectoires-pro"
 gh_edit_branch: "main"
 gh_edit_source: "docs"
 gh_edit_view_mode: "tree"
-
-defaults:
-  - scope:
-      path: "offer"
-    values:
-      custom_class: "hide-search"

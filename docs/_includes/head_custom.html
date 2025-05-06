@@ -1,0 +1,8 @@
+<style>
+  /* Alternative approach: Hide by URL path */
+  {% if page.url contains '/offer/' %}
+  .main-header {
+    display: none !important;
+  }
+  {% endif %}
+</style>
