@@ -71,7 +71,7 @@ server {
 
 
     location / {
-        proxy_pass https://mission-apprentissage.github.io/trajectoires-pro/offer;
+        proxy_pass https://mission-apprentissage.github.io/trajectoires-pro/offer/;
         proxy_set_header Host "mission-apprentissage.github.io";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
