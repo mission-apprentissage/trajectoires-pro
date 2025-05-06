@@ -22,12 +22,6 @@ const config = {
       .default("mongodb://127.0.0.1:27017/trajectoires-pro?retryWrites=true&w=majority")
       .asString(),
   },
-  ovh: {
-    storage: {
-      uri: env.get("TRAJECTOIRES_PRO_OVH_STORAGE_URI").required().asString(),
-      storageName: env.get("TRAJECTOIRES_PRO_OVH_STORAGE_NAME").default("mna-trajectoires-pro").asString(),
-    },
-  },
   inserJeunes: {
     api: {
       username: env.get("TRAJECTOIRES_PRO_INSERJEUNES_USERNAME").required().asString(),
@@ -39,26 +33,6 @@ const config = {
     api: {
       baseUrl: env.get("TRAJECTOIRES_PRO_INSERSUP_BASE_URL").required().asString(),
       key: env.get("TRAJECTOIRES_PRO_INSERSUP_API_KEY").required().asString(),
-    },
-  },
-  diagoriente: {
-    api: {
-      baseUrl: env.get("DIAGORIENTE_BASE_URL").default("https://oplc.diagoriente.beta.gouv.fr/graphql").asString(),
-      loginUrl: env
-        .get("DIAGORIENTE_LOGIN_URL")
-        .default("https://auth.diagoriente.beta.gouv.fr/auth/realms/oplc-production/protocol/openid-connect/token")
-        .asString(),
-      clientId: env.get("DIAGORIENTE_CLIENT_ID").required().asString(),
-      clientSecret: env.get("DIAGORIENTE_CLIENT_SECRET").required().asString(),
-      grandType: env.get("DIAGORIENTE_GRANT_TYPE").default("client_credentials").asString(),
-    },
-  },
-  datagouv: {
-    api: {
-      baseUrl: env.get("DATAGOUV_BASE_URL").default("https://www.data.gouv.fr/api/1").asString(),
-    },
-    datasets: {
-      rome: "1c893376-8476-4262-9a0e-8df519883e1e",
     },
   },
   dataenseignementsup: {

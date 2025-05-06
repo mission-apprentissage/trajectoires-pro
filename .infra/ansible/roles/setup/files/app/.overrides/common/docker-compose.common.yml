@@ -1,0 +1,56 @@
+services:
+  reverse_proxy:
+    ports:
+      - 443:443
+    volumes:
+      - /opt/trajectoires-pro/data/nginx:/data
+      - /opt/trajectoires-pro/data/ssl:/ssl:ro
+    environment:
+      - SERVER_NAME={{dns_name}}
+      - SERVER_NAME_ALTERNATIVE={{dns_name_alternative}}
+      - NGINX_ALWAYS_TLS_REDIRECT=true
+      - PROXY_SSL_CERT=/ssl/fullchain.pem
+      - PROXY_SSL_CERT_KEY=/ssl/privkey.pem
+
+  server:
+    volumes:
+      - /opt/trajectoires-pro/data/server:/data
+    environment:
+      - TRAJECTOIRES_PRO_INSERSUP_BASE_URL={{ vault.TRAJECTOIRES_PRO_INSERSUP_BASE_URL }}
+      - TRAJECTOIRES_PRO_INSERSUP_API_KEY={{ vault.TRAJECTOIRES_PRO_INSERSUP_API_KEY }}
+
+  mongodb:
+    volumes:
+      - /opt/trajectoires-pro/data/mongodb/db:/data/db
+      - /opt/trajectoires-pro/data/mongodb/configdb:/data/configdb
+      - /opt/trajectoires-pro/data/mongodb/backups:/data/backups
+      - /opt/trajectoires-pro/.overrides/mongodb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+
+  metabase:
+    volumes:
+      - /opt/trajectoires-pro/data/metabase:/data
+    environment:
+      - MB_DB_FILE=/data/metabase.db
+
+  ui:
+    environment:
+      - METABASE_SECRET_KEY={{ vault.METABASE_SECRET_KEY }}
+      - EXPOSITION_API_BASE_URL=https://{{ dns_name }}/api/inserjeunes
+      - EXPOSITION_API_KEY={{ vault.TRAJECTOIRES_PRO_API_KEY }}
+      - NEXT_PUBLIC_API_BASE_URL=/api
+      - INTERNAL_SITE_HOST=explorer.{{ dns_name }}
+      - STATISTIQUES_SITE_HOST=statistiques.{{ dns_name }}
+      - DOCUMENTATION_SITE_HOST=documentation.{{ dns_name }}
+      - NEXT_PUBLIC_HOST_REWRITE=true
+      - NOTION_TOKEN={{vault.NOTION_TOKEN}}
+    build:
+      args:
+        - METABASE_SECRET_KEY={{ vault.METABASE_SECRET_KEY }}
+        - EXPOSITION_API_BASE_URL=https://{{ dns_name }}/api/inserjeunes
+        - EXPOSITION_API_KEY={{ vault.TRAJECTOIRES_PRO_API_KEY }}
+        - NEXT_PUBLIC_API_BASE_URL=/api
+        - INTERNAL_SITE_HOST=explorer.{{ dns_name }}
+        - STATISTIQUES_SITE_HOST=statistiques.{{ dns_name }}
+        - DOCUMENTATION_SITE_HOST=documentation.{{ dns_name }}
+        - NEXT_PUBLIC_HOST_REWRITE=true
+        - NOTION_TOKEN={{vault.NOTION_TOKEN}}

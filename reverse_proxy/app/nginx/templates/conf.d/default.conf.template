@@ -12,6 +12,12 @@ map $http_host $robots {
     "~*sandbox" "noindex, nofollow, nosnippet, noarchive";
 }
 
+map ${SERVER_NAME} $csp {
+    'localhost'        '';
+    default  "default-src 'self' https://img.notionusercontent.com/ https://www.notion.so/ https://plausible.io/ https://openmaptiles.github.io/ https://*.inserjeunes.beta.gouv.fr/ https://*.beta.gouv.fr/ https://*.data.gouv.fr/ 'unsafe-inline' data: blob:;";
+}
+
+
 
 server {
     listen 443 ssl default_server;
@@ -20,25 +26,29 @@ server {
 
 server {
     listen ${PORT};
-
+    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME} documentation.${SERVER_NAME};
+    set $always_redirect ${NGINX_ALWAYS_TLS_REDIRECT};
+    include includes/server.conf;
+    include includes/statistiques/location_*.conf;
+}
+server {
+    listen ${PORT};
     server_name ${SERVER_NAME};
     set $always_redirect ${NGINX_ALWAYS_TLS_REDIRECT};
-
     include includes/location_*.conf;
     include includes/env/location_*.conf;
 }
 
-
 server {
     listen ${SSL_PORT} ssl http2;
-    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME} documentation.${SERVER_NAME} test.${SERVER_NAME};
+    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME} documentation.${SERVER_NAME};
     include includes/server.conf;
     include includes/statistiques/location_*.conf;
 }
 
 server {
     listen ${SSL_PORT} ssl http2;
-    server_name ${SERVER_NAME} site.${SERVER_NAME};
+    server_name ${SERVER_NAME};
     include includes/server.conf;
     include includes/location_*.conf;
     include includes/env/location_*.conf;

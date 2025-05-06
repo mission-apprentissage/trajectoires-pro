@@ -1,0 +1,5 @@
+- name: Create backup directory
+  ansible.builtin.file:
+    path: /mnt/backups
+    state: directory
+    mode: 700

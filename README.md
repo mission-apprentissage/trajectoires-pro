@@ -8,9 +8,32 @@ Cette API met à disposition les données InserJeunes.
 
 ### Pré-requis
 
+- Node 18+
 - Yarn 1+
-- Docker 19 +
-- Docker-compose 2.21+
+- Docker 28 +
+- Docker-compose 2.33+
+
+### Variable d'environnement
+
+Certaine variable d'environnement sont requises pour démarrer le projet et importer les données.
+
+#### Backend
+
+- TRAJECTOIRES_PRO_AUTH_JWT_SECRET: Utiliser pour signer les JWTs. Voir [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
+- Accès à l'API InserJeunes de la DEPP
+  - TRAJECTOIRES_PRO_INSERJEUNES_USERNAME
+  - TRAJECTOIRES_PRO_INSERJEUNES_PASSWORD
+- Accès à l'API InserSup du SIES
+  - TRAJECTOIRES_PRO_INSERSUP_BASE_URL
+  - TRAJECTOIRES_PRO_INSERSUP_API_KEY
+- Accès au catalogue de l'apprentissage
+  - CATALOGUE_APPRENTISSAGE_USERNAME
+  - CATALOGUE_APPRENTISSAGE_PASSWORD
+- TRAJECTOIRES_PRO_API_KEY: Api key statique pour accèder aux routes protéger de l'API exposition (son usage est déprécié en faveur de la création d'utilisateur, elle ne doit plus être partagée).
+
+#### UI
+
+Voir [.env.example.local](ui/.env.example.local)
 
 ### Démarrage
 
@@ -25,24 +48,18 @@ Cette commande démarre les containers définis dans le fichier `docker-compose.
 
 L'application est ensuite accessible à l'url [http://localhost](http://localhost)
 
-### Mise à jour des données
+#### Accès aux différents frontends
 
-#### Nouveau millésime
+Vous pouvez accèder aux différents frontends en utilisant les urls configurées dans vos environnements :
 
-Mettre à jour les variables d'environnements avec le millesime a ajouté:
+- INTERNAL_SITE_HOST : url d'accès à explorer
+- STATISTIQUES_SITE_HOST : url d'accès à la page statistiques
+- DOCUMENTATION_SITE_HOST : url d'accès à la documentation
 
-- `TRAJECTOIRES_PRO_MILLESIMES`
-- `TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS`
-- `TRAJECTOIRES_PRO_MILLESIMES_REGIONALES`
+Il sera peut être nécessaire d'ajouter les valeurs de ces environnements à votre fichier hosts (Pas nécessaire sur Mac os pour les domaines de type \*.localhost)
 
-Ajoutés les fichiers suivant (MILLESIME sur deux années):
-
-- `depp-2022-etablissements-MILLESIME-apprentissage.csv`
-- `depp-2022-etablissements-MILLESIME-pro.csv`
-
-Mettre à jour le fichier suivant :
-
-- `data/acce_etablissements.csv`
+Exemple :
+`127.0.0.1 explorer.localhost`
 
 ### Jobs
 
@@ -67,7 +84,9 @@ yarn cli importAll
 yarn cli importBCN
 yarn cli importEtablissements
 yarn cli importStats
+yarn cli importSupStats
 yarn cli computeContinuumStats
+yarn cli importAnneesNonTerminales
 ```
 
 ##### Importation des données du catalogue de l'apprentissage et association des UAIs
@@ -79,13 +98,6 @@ yarn cli importCatalogueApprentissage
 yarn cli computeUAI
 ```
 
-##### Importation des codes Romes, des métiers d'avenir et création des liens Formations <> Romes <> Métiers
-
-```
-yarn cli importBCN (S'il n'a pas déjà été effectué)
-yarn cli importRomes
-```
-
 #### Détails des principaux Jobs
 
 - `importAll` : Effectue toute les taches d'importations et de calculs des données.
@@ -95,21 +107,30 @@ yarn cli importRomes
     - [V_FORMATION_DIPLOME](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/V_FORMATION_DIPLOME)
     - [N_MEF](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_MEF)
   - Création des liens de continuités ([cf](#continuit%C3%A9-des-donn%C3%A9es-dans-le-cadre-de-la-renovation-des-formations)) entre les formations
-- `importRomes` :
-  - Importation des codes ROMEs depuis l'API [api.data.gouv] (Voir [dataset](https://www.data.gouv.fr/fr/datasets/repertoire-operationnel-des-metiers-et-des-emplois-rome/))
-  - Importation depuis l'API [Diagoriente](https://odyssey-docs.vercel.app/docs/intro) des :
-    - Code ROMEs des formations
-    - Des métiers d'avenir
-  - Création du liens formations <> métiers d'avenir
+  - Importation des familles de métiers
+    - `data/bcn/n_famille_metier_spec_pro.csv` : Liste des familles de métiers, ce fichier a pour base [N_FAMILLE_METIER_SPEC_PRO](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_FAMILLE_METIER_SPEC_PRO) auquel a été ajouté des familles de métiers manquantes.
+    - `data/bcn/n_lien_mef_famille_metier.csv`: Liens entre une formation et sa famille de métier, ce fichier a pour base [N_LIEN_MEF_FAMILLE_METIER](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_LIEN_MEF_FAMILLE_METIER) auquel a été ajouté les années qui ne correspondent pas aux années communes.
+- `importEtablissements` :
+  - Importation des établissements depuis le fichier établissements de l'ACCE
 - `importStats` :
   - Importation des données InserJeunes :
     - `importStats formations` : Importation des données de formation au niveau établissement
       - Utilise les listes d'établissements contenues dans `server/data`
     - `importStats certifications` : Importation des données de formation au niveau nationale
     - `importStats regionale` : Importation des données au niveau régionale
+- `importSupStats` :
+
+  - Importation des données InserSup :
+    - `importStats formations` : Importation des données de formation au niveau établissement
+      - Utilise l'API Insersup
+    - `importStats certifications` : Importation des données de formation au niveau nationale
+      - Utilise l'opendata Insersup
+    - L'importation des données au niveau régionale n'est pas encore disponible pour le supérieur
+
 - `computeContinuumStats` : Calcul des données de continuités des formations ([cf](#continuit%C3%A9-des-donn%C3%A9es-dans-le-cadre-de-la-renovation-des-formations))
-- `importEtablissements` :
-  - Importation des établissements depuis le fichier établissements de l'ACCE
+
+- `importAnneesNonTerminales` : Associe les statistiques aux années non terminales (Ex: associe les données d'une terminale à sa seconde et sa première)
+
 - `importCatalogueApprentissage` :
   - Importation des formations depuis le catalogue de l'apprentissage des ministères éducatifs.
 - `computeUAI` :
@@ -118,6 +139,25 @@ yarn cli importRomes
 - `user` :
   - `create` : Ajoute un utilisateur à l'API
   - `remove` : Supprime un utilisateur à l'API
+
+### Mise à jour des données
+
+#### Nouveau millésime
+
+Mettre à jour les variables d'environnements avec le millesime a ajouté:
+
+- `TRAJECTOIRES_PRO_MILLESIMES`
+- `TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS`
+- `TRAJECTOIRES_PRO_MILLESIMES_REGIONALES`
+
+Ajoutés les fichiers suivant (MILLESIME sur deux années):
+
+- `depp-2022-etablissements-MILLESIME-apprentissage.csv`
+- `depp-2022-etablissements-MILLESIME-pro.csv`
+
+Mettre à jour le fichier suivant :
+
+- `data/acce_etablissements.csv`
 
 ### Outils
 
@@ -141,6 +181,8 @@ make test
 
 Le monorepo est composé d'un package back-end situé dans `server` ainsi que d'un package front-end situé dans `ui`.
 
+La documentation du projet Exposition est content dans le dossier `docs`.
+
 #### Server
 
 Ce package contient le code de l'API.
@@ -152,9 +194,26 @@ Ce package contient le front-end qui est divisé en différentes applications :
 - **explorer** : Site interne de consultation des données de l'API
 - **statistiques** : [Page des statistiques](https://statistiques.exposition.inserjeunes.beta.gouv.fr/) du projet Exposition
 
+#### Docs
+
+Dossier contenant la documentation du projet Exposition.
+
+Utilise Jekyll et est déployé automatiquement en tant que Github Pages.
+
+Voir [workflow](.github/workflows/jekyll-gh-pages.yml) pour le déploiement.
+
 #### Base de données
 
 Ce projet utilise `mongodb` version 5.
+
+## [Déploiement](.infra/Readme.md)
+
+### Jobs
+
+Pour exécuter les jobs sur le serveur il faut :
+
+- Se connecter en SSH au serveur
+- Utiliser la commande : `sudo bash /opt/trajectoires-pro/cli.sh`
 
 ## Fonctionnement
 

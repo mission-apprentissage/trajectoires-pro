@@ -1,8 +1,6 @@
 import nock from "nock"; // eslint-disable-line node/no-unpublished-import
 import { InserJeunesApi } from "#src/services/inserjeunes/InserJeunesApi.js";
-import { DiagorienteApi } from "#src/services/diagoriente/DiagorienteApi.js";
 import { generateCodeCertification } from "./testUtils.js";
-import { DataGouvApi } from "#src/services/dataGouv/DataGouvApi.js";
 import { CatalogueApprentissageApi } from "#src/services/catalogueApprentissage/CatalogueApprentissageApi.js";
 import * as Fixtures from "#tests/utils/fixtures.js";
 import { InserSupApi } from "#src/services/insersup/InsersupApi.js";
@@ -14,13 +12,6 @@ function createNock(baseUrl, options = {}) {
 
 export function mockBCN(callback, options) {
   let client = createNock(`https://bcn.depp.education.fr/bcn/index.php/export`, options);
-  callback(client);
-
-  return client;
-}
-
-export function mockDataGouv(callback, options) {
-  let client = createNock(DataGouvApi.baseApiUrl, options);
   callback(client);
 
   return client;
@@ -46,59 +37,6 @@ export async function mockCatalogueApprentissageApi(callback, options) {
   });
 
   return client;
-}
-
-export function mockDiagorienteApi(callback, options) {
-  let client = createNock(DiagorienteApi.baseApiUrl, options);
-  let clientLogin = createNock(DiagorienteApi.baseApiLoginUrl, options);
-
-  callback(
-    { client, clientLogin },
-    {
-      login(custom = {}) {
-        return Object.assign(
-          {},
-          {
-            access_token: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIn0=",
-          },
-          custom
-        );
-      },
-      romes(custom = {}) {
-        return Object.assign(
-          {},
-          {
-            data: {
-              sousDomainesVoisinsViaCodesCFD: [
-                {
-                  codeROME: "A1000",
-                },
-              ],
-            },
-          },
-          custom
-        );
-      },
-      metiersAvenir(custom = {}) {
-        return Object.assign(
-          {},
-          {
-            data: {
-              suggestionsMetiersAvenir: [
-                {
-                  id: "1101",
-                  codeROME: "A1000",
-                  flagAValoriser: true,
-                  title: "Céréalier / Céréalière",
-                },
-              ],
-            },
-          },
-          custom
-        );
-      },
-    }
-  );
 }
 
 export function mockInserJeunesApi(callback, options) {

@@ -3,12 +3,12 @@ const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
   experimental: {
-    appDir: true,
+    serverComponentsExternalPackages: ["notion-client"],
   },
   output: "standalone",
   async rewrites() {
     return [
-      ...(process.env.HOST_REWRITE === "true"
+      ...(process.env.NEXT_PUBLIC_HOST_REWRITE === "true"
         ? [
             {
               source: "/:path*",

@@ -1,0 +1,20 @@
+habilitations:
+  - username: ananda
+    name: ananda norindr
+    gpg_key: 29D66151
+    authorized_keys:
+      - "https://github.com/k4st0R.keys"
+
+  - username: lucas
+    name: Lucas Détré
+    gpg_key: 032D0F5C
+    authorized_keys:
+      - "https://github.com/LucasDetre.keys"
+
+  - username: marin
+    name: Marin Procureur
+    gpg_key: 65353FE5
+    authorized_keys:
+      - "https://github.com/faxaq.keys"
+
+gpg_keys: "{{ habilitations  | map(attribute='gpg_key', default='') | select() | join(',')}}"

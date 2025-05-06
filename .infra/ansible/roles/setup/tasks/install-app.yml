@@ -1,0 +1,74 @@
+- name: Stoppe tous les conteneurs applicatifs
+  shell: "bash /opt/trajectoires-pro/stop-app.sh"
+
+- name: "Clone du repository (branche : {{ git_revision }})"
+  git:
+    repo: "https://github.com/mission-apprentissage/trajectoires-pro.git"
+    version: "{{ git_revision }}"
+    force: yes
+    accept_hostkey: yes
+    dest: /opt/trajectoires-pro/repository
+
+- name: Création des répertoires 'overrides'
+  file:
+    path: "/opt/trajectoires-pro/.overrides/{{ item.path }}/"
+    state: directory
+  with_filetree:
+    - app/.overrides/common/
+    - app/.overrides/{{ env_type }}/
+  when: item.state == 'directory'
+
+- name: Copie des fichiers 'overrides'
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "/opt/trajectoires-pro/.overrides/{{ item.path }}"
+  with_filetree:
+    - app/.overrides/common/
+    - app/.overrides/{{ env_type }}/
+  when: item.state == 'file'
+
+- name: Root only pour tous les répertoires applicatifs
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: root
+    group: root
+    mode: 770
+  with_items:
+    - "/opt/trajectoires-pro/tools"
+    - "/opt/trajectoires-pro/repository"
+    - "/opt/trajectoires-pro/data"
+    - "/opt/trajectoires-pro/backups"
+    - "/opt/trajectoires-pro/.overrides"
+
+- name: Ensure metabase container can write in its directory
+  file:
+    path: /opt/trajectoires-pro/data/metabase
+    owner: 2000
+    group: 2000
+    state: directory
+
+- name: Add cron to rotate nginx files
+  ansible.builtin.cron:
+    name: "rotate_nginx_log_files"
+    minute: "0"
+    hour: "1"
+    job: "bash /opt/trajectoires-pro/tools/rotate-nginx-log-files.sh >> /var/log/cron.log 2>&1"
+
+- name: Add cron to reload app automatically
+  when: env_type == "recette" and monitor == "true"
+  ansible.builtin.cron:
+    name: "reload-app"
+    minute: "*/1"
+    hour: 8-20
+    weekday: 1-5
+    job: "bash /opt/trajectoires-pro/reload-app.sh >> /var/log/cron.log 2>&1"
+
+# Disable by default, enable after app deployment
+- name: Add cron to monitor the app and restart it automatically
+  when: monitor == "true"
+  ansible.builtin.cron:
+    name: "monitor-app"
+    minute: "*/5"
+    disabled: true
+    job: "bash /opt/trajectoires-pro/monitor-app.sh {{dns_name}} >> /var/log/cron.log 2>&1"

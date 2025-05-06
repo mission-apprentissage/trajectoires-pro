@@ -7,13 +7,11 @@ import StartDsfr from "#/app/StartDsfr";
 import { defaultColorScheme } from "#/app/defaultColorScheme";
 import MuiDsfrThemeProvider from "@codegouvfr/react-dsfr/mui";
 import Link from "next/link";
-import { Typograhpy } from "#/app/components/MaterialUINext";
-import Container from "#/app/components/Container";
 import { Header } from "@codegouvfr/react-dsfr/Header";
 import { fr } from "@codegouvfr/react-dsfr";
 import "#/app/(statistiques)/styles/main.css";
 
-export function Layout({ children }: { children: JSX.Element }) {
+function Layout({ children }: { children: JSX.Element }) {
   const title = "Exposition des données InserJeunes - Statistiques";
   return (
     <DsfrProvider>

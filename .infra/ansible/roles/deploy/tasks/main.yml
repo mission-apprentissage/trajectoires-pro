@@ -1,0 +1,22 @@
+- name: Disable cron to monitor the app and restart it automatically
+  when: monitor == "true"
+  ansible.builtin.cron:
+      name: "monitor-app"
+      disabled: true
+      job: "bash /opt/trajectoires-pro/monitor-app.sh {{dns_name}} >> /var/log/cron.log 2>&1"
+
+
+- name: "Deploy branch {{ git_revision }}"
+  shell: "sudo /opt/trajectoires-pro/start-app.sh {{ git_revision }}"
+  register: output
+
+- name: Enable cron to monitor the app and restart it automatically
+  when: monitor == "true"
+  ansible.builtin.cron:
+    name: "monitor-app"
+    job: "bash /opt/trajectoires-pro/monitor-app.sh {{dns_name}} >> /var/log/cron.log 2>&1"
+    disabled: false
+
+
+- debug:
+    var: output
