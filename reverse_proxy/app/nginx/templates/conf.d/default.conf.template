@@ -26,11 +26,25 @@ server {
 
 server {
     listen ${PORT};
-    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME} documentation.${SERVER_NAME};
+    server_name documentation.${SERVER_NAME};
+    set $always_redirect ${NGINX_ALWAYS_TLS_REDIRECT};
+    location / {
+        proxy_pass https://mission-apprentissage.github.io/trajectoires-pro/offer/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_redirect off;
+    }
+}
+
+server {
+    listen ${PORT};
+    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME};
     set $always_redirect ${NGINX_ALWAYS_TLS_REDIRECT};
     include includes/server.conf;
     include includes/statistiques/location_*.conf;
 }
+
 server {
     listen ${PORT};
     server_name ${SERVER_NAME};
@@ -41,7 +55,19 @@ server {
 
 server {
     listen ${SSL_PORT} ssl http2;
-    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME} documentation.${SERVER_NAME};
+    server_name documentation.${SERVER_NAME};
+    location / {
+        proxy_pass https://mission-apprentissage.github.io/trajectoires-pro/offer/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_redirect off;
+    }
+}
+
+server {
+    listen ${SSL_PORT} ssl http2;
+    server_name statistiques.${SERVER_NAME} explorer.${SERVER_NAME};
     include includes/server.conf;
     include includes/statistiques/location_*.conf;
 }
