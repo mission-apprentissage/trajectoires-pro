@@ -5,10 +5,11 @@ nav_order: 1
 ---
 
 # Le projet
+
 {: .no_toc }
 
 - TOC
-{:toc}
+  {:toc}
 
 ## La problématique
 
@@ -65,6 +66,6 @@ Les indicateurs contenus dans notre base sont diffusés, via une API, auprès de
 
 Ces acteurs sont accompagnés pour monter en compétence sur la donnée manipulée, la prise en main de notre API et l’exposition efficace des indicateurs (notamment la conception, les tests, l’analyse de modules de visualisation des données).
 
-→ [Documentation]({{ site.baseurl }}{% link offer/documentation.md %})
+→ [Documentation]({{ site.baseurl }}{% link offer/documentation/documentation.md %})
 
 Plus de détail dans [Plus-value du projet et propositions pour la suite]({{ site.baseurl }}{% link conclusion/proposals.md %}).
