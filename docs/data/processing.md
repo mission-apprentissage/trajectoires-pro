@@ -16,7 +16,7 @@ _Notre base de données ([Base de données & Indicateurs]({{ site.baseurl }}{% l
 {: .no_toc .text-delta }
 
 - TOC
-  {:toc}
+{:toc}
 
 ## Continuum
 

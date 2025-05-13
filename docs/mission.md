@@ -9,7 +9,7 @@ nav_order: 1
 {: .no_toc }
 
 - TOC
-  {:toc}
+{:toc}
 
 ## La problématique
 

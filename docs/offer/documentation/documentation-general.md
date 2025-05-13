@@ -16,7 +16,7 @@ Données et indicateurs de l’exposition au grand public
 {: .no_toc .text-delta }
 
 - TOC
-  {:toc}
+{:toc}
 
 ## Introduction
 

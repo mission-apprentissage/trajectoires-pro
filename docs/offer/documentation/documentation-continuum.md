@@ -13,7 +13,7 @@ layout: minimal
 {: .no_toc .text-delta }
 
 - TOC
-  {:toc}
+{:toc}
 
 ## Un plus grand nombre de certifications afficheront les données InserJeunes
 
