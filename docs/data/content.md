@@ -19,7 +19,7 @@ Nous collectons les données diffusées par les services statistiques du **Minis
 
 Ces données sont connectées, croisées, enrichies et viennent peupler notre propre base de donnée dont l’objectif et de servir de source d’information accessible, fiable, utile et complète pour chacune des étapes du parcours allant du collège à l’emploi (le parcours de formation vers l’emploi).
 
-Notre base contient des données issues des bases des services statistiques ci-dessus et des indicateurs calculés par nos soins, dont : 
+Notre base contient des données issues des bases des services statistiques ci-dessus et des indicateurs calculés par nos soins, dont :
 
 - Le **taux d’étudiants en emploi en sortie de formation** (**à 6 mois**, 12 mois, 18 mois et 24 mois) et les effectifs correspondants
 - Le **taux d’étudiants poursuivant leur formation** et les effectifs correspondants
@@ -31,7 +31,7 @@ Notre base contient des données issues des bases des services statistiques ci-d
 
 Les 3 éléments en gras sont les “indicateurs InserJeunes”, ayant pour finalité d’être exposés pour éclairer les choix d’orientation.
 
-Les données sont disponibles pour chaque certification / formation : 
+Les données sont disponibles pour chaque certification / formation :
 
 - pour différents **millésimes** (2019 à 2023)
 - à l’**échelle nationale, régionale ou pour un établissement**
@@ -39,14 +39,14 @@ Les données sont disponibles pour chaque certification / formation :
 
 Les données de rémunération ne sont disponibles aujourd’hui qu’à l’échelle nationale, pour le millésime 2021.
 
-Mode de calcul des indicateurs : [📚 Centre de documentation InserJeunes]({{ site.baseurl }}{% link offer/documentation-general.md %})
+Mode de calcul des indicateurs : [📚 Centre de documentation InserJeunes]({{ site.baseurl }}{% link offer/documentation/documentation-general.md %})
 
 ## Périmètre et Couverture
 
 Depuis 2021, sont produits chaque année par les services statistiques, pour toutes les formations du CAP au BTS dispensées dans des lycées professionnels ou CFA :
 
 - Les taux d’insertion dans l’emploi salarié en France à 6, 12 18 et 24 mois des sortants
-de formation ;
+  de formation ;
 - Les taux de poursuite d'études ;
 - La valeur ajoutée des établissements, c’est à dire leur capacité à insérer en prenant en compte le profil social des apprenants et le taux de chômage de la zone d’emploi comparativement à des établissements similaires ;
 - Le taux d’interruption en cours de formation ainsi que, pour chaque centre de formation d'apprentis, le taux de rupture des contrats d'apprentissage.
@@ -56,6 +56,7 @@ Depuis 2022 les services statistiques ont œuvré à l’évolution du dispositi
 ### Enrichissement
 
 Après 2 ans de travaux , les résultats notables de l’enrichissement du dispositif portent sur :
+
 - La prise en compte de l’emploi public dans le taux d’insertion;
 - Le calcul des indicateurs à une maille régionale;
 - La qualification de la stabilité de l’emploi occupé après la formation (CDD, CDI, interim);
@@ -69,6 +70,7 @@ Après 2 ans de travaux , les résultats notables de l’enrichissement du dispo
 Au début de la mission, InserJeunes donnait des informations seulement sur les formations de la voie professionnelle du CAP au BTS. Un calendrier ambitieux est depuis déployé pour disposer des débouchés de davantage de niveaux de formation ou de domaines de formation.
 
 Sont couverts fin 2024 :
+
 - Les licences professionnelles ;
 - Les licences générales ;
 - Les masters ;
@@ -81,12 +83,12 @@ Le contenu de la base (par type de diplôme couvert, aux diverses mailles) ainsi
 
 ## Limites
 
-Au delà des **éléments non-couverts à date**, certaines limites peuvent actuellement expliquer l’absence de données (dans notre base ou notre API) pour certain(e)s certifications / formations / établissements : 
+Au delà des **éléments non-couverts à date**, certaines limites peuvent actuellement expliquer l’absence de données (dans notre base ou notre API) pour certain(e)s certifications / formations / établissements :
 
 - nous ne disposons pas de données pour les éléments dont l’**effectif est inférieur à 5 personnes**
 - nous ne pouvons pas diffuser de données pour les éléments dont l’**effectif est inférieur à 20 personnes**
 
-Certaines autres limites entraînent une classification “trompeuse” (entre emploi, formation et autre) : 
+Certaines autres limites entraînent une classification “trompeuse” (entre emploi, formation et autre) :
 
 - l’**emploi public** n’est pas pris en compte (effectifs non intégrés) dans les millésimes avant 2022.
 - l’**emploi non salarié** (par exemple les auto-entrepreneurs) n’est pas comptabilisé. Les effectifs correspondants se retrouvent dans “Autres parcours” et pas dans “En emploi”.
