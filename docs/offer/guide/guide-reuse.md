@@ -5,13 +5,10 @@ layout: minimal
 ---
 
 # Réutilisation des données InserJeunes sur un site tiers
-
 {: .no_toc }
 
 ## Table des matières
-
 {: .no_toc .text-delta }
-
 - TOC
   {:toc}
 

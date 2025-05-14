@@ -11,7 +11,6 @@ nav_order: 3.3
 _Notre base de données ([Base de données & Indicateurs]({{ site.baseurl }}{% link data/content.md %})) est construire en connectant, recoupant et enrichissant diverses sources, dont les bases InserJeunes, InserSup, les tables de la BCN, etc. ([Jeux de données manipulés]({{ site.baseurl }}{% link data/sources.md %})). Les principaux “traitements” sont décrits ci-dessous._
 
 ## Table des matières
-
 {: .no_toc .text-delta }
 - TOC
 {:toc}
