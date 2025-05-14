@@ -10,7 +10,7 @@ layout: minimal
 ## Table des matières
 {: .no_toc .text-delta }
 - TOC
-  {:toc}
+{:toc}
 
 ## Pourquoi afficher ces indicateurs ?
 
