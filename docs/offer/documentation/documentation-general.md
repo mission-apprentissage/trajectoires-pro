@@ -5,16 +5,13 @@ layout: minimal
 ---
 
 # 📚 Centre de documentation InserJeunes
-
 {: .no_toc }
 
 {: .highlight }
 Données et indicateurs de l’exposition au grand public
 
 ## Table des matières
-
 {: .no_toc .text-delta }
-
 - TOC
 {:toc}
 
@@ -92,7 +89,6 @@ Ils peuvent être au chômage, en inactivité, en indépendant, parties à l’�
 </details>
 
 {: .highlight }
-
 > 📌 Les données sont mises à disposition en “_open data_” par :
 >
 > - [la Direction de l'Evaluation de la Prospective et de la Performance (DEPP) du Ministère de l’Éducation nationale](https://www.education.gouv.fr/les-donnees-de-la-depp-disponibles-en-opendata-342478)
@@ -149,7 +145,6 @@ Les salaires sont :
 - **observés 12 mois après la sortie de formation**
 
 {: .highlight }
-
 > 📌 Les données sont mises à disposition en “_open data_” par la Direction de l'Animation de la Recherche, des Études et des Statistiques (DARES) du Ministère du Travail et de l’Emploi, la Direction de l'Evaluation de la Prospective et de la Performance (DEPP) du Ministère de l’Éducation nationale et la sous-direction des Systèmes d'Information et des Études Statistiques (SIES) du Ministère de l’Enseignement supérieur et de la Recherche :
 >
 > - [Les données](https://www.education.gouv.fr/l-insertion-des-jeunes-apres-une-formation-en-voie-professionnelle-307956#edugouv-summary-item-6)

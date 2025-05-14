@@ -6,7 +6,6 @@ nav_order: 3.3
 ---
 
 # Traitements des données
-
 {: .no_toc }
 
 _Notre base de données ([Base de données & Indicateurs]({{ site.baseurl }}{% link data/content.md %})) est construire en connectant, recoupant et enrichissant diverses sources, dont les bases InserJeunes, InserSup, les tables de la BCN, etc. ([Jeux de données manipulés]({{ site.baseurl }}{% link data/sources.md %})). Les principaux “traitements” sont décrits ci-dessous._
@@ -14,14 +13,12 @@ _Notre base de données ([Base de données & Indicateurs]({{ site.baseurl }}{% l
 ## Table des matières
 
 {: .no_toc .text-delta }
-
 - TOC
 {:toc}
 
 ## Continuum
 
 ### De quoi parle-t-on ?
-
 {: .no_toc }
 
 Dans le cadre de la **rénovation du catalogue des formations**, un certain nombre de formations et de diplômes ont été renommés sans changement du contenu de leurs programmes. Ces formations étaient alors considérées comme nouvelles, aucune donnée sur le devenir des apprenants n’a pour l’instant été calculé pour les promotions sortant de ces formations.
@@ -31,7 +28,6 @@ Dans le cadre de la **rénovation du catalogue des formations**, un certain nomb
 Plus de détails sur la page dédiée de la documentation publique : [La continuité des données dans le cadre de la rénovation des formations]({{ site.baseurl }}{% link offer/documentation/documentation-continuum.md %}).
 
 ### Périmètre
-
 {: .no_toc }
 
 Le continuum est mis en place sur le périmètre InserJeunes, pour les formations en scolaire et en apprentissage.
@@ -39,7 +35,6 @@ Le continuum est mis en place sur le périmètre InserJeunes, pour les formation
 Cette historisation des formations n’est pas encore mise en place sur le périmètre InserSup.
 
 ### Traitement
-
 {: .no_toc }
 
 - La table N_FORMATION_DIPLOME dispose de champs ancien_diplome_1 à 7 et nouveau_diplome_1 à 7([N_FORMATION_DIPLOME]({{ site.baseurl }}{% link data/sources.md %})). Il est donc possible de faire le lien entre une formation ancienne et une formation nouvelle et de propager ce lien au niveau des statistiques (associées à un millésime, une formation et un établissement ou une zone géographique).
@@ -95,7 +90,6 @@ Cette historisation des formations n’est pas encore mise en place sur le péri
         - On refait la même opération en utilisant l’ancien diplôme pour base
 
 ### Gains de couverture
-
 {: .no_toc }
 
 Lors de la mise en place initiale du continuum, les gains en termes de couverture sur les formations de l’ensemble des catalogues principaux étaient les suivants :
@@ -113,7 +107,6 @@ Lors de la mise en place initiale du continuum, les gains en termes de couvertur
 Voir la page dédiée de la documentation publique, [Détails sur l’impact de la continuité des données sur le taux de couverture]({{ site.baseurl }}{% link offer/documentation/documentation-continuum-impact.md %}). Cette étude de couverture a été réalisée avant les travaux sur la gestion des UAI et les familles de métiers.
 
 ### Perspectives
-
 {: .no_toc }
 
 Avec la mise à disposition de plus en plus massive des données InserSup, sur la durée, le besoin d’un traitement de type “continuum” pour les données fournies par le SIES va devenir de plus en plus important.
@@ -125,7 +118,6 @@ Cette solution a fait l’objet d’un test pour la campagne 2025 de ParcourSup.
 ## Familles de métiers et années intermédiaires
 
 ### De quoi parle-t-on ?
-
 {: .no_toc }
 
 Les ré-utilisateurs, qui sont souvent des outils d'affectation présentent des premières années dans leurs catalogues. Or les données InserJeunes / InserSup sont fournies au niveau du diplôme. Il est donc nécessaire de relier les différentes années d’une même formation.
@@ -137,7 +129,6 @@ Nos travaux permettent donc de **récupérer les indicateurs pour une année int
 [En savoir plus sur les familles de métiers en 2de professionnelles (Onisep)](https://www.onisep.fr/formation/apres-la-3-la-voie-professionnelle/les-diplomes-de-la-voie-pro/le-bac-professionnel/les-familles-de-metiers).
 
 ### Périmètre
-
 {: .no_toc }
 
 - Pour les liens entre années dans le cas simple, sans première année commune :
@@ -149,7 +140,6 @@ Nos travaux permettent donc de **récupérer les indicateurs pour une année int
   - des problématiques similaires vont aussi arriver sur le supérieur, par exemple en école d'ingé / commerce (et quand nous aurons une identification plus fine, par exemple avec FRESQ)
 
 ### Traitement
-
 {: .no_toc }
 
 - cas simple (années intermédiaires) : à l’aide de la table N_MEF de la BCN [**N_MEF** : modules élémentaires de formation (année dans un dispositif de formation)]({{ site.baseurl }}{% link data/sources.md %}), les statistiques sont associées aux années “non terminales”.
@@ -190,7 +180,6 @@ Nos travaux permettent donc de **récupérer les indicateurs pour une année int
           ```
 
 ### Gains de couverture
-
 {: .no_toc }
 
 Concernant les familles de métiers en Bac Pro, …
@@ -213,7 +202,6 @@ Sur ces 6279 formations appartenant à une famille de métier, 4842 formations s
 Note sur le mode de calcul : l’identification des formations associées à une famille de métiers permet de calculer le taux de couverture de ces formations. Parmi ces formations, certaines sont également appariées via un UAI mère. Dans ces cas, l’appariement résulte donc du rapprochement des UAI et des familles de métiers.
 
 ### Perspectives
-
 {: .no_toc }
 
 - Une solution doit être trouvée pour les BTS disposant d’une première année commune
@@ -222,7 +210,6 @@ Note sur le mode de calcul : l’identification des formations associées à une
 ## Rapprochement des UAI
 
 ### De quoi parle-t-on ?
-
 {: .no_toc }
 
 Avant, les indicateurs InserJeunes ne pouvaient être récupérés que pour un unique couple UAI x Code_Certification.
@@ -237,13 +224,11 @@ Grâce à ces travaux de traitement / association, **il est désormais possible 
 même lorsque les données du producteur ne sont disponibles qu’à la maille du responsable (UAI responsable). Ce mécanisme est activé uniquement si les données ne sont pas disponibles aux mailles inférieures.
 
 ### Périmètre
-
 {: .no_toc }
 
 Ce traitement concerne les formations en apprentissage, sur le périmètre InserJeunes.
 
 ### Traitement
-
 {: .no_toc }
 
 - Scripts correspondants (disponibles sur [Github](https://github.com/mission-apprentissage/trajectoires-pro)) :
@@ -271,11 +256,9 @@ Ce traitement concerne les formations en apprentissage, sur le périmètre Inser
             ```
 
 ### Gains de couverture
-
 {: .no_toc }
 
 #### Affelnet
-
 {: .no_toc }
 
 1503 formations du catalogue d’affectation en ligne Affelnet 2024 sont couvertes par un UAI mère dans Exposition (844 Couvertes et 644 sous le seuil de 20 élèves).
@@ -293,7 +276,6 @@ Ce traitement concerne les formations en apprentissage, sur le périmètre Inser
 **+4.5 points:** Le taux de couverture passe de 37% (7453 formations couvertes sur 20010) à 41.5% (7453+844).
 
 #### Parcoursup
-
 {: .no_toc }
 
 2288 formations du catalogue d’affectation en ligne Affelnet 2024 sont couvertes par un UAI mère dans Exposition (1173 Couvertes et 1115 sous le seuil de 20 élèves).
@@ -311,7 +293,6 @@ Ce traitement concerne les formations en apprentissage, sur le périmètre Inser
 **+5.2 points:** Le taux de couverture passe de 27% (6074 formations couvertes sur 20010) à 32% (6074+1173).
 
 ### Perspectives
-
 {: .no_toc }
 
 Intégrer dans l’API, les données de la base ACCE ([ACCE]({{ site.baseurl }}{% link data/sources.md %})) pour faire le lien entre un UAI fille et un UAI mère, de telle sorte que lorsque le producteur diffuse les données à la maille UAI mère, l’API renvoie les indicateurs à la maille UAI fille.

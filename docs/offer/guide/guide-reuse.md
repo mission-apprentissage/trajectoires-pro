@@ -1,16 +1,19 @@
 ---
-title: 'Guide : réutilisation des données InserJeunes sur un site tiers'
+title: "Guide : réutilisation des données InserJeunes sur un site tiers"
 nav_exclude: true
 layout: minimal
 ---
 
 # Réutilisation des données InserJeunes sur un site tiers
+
 {: .no_toc }
 
 ## Table des matières
+
 {: .no_toc .text-delta }
+
 - TOC
-{:toc}
+  {:toc}
 
 ## Pourquoi afficher ces indicateurs ?
 
@@ -20,12 +23,12 @@ Ces éléments permettent de compléter les informations, souvent descriptives o
 
 ## Comment afficher les indicateurs sur votre site ?
 
-L’équipe met à disposition des développeurs, *data scientists*, etc. une “[API](https://exposition.inserjeunes.beta.gouv.fr/api/doc/)”, permettant d’automatiser la récupération des données, en amont ou au moment de l’affichage.
+L’équipe met à disposition des développeurs, _data scientists_, etc. une “[API](https://exposition.inserjeunes.beta.gouv.fr/api/doc/)”, permettant d’automatiser la récupération des données, en amont ou au moment de l’affichage.
 
 Une fois les données récupérées, pour l’affichage, c’est à vous de jouer ! Notre équipe se tient à votre disposition pour vous présenter des exemples de visualisation pertinentes et vous partager les bonnes pratiques associées à l’affichage des données InserJeunes. [Contactez-nous !](mailto:contact@inserjeunes.beta.gouv.fr)
 
 ![Aperçu du module de visualisation des indicateurs InserJeunes sur le site “C’est qui le pro ?”](expo-cqlp.png)
-*Aperçu du module de visualisation des indicateurs InserJeunes sur le site “C’est qui le pro ?”*
+_Aperçu du module de visualisation des indicateurs InserJeunes sur le site “C’est qui le pro ?”_
 
 ## Je souhaite afficher les indicateurs sur mon site
 
@@ -34,16 +37,16 @@ Une fois les données récupérées, pour l’affichage, c’est à vous de joue
 
   {: .note }
   📌 [Documentation d'utilisation de l'API](https://exposition.inserjeunes.beta.gouv.fr/api/doc/)
-    
+
 - Enfin, **pour en savoir plus sur la réutilisation des données** ou **demander une clef API** en vue d’une intégration, nous vous invitons à [contacter notre équipe par mail](mailto:contact@inserjeunes.beta.gouv.fr).
 
 ## Les questions à vous poser avant de vous lancer
 
-Vous trouverez ci-dessous plusieurs questions vous permettant de mieux cadrer votre besoin et d’identifier les pré-requis relatifs à l’affichage des indicateurs InserJeunes sur votre site. Notre équipe se tient à votre disposition pour vous aider dans ce processus de réflexion. 
+Vous trouverez ci-dessous plusieurs questions vous permettant de mieux cadrer votre besoin et d’identifier les pré-requis relatifs à l’affichage des indicateurs InserJeunes sur votre site. Notre équipe se tient à votre disposition pour vous aider dans ce processus de réflexion.
 
 - Dans quel but vais-je afficher les indicateurs InserJeunes ou les indicateurs de rémunération ? Comment vais-je mesurer la réussite de cet objectif ?
 - Où vais-je afficher les indicateurs sur mon site ?
 - À quelle maille (nationale, régionale, établissement) vais-je afficher les indicateurs ?
 - Comment sont identifiées les formations et les établissements sur mon site (Code formation diplôme, MEFSTAT11, UAI, etc.) ?
 - Comment doivent s’afficher les indicateurs ?
-- Quelles ressources design et techniques (temps de développement, outils d’*analytics*, etc.) ai-je à disposition ?
+- Quelles ressources design et techniques (temps de développement, outils d’_analytics_, etc.) ai-je à disposition ?

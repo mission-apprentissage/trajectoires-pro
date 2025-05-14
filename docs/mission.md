@@ -5,7 +5,6 @@ nav_order: 1
 ---
 
 # Le projet
-
 {: .no_toc }
 
 - TOC

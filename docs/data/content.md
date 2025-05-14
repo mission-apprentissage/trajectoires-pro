@@ -6,13 +6,10 @@ nav_order: 3.1
 ---
 
 # Base de données & Indicateurs
-
 {: .no_toc }
 
 ## Table des matières
-
 {: .no_toc .text-delta }
-
 - TOC
 {:toc}
 

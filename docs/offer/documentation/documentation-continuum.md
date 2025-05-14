@@ -5,13 +5,10 @@ layout: minimal
 ---
 
 # La continuité des données dans le cadre de la rénovation des formations
-
 {: .no_toc }
 
 ## Table des matières
-
 {: .no_toc .text-delta }
-
 - TOC
 {:toc}
 
