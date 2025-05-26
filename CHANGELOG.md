@@ -1,3 +1,10 @@
+## [1.31.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.31.0...v1.31.1) (2025-05-26)
+
+
+### Bug Fixes
+
+* champs notions dans la page de statistiques ([#360](https://github.com/mission-apprentissage/trajectoires-pro/issues/360)) ([22c8b71](https://github.com/mission-apprentissage/trajectoires-pro/commit/22c8b715b49d7283a24b8b08e2a9e92b426c2804))
+
 # [1.31.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.30.0...v1.31.0) (2025-04-28)
 
 
