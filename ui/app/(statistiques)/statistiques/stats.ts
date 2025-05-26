@@ -32,59 +32,87 @@ export async function statsInfo() {
 }
 
 export async function couverturesInfo() {
-  const result = await notion.databases.query({
-    database_id: "824d2ead9cd843b8a444625814a26a01",
-  });
-  const couvertures = result?.results?.map((r) => (r as any).properties);
+  try {
+    const result = await notion.databases.query({
+      database_id: "824d2ead9cd843b8a444625814a26a01",
+    });
+    const couvertures = result?.results?.map((r) => (r as any).properties);
 
-  if (!couvertures) {
-    return null;
-  }
+    if (!couvertures) {
+      return null;
+    }
 
-  const couverturesSort = couvertures
-    .sort((a, b) => {
-      const aYear = a["Année"].rich_text[0].plain_text;
-      const bYear = b["Année"].rich_text[0].plain_text;
-      if (aYear < bYear) {
-        return -1;
-      }
-      if (aYear > bYear) {
-        return 1;
-      }
+    const couverturesSort = couvertures
+      .sort((a, b) => {
+        const aYear = a["Campagne"].rich_text[0].plain_text;
+        const bYear = b["Campagne"].rich_text[0].plain_text;
+        if (aYear < bYear) {
+          return -1;
+        }
+        if (aYear > bYear) {
+          return 1;
+        }
 
-      return 0;
-    })
-    .reverse();
+        return 0;
+      })
+      .reverse();
 
-  const totalLastYear = couverturesSort.find((d) => d["Nom"].title[0].plain_text === "Total");
-  const totalVoiePro = couverturesSort.find((d) => d["Nom"].title[0].plain_text === "dont filière pro");
-  const totalApprentissage = couverturesSort.find((d) =>
-    d["Nom"].title.find((t: any) => t.plain_text === "dont filière apprentissage")
-  );
+    const totalLastYear = couverturesSort.find((d) => d["Nom"].title[0].plain_text === "Total");
+    const totalVoiePro = couverturesSort.find((d) => d["Nom"].title[0].plain_text === "dont filière pro");
+    const totalApprentissage = couverturesSort.find((d) =>
+      d["Nom"].title.find((t: any) => t.plain_text === "dont filière apprentissage")
+    );
 
-  return {
-    couverte: {
-      national: totalLastYear["Nationale"].number,
-      regional: totalLastYear["Région"].number,
-      etablissement: totalLastYear["Etablissement"].number,
-    },
-    couverteVoiePro: {
-      national: totalVoiePro["Nationale"].number,
-      regional: totalVoiePro["Région"].number,
-      etablissement: totalVoiePro["Etablissement"].number,
-    },
-    couverteApprentissage: {
-      national: totalApprentissage["Nationale"].number,
-      regional: totalApprentissage["Région"].number,
-      etablissement: totalApprentissage["Etablissement"].number,
-    },
-    couverteBetween: {
-      date: totalLastYear["Année"].rich_text[0].plain_text - 1,
-      count: {
-        national: totalLastYear["Evolution nationale"].number,
-        regional: totalLastYear["Evolution Région"].number,
-        etablissement: totalLastYear["Evolution établissement"].number,
+    return {
+      couverte: {
+        national: totalLastYear["Nationale"].number,
+        regional: totalLastYear["Région"].number,
+        etablissement: totalLastYear["Etablissement"].number,
       },
-    },
-  };
+      couverteVoiePro: {
+        national: totalVoiePro["Nationale"].number,
+        regional: totalVoiePro["Région"].number,
+        etablissement: totalVoiePro["Etablissement"].number,
+      },
+      couverteApprentissage: {
+        national: totalApprentissage["Nationale"].number,
+        regional: totalApprentissage["Région"].number,
+        etablissement: totalApprentissage["Etablissement"].number,
+      },
+      couverteBetween: {
+        date: totalLastYear["Campagne"].rich_text[0].plain_text - 1,
+        count: {
+          national: totalLastYear["Evolution nationale"].number,
+          regional: totalLastYear["Evolution Région"].number,
+          etablissement: totalLastYear["Evolution établissement"].number,
+        },
+      },
+    };
+  } catch (err) {
+    return {
+      couverte: {
+        national: "Indisponible",
+        regional: "Indisponible",
+        etablissement: "Indisponible",
+      },
+      couverteVoiePro: {
+        national: "Indisponible",
+        regional: "Indisponible",
+        etablissement: "Indisponible",
+      },
+      couverteApprentissage: {
+        national: "Indisponible",
+        regional: "Indisponible",
+        etablissement: "Indisponible",
+      },
+      couverteBetween: {
+        date: "Indisponible",
+        count: {
+          national: "Indisponible",
+          regional: "Indisponible",
+          etablissement: "Indisponible",
+        },
+      },
+    };
+  }
 }
