@@ -1,4 +1,4 @@
-ls# Maximum 800r/m pour l'ensemble des utilisateurs avant dégradation du service
+# Maximum 800r/m pour l'ensemble des utilisateurs avant dégradation du service
 
 # Define different rate limits based on IP
 geo $rate_limit_key {
