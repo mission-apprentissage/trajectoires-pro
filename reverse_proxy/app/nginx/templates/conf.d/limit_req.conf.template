@@ -1,13 +1,13 @@
-# Maximum 800r/m pour l'ensemble des utilisateurs avant dégradation du service
+ls# Maximum 800r/m pour l'ensemble des utilisateurs avant dégradation du service
 
 # Define different rate limits based on IP
 geo $rate_limit_key {
     default $binary_remote_addr;
-    213.91.3.170 $binary_remote_addr_special; # Onisep
+    213.91.3.170 "onisep"; # Onisep
 }
 
 limit_req_zone $rate_limit_key zone=flood:10m rate=800r/m;
-limit_req_zone $binary_remote_addr_special zone=special:10m rate=1600r/m; # Onisep
+limit_req_zone "onisep" zone=special:10m rate=1600r/m; # Onisep
 limit_req_log_level error;
 
 limit_req zone=flood burst=100 nodelay;
