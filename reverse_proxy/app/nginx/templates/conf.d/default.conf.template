@@ -110,7 +110,6 @@ server {
 server {
     listen ${SSL_PORT} ssl http2;
     server_name ${SERVER_NAME};
-    include includes/cache.conf;
     include includes/server.conf;
     include includes/location_*.conf;
     include includes/env/location_*.conf;
@@ -119,7 +118,6 @@ server {
 server {
     listen ${SSL_PORT} ssl http2;
     server_name api.${SERVER_NAME};
-    include includes/cache.conf;
     include includes/server.conf;
     include includes/api/location_api.conf;
 }
