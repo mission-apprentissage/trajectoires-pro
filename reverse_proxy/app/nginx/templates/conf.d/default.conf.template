@@ -29,7 +29,7 @@ server {
     server_name documentation.${SERVER_NAME};
     set $always_redirect ${NGINX_ALWAYS_TLS_REDIRECT};
     include includes/server.conf;
-     location = / {
+    location = / {
         proxy_pass https://mission-apprentissage.github.io/trajectoires-pro/offer/documentation/documentation-general.html;
         proxy_set_header Host "mission-apprentissage.github.io";
         proxy_set_header X-Real-IP $remote_addr;

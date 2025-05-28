@@ -10,13 +10,3 @@ limit_req_zone $binary_remote_addr zone=flood:10m rate=800r/m;
 limit_req_zone $binary_remote_addr zone=special:10m rate=1600r/m; #Onisep
 limit_req_zone $binary_remote_addr zone=test:10m rate=1r/m;
 limit_req_log_level error;
-
-if ($rate_zone = "flood") {
-    limit_req zone=flood burst=100 nodelay;
-}
-if ($rate_zone = "special") {
-    limit_req zone=special burst=200 nodelay;
-}
-if ($rate_zone = "test") {
-    limit_req zone=test burst=5 nodelay;
-}

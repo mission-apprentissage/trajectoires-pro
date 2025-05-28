@@ -15,3 +15,13 @@ ssl_stapling_verify ${PROXY_SSL_OCSP_STAPLING};
 
 ssl_verify_client ${PROXY_SSL_VERIFY};
 
+# Rate limit
+if ($rate_zone = "flood") {
+    limit_req zone=flood burst=100 nodelay;
+}
+if ($rate_zone = "special") {
+    limit_req zone=special burst=200 nodelay;
+}
+if ($rate_zone = "test") {
+    limit_req zone=test burst=5 nodelay;
+}
