@@ -3,7 +3,6 @@
 map $remote_addr $flood_key {
     default $binary_remote_addr;
     213.91.3.170 "";  # Onisep
-    93.19.210.4 "";   # Test
 }
 
 map $remote_addr $special_key {
@@ -11,17 +10,9 @@ map $remote_addr $special_key {
     213.91.3.170 $binary_remote_addr;  # Onisep
 }
 
-map $remote_addr $test_key {
-    default "";
-    93.19.210.4 $binary_remote_addr;   # Test
-}
-
-
 limit_req_zone $flood_key zone=flood:10m rate=800r/m;
 limit_req_zone $special_key zone=special:10m rate=1600r/m;
-limit_req_zone $test_key zone=test:10m rate=1r/m;
 limit_req_log_level error;
 
 limit_req zone=flood burst=100 nodelay;
 limit_req zone=special burst=200 nodelay;
-limit_req zone=test burst=5 nodelay;
