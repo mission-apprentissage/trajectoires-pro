@@ -1,4 +1,18 @@
-# Maximum 2400r/m pour l'ensemble des utilisateurs avant dégradation du service
-limit_req_zone $binary_remote_addr zone=flood:10m rate=800r/m;
+# Maximum 800r/m pour l'ensemble des utilisateurs avant dégradation du service
+
+map $remote_addr $flood_key {
+    default $binary_remote_addr;
+    213.91.3.170 "";  # Onisep
+}
+
+map $remote_addr $special_key {
+    default "";
+    213.91.3.170 $binary_remote_addr;  # Onisep
+}
+
+limit_req_zone $flood_key zone=flood:10m rate=800r/m;
+limit_req_zone $special_key zone=special:10m rate=1600r/m;
 limit_req_log_level error;
+
 limit_req zone=flood burst=100 nodelay;
+limit_req zone=special burst=200 nodelay;

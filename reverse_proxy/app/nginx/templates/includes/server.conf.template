@@ -14,4 +14,3 @@ ssl_stapling ${PROXY_SSL_OCSP_STAPLING};
 ssl_stapling_verify ${PROXY_SSL_OCSP_STAPLING};
 
 ssl_verify_client ${PROXY_SSL_VERIFY};
-

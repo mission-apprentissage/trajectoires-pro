@@ -5,6 +5,7 @@ location / {
     set $upstream http://server:5000;
     rewrite ^/(.*) /api/$1 break;
     include includes/proxy.conf;
+    include includes/cache.conf;
 }
 
 location /api {
@@ -12,6 +13,7 @@ location /api {
     add_header X-Frame-Options "SAMEORIGIN" always;
     set $upstream http://server:5000;
     include includes/proxy.conf;
+    include includes/cache.conf;
 }
 
 location /static {
