@@ -23,11 +23,16 @@ library(jsonlite)
 library(knitr)
 library(kableExtra)
 
-chemin_racine_data <- "../../../../0- data" 
+
+chemin_racine_data <- "../../../../../../0- data" 
 
 # Données ----
+## catalogue apprentissage ----
+formation_catalogue_apprentissage <- data.table::fread(file.path(chemin_racine_data,"RCO/formation_2024-01-11T11 35 57.905Z.csv")) %>% 
+  as_tibble()
+
 ## Données BCN ----
-n_mef <- read_csv2(file.path(chemin_racine_data,"n_mef_.csv"))
+n_mef <- read_csv2(file.path(chemin_racine_data,"BCN/n_mef.csv"))
 n_formation_diplome <- read_delim(file.path(chemin_racine_data,"BCN/n_formation_diplome_.csv"),delim = ";", escape_double = FALSE, trim_ws = TRUE)
 n_niveau_formation_diplome <- read_csv2(file.path(chemin_racine_data,"BCN/n_niveau_formation_diplome_.csv"))
 
@@ -40,7 +45,7 @@ data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
              str_to_lower() %>%
              str_replace_all(" ", "_"))
 
-data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
+data_meta_formationsStats <- data_meta_formationsStats_init %>%
   bind_cols(  str_split_fixed(
     data_meta_formationsStats_init$donnee_source,
     pattern = ",",
@@ -51,7 +56,7 @@ data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
       V1 = str_remove(V1, "\\{:code_certification "),
       V2 = str_remove(V2, " :type "),
       V2 = str_remove(V2, "\\}")
-                      ) %>%  
+    ) %>%  
     setNames(c(
       "code_certification_source", "type_source"
     ))) %>%
@@ -81,6 +86,7 @@ data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
     code_certification ,
     code_formation_diplome,
     uai,
+    uai_donnee_type,
     type_source,
     filiere,
     millesime,
@@ -113,7 +119,7 @@ data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
   left_join(n_formation_diplome %>%
               select(FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME),
             by=c("code_formation_diplome" ="FORMATION_DIPLOME")
-            ) %>%
+  ) %>%
   left_join(
     n_niveau_formation_diplome %>%
       select(NIVEAU_FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP),
@@ -121,8 +127,6 @@ data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
   ) %>%
   mutate(id_unique=1:n())
 
-
-formation_catalogue_apprentissage <- read_csv2(file.path(chemin_racine_data,"RCO/formation_2024-01-11T11 35 57.905Z.csv"))
 
 formation_catalogue_apprentissage <- formation_catalogue_apprentissage %>%
   mutate_all(str_remove_all,"=\"") %>%
@@ -137,40 +141,65 @@ formation_catalogue_apprentissage_long <- formation_catalogue_apprentissage %>%
 
 formation_catalogue_apprentissage_long_comp <- formation_catalogue_apprentissage_long %>%
   left_join(
-    data_meta_formationsStats_init %>%
+    data_meta_formationsStats %>%
       filter(
         filiere == "apprentissage",
         millesime == "2022"
       ),
     by=c("UAI"="uai","Code du diplome ou du titre suivant la nomenclature de l'Education nationale (CodeEN)"="code_certification")
-  ) %>%
+  ) %>% 
   filter(!is.na(type_source))
 
-formation_catalogue_apprentissage_long_comp <- formation_catalogue_apprentissage_long_comp %>%
+formation_catalogue_apprentissage_type_uai_retenu <- formation_catalogue_apprentissage_long_comp %>%
   mutate(`Type UAI`=factor(`Type UAI`,levels=c("UAI formation","UAI formateur","UAI Responsable"))) %>%
   group_by(UAI,`Code du diplome ou du titre suivant la nomenclature de l'Education nationale (CodeEN)`) %>%
   filter(as.numeric(`Type UAI`)==min(as.numeric(`Type UAI`))) %>%
   ungroup() %>%
-  rename(code_certification=`Code du diplome ou du titre suivant la nomenclature de l'Education nationale (CodeEN)`)
+  rename(code_certification=`Code du diplome ou du titre suivant la nomenclature de l'Education nationale (CodeEN)`) %>%
+  distinct(code_certification,`Type UAI`,UAI)
+
+data_meta_formationsStats_finale <- data_meta_formationsStats %>%
+  filter(
+    # filiere == "apprentissage",
+    millesime == "2022"
+  ) %>%
+  rename(UAI=uai) %>%  
+  left_join(
+    formation_catalogue_apprentissage_type_uai_retenu,
+  by=c("code_certification","UAI")
+  ) %>% 
+  left_join(
+    formation_catalogue_apprentissage_long %>%
+      select(-`Type UAI`,- `Clé ministere educatif` ) %>% 
+      distinct() %>% 
+      mutate(presence_catalogue=T),
+    by=c("UAI","code_certification"="Code du diplome ou du titre suivant la nomenclature de l'Education nationale (CodeEN)")
+  ) %>% 
+  mutate(
+    type_data=case_when(
+      type_source!= "self" ~"Lignes ajoutées par exposition - continuum, familles de métiers et premières années",
+      uai_donnee_type == "inconnu" ~ "Lignes initiales",
+      filiere=="pro" & type_source =="self"  ~ "Lignes initiales",
+      filiere=="superieur" & type_source =="self"  ~ "Lignes initiales",
+      filiere=="apprentissage" & type_source =="self" & uai_donnee_type =="lieu_formation" & `Type UAI`=="UAI formation" ~ "Lignes initiales",
+      filiere=="apprentissage" & type_source =="self" & uai_donnee_type =="gestionnaire" & `Type UAI`=="UAI Responsable" ~ "Lignes initiales",
+      filiere=="apprentissage" & type_source =="self" & uai_donnee_type =="formateur" & `Type UAI`=="UAI formateur" ~ "Lignes initiales",
+      filiere=="apprentissage" & type_source =="self" & is.na(presence_catalogue)  ~ "Lignes initiales",
+      T ~"Lignes ajoutées par exposition - rapprochement des uai"
+    )
+  ) 
 
 
-ensemble_data_formationsStats <-  formation_catalogue_apprentissage_long_comp %>%
-  bind_rows(
-    data_meta_formationsStats_init %>%
-      filter(
-        filiere == "pro",
-        millesime == "2022"
-      ) %>%
-      rename(UAI=uai)
-  )
+
+ensemble_data_formationsStats_finale <- data_meta_formationsStats_finale %>% 
+  filter(filiere %in% c("apprentissage","pro"),millesime=="2022")
 
 ### Insersup ----
 fr_esr_insersup <- read_excel(file.path(chemin_racine_data,"SSM/SIES/2023/insersup/fr-esr-insersup.xlsx"))
 
 # Base InserJeunes ----
 
-stats_InserJeunes <- data_meta_formationsStats_init %>% 
-  filter(type_source%in%c("self","ancienne"),millesime==2022) %>%
+stats_InserJeunes_finale <- ensemble_data_formationsStats_finale %>%
   mutate(
     type_formation=case_when(
       as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%0:4 ~ "Avant le bac",
@@ -184,23 +213,23 @@ stats_InserJeunes <- data_meta_formationsStats_init %>%
     libelle_type_diplome=case_when(
       str_detect(libelle_type_diplome,"DIP3-CNAM")~"Titre professionnel homologué",
       str_detect(libelle_type_diplome,"TH3")~"Titre professionnel homologué",
-    str_detect(libelle_type_diplome,"TH4")~"Titre professionnel homologué",
-    str_detect(libelle_type_diplome,"TH5")~"Titre professionnel homologué",
-    str_detect(libelle_type_diplome,"DIV-2")~"Autres diplômes",
-    str_detect(libelle_type_diplome,"DIV-3")~"Autres diplômes",
-    str_detect(libelle_type_diplome,"DIV-4")~"Autres diplômes",
-    str_detect(libelle_type_diplome,"DIV-5")~"Autres diplômes",
-    str_detect(libelle_type_diplome,"BPA")~"BPA",
-    str_detect(libelle_type_diplome,"CSA")~"CSA",
-    str_detect(libelle_type_diplome,"CS")~"CS",
-    str_detect(libelle_type_diplome,"ASSIMI.BTS")~"BTS",
-    
-    T~libelle_type_diplome
-  ),
+      str_detect(libelle_type_diplome,"TH4")~"Titre professionnel homologué",
+      str_detect(libelle_type_diplome,"TH5")~"Titre professionnel homologué",
+      str_detect(libelle_type_diplome,"DIV-2")~"Autres diplômes",
+      str_detect(libelle_type_diplome,"DIV-3")~"Autres diplômes",
+      str_detect(libelle_type_diplome,"DIV-4")~"Autres diplômes",
+      str_detect(libelle_type_diplome,"DIV-5")~"Autres diplômes",
+      str_detect(libelle_type_diplome,"BPA")~"BPA",
+      str_detect(libelle_type_diplome,"CSA")~"CSA",
+      str_detect(libelle_type_diplome,"CS")~"CS",
+      str_detect(libelle_type_diplome,"ASSIMI.BTS")~"BTS",
+      
+      T~libelle_type_diplome
+    ),
     filiere=ifelse(filiere=="pro","Scolaire",filiere)
   )  %>% 
   filter(libelle_type_diplome!="Autres diplômes") %>% 
-  group_by(type_formation,libelle_type_diplome,filiere) %>% 
+  group_by(type_formation,libelle_type_diplome,filiere,type_data) %>% 
   summarise(presence=n())  %>% 
   mutate(filiere=str_to_title(filiere)) %>% 
   pivot_wider(names_from = filiere,values_from = presence) %>% 
@@ -215,7 +244,6 @@ stats_InserJeunes <- data_meta_formationsStats_init %>%
     "Part base"=prop.table(Volume),
     Base="InserJeunes"
   ) 
-
 
 # Base InserSup ----
 
@@ -237,7 +265,8 @@ stats_Insersup <- fr_esr_insersup %>%
   ungroup() %>% 
   mutate(
     "Part base"=prop.table(Volume),
-    Base="InserSup"
+    Base="InserSup",
+    type_data="Lignes initiales"
   )
 
 
@@ -249,10 +278,19 @@ stats_Insersup <- fr_esr_insersup %>%
 
 *Dernière mise à jour : `r params$date_maj`* 
 
+### Nombre d'actions de formation interrogeables initialement après transimissions des données par les SSM
 
 ```{r}
-temp <- stats_InserJeunes %>% 
-  bind_rows(stats_Insersup)  
+temp <- stats_InserJeunes_finale %>% 
+  bind_rows(stats_Insersup)  %>% 
+  mutate_all(replace_na,0) %>% 
+  filter(type_data=="Lignes initiales") %>% 
+  group_by(`Avant/après bac`,`Type diplôme`,Base)  %>% 
+  summarise_at(vars(Scolaire,Apprentissage,Volume),sum) %>% 
+  ungroup() %>% 
+  mutate("Part base"=prop.table(Volume)) %>% 
+  arrange(desc(`Avant/après bac`),`Type diplôme`,Base)
+
 
 temp %>% 
    bind_rows(
@@ -265,6 +303,66 @@ temp %>%
   ) 
   ) %>% 
   mutate(`Part base`=scales::percent(`Part base`,accuracy=0.1)) %>%
+  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
+  kable_paper()
+```
+
+
+### Nombre d'actions de formation interrogeables après traitements réalisés par Exposition
+
+```{r}
+temp <- stats_InserJeunes_finale %>% 
+  bind_rows(stats_Insersup)  %>% 
+  mutate_all(replace_na,0) %>% 
+  group_by(`Avant/après bac`,`Type diplôme`,Base) %>% 
+  summarise_at(vars(Scolaire,Apprentissage,Volume),sum) %>% 
+  ungroup() %>% 
+  mutate("Part base"=prop.table(Volume)) %>% 
+  arrange(desc(`Avant/après bac`),`Type diplôme`,Base)
+
+
+temp %>% 
+   bind_rows(
+    temp %>% 
+  summarise_if(is.numeric,sum) %>% 
+  mutate(
+    `Avant/après bac`="Total",
+    `Type diplôme`="Total",
+    Base="Total"
+  ) 
+  ) %>% 
+  mutate(`Part base`=scales::percent(`Part base`,accuracy=0.1)) %>%
+  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
+  kable_paper()
+```
+
+### Volume des traitements réalisés par Exposition
+
+```{r}
+temp <- stats_InserJeunes_finale %>% 
+  bind_rows(stats_Insersup)  %>% 
+  mutate_all(replace_na,0) %>% 
+  group_by(`Avant/après bac`,type_data,Base)  %>% 
+  summarise_at(vars(Volume),sum) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = type_data,values_from = Volume) %>% 
+  select(`Avant/après bac`,Base,`Lignes initiales`,`Lignes ajoutées par exposition - continuum, familles de métiers et premières années`,`Lignes ajoutées par exposition - rapprochement des uai` )%>% 
+  arrange(desc(`Avant/après bac`),Base) %>% 
+  mutate_all(replace_na,0)  %>% 
+  rowwise() %>% 
+  mutate("Lignes interrogeables après traitements Exposition"=sum(`Lignes initiales`,`Lignes ajoutées par exposition - continuum, familles de métiers et premières années`,`Lignes ajoutées par exposition - rapprochement des uai`),
+         "Effet multiplicateur du traitement"=round(`Lignes interrogeables après traitements Exposition`/`Lignes initiales`,1)) %>% 
+  ungroup()
+
+temp %>% 
+   bind_rows(
+    temp %>% 
+  summarise_if(is.numeric,sum) %>% 
+  mutate(
+    `Avant/après bac`="Total",
+    Base="Total"
+  ) 
+  ) %>% 
   kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
   kable_paper()
 ```
