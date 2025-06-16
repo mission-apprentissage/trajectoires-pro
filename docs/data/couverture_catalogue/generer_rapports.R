@@ -5,11 +5,12 @@ library(rmarkdown)
 
 
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
-chemin_racine_data <- "../../../../0- data" 
+chemin_racine_data <- "../../../../../0- data" 
 source("prepa_data_init_generique.R")
 
 #Base InserJeunes ----
-rmarkdown::render("base_inserjeunes_avant_integration_sup_dans_ij.Rmd", 
+## 2024 ----
+rmarkdown::render("base_inserjeunes/base_inserjeunes_avant_integration_sup_dans_ij.Rmd", 
                   params = list(
                     phase = "Production",
                     date_maj= "27/06/2024",
@@ -20,16 +21,30 @@ rmarkdown::render("base_inserjeunes_avant_integration_sup_dans_ij.Rmd",
                   output_file = "base_inserjeunes_production_2024_06.html"
 )
 
-rmarkdown::render("base_inserjeunes.Rmd", 
+
+## 2025 ----
+rmarkdown::render("base_inserjeunes/base_inserjeunes_2025.Rmd", 
                   params = list(
-                    phase = "Recette",
-                    date_maj= format(Sys.time(), '%d/%m/%Y'),
-                    emplacement_data_meta_formationsStats_init = "Donnees IJ/metabase/recette/FormationsStats.csv"
+                    phase = "Production",
+                    date_maj= "11/06/2025",
+                    emplacement_data_meta_formationsStats_init = "Donnees IJ/metabase/production/FormationsStats_2025_06_10.csv"
                   ),
                   output_format = "html_document",
                   output_dir = "base_inserjeunes",
-                  output_file = "base_inserjeunes_recette_2024_10.html"
+                  output_file = "base_inserjeunes_production_2025_06.html"
 )
+
+
+# rmarkdown::render("base_inserjeunes/base_inserjeunes.Rmd", 
+#                   params = list(
+#                     phase = "Recette",
+#                     date_maj= format(Sys.time(), '%d/%m/%Y'),
+#                     emplacement_data_meta_formationsStats_init = "Donnees IJ/metabase/recette/FormationsStats.csv"
+#                   ),
+#                   output_format = "html_document",
+#                   output_dir = "base_inserjeunes",
+#                   output_file = "base_inserjeunes_recette_2024_10.html"
+# )
 
 
 
@@ -108,6 +123,28 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                   output_file = "affelnet_V20240112_Extraction_catalogue_SLA_2023.html"
 )
 
+
+## Affelnet campagne 2025----
+
+source("affelnet/2_appariement_affelnet.R")
+
+rmarkdown::render("stats_catalogue_generique.Rmd", 
+                  params = list(
+                    catalogue_init=NULL,
+                    type_source = NULL,
+                    type_voeux= "affelnet",
+                    nom_catalogue= "Affelnet",
+                    afficher_stats_voeux=FALSE,
+                    stats_catalogue=stats_catalogue_affelnet_2025,
+                    afficher_stats_synthese=TRUE,
+                    stats_catalogue_synthese=stats_catalogue_affelnet_campagne_2025_synthese,
+                    nom_catalogue_detail = "Affelnet - campagne 2025 - Catalogue SLA",
+                    lien_drive_catalogue = NA
+                  ),
+                  output_format = "html_document",
+                  output_dir = "affelnet",
+                  output_file = "affelnet_campagne_2025.html"
+)
 
 # onisep 05_2024----
 

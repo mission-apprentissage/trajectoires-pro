@@ -1,0 +1,368 @@
+---
+title: "Base InserJeunes"
+subtitle: "Formations couvertes par la base InserJeunes"
+output: 
+    html_document:
+      toc: true
+      toc_float:
+        toc_collapsed: true
+
+params: 
+    phase: "Production"
+    date_maj: format(Sys.time(), '%d/%m/%Y')
+    emplacement_data_meta_formationsStats_init: "Donnees IJ/metabase/production/FormationsStats_2025_06_10.csv"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,warning = FALSE,error = FALSE,message = FALSE)
+
+# Chargement des librairies ----
+library(tidyverse)
+library(readxl)
+library(jsonlite)
+library(knitr)
+library(kableExtra)
+
+
+chemin_racine_data <- "../../../../../../0- data" 
+
+# Données ----
+## catalogue apprentissage ----
+formation_catalogue_apprentissage <- data.table::fread(file.path(chemin_racine_data,"RCO/formation_2025-06-11T09_47_17.075Z.csv")) %>% 
+  as_tibble()
+
+
+## Données BCN ----
+n_mef <- read_csv2(file.path(chemin_racine_data,"BCN/n_mef.csv"))
+n_formation_diplome <- read_delim(file.path(chemin_racine_data,"BCN/n_formation_diplome_.csv"),delim = ";", escape_double = FALSE, trim_ws = TRUE)
+n_niveau_formation_diplome <- read_csv2(file.path(chemin_racine_data,"BCN/n_niveau_formation_diplome_.csv"))
+n_diplome_sise <- read_csv2(file.path(chemin_racine_data,"BCN/n_diplome_sise_.csv"))
+n_type_diplome_sise <- read_csv2(file.path(chemin_racine_data,"BCN/n_type_diplome_sise_.csv"))
+
+## Données IJ pour analyse de la couverture ----
+### Etablissements ----
+data_meta_formationsStats_init <- read_csv(file.path(chemin_racine_data,params$emplacement_data_meta_formationsStats_init))
+
+data_meta_formationsStats_init <- data_meta_formationsStats_init %>%
+  setNames(names(.) %>%
+             str_to_lower() %>%
+             str_replace_all(" ", "_"))
+
+
+
+data_meta_formationsStats <- data_meta_formationsStats_init %>%
+  bind_cols(  str_split_fixed(
+    data_meta_formationsStats_init$donnee_source,
+    pattern = ",",
+    n = 2
+  ) %>%
+    as_tibble() %>%
+    mutate(
+      V1 = str_remove(V1, "\\{:code_certification "),
+      V2 = str_remove(V2, " :type "),
+      V2 = str_remove(V2, "\\}")
+    ) %>%  
+    setNames(c(
+      "code_certification_source", "type_source"
+    ))) %>% 
+  bind_cols(
+    str_split_fixed(
+      data_meta_formationsStats_init$diplome,
+      pattern = ",",
+      n = 2
+    )%>%
+      as_tibble() %>%
+      mutate(
+        V1 = str_remove(V1, "\\{:code "),
+        # V1 = str_remove(V1, "\""),
+        V2 = str_remove(V2, " :libelle "),
+        V2 = str_remove(V2, "\\}")
+      ) %>%
+      setNames(c(
+        "niveau_diplome", "libelle_type_diplome"
+      ))
+  ) %>% 
+  mutate(
+    "Couverture Taux En Emploi 6 Mois" = ifelse(is.na(taux_en_emploi_6_mois), F, T),
+    "Couverture Taux Autres 6 Mois" = ifelse(is.na(taux_autres_6_mois), F, T),
+    "Couverture Taux En poursuite" = ifelse(is.na(taux_en_formation), F, T)
+  ) %>%
+  distinct(
+    code_certification ,
+    code_certification_type,
+    # code_formation_diplome,
+    uai,
+    uai_donnee_type,
+    type_source,
+    filiere,
+    millesime,
+    niveau_diplome,
+    libelle_type_diplome,
+    nb_annee_term,
+    nb_en_emploi_6_mois,
+    nb_poursuite_etudes,
+    taux_en_emploi_6_mois,
+    taux_autres_6_mois,
+    taux_en_formation,
+    `Couverture Taux En Emploi 6 Mois`,
+    `Couverture Taux Autres 6 Mois`,
+    `Couverture Taux En poursuite`
+  ) %>%
+  mutate(presence_ij = T,
+         Avant_apres_continuum = case_when(
+           nb_annee_term < 20 ~ "Sous le seuil de 20 élèves",
+           type_source %in% c("self","nouvelle") ~ "Avant continuum",
+           type_source == "ancienne" ~ "Apres continuum"
+         ),
+         millesime=str_sub(millesime,-4),
+         Couverture=case_when(
+           millesime == max(millesime) & str_detect(Avant_apres_continuum, "continuum") ~ "Couvert",
+           Avant_apres_continuum =="Avant continuum" ~ "Couvert",
+           Avant_apres_continuum =="Apres continuum" ~ "Non couvert",
+           T~Avant_apres_continuum
+         )
+  )  %>% 
+  left_join(
+    n_mef %>% 
+      select(MEF_STAT_11,FORMATION_DIPLOME) %>% 
+      rename(code_formation_diplome=FORMATION_DIPLOME),
+    by=c("code_certification"="MEF_STAT_11")
+  ) %>% 
+  mutate(
+    code_formation_diplome=case_when(
+      code_certification_type=="cfd"~code_certification,
+      code_certification_type=="mef11"~code_formation_diplome
+    )
+  ) %>% 
+  left_join(n_formation_diplome %>%
+              select(FORMATION_DIPLOME,NIVEAU_FORMATION_DIPLOME),
+            by=c("code_formation_diplome" ="FORMATION_DIPLOME")
+  ) %>%
+  left_join(
+    n_niveau_formation_diplome %>%
+      select(NIVEAU_FORMATION_DIPLOME,NIVEAU_QUALIFICATION_RNCP),
+    by="NIVEAU_FORMATION_DIPLOME"
+  ) %>% 
+  filter(millesime==2023) %>% 
+  mutate(id_unique=1:n())
+
+
+
+formation_catalogue_apprentissage <- formation_catalogue_apprentissage  %>%
+  mutate_all(str_remove_all,"=\"") %>%
+  mutate_all(str_remove_all,"\"")
+
+formation_catalogue_apprentissage_long <- formation_catalogue_apprentissage %>%
+  distinct(`Responsable: UAI`,`Lieu: UAI`,`Formateur: UAI`,`Formation: code CFD`,`Clé ministere educatif`) %>%  
+  pivot_longer(cols = contains("Uai"),names_to = "Type UAI",values_to = "UAI",values_drop_na = TRUE)
+
+
+formation_catalogue_apprentissage_long_comp <- formation_catalogue_apprentissage_long %>%
+  left_join(
+    data_meta_formationsStats %>%
+      filter(
+        filiere == "apprentissage",
+      ),
+    by=c("UAI"="uai","Formation: code CFD"="code_certification")
+  ) %>% 
+  filter(!is.na(type_source))
+
+formation_catalogue_apprentissage_type_uai_retenu <- formation_catalogue_apprentissage_long_comp %>%
+  mutate(`Type UAI`=factor(`Type UAI`,levels=c("Lieu: UAI","Formateur: UAI","Responsable: UAI"))) %>% 
+  group_by(UAI,`Formation: code CFD`) %>%
+  filter(as.numeric(`Type UAI`)==min(as.numeric(`Type UAI`))) %>%
+  ungroup() %>% 
+  rename(code_certification=`Formation: code CFD`) %>% 
+  distinct(code_certification,`Type UAI`,UAI)
+
+data_meta_formationsStats_finale <- data_meta_formationsStats %>%
+  rename(UAI=uai) %>%    
+  left_join(
+    formation_catalogue_apprentissage_type_uai_retenu,
+    by=c("code_certification","UAI")
+  ) %>% 
+  left_join(
+    formation_catalogue_apprentissage_long %>%
+      select(-`Type UAI`,- `Clé ministere educatif` ) %>% 
+      distinct() %>% 
+      mutate(presence_catalogue=T),
+    by=c("UAI","code_certification"="Formation: code CFD")
+  ) %>% 
+  mutate(
+    type_data=case_when(
+      type_source!= "self" ~"Lignes ajoutées par exposition - continuum, familles de métiers et premières années",
+      uai_donnee_type == "inconnu" ~ "Lignes initiales",
+      filiere=="pro" & type_source =="self"  ~ "Lignes initiales",
+      filiere=="superieur" & type_source =="self"  ~ "Lignes initiales",
+      filiere=="apprentissage" & type_source =="self" & uai_donnee_type =="lieu_formation" & `Type UAI`=="Lieu: UAI" ~ "Lignes initiales",
+      filiere=="apprentissage" & type_source =="self" & uai_donnee_type =="gestionnaire" & `Type UAI`=="Responsable: UAI" ~ "Lignes initiales",
+      filiere=="apprentissage" & type_source =="self" & uai_donnee_type =="formateur" & `Type UAI`=="Formateur: UAI" ~ "Lignes initiales",
+      filiere=="apprentissage" & type_source =="self" & is.na(presence_catalogue)  ~ "Lignes initiales",
+      T ~"Lignes ajoutées par exposition - rapprochement des uai"
+    )
+  ) 
+
+
+ensemble_data_formationsStats_finale <- data_meta_formationsStats_finale %>% 
+  mutate(
+    Base=case_when(
+      filiere=="superieur"~"InserSup",
+      T~"InserJeunes")
+  )
+
+
+
+stats_InserJeunes_finale <- ensemble_data_formationsStats_finale %>%
+  mutate(
+    type_formation=case_when(
+      as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%0:4 ~ "Avant le bac",
+      as.numeric(NIVEAU_QUALIFICATION_RNCP)%in%5:8 ~ "Après le bac",
+      
+      niveau_diplome%in%0:4 ~ "Avant le bac",
+      niveau_diplome%in%5:8 ~ "Après le bac"
+      
+    ),
+    type_formation=factor(type_formation,levels=c("Avant le bac","Après le bac")),
+    libelle_type_diplome=case_when(
+      str_detect(libelle_type_diplome,"DIP3-CNAM")~"Titre professionnel homologué",
+      str_detect(libelle_type_diplome,"TH3")~"Titre professionnel homologué",
+      str_detect(libelle_type_diplome,"TH4")~"Titre professionnel homologué",
+      str_detect(libelle_type_diplome,"TH5")~"Titre professionnel homologué",
+      str_detect(libelle_type_diplome,"DIV-2")~"Autres diplômes",
+      str_detect(libelle_type_diplome,"DIV-3")~"Autres diplômes",
+      str_detect(libelle_type_diplome,"DIV-4")~"Autres diplômes",
+      str_detect(libelle_type_diplome,"DIV-5")~"Autres diplômes",
+      str_detect(libelle_type_diplome,"BPA")~"BPA",
+      str_detect(libelle_type_diplome,"CSA")~"CSA",
+      str_detect(libelle_type_diplome,"CS")~"CS",
+      str_detect(libelle_type_diplome,"ASSIMI.BTS")~"BTS",
+      str_detect(libelle_type_diplome,"LIC LMD")~"Licences LMD",
+      str_detect(libelle_type_diplome,"LIC PRO")~"Licences pro",
+      str_detect(libelle_type_diplome,"MAST LMD")~"Masters LMD",
+      str_detect(libelle_type_diplome,"MAST ENS")~"Masters MEEF",
+      str_detect(libelle_type_diplome,"MASTERE SP")~"Masteres spécialisés",
+      str_detect(libelle_type_diplome,"FORM ING")~"Diplômes d'écoles d'ingénieurs",
+      str_detect(libelle_type_diplome,"FIP EX NFI")~"Diplômes d'écoles d'ingénieurs",
+      str_detect(libelle_type_diplome,"D ING CONJ")~"Diplômes d'écoles d'ingénieurs",
+      str_detect(libelle_type_diplome,"DV\\+5 MG")~"Diplômes d'écoles de commerce",
+      str_detect(libelle_type_diplome,"DV\\+5MAS MG")~"Diplômes d'écoles de commerce",
+      T~libelle_type_diplome
+    ),
+    filiere=case_when(
+      filiere=="pro"~"Scolaire",
+      T~filiere)
+  )  %>% 
+  filter(libelle_type_diplome!="Autres diplômes")  %>% 
+  group_by(type_formation,libelle_type_diplome,filiere,type_data,Base) %>% 
+  summarise(presence=n())  %>% 
+  mutate(filiere=str_to_title(filiere)) %>% 
+  pivot_wider(names_from = filiere,values_from = presence) %>%   
+  mutate_all(replace_na,0) %>%   
+  arrange(type_formation,Base,libelle_type_diplome) %>% 
+  rename(
+    "Avant/après bac"=type_formation,
+    "Type diplôme"=libelle_type_diplome
+  ) %>% 
+  ungroup() %>% 
+  mutate(
+    Volume=Scolaire + Apprentissage + Superieur ,
+    "Part base"=prop.table(Volume)
+  ) %>% 
+  select(-Superieur) 
+
+```
+
+
+## Base InserJeunes - `r params$phase`
+
+*Dernière mise à jour : `r params$date_maj`* 
+
+### Nombre d'actions de formation interrogeables initialement après transimissions des données par les SSM
+
+```{r}
+temp <- stats_InserJeunes_finale %>% 
+  mutate_all(replace_na,0) %>% 
+  filter(type_data=="Lignes initiales") %>% 
+  group_by(`Avant/après bac`,`Type diplôme`,Base)  %>% 
+  summarise_at(vars(Scolaire,Apprentissage,Volume),sum) %>% 
+  ungroup() %>% 
+  mutate("Part base"=prop.table(Volume)) %>% 
+  arrange(`Avant/après bac`,Base,`Type diplôme`)
+
+
+temp %>% 
+  bind_rows(
+    temp %>% 
+      summarise_if(is.numeric,sum) %>% 
+      mutate(
+        `Avant/après bac`="Total",
+        `Type diplôme`="Total",
+        Base="Total"
+      ) 
+  ) %>% 
+  mutate(`Part base`=scales::percent(`Part base`,accuracy=0.1)) %>%
+  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
+  kable_paper()
+```
+
+
+### Nombre d'actions de formation interrogeables après traitements réalisés par Exposition
+
+```{r}
+temp <- stats_InserJeunes_finale %>% 
+  mutate_all(replace_na,0) %>% 
+  group_by(`Avant/après bac`,`Type diplôme`,Base)  %>% 
+  summarise_at(vars(Scolaire,Apprentissage,Volume),sum) %>% 
+  ungroup() %>% 
+  mutate("Part base"=prop.table(Volume)) %>% 
+  arrange(`Avant/après bac`,Base,`Type diplôme`)
+
+
+temp %>% 
+  bind_rows(
+    temp %>% 
+      summarise_if(is.numeric,sum) %>% 
+      mutate(
+        `Avant/après bac`="Total",
+        `Type diplôme`="Total",
+        Base="Total"
+      ) 
+  ) %>% 
+  mutate(`Part base`=scales::percent(`Part base`,accuracy=0.1)) %>%
+  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
+  kable_paper()
+```
+
+### Volume des traitements réalisés par Exposition
+
+```{r}
+temp <- stats_InserJeunes_finale %>% 
+  mutate_all(replace_na,0) %>% 
+  group_by(`Avant/après bac`,type_data,Base)  %>% 
+  summarise_at(vars(Volume),sum) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = type_data,values_from = Volume) %>% 
+  select(`Avant/après bac`,Base,`Lignes initiales`,`Lignes ajoutées par exposition - continuum, familles de métiers et premières années`,`Lignes ajoutées par exposition - rapprochement des uai` )%>% 
+  arrange(desc(`Avant/après bac`),Base) %>% 
+  mutate_all(replace_na,0)  %>% 
+  rowwise() %>% 
+  mutate("Lignes interrogeables après traitements Exposition"=sum(`Lignes initiales`,`Lignes ajoutées par exposition - continuum, familles de métiers et premières années`,`Lignes ajoutées par exposition - rapprochement des uai`),
+         "Effet multiplicateur du traitement"=round(`Lignes interrogeables après traitements Exposition`/`Lignes initiales`,1)) %>% 
+  ungroup() %>% 
+  arrange(`Avant/après bac`,Base)
+
+
+temp %>% 
+  bind_rows(
+    temp %>% 
+      summarise_if(is.numeric,sum) %>% 
+      mutate(
+        `Avant/après bac`="Total",
+        Base="Total"
+      ) 
+  ) %>% 
+  kbl(format.args = list(big.mark = " ", decimal.mark = ",")) %>%
+  kable_paper()
+
+```
+
