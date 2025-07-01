@@ -37,7 +37,7 @@ Statistiques du service d’exposition au grand public - S1 2025
 | `ONISEP`                       | 29.626 | -2%  | 22,9% | 2,5  |
 | `Parcoursup`                   | 21.424 | -13% | 45,9% | 21,6 |
 
-## Réutilisations en 2024
+## Réutilisations
 
 10 plateformes
 {: .label .label-green }
@@ -46,9 +46,9 @@ exposaient la donnée InserJeunes.
 
 *Parcoursup, Affelnet, Onisep.fr, La bonne alternance, 1jeune1solution, Diagoriente, L’Étudiant, IJBox, Octopilot et C’est qui le pro ?*
 
-5.2 millions d'appels à l'API
+52 millions d'appels à l'API
 {: .label .label-green }
-ont été effectués.
+ont été effectués depuis 2024
 {: .d-inline }
 
 
