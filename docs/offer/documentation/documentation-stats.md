@@ -19,7 +19,7 @@ Statistiques du service d’exposition au grand public - S1 2025
 
 ### Contenu de notre base
 
-| Source | Nombre d’actions de formation couvertes initialement | Nombre d’actions de formation couvertes et interrogeables (après traitements) | Part de la base | Effet multiplicateur du traitement |
+| Source | Nombre d’actions de formation couvertes initialement | Nombre d’actions de formation couvertes et interrogeables (après traitements) | Part de la base | Effet multiplicateur du traitement [^1] |
 |:------------------------------------|:-----------|:------------|:---------|:--------|
 | `InserJeunes` (du CAP au BTS)       | 48.538     | 198.084     | 96,5%    | 4,1     |
 | *dont scolaire*                     | 23.148     | 128.704     | 62,7%    | 5,6     |
@@ -51,5 +51,5 @@ exposaient la donnée InserJeunes.
 ont été effectués entre Juillet 2024 et Juillet 2025.
 {: .d-inline }
 
-
+[^1]: l'effet multiplicateur du traitement correspond au ratio *Nombre d’actions de formation couvertes et interrogeables (après traitements)* / *Nombre d’actions de formation couvertes initialement*.
 
