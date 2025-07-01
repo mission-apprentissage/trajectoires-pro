@@ -48,7 +48,7 @@ exposaient la donnée InserJeunes.
 
 52 millions d'appels à l'API
 {: .label .label-green }
-ont été effectués depuis 2024.
+ont été effectués entre Juillet 2024 et Juillet 2025.
 {: .d-inline }
 
 
