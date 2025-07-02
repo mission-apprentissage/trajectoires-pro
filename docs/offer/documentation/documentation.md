@@ -11,6 +11,7 @@ nav_order: 4.3
 - [Couverture de l’emploi public et du volontariat de service civique]({{ site.baseurl }}{% link offer/documentation/documentation-public-jobs.md %})
 - [La continuité des données dans le cadre de la rénovation des formations]({{ site.baseurl }}{% link offer/documentation/documentation-continuum.md %})
 - [Détails sur l’impact de la continuité des données sur le taux de couverture]({{ site.baseurl }}{% link offer/documentation/documentation-continuum-impact.md %})
+- [📊 Statistiques]({{ site.baseurl }}{% link offer/documentation/documentation-stats.md %})
 
 # Guides
 
