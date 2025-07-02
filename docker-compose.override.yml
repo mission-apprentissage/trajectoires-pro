@@ -5,45 +5,6 @@ services:
       - trajectoires_pro_nginx_data:/data:z
       - ./reverse_proxy/dev/includes:/etc/nginx/templates/includes/env
 
-  ui:
-    build:
-      dockerfile: ./Dockerfile.dev
-      args:
-        - METABASE_SECRET_KEY=${METABASE_SECRET_KEY}
-        - METABASE_SITE_URL=${METABASE_SITE_URL}
-        - METABASE_DASHBOARD_STATS_ID=${METABASE_DASHBOARD_STATS_ID}
-        - METABASE_DASHBOARD_STATS_DETAILS_ID=${METABASE_DASHBOARD_STATS_DETAILS_ID}
-        - METABASE_DASHBOARD_STATS_REGION_ID=${METABASE_DASHBOARD_STATS_REGION_ID}
-        - METABASE_METRICS_VIEWS=${METABASE_METRICS_VIEWS}
-        - NOTION_TOKEN=${NOTION_TOKEN}
-        - NEXT_PUBLIC_HOST_REWRITE=${NEXT_PUBLIC_HOST_REWRITE}
-        - INTERNAL_SITE_HOST=${INTERNAL_SITE_HOST}
-        - STATISTIQUES_SITE_HOST=${STATISTIQUES_SITE_HOST}
-        - DOCUMENTATION_SITE_HOST=${DOCUMENTATION_SITE_HOST}
-        - EXPOSITION_API_BASE_URL=${EXPOSITION_API_BASE_URL}
-        - NEXT_PUBLIC_API_BASE_URL=/api
-    environment:
-      - METABASE_SECRET_KEY=${METABASE_SECRET_KEY}
-      - METABASE_SITE_URL=${METABASE_SITE_URL}
-      - METABASE_DASHBOARD_STATS_ID=${METABASE_DASHBOARD_STATS_ID}
-      - METABASE_DASHBOARD_STATS_DETAILS_ID=${METABASE_DASHBOARD_STATS_DETAILS_ID}
-      - METABASE_DASHBOARD_STATS_REGION_ID=${METABASE_DASHBOARD_STATS_REGION_ID}
-      - METABASE_METRICS_VIEWS=${METABASE_METRICS_VIEWS}
-      - NOTION_TOKEN=${NOTION_TOKEN}
-      - NEXT_PUBLIC_HOST_REWRITE=${NEXT_PUBLIC_HOST_REWRITE}
-      - INTERNAL_SITE_HOST=${INTERNAL_SITE_HOST}
-      - STATISTIQUES_SITE_HOST=${STATISTIQUES_SITE_HOST}
-      - DOCUMENTATION_SITE_HOST=${DOCUMENTATION_SITE_HOST}
-      - EXPOSITION_API_BASE_URL=${EXPOSITION_API_BASE_URL}
-      - NEXT_PUBLIC_API_BASE_URL=/api
-    mem_limit: 2g
-    stdin_open: true
-    ports:
-      - 3000:3000
-    volumes:
-      - trajectoires_pro_ui_data:/data:z
-      - /app/node_modules
-      - ./ui:/app:z
   server:
     command: ["yarn", "debug"]
     ports:
@@ -86,9 +47,6 @@ volumes:
   trajectoires_pro_server_data:
     driver: local
     name: trajectoires_pro_server_data
-  trajectoires_pro_ui_data:
-    driver: local
-    name: trajectoires_pro_ui_data
   trajectoires_pro_metabase_data:
     driver: local
     name: trajectoires_pro_metabase_data
