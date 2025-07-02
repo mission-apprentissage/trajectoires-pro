@@ -31,10 +31,6 @@ Certaine variable d'environnement sont requises pour démarrer le projet et impo
   - CATALOGUE_APPRENTISSAGE_PASSWORD
 - TRAJECTOIRES_PRO_API_KEY: Api key statique pour accèder aux routes protéger de l'API exposition (son usage est déprécié en faveur de la création d'utilisateur, elle ne doit plus être partagée).
 
-#### UI
-
-Voir [.env.example.local](ui/.env.example.local)
-
 ### Démarrage
 
 Pour lancer l'application :
@@ -52,16 +48,15 @@ Le swagger est accessible à l'url [http://localhost/api/doc](http://localhost/a
 
 #### Accès aux différents frontends
 
-Vous pouvez accèder aux différents frontends en utilisant les urls configurées dans vos environnements :
+Les frontends sont des redirections vers des pages Github. Vous pouvez y accèder en utilisant les urls suivantes :
 
-- INTERNAL_SITE_HOST : url d'accès à explorer
-- STATISTIQUES_SITE_HOST : url d'accès à la page statistiques
-- DOCUMENTATION_SITE_HOST : url d'accès à la documentation
+- [http://statistiques.localhost](http://statistiques.localhost) : url d'accès à la page statistiques
+- [http://documentation.localhost](http://documentation.localhost) : url d'accès à la documentation
 
 Il sera peut être nécessaire d'ajouter les valeurs de ces environnements à votre fichier hosts (Pas nécessaire sur Mac os pour les domaines de type \*.localhost)
 
 Exemple :
-`127.0.0.1 explorer.localhost`
+`127.0.0.1 documentation.localhost`
 
 ### Jobs
 
@@ -189,20 +184,17 @@ make test
 
 ### Architecture
 
-Le monorepo est composé d'un package back-end situé dans `server` ainsi que d'un package front-end situé dans `ui`.
+Le monorepo est composé :
+
+- d'un package back-end situé dans `server`
+- de scripts de configuration de l'infrastructure et de déploiement situés dans `.infra`
+- d'un reverse proxy situé dans `reverse_proxy`
 
 La documentation du projet Exposition est content dans le dossier `docs`.
 
 #### Server
 
 Ce package contient le code de l'API.
-
-#### Ui
-
-Ce package contient le front-end qui est divisé en différentes applications :
-
-- **explorer** : Site interne de consultation des données de l'API
-- **statistiques** : [Page des statistiques](https://statistiques.exposition.inserjeunes.beta.gouv.fr/) du projet Exposition
 
 #### Docs
 

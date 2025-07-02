@@ -42,14 +42,6 @@ server {
 
 server {
     listen ${PORT};
-    server_name explorer.${SERVER_NAME};
-    set $always_redirect ${NGINX_ALWAYS_TLS_REDIRECT};
-    include includes/server.conf;
-    include includes/statistiques/location_*.conf;
-}
-
-server {
-    listen ${PORT};
     server_name ${SERVER_NAME};
     set $always_redirect ${NGINX_ALWAYS_TLS_REDIRECT};
     include includes/location_*.conf;
@@ -68,13 +60,6 @@ server {
     server_name statistiques.${SERVER_NAME};
     include includes/server.conf;
     include includes/gh-pages/location_statistiques.conf;
-}
-
-server {
-    listen ${SSL_PORT} ssl http2;
-    server_name explorer.${SERVER_NAME};
-    include includes/server.conf;
-    include includes/statistiques/location_*.conf;
 }
 
 server {
