@@ -64,6 +64,7 @@ async function runScript(job, options = { withTimer: true }) {
     withTimer ? await wrapTimer(cb) : await cb();
     await exit();
   } catch (e) {
+    logger.error(e);
     await exit(e);
   }
 }

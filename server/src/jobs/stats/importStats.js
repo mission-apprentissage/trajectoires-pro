@@ -16,13 +16,13 @@ export async function importStats(options = {}) {
   const inserjeunes = new InserJeunes(inserjeunesOptions); //Permet de partager le rate limiter entre les deux imports
   await inserjeunes.login();
 
-  return promiseAllProps({
+  return {
     ...(stats.includes("certifications")
-      ? { certifications: importCertificationsStats({ inserjeunes, millesimes }) }
+      ? { certifications: await importCertificationsStats({ inserjeunes, millesimes }) }
       : {}),
-    ...(stats.includes("formations") ? { formations: importFormationsStats({ inserjeunes, millesimes }) } : {}),
-    ...(stats.includes("regionales") ? { regionales: importRegionalesStats({ inserjeunes, millesimes }) } : {}),
-  });
+    ...(stats.includes("formations") ? { formations: await importFormationsStats({ inserjeunes, millesimes }) } : {}),
+    ...(stats.includes("regionales") ? { regionales: await importRegionalesStats({ inserjeunes, millesimes }) } : {}),
+  };
 }
 
 export async function importSupStats(options = {}) {

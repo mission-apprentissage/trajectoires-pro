@@ -48,6 +48,8 @@ Cette commande démarre les containers définis dans le fichier `docker-compose.
 
 L'application est ensuite accessible à l'url [http://localhost](http://localhost)
 
+Le swagger est accessible à l'url [http://localhost/api/doc](http://localhost/api/doc)
+
 #### Accès aux différents frontends
 
 Vous pouvez accèder aux différents frontends en utilisant les urls configurées dans vos environnements :
@@ -65,9 +67,17 @@ Exemple :
 
 Pour hydrater la base de données, il existe dans le package `server` plusieurs jobs différents.
 
+En local :
+
 ```
 cd server
 yarn cli NOM_DU_JOB
+```
+
+En utilisant docker :
+
+```
+docker exec -ti trajectoires_pro_server yarn cli NOM_DU_JOB
 ```
 
 L'ordre d'exécution des jobs est important afin de pouvoir hydrater correctement la base de données.

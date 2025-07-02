@@ -14,6 +14,8 @@ import AcceEtablissementRepository from "#src/common/repositories/acceEtablissem
 const logger = getLoggerWithContext("import");
 
 async function checkMillesimeInDouble(jobStats, millesimes) {
+  logger.info(`Vérification des millésimes en double...`);
+
   for (const millesime of millesimes) {
     const results = await FormationStatsRepository.findMillesimeInDouble(millesime);
     for (const result of results) {
