@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "migrate-mongo up && nodemon --ignore tests/ src/index.js",
-    "debug": "nodemon --inspect=0.0.0.0 --signal SIGINT --ignore tests/ src/index.js",
+    "debug": "migrate-mongo up && nodemon --inspect=0.0.0.0 --signal SIGINT --ignore tests/ src/index.js",
     "test": "TRAJECTOIRES_PRO_LOG_LEVEL=fatal mocha --inline-diffs --exit tests/**/**/*-test.js tests/**/*-test.js tests/*-test.js",
     "cli": "TRAJECTOIRES_PRO_LOG_DESTINATIONS=stderr node src/cli.js",
     "coverage": "nyc --temp-dir .coverage/.nyc_output --report-dir .coverage --reporter=lcov --reporter=html yarn test",

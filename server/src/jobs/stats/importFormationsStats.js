@@ -58,32 +58,47 @@ async function streamDefaultParameters(millesimes) {
 
 async function loadParameters(parameters, millesimes) {
   const results = [];
+
+  logger.info(`Création de la liste des établissements à importer par millésime`);
+
   const stream = parameters ? Readable.from(parameters) : await streamDefaultParameters(millesimes);
+
+  const logCurrentList = (millesimes, results) =>
+    logger.debug(`Etablissements à importer pour les millésimes ${millesimes.join(",")} : ${results.length}`);
 
   await oleoduc(
     stream,
-    writeData(async (data) => {
-      const { uai, millesime } = data;
+    writeData(
+      async (data) => {
+        const { uai, millesime } = data;
 
-      if (!isUAIValid(uai)) {
-        logger.warn(`UAI invalide détecté ${uai}`);
-        return;
-      }
+        if (!isUAIValid(uai)) {
+          logger.warn(`UAI invalide détecté ${uai}`);
+          return;
+        }
 
-      const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
+        const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
 
-      const index = results.findIndex((e) => e.uai === uai && e.millesime === millesime);
-      if (index === -1) {
-        results.push({
-          uai,
-          libelle_etablissement: etablissement?.appellation_officielle,
-          millesime,
-          region: findRegionByNom(data.region),
-          academie: findAcademieByCode(etablissement?.academie),
-        });
-      }
-    })
+        const index = results.findIndex((e) => e.uai === uai && e.millesime === millesime);
+        if (index === -1) {
+          results.push({
+            uai,
+            libelle_etablissement: etablissement?.appellation_officielle,
+            millesime,
+            region: findRegionByNom(data.region),
+            academie: findAcademieByCode(etablissement?.academie),
+          });
+
+          if (results.length % 100 === 0) {
+            logCurrentList(millesimes, results);
+          }
+        }
+      },
+      { parallel: 10 }
+    )
   );
+
+  logCurrentList(millesimes, results);
 
   return results;
 }
