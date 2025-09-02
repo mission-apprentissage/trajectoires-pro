@@ -1,0 +1,137 @@
+---
+- name: Starting job
+  block:
+    - name: Generate job identifier
+      set_fact:
+        job_name: "{{ app_name }}-{{ ansible_date_time.epoch }}-job"
+
+    - name: Create detached job
+      no_log: true
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: "{{ job_name }}"
+            namespace: "{{ app_namespace }}"
+            labels:
+              app.kubernetes.io/name: "{{ app_name }}"
+              app.kubernetes.io/instance: "{{ app_name }}"
+              job-type: "exposition"
+              job-id: "{{ job_name }}"
+            annotations:
+              job.started-by: "{{ ansible_user_id | default('ansible') }}"
+              job.started-at: "{{ ansible_date_time.iso8601 }}"
+              job.command: "{{ command | join(' ') }} {{ job_args | join(' ') }}"
+          spec:
+            backoffLimit: 3
+            ttlSecondsAfterFinished: 604800 # Supprime le job 1 semaine après sa fin
+            activeDeadlineSeconds: "{{ timeout }}"
+            template:
+              metadata:
+                labels:
+                  job-id: "{{ job_name }}"
+              spec:
+                activeDeadlineSeconds: "{{ timeout }}"
+                restartPolicy: Never
+                imagePullSecrets: 
+                  - name: regcred
+                containers:
+                - name: "{{ job_name }}"
+                  image: "{{ docker_registry }}{{ docker_registry_path }}{{ app_name }}-server:{{ env_type }}-{{ app_version }}"
+                  imagePullPolicy: Always
+                  command: "{{ command }}"
+                  args: "{{ job_args }}"
+                  envFrom:
+                  - secretRef:
+                      name: "{{ app_name }}-server-secret"
+                  env:
+                  - name: JOB_ID
+                    value: "{{ job_name }}"
+                  - name: JOB_STARTED_AT
+                    value: "{{ ansible_date_time.iso8601 }}"
+        wait: false  # Pas d'attente, mode détaché
+      register: job_created
+
+    - name: Display job information
+      debug:
+        msg: |
+          ✅ Job launched successfully in detached mode!
+          
+          Job Details:
+          - Name: {{ job_name }}
+          - Namespace: {{ app_namespace }}
+          - Timeout: {{ timeout }} seconds
+          
+          Monitoring Commands:
+          # Check status
+          kubectl get job {{ job_name }} -n {{ app_namespace }}
+          
+          # Watch progress
+          kubectl get job {{ job_name }} -n {{ app_namespace }} -w
+          
+          # Get logs (once pod is running)
+          kubectl logs -f job/{{ job_name }} -n {{ app_namespace }}
+          
+          # Delete job when finished
+          kubectl delete job {{ job_name }} -n {{ app_namespace }}
+        
+    - name: Send to Slack (success)
+      when: slack_notification
+      community.general.slack:
+        token: "{{ setup.SLACK_OAUTH }}"
+        msg: |
+          :white_check_mark: *Job STARTED!*
+          
+          *Details:*
+          • Completed: {{ ansible_date_time.iso8601 }}
+          • Started by: {{ ansible_user | default('ansible') }}
+        channel: "{{ slack_channel }}"
+        username: "Ansible"
+        color: good
+        attachments:
+          - text: "Job Summary"
+            color: "good"
+            fields:
+              - title: "Environment"
+                value: "{{ env_name }}"
+                short: true
+              - title: "Version"
+                value: "{{ app_version }}"
+                short: true
+              - title: "Job Name"
+                value: "{{job_name}}"
+                short: true
+              - title: "Args"
+                value: "{{ job_args | from_json | join(' ')}}"
+            ts: "{{ ansible_date_time.epoch }}"
+      delegate_to: localhost
+  rescue:
+    - name: Send to Slack (failure)
+      when: slack_notification
+      community.general.slack:
+        token: "{{ setup.SLACK_OAUTH }}"
+        msg: |
+          :x: *Job "{{ job_name }} failed to start*
+          Error: {{ ansible_failed_result.msg | default('Unknown error') }}
+        attachments:
+          - text: "Job Summary"
+            color: "good"
+            fields:
+              - title: "Environment"
+                value: "{{ env_name }}"
+                short: true
+              - title: "Version"
+                value: "{{ app_version }}"
+                short: true
+              - title: "Job Name"
+                value: "{{job_name}}"
+                short: true
+              - title: "Args"
+                value: "{{ job_args | from_json | join(' ')}}"
+                short: true
+            ts: "{{ ansible_date_time.epoch }}"
+        channel: "{{ slack_channel }}"
+        username: "Ansible"
+        color: danger
+      delegate_to: localhost

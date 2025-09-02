@@ -2,9 +2,9 @@
 set -euo pipefail
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly ANSIBLE_DIR="${SCRIPT_DIR}/../../ansible"
-readonly HABILITATIONS_FILE="${ANSIBLE_DIR}/roles/setup/vars/main/habilitations.yml"
-readonly VAULT_PASSWORD_FILE="${ANSIBLE_DIR}/.vault-password.gpg"
+readonly VAULT_DIR="${SCRIPT_DIR}/../../vault"
+readonly HABILITATIONS_FILE="${VAULT_DIR}/habilitations.yml"
+readonly VAULT_PASSWORD_FILE="${VAULT_DIR}/.vault-password.gpg"
 
 function create_password_file() {
   local recipients=()

@@ -1,0 +1,22 @@
+---
+- name: Remove Kubernetes deployment
+  when:
+    delete_namespace
+  block:
+    - name: Uninstall the application
+      kubernetes.core.helm:
+        name: "{{ app_name }}"
+        release_namespace: "{{ app_namespace }}"
+        state: absent
+        wait: "{{ helm_wait }}"
+        wait_timeout: "{{ helm_timeout }}"
+        kubeconfig: "{{ temp_kubeconfig.path }}"
+    - name: Delete namespace
+      kubernetes.core.k8s:
+        name: "{{ app_namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: absent
+        wait: true
+        wait_timeout: 300
+        kubeconfig: "{{ temp_kubeconfig.path }}"

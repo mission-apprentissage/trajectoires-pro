@@ -1,0 +1,76 @@
+{{- if .Values.metabase.enable }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}-metabase
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+    component: metabase
+spec:
+  replicas: {{ .Values.metabase.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+      component: metabase
+  template:
+    metadata:
+      labels:
+        {{- include "app.selectorLabels" . | nindent 8 }}
+        component: metabase
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/metabase-configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/metabase-secret.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: metabase
+          image: metabase/metabase:v0.55.6
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: {{ .Values.metabase.service.targetPort }}
+              protocol: TCP
+          {{- if .Values.metabase.env }}
+          {{- $hasConfig := and .Values.metabase.env.config (kindIs "map" .Values.metabase.env.config) (gt (len .Values.metabase.env.config) 0) }}
+          {{- $hasSecrets := and .Values.metabase.env.secrets (kindIs "map" .Values.metabase.env.secrets) (gt (len .Values.metabase.env.secrets) 0) }}
+          {{- if or $hasConfig $hasSecrets }}
+          envFrom:
+            {{- if $hasConfig }}
+            - configMapRef:
+                name: {{ include "app.fullname" . }}-metabase-config
+            {{- end }}
+            {{- if $hasSecrets }}
+            - secretRef:
+                name: {{ include "app.fullname" . }}-metabase-secret
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.metabase.persistence.enabled }}
+          volumeMounts:
+            - name: metabase-data
+              mountPath: /data
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.metabase.resources | nindent 12 }}
+      {{- if .Values.metabase.persistence.enabled }}
+      volumes:
+        - name: metabase-data
+          persistentVolumeClaim:
+            claimName: {{ include "app.fullname" . }}-metabase-pvc
+      {{- end }}
+{{- end }}

@@ -1,22 +1,51 @@
-- name: Disable cron to monitor the app and restart it automatically
-  when: monitor == "true"
-  ansible.builtin.cron:
-      name: "monitor-app"
-      disabled: true
-      job: "bash /opt/trajectoires-pro/monitor-app.sh {{dns_name}} >> /var/log/cron.log 2>&1"
+---
+- name: Building and deploying your application
+  block:
+    - name: Setup environment
+      include_tasks: setup.yml
 
+    - name: Deploy to Kubernetes
+      include_tasks: deploy.yml
 
-- name: "Deploy branch {{ git_revision }}"
-  shell: "sudo /opt/trajectoires-pro/start-app.sh {{ git_revision }}"
-  register: output
+    - name: Send to Slack (success)
+      when: slack_notification
+      community.general.slack:
+        token: "{{ setup.SLACK_OAUTH }}"
+        msg: |
+          :white_check_mark: *Deployment SUCCESSFUL!*
+          
+          *Details:*
+          • Completed: {{ ansible_date_time.iso8601 }}
+          • Cleaned by: {{ ansible_user | default('ansible') }}
+        channel: "{{ slack_channel }}"
+        username: "Ansible"
+        color: good
+        attachments:
+          - text: "Cleaning Summary"
+            color: "good"
+            fields:
+              - title: "Environment"
+                value: "{{ env_name }}"
+                short: true
+              - title: "Version"
+                value: "{{ app_version }}"
+                short: true
+            ts: "{{ ansible_date_time.epoch }}"
+      delegate_to: localhost
 
-- name: Enable cron to monitor the app and restart it automatically
-  when: monitor == "true"
-  ansible.builtin.cron:
-    name: "monitor-app"
-    job: "bash /opt/trajectoires-pro/monitor-app.sh {{dns_name}} >> /var/log/cron.log 2>&1"
-    disabled: false
+  rescue:
+    - name: Send to Slack (failure)
+      when: slack_notification
+      community.general.slack:
+        token: "{{ setup.SLACK_OAUTH }}"
+        msg: |
+          :x: *Deployment {{ app_version }} failed on {{ env_name }}*
+          Error: {{ ansible_failed_result.msg | default('Unknown error') }}
+        channel: "{{ slack_channel }}"
+        username: "Ansible"
+        color: danger
+      delegate_to: localhost
 
-
-- debug:
-    var: output
+  always:
+    - name: Cleanup resources
+      include_tasks: cleanup.yml

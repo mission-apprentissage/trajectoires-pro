@@ -2,12 +2,12 @@
 set -euo pipefail
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly ANSIBLE_DIR="${SCRIPT_DIR}/../../ansible"
-readonly VAULT_FILE="${ANSIBLE_DIR}/roles/setup/vars/main/vault.yml"
+readonly VAULT_DIR="${SCRIPT_DIR}/../../vault"
+readonly VAULT_FILE="${VAULT_DIR}/vault.yml"
 
 function renew() {
-  local previous_vault_password_file="${ANSIBLE_DIR}/.vault-password-previous.gpg"
-  local vault_password_file="${ANSIBLE_DIR}/.vault-password.gpg"
+  local previous_vault_password_file="${VAULT_DIR}/.vault-password-previous.gpg"
+  local vault_password_file="${VAULT_DIR}/.vault-password.gpg"
 
   echo "Backuping previous vault password..."
   mv "${vault_password_file}" "${previous_vault_password_file}"

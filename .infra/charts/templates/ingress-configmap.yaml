@@ -1,0 +1,29 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-custom-headers
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+data:
+  # Headers de sécurité
+  X-Frame-Options: "SAMEORIGIN"
+  X-Content-Type-Options: "nosniff"
+  X-XSS-Protection: "1; mode=block"
+  Referrer-Policy: "strict-origin-when-cross-origin"
+  Strict-Transport-Security: "max-age=31536000; includeSubDomains"
+  Content-Security-Policy: "{{ .Values.ingress.headers.CSP | default "default-src 'self'; script-src 'self' 'unsafe-inline'" }}"
+  
+  # Headers conditionnels selon environnement
+  {{- if eq .Values.environment "production" }}
+  X-Robots-Tag: "all"
+  {{- else }}
+  X-Robots-Tag: "noindex, nofollow, nosnippet, noarchive"
+  {{- end }}
+  
+  # Headers informatifs
+  X-Environment: "{{ .Values.environment | default "unknown" }}"
+
+---
+{{- end }}

@@ -1,0 +1,19 @@
+---
+- name: Create environment files
+  block:
+    - name: Create temporary kubeconfig
+      tempfile:
+        state: file
+        suffix: .kubeconfig
+      register: temp_kubeconfig
+
+    - name: Decode kubeconfig
+      copy:
+        content: "{{ setup.KUBECONFIG | b64decode }}"
+        dest: "{{ temp_kubeconfig.path }}"
+        mode: '0600'
+      no_log: true
+
+    - name: Register cleanup items
+      set_fact:
+        cleanup_files: "{{ cleanup_files | default([]) + [temp_kubeconfig.path] }}"

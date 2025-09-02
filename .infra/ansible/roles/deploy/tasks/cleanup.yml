@@ -1,0 +1,7 @@
+---
+- name: Remove temporary files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ cleanup_files | default([]) }}"
+  ignore_errors: true

@@ -12,17 +12,12 @@
     bake_file: "{{ BAKE_FILE | default(base_dir + '/docker-bake.json') }}"
     bake_targets: "{{ BAKE_TARGETS | default(['default']) }}"
     push_images: "{{ PUSH_IMAGES | default(true) }}"
-    helm_timeout: "600s"
-    helm_wait: true
 
     app_name: "exposition"
     # Clean app version to use it in namespace, tag and domain
     app_version: "{{ APP_VERSION | lower | regex_replace('[^a-z0-9-]', '-') | regex_replace('^-+', '') | regex_replace('-+$', '') | truncate(63, True, '') }}"
-    with_metabase: "{{ (env_type != 'dev') | bool }}"
-    server:
-      port: 5000
 
     slack_notification: true
     slack_channel: "#exposition-ij-alerting"
   roles:
-    - deploy
+    - build

@@ -1,0 +1,23 @@
+---
+- name: Remove Docker images
+  block:
+    - name: Remove image from OVH registry
+      shell: |
+        set -e
+
+        DIGEST=$(curl -s -I \
+          -H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+          -u "{{ docker_username }}:{{ docker_password }}" \
+          "https://{{ docker_registry }}/v2{{docker_registry_path}}{{ app_name }}-{{ item }}/manifests/{{ env_type }}-{{ app_version }}" | \
+          awk '/[Dd]ocker-[Cc]ontent-[Dd]igest/ {gsub(/\r/,""); print $2}')
+        
+        if [ -n "$DIGEST" ] && [[ "$DIGEST" == sha256:* ]]; then
+          curl -X DELETE \
+            -u "{{ docker_username }}:{{ docker_password }}" \
+            -w "HTTP Response: %{http_code}\n" \
+            "https://{{ docker_registry }}/v2{{docker_registry_path}}{{ app_name }}-{{ item }}/manifests/$DIGEST"
+        else
+          echo "Could not extract valid digest: '$DIGEST'"
+        fi
+      loop: "{{ image_to_remove }}"
+      no_log: true

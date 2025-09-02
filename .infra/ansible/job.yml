@@ -1,19 +1,15 @@
 ---
-
-- hosts: all
+- name: Launch server job
+  hosts: all
+  roles:
+    - job
   vars:
     app_name: "exposition"
     app_version: "{{ APP_VERSION | lower | regex_replace('[^a-z0-9-]', '-') | regex_replace('^-+', '') | regex_replace('-+$', '') | truncate(63, True, '') }}"
-    image_to_remove: ["server"]
+    command: ["yarn", "cli"]
+    job_args: ""
     docker_registry: "{{ setup.DOCKER_REGISTRY}}"
     docker_registry_path: "{{ setup.DOCKER_REGISTRY_PATH | default('/') }}"
-    docker_username: "{{ setup.DOCKER_USERNAME }}"
-    docker_password: "{{ setup.DOCKER_PASSWORD }}"
-    helm_timeout: "600s"
-    helm_wait: true
-    delete_namespace: "{{ (env_type == 'dev') | bool }}"
-
+    timeout: 86400  # 24 heures
     slack_notification: true
     slack_channel: "#exposition-ij-alerting"
-  roles:
-    - clean

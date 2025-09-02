@@ -1,0 +1,16 @@
+{{- if .Values.metabase.enable }}
+{{- $hasConfig := and .Values.metabase.env.config (kindIs "map" .Values.metabase.env.config) (gt (len .Values.metabase.env.config) 0) }}
+{{- if $hasConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-metabase-config
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+    component: metabase
+data:
+{{- range $key, $value := .Values.metabase.env.config }}
+  {{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
