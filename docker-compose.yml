@@ -42,7 +42,7 @@ services:
       - TRAJECTOIRES_PRO_LOG_DESTINATIONS=stdout,mongodb
 
   mongodb:
-    image: mongo:5.0.6-focal
+    image: mongo:7.0.23-jammy
     container_name: trajectoires_pro_mongodb
     mem_limit: 2g
     restart: unless-stopped
