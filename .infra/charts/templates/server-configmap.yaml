@@ -1,0 +1,16 @@
+{{- if and .Values.env .Values.server.env.config }}
+{{- if kindIs "map" .Values.server.env.config }}
+{{- if gt (len .Values.server.env.config) 0 }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-server-config
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+data:
+  {{- range $key, $value := .Values.server.env.config }}
+  {{ $key }}: {{ $value | toString | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

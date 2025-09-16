@@ -1,0 +1,19 @@
+{{- if .Values.metabase.enable }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.fullname" . }}-metabase
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+    component: metabase
+spec:
+  type: {{ .Values.metabase.service.type }}
+  ports:
+    - port: {{ .Values.metabase.service.port }}
+      targetPort: {{ .Values.metabase.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "app.selectorLabels" . | nindent 4 }}
+    component: metabase
+{{- end }}

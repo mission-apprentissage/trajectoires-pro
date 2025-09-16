@@ -213,7 +213,7 @@ describe("repositories", () => {
 
       describe("Quand les diplomes sont différents", async () => {
         it("Retourne les stats pour une filière", async () => {
-          insertCertificationsStats({
+          await insertCertificationsStats({
             code_certification: "23830024201",
             code_formation_diplome: "87654321",
             filiere: "pro",
@@ -227,7 +227,7 @@ describe("repositories", () => {
             nb_en_emploi_6_mois: 45,
           });
 
-          insertCertificationsStats({
+          await insertCertificationsStats({
             code_certification: "23830024202",
             code_formation_diplome: "87654321",
             filiere: "pro",

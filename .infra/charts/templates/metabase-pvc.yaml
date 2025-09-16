@@ -1,0 +1,23 @@
+{{- if .Values.metabase.enable }}
+{{- if .Values.metabase.persistence.enabled }}
+{{- if not (lookup "v1" "PersistentVolumeClaim" .Release.Namespace (printf "%s-metabase-pvc" (include "app.fullname" .))) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "app.fullname" . }}-metabase-pvc
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    component: metabase
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.metabase.persistence.size }}
+  {{- if .Values.metabase.persistence.storageClass }}
+  storageClassName: {{ .Values.metabase.persistence.storageClass }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

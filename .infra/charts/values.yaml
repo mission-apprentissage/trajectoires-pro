@@ -1,0 +1,90 @@
+environment: "recette"
+
+image:
+  repository: ""  # Sera défini par Ansible
+  tag: ""         # Sera défini par Ansible
+  pullPolicy: Always
+
+# Secrets pour registry privé
+imagePullSecrets:
+  - name: regcred
+
+imageCredentials:
+  registry: ""
+  username: ""
+  password: ""
+  
+server:
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 5000
+    targetPort: 5000
+  env:
+    config: {}    # Variables non-sensibles
+    secrets: {}   # Variables sensibles
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: 256m
+      memory: 512Mi
+
+metabase:
+  enable: false
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 3000  # Port par défaut de Metabase
+    targetPort: 3000
+  env:
+    config:
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: 125m
+      memory: 512Mi
+  persistence:
+    enabled: false # We use postgres for recette and production
+    size: 10Gi
+    storageClass: ""
+
+ingress:
+  enabled: true
+  annotations:
+    # Additional nginx-specific annotations
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "32k"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "300"
+    nginx.ingress.kubernetes.io/upstream-fail-timeout: "0"
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
+
+    # CORS settings if needed
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+  headers:
+    CSP: "default-src 'self' https://img.notionusercontent.com/ https://www.notion.so/ https://plausible.io/ https://openmaptiles.github.io/ https://*.inserjeunes.beta.gouv.fr/ https://*.beta.gouv.fr/ https://*.data.gouv.fr/ 'unsafe-inline' data: blob:;"
+  # Routing configuration
+  server:
+    path: /api
+    pathType: Prefix
+  
+  # Host configuration
+  hosts:
+    - host: ""
+  
+  # TLS/HTTPS configuration
+  tls:
+    - secretName: app-tls
+      hosts:
+        - ""
+  
+  certManager:
+    enabled: true
+    clusterIssuer: letsencrypt-prod
+

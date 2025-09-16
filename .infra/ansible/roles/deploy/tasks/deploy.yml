@@ -1,0 +1,54 @@
+---
+- name: Kubernetes deployment
+  block:
+    - name: Deploy the application on the cluster
+      no_log: true
+      kubernetes.core.helm:
+        name: "{{ app_name }}"
+        chart_ref: "{{ infra_dir }}/charts"
+        release_namespace: "{{ app_namespace }}"
+        create_namespace: true
+        force: true
+        wait: "{{ helm_wait }}"
+        timeout: "{{ helm_timeout }}"
+        kubeconfig: "{{ temp_kubeconfig.path }}"
+        values:
+          environment: "{{ env_type }}"
+          image:
+            repository: "{{ docker_registry }}{{ docker_registry_path }}{{ app_name }}"
+            tag: "{{ env_type }}-{{ app_version }}"
+          server:
+            env:
+              secrets: "{{ env_vars.env.server }}"
+            replicaCount: "1"
+            service:
+              port: "{{ server.port }}"
+          metabase:
+            enable: "{{ with_metabase }}"
+            env:
+              secrets: "{{ env_vars.env.metabase }}"
+              config:
+                MB_SITE_URL: "https://{{ dns_name }}/metabase"
+          imageCredentials:
+            registry: "{{ docker_registry }}"
+            username:  "{{ docker_username }}"
+            password: "{{ docker_password }}"
+          ingress:
+            hosts:
+              - host: "{{ dns_name }}"
+            tls:
+              - secretName: app-tls
+                hosts:
+                  - "{{ dns_name }}"
+
+    - name: Wait for server readiness
+      kubernetes.core.k8s_info:
+        api_version: apps/v1
+        kind: Deployment
+        name: "server"
+        namespace: "{{ app_namespace }}"
+        wait_condition:
+          type: Available
+          status: "True"
+        wait_timeout: 300
+        kubeconfig: "{{ temp_kubeconfig.path }}"

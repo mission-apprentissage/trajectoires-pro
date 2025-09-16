@@ -1,0 +1,36 @@
+{
+    "variable": {
+        "APP_NAME": {
+            "default": "exposition"
+        },
+        "TAG": {
+            "default": "latest"
+        },
+        "REGISTRY": {},
+        "REGISTRY_PATH": {},
+        "TRAJECTOIRES_PRO_ENV": {},
+        "BASE_PATH": {}
+    },
+    "group": {
+        "default": {
+            "targets": [
+                "server"
+            ]
+        }
+    },
+    "target": {
+        "server": {
+            "context": "server",
+            "dockerfile": "Dockerfile",
+            "tags": [
+                "${REGISTRY}${REGISTRY_PATH}${APP_NAME}-server:${TAG}"
+            ],
+            "labels": {
+                "org.opencontainers.image.description": "Server"
+            },
+            "args": {
+                "TRAJECTOIRES_PRO_ENV": "${TRAJECTOIRES_PRO_ENV}"
+            }
+        }
+    }
+}
