@@ -39,17 +39,6 @@ spec:
   {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
-    - host: {{ printf "api.%s" .host | quote }}
-      http:
-        paths:
-          # API/Server alternative
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "app.fullname" $ }}-server
-                port:
-                  number: {{ $.Values.server.service.port }}
     - host: {{ .host | quote }}
       http:
         paths:
