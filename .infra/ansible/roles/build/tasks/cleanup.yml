@@ -1,0 +1,13 @@
+---
+- name: Docker logout
+  docker_login:
+    registry_url: "{{ docker_registry }}"
+    state: absent
+  ignore_errors: true
+
+- name: Remove temporary files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ cleanup_files | default([]) }}"
+  ignore_errors: true

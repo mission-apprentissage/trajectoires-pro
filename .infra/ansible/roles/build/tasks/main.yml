@@ -1,0 +1,49 @@
+---
+- name: Building and deploying your application
+  block:
+    - name: Setup environment
+      include_tasks: setup.yml
+
+    - name: Build and push images
+      include_tasks: build.yml
+
+    - name: Send to Slack (success)
+      when: slack_notification
+      community.general.slack:
+        token: "{{ setup.SLACK_OAUTH }}"
+        msg: |
+          :white_check_mark: *Application build and push SUCCESSFUL!*
+          
+          *Details:*
+          • Completed: {{ ansible_date_time.iso8601 }}
+          • Deployed by: {{ ansible_user | default('ansible') }}
+        channel: "{{ slack_channel }}"
+        username: "Ansible"
+        color: good
+        attachments:
+          - text: "Deployment Summary"
+            color: "good"
+            fields:
+              - title: "Environment"
+                value: "{{ env_name }}"
+                short: true
+              - title: "Version"
+                value: "{{ app_version }}"
+                short: true
+            ts: "{{ ansible_date_time.epoch }}"
+      delegate_to: localhost
+  rescue:
+      - name: Send to Slack (failure)
+        when: slack_notification
+        community.general.slack:
+          token: "{{ setup.SLACK_OAUTH }}"
+          msg: |
+            :x: *Build {{ app_version }}  failed on {{ env_name }}*
+            Error: {{ ansible_failed_result.msg | default('Unknown error') }}
+          channel: "{{ slack_channel }}"
+          username: "Ansible"
+          color: danger
+        delegate_to: localhost
+  always:
+    - name: Cleanup resources
+      include_tasks: cleanup.yml

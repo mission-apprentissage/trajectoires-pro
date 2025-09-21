@@ -1,0 +1,54 @@
+name: Remove the application from dev environment
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main, develop]
+  delete:
+  workflow_dispatch:
+    inputs:
+      env_name:
+        description: 'Merci de préciser un environnement (ex. recette ou production)'
+        required: true
+        type: choice
+        options:
+          - recette
+          - production
+        default: 'recette'
+
+jobs:
+  remove-app:
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: ${{ github.event.inputs.env_name || 'dev' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - uses: azure/setup-helm@v4.3.0
+        id: install
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Ansible
+        shell: bash
+        run: |
+          # sudo apt-get update
+          # sudo apt-get install -y ansible
+          #python3 -m pip install --upgrade pip
+          pip install ansible-core
+          pip install requests
+          pip install docker
+          pip install kubernetes
+          pip install PyYAML
+      - name: Create vault password file
+        run: echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .vault_pass.txt
+      - name: Set env
+        run: echo "VAULT_PASSWORD_FILE=.vault_pass.txt" >> $GITHUB_ENV
+      - name: Remove application with ansible
+        run: |
+          bash .infra/scripts/remove-app.sh \
+            "$ENVIRONMENT" \
+            "${{ github.head_ref || github.ref_name}}"
