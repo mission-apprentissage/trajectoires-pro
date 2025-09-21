@@ -1,0 +1,54 @@
+name: Deploying the application
+
+on:
+  workflow_dispatch:
+    inputs:
+      env_name:
+        description: 'Merci de préciser un environnement (ex. dev, recette ou production)'
+        required: true
+        type: choice
+        options:
+          - dev
+          - recette
+          - production
+        default: 'dev'
+      image_version:
+        description: Version de l'image docker à déployer (sans le nom de l'environnement)
+        type: string
+        required: true
+
+jobs:
+  deploy-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - uses: azure/setup-helm@v4.3.0
+        id: install
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Ansible
+        shell: bash
+        run: |
+          # sudo apt-get update
+          # sudo apt-get install -y ansible
+          #python3 -m pip install --upgrade pip
+          pip install ansible-core
+          pip install requests
+          pip install docker
+          pip install kubernetes
+          pip install PyYAML
+      - name: Create vault password file
+        run: echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .vault_pass.txt
+      - name: Set env
+        run: echo "VAULT_PASSWORD_FILE=.vault_pass.txt" >> $GITHUB_ENV
+      - name: Deploy with ansible
+        run: |
+          bash .infra/scripts/deploy-app.sh \
+            "${{ github.event.inputs.env_name || 'dev' }}" \
+            "${{ github.event.inputs.image_version }}"
+
