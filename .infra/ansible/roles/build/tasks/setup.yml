@@ -1,0 +1,42 @@
+---
+- name: Create environment files
+  block:
+    - name: Disable deprecation warnings
+      ansible.builtin.set_fact:
+        ansible_deprecation_warnings: false
+      run_once: true
+
+    - name: Load default env
+      include_vars:
+        file: "{{ infra_dir }}/.env.default.yaml"
+        name: env_default
+
+    - name: Create .env.yaml
+      template:
+        src: "{{infra_dir}}/.env.yaml.tpl"
+        dest: "{{infra_dir}}/.env.yaml"
+      vars:
+        env_config: "{{ 
+            (env_default.default | default({})) | 
+            combine(env_default[env_name] | default({}), recursive=True) |
+            combine(vault['default'] | default({}), recursive=True) |
+            combine(vault[env_name] | default({}), recursive=True) 
+          }}"
+      no_log: true
+    - name: Load .env.yaml
+      include_vars:
+        file: "{{infra_dir}}/.env.yaml"
+        name: env_vars
+      no_log: true
+
+    - name: Create .env file
+      template:
+        src: "{{infra_dir}}/.env.tpl"
+        dest: "{{infra_dir}}/.env"
+      vars:
+        env_variables: "{{ env_vars.env.server }}"
+      no_log: true
+
+    - name: Register cleanup items
+      set_fact:
+        cleanup_files: "{{ cleanup_files | default([]) + [infra_dir + '/.env', infra_dir + '/.env.yaml'] }}"

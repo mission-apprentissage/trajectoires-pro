@@ -1,0 +1,44 @@
+---
+- name: Build and push images
+  block:
+    - name: Log into private Docker registry
+      docker_login:
+        registry_url: "{{ docker_registry }}"
+        username: "{{ docker_username }}"
+        password: "{{ docker_password }}"
+        reauthorize: true
+      no_log: true
+      
+    - name: Build and push with Docker Bake
+      args:
+        executable: /bin/bash
+      shell: |
+        set -euo pipefail
+        set -a
+        source {{infra_dir}}/.env
+        set +a
+
+        cd {{base_dir}}
+        
+        docker buildx bake \
+          --file {{ bake_file }} \
+          {% if push_images %}--push{% endif %} \
+          {% for target in bake_targets %}{{ target }}{% if not loop.last %} {% endif %}{% endfor %}
+
+        cd -
+      environment:
+        APP_NAME: "{{ app_name }}"
+        REGISTRY: "{{ docker_registry }}"
+        REGISTRY_PATH: "{{ docker_registry_path }}"
+        TAG: "{{ env_type }}-{{ app_version }}"
+        BUILD_DATE: "{{ ansible_date_time.iso8601 }}"
+        VCS_REF: "{{ git_commit | default('unknown') }}"
+      register: bake_result
+      
+    - name: Display build result
+      debug:
+        msg: |
+          Docker Bake completed successfully:
+          - Targets: {{ bake_targets | join(', ') }}
+          - Registry: {{ docker_registry }}
+          {% if push_images %}- Images pushed to registry{% endif %}
