@@ -13,8 +13,8 @@ L’API Exposition InserJeunes permet **la récupération des [données InserJeu
 
 Les diverses routes permettent de récupérer ces données : 
 
-- pour une **formation / certification,** à partir d’un code MEFSTAT11, pour la voie scolaire, ou d’un code formation diplôme (CFD), pour la voie apprentissage.
-- pour une **formation / certification au sein d’un établissement,** à partir d’un code MEFSTAT11 ou CFD et d’un code UAI (Unité Administrative Immatriculée).
+- pour une **formation / certification,** à partir d’un code MEFSTAT11, pour la voie scolaire, ou d’un code formation diplôme (CFD), pour la voie apprentissage ou d'un code SISE, pour le supérieur.
+- pour une **formation / certification au sein d’un établissement,** à partir d’un code MEFSTAT11, CFD ou SISE et d’un code UAI (Unité Administrative Immatriculée).
 
 L’API permet en outre de récupérer plusieurs de ces éléments à la fois, et propose divers filtres, par exemple pour récupérer les données à la maille régionale ou académique.
 
