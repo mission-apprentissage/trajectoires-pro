@@ -1,0 +1,2282 @@
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='1957' height='2200'
+  viewBox='0 0 1957 2200'>
+  <script type='text/ecmascript'>
+    <![CDATA[
+    function hghl(el) { for ( var i in el ){ var elem = document.getElementById(el[i]); if ( elem != null ) elem.setAttribute('class','highlight');  }  }
+  function uhghl(el) { for ( var i in el ){ var elem = document.getElementById(el[i]); if ( elem != null ) elem.setAttribute('class','unhighlight'); }  } 
+    ]]>
+  </script>
+
+  <style type='text/css'>
+    text {
+      fill: #6e798a;
+      font-weight: normal;
+      stroke: #2a2b2c;
+      stroke-width: .1px;
+      font-family: Candara, 'Segoe UI', Dialog;
+      font-size: 13px;
+    }
+
+    text.tableHeader {
+      fill: #576b57;
+      font-weight: normal;
+      stroke: #2a2b2c;
+      stroke-width: .1px;
+      font-family: Candara, 'Segoe UI', Dialog;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    a text:hover {
+      font-weight: 500;
+    }
+
+    text.highlight {
+      font-weight: 500;
+    }
+
+    text.white {
+      fill: #ffffff;
+    }
+
+    text.colType {
+      fill: #bac1cb;
+    }
+
+    text.relName {
+      fill: #9c9a9a;
+      stroke-width: 0;
+    }
+
+    text.dataType {
+      stroke: 0;
+      font-size: 12px;
+      text-anchor: end;
+    }
+
+    text.legendTitle {
+      fill: #2b3b64;
+      font-weight: 500;
+    }
+
+    text.legendSubTitle {
+      fill: #616161;
+      font-size: 12px;
+    }
+
+    path,
+    circle {
+      stroke: #b2b3b4;
+      stroke-width: 1.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .filled {
+      fill: #7f7971;
+    }
+
+    path.virtual {
+      stroke: #71527b;
+    }
+
+    path.logo {
+      fill: #fbeac0;
+      fill-opacity: 1;
+      stroke-width: 0.3;
+      stroke: #222222;
+    }
+
+    path.dotted {
+      stroke-dasharray: 3, 3;
+    }
+
+    path.unhighlight {
+      stroke-width: 12;
+      opacity: 0;
+      pointer-events: all;
+    }
+
+    path.highlight {
+      stroke-width: 2;
+      stroke: #061e3f;
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    path.line {
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    rect.entity {
+      fill: #fafafb;
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+      filter: url(#shadow);
+    }
+
+    line.delim {
+      stroke-width: 1px;
+      shape-rendering: crispEdges;
+    }
+
+    text.callout {
+      fill: #201a10;
+      font-family: Candara, 'Segoe UI', Dialog;
+      font-size: 14px;
+    }
+
+    rect.callout {
+      fill: url(#calloutGradient);
+      stroke-width: 1px;
+      stroke: #d0cec3;
+    }
+
+    rect.shape {
+      stroke: #bebdbd;
+      stroke-width: 0.5;
+    }
+
+    rect.legend {
+      fill: url(#legendGradient);
+      stroke-width: 1px;
+      stroke: #d6dbe4;
+    }
+
+    text.grp {
+      fill: #b1b1b1;
+    }
+
+    rect.grp {
+      stroke: #aee1ab;
+      stroke-width: 2;
+      opacity: 0.7;
+    }
+
+    path.bgPattern {
+      fill: none;
+      stroke-width: 0.6;
+      stroke: #e5e9ee;
+    }
+
+    path.eval {
+      fill: #efefef;
+      fill-opacity: 1;
+      stroke-width: 0.6;
+      stroke: #e9e9e9;
+    }
+
+    rect.palpable {
+      fill: #fffbe5;
+    }
+  </style>
+  <defs>
+    <pattern id="layoutBgA" width="60" height="34.64" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="60" height="34.64" fill="#eaecf1" />
+    </pattern>
+    <pattern id='layoutBgEval' width='300' height='300' x='0' y='0' patternUnits="userSpaceOnUse">
+      <g transform='scale(1.5)'>
+        <path class='eval'
+          d='m 62.011835,91.267143 c 3.536475,3.175214 2.262669,8.705999 -1.637711,11.015197 -3.594697,5.8423 -6.34682,-2.892623 -9.715478,-4.653898 -5.609222,-2.838926 2.050802,-6.680123 4.77004,-8.319046 2.334696,-0.724067 4.935143,0.312302 6.583149,1.957747 z m -2.720492,2.538595 c -2.698397,-3.517732 -9.282815,1.269287 -3.69635,3.568637 2.765331,5.605665 7.052809,-0.56184 3.69635,-3.568637 z' />
+        <path class='eval'
+          d='m 72.25864,84.624638 c 4.108046,3.143003 -0.737059,6.895259 -1.994918,8.323564 -3.586718,5.561143 -6.495079,-4.197379 -10.07759,-5.582178 -4.443422,-1.088878 1.349298,-7.249213 2.503526,-2.503449 2.464639,4.517161 2.304019,-3.70697 6.291113,-1.995914 1.280083,0.137865 2.410691,0.864819 3.277869,1.757977 z m -2.646109,2.323242 c -4.797162,-3.078383 -2.810517,6.305507 0.515161,1.990646 0.296432,-0.688582 0.01209,-1.493412 -0.515161,-1.990646 z' />
+        <path class='eval'
+          d='m 78.230641,79.436735 c 4.142121,3.027466 -2.020102,10.435276 -3.450543,5.477315 3.306312,-5.248112 -9.186019,-2.220094 -5.805994,-8.77679 -0.544141,-3.93011 6.797826,-2.102227 3.386015,0.245477 -0.181085,2.915838 4.637371,1.019311 5.870522,3.053982 z' />
+        <path class='eval'
+          d='m 82.744502,72.597397 c -4.901605,1.926521 1.146497,6.285555 2.559694,2.225783 6.21817,3.539297 -6.640186,8.416664 -7.590325,1.997457 -2.24365,-2.914883 4.026676,-10.148618 5.030631,-4.22324 z' />
+        <path class='eval'
+          d='m 90.727458,64.259158 c 1.583987,1.690029 3.321317,3.2696 4.81267,5.026353 -2.535706,6.849794 -6.445583,-5.918773 -8.388458,-0.167017 0.782768,2.03426 5.877405,3.752079 2.670979,5.711199 -3.315119,1.519161 -5.782422,-5.157931 -8.858893,-6.780537 -4.229842,-1.139816 1.510134,-7.074128 2.586227,-2.385939 3.141198,5.495193 1.840537,-5.598295 7.177489,-1.404062 z' />
+        <path class='eval'
+          d='m 99.622027,58.374253 c 1.493293,1.9548 -6.281936,7.024659 -0.885258,4.740447 0.386238,-4.434477 6.131941,-1.133173 2.175851,1.618005 -4.421491,6.12739 -13.666659,-3.151506 -7.058299,-7.136537 1.785129,-1.119329 4.348209,-0.743179 5.767706,0.778085 z m -2.900824,1.89746 c -3.608188,-2.208543 -2.280489,5.00803 -0.12563,0.329531 z' />
+        <path class='eval'
+          d='m 115.18023,50.570441 c -1.61703,5.201678 -4.6204,-0.364502 -7.01598,-1.749619 -4.40977,2.122562 4.89641,4.913939 1.89606,7.018157 -2.48061,3.877635 -4.11404,-4.060614 -7.01192,-2.6391 -1.76318,3.107252 7.28394,6.252304 0.87346,7.876177 -1.74515,-2.956649 -9.055498,-5.610518 -3.950378,-8.66062 1.696478,1.897023 1.770418,-5.43503 5.347308,-3.072411 -0.44014,-5.474701 6.11995,-4.950882 7.7846,-0.815355 0.69076,0.682329 1.39587,1.351469 2.07685,2.042771 z' />
+        <path class='eval'
+          d='m 120.54891,39.417125 c 2.50681,1.334124 4.80466,4.941837 0.75044,5.297362 -0.46414,1.89865 -5.25369,5.602652 -8.01742,1.815475 -3.87345,-2.809139 -0.0676,-7.603869 2.3036,-8.133924 1.6795,-3.853018 3.16703,-1.199465 4.96338,1.021087 z m -2.2464,2.175828 c -4.8049,-2.992167 -3.08987,6.380358 0.42374,2.036159 0.33052,-0.677508 0.12099,-1.525836 -0.42374,-2.036159 z' />
+        <path class='eval'
+          d='m 128.50836,24.06821 c -5.10403,3.035506 3.20535,6.383175 5.05938,9.450276 -0.91853,2.95886 -4.06493,3.650723 -5.34691,0.265618 -2.25715,-2.089033 -4.65672,-6.948595 -7.07024,-2.584686 -4.71758,-3.764394 3.81217,-5.812054 5.12382,-9.226328 0.75738,0.677487 1.38637,1.498638 2.23389,2.095175 z' />
+        <path class='eval'
+          d='m 137.14366,22.299812 c -3.09615,2.259885 0.71537,4.412454 1.99042,6.435866 -3.08975,5.080354 -5.91384,-2.98648 -8.92144,-4.094939 1.44369,-3.219573 3.3497,-1.335928 4.27156,-4.41058 0.97822,-0.894325 1.75044,1.871047 2.65946,2.069653 z' />
+        <path class='eval'
+          d='m 136.85093,14.890174 c 2.31562,5.283511 -7.17975,1.771993 -1.29675,-0.475107 l 0.7108,0.08973 z m 4.867,5.317354 c 2.56912,1.439678 4.26517,4.725219 0.30678,5.233637 -1.56592,-3.098864 -9.51683,-5.749448 -3.64502,-8.633714 1.17746,0.325095 2.15375,2.591149 3.33824,3.400077 z' />
+        <path class='eval'
+          d='m 149.95578,11.976423 c 2.50679,1.334142 4.80455,4.94192 0.75041,5.297394 -0.4641,1.898604 -5.25368,5.602645 -8.0174,1.81545 -3.87347,-2.80918 -0.0676,-7.603844 2.30366,-8.133968 1.67949,-3.8530525 3.16695,-1.1993573 4.96333,1.021124 z m -2.24641,2.175828 c -4.80489,-2.992177 -3.08986,6.380343 0.42374,2.036167 0.33055,-0.677518 0.121,-1.52585 -0.42374,-2.036167 z' />
+        <path class='eval'
+          d='m 153.26135,7.538431 c 2.60497,1.5799548 6.03999,5.944272 1.08117,6.050232 -2.53319,-3.231828 -7.20316,-6.4304525 -8.84748,-9.4582682 1.89121,-2.8664883 3.78452,-2.247699 5.38514,0.8929426 0.78017,0.8503859 1.57195,1.6911437 2.38118,2.5150667 z' />
+      </g>
+    </pattern>
+    <linearGradient id='legendGradient' x1='0%' y1='0%' x2='100%' y2='0%'>
+      <stop offset='0%' stop-color='#eef5fc' />
+      <stop offset='100%' stop-color='#f7fafe' />
+    </linearGradient>
+    <!-- https://norbat.de/svg-pattern-3d-webmuster/ -->
+    <linearGradient id='calloutGradient' x1='0%' y1='0%' x2='100%' y2='0%'>
+      <stop offset='0%' stop-color='#efeae1dd' />
+      <stop offset='100%' stop-color='#e8e9eadd' />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a0a0a0" flood-opacity="0.4" />
+    </filter>
+    <!--
+  <filter id='shadow2' width='120%' height='120%'>
+    <feOffset result='offOut' in='SourceGraphic' dx='0' dy='0' />
+    <feColorMatrix result='matrixOut' in='offOut'
+                   values='0.5 0 0 0 0 0 0.5 0 0 0 0 0 0.5 0 0 0 0 0 0.5 0' />
+    <feGaussianBlur result='blurOut' in='matrixOut' stdDeviation='3' />
+    <feBlend in='SourceGraphic' in2='blurOut' />
+  </filter>
+  -->
+    <filter id='fkShadow' height='130%'>
+      <feGaussianBlur in='SourceAlpha' stdDeviation='1.5' /> <!-- stdDeviation is how much to blur -->
+      <feOffset dx='1.2' dy='1.2' result='offsetblur' /> <!-- how much to offset -->
+      <feMerge>
+        <feMergeNode /> <!-- this contains the offset blurred image -->
+        <feMergeNode in='SourceGraphic' /> <!-- this contains the element that the filter is applied to -->
+      </feMerge>
+    </filter>
+    <symbol id='calloutArrowDown'>
+      <path d='M 0,0 L 8,12 L 16,0 z' style='fill:#f8f6d1;stroke:none; filter: url(#shadow);' />
+      <path d='M 0,0 L 8,12 L 16,0' style='stroke:#bebdbd; stroke-width:0.5;' />
+    </symbol>
+    <symbol id='calloutArrowUp'>
+      <path d='M 0,16 L 8,4 L 16,16 z' style='fill:#ffffff; stroke:none; filter: url(#shadow);' />
+      <path d='M 0,16 L 8,4 L 16,16' style='stroke:#bebdbd; stroke-width:0.5;' />
+    </symbol>
+    <symbol id='pk' width="13" height="13">
+      <g>
+        <path style='fill:#b4a717;stroke:#b4a717;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;'
+          d='M 9.3678877,3.5695485 C 9.1030218,3.2729386 9.0796382,2.7628519 9.3396185,2.4517097 9.5449651,2.1956495 9.9040386,2.0980533 10.199638,2.2169415 10.533525,2.3415459 10.775153,2.706942 10.750675,3.0842709 10.737029,3.3980003 10.541153,3.699122 10.258248,3.8066067 9.966649,3.9250429 9.6169668,3.8418805 9.4008073,3.6062324 9.3894892,3.5943518 9.3785264,3.582104 9.3678886,3.5695487 z M 11.226617,6.9916004 C 11.888137,6.3548946 12.293488,5.4172188 12.311087,4.442353 12.378144,2.7379364 11.248678,1.0541269 9.7322318,0.44767357 8.3887112,-0.1280313 6.7865012,0.26822889 5.8918395,1.4007929 5.080823,2.3839145 4.9336815,3.8452096 5.3635544,5.101615 L 4.3670905,5.315913 C 4.0664984,5.3682645 4.0967703,5.6316724 4.2574957,5.8208829 L 4.9124,6.5655244 4.1543436,7.2512357 3.2136002,7.2163506 3.1674775,8.5586827 2.0406832,8.5086512 1.5965306,8.9299953 1.5471661,10.179833 0.75616674,10.195223 0.2112857,10.758575 0.15354288,11.735988 0.07199052,12.765553 c 0.36440953,0.238225 0.79006967,0.195492 1.44938278,-0.02675 L 6.3033562,8.1282037 6.8217102,8.6765688 C 6.9985465,8.8799427 7.3003699,8.7497574 7.358381,8.5016252 L 7.4938877,7.5084164 c 0.8537488,0.3985387 1.8303125,0.4711541 2.6851793,0.1427713 0.393927,-0.1407258 0.746858,-0.3701772 1.04755,-0.6595873 z' />
+        <path d='M 6.8014948,6.3102123 0.15369063,13.024481 0.21560535,12.141962 6.0062342,6.2683782 z'
+          style='fill:#b4a717;fill-opacity:1;stroke:#b4a717;stroke-width:0.06912433;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:3.00300009' />
+      </g>
+    </symbol>
+    <symbol id='idx1' width="13" height="13">
+      <g transform='scale(0.99)'>
+        <rect width='4' height='4' x='7' y='1' style='fill:#ffff3f;stroke:#b48333;stroke-width:0.6;' ry='0.83' />
+        <rect width='4' height='4' x='1' y='7' style='fill:#ffff3f;stroke:#b48333;stroke-width:0.6;' ry='0.832' />
+        <rect width='4' height='4' x='7' y='7' style='fill:#ffff3f;stroke:#b48333;stroke-width:0.6;' ry='0.832' />
+      </g>
+    </symbol>
+    <symbol id='idx2' width="13" height="13">
+      <g transform='scale(0.99)'>
+        <rect width='4' height='3' x='6' y='1' style='fill:#7fc8e9;stroke:#2f6f8c;stroke-width:0.6;' ry='0.83' />
+        <rect width='7' height='3' x='3' y='6' style='fill:#7fc8e9;stroke:#2f6f8c;stroke-width:0.6;' ry='0.832' />
+      </g>
+    </symbol>
+    <symbol id='unq' width="13" height="13">
+      <g transform='scale(0.75)'>
+        <path style="fill:#999999;stroke:none;"
+          d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+        <text x='4' y='9' style='font-size:8px;fill:#999999;'>1</text>
+      </g>
+    </symbol>
+    <symbol id='idx' width="13" height="13">
+      <g transform='scale(0.75)'>
+        <path style="fill:#999999;stroke:none;"
+          d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+      </g>
+    </symbol>
+    <symbol id='fk' width="13" height="13">
+      <g transform='scale(0.87)'>
+        <path
+          style='fill:none;stroke:#5a72a8;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 1.1,11 1,5.3 C 1,3.6 1.6,3.3 2.9,3.3 l 7.9,0' />
+        <path
+          style='fill:#5a72a8;stroke:#5a72a8;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 6.3,0.8 11.3,3.4 6.3,5.6 Z' />
+      </g>
+    </symbol>
+    <symbol id='ref' width="13" height="13">
+      <g transform='scale(0.87)'>
+        <path
+          style='fill:none;stroke:#b4a717;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='m 10.9,11.2 0,-5.8 C 10,3.7 10,3 9,3 l -7.9,0' />
+        <path
+          style='fill:#b4a717;stroke:#b4a717;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 5.7,0.8 0.7,3.4 5.7,5.6 Z' />
+      </g>
+    </symbol>
+    <symbol id='flagBlue' width="16" height="16">
+      <g transform='scale(0.75)'>
+        <path style="fill:#b7d0f6;stroke:none;"
+          d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001" />
+      </g>
+    </symbol>
+    <symbol id='flagRed' width="16" height="16">
+      <g transform='scale(0.75)'>
+        <path style="fill:#f4a393;stroke:none;"
+          d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001" />
+      </g>
+    </symbol>
+    <symbol id='flagGreen' width="16" height="16">
+      <g transform='scale(0.75)'>
+        <path style="fill:#77ec8b;stroke:none;"
+          d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001" />
+      </g>
+    </symbol>
+    <symbol id='nn' width="3" height="3">
+      <path style='stroke:#da897b;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+        d='M 0,0 3,3 M 0,3 3,0 z' />
+    </symbol>
+    <symbol id='virtual' width="16" height="16">
+      <g transform='scale(0.99)'>
+        <path style='stroke:#5394b8;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z" />
+        <path style='stroke:#5394b8;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829" />
+        <path style='stroke:#5394b8;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z" />
+      </g>
+    </symbol>
+    <symbol id='shield' width="16" height="16">
+      <g transform='scale(0.99)'>
+        <path style='stroke:#5394b8;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56" />
+        <path style='stroke:#5394b8;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0" />
+      </g>
+    </symbol>
+    <symbol id='shield-slash' width="16" height="16">
+      <g transform='scale(0.99)'>
+        <path style='stroke:#5394b8;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d="M1.093 3.093c-.465 4.275.885 7.46 2.513 9.589a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7 7 0 0 0 1.048-.625 11.3 11.3 0 0 0 1.733-1.525l-.745-.745a10.3 10.3 0 0 1-1.578 1.392c-.346.244-.652.42-.893.533q-.18.085-.293.118a1 1 0 0 1-.101.025 1 1 0 0 1-.1-.025 2 2 0 0 1-.294-.118 6 6 0 0 1-.893-.533 10.7 10.7 0 0 1-2.287-2.233C3.053 10.228 1.879 7.594 2.06 4.06zM3.98 1.98l-.852-.852A59 59 0 0 1 5.072.559C6.157.266 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.483 3.626-.332 6.491-1.551 8.616l-.77-.77c1.042-1.915 1.72-4.469 1.29-7.702a.48.48 0 0 0-.33-.39c-.65-.213-1.75-.56-2.836-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524a50 50 0 0 0-1.357.39zm9.666 12.374-13-13 .708-.708 13 13z" />
+      </g>
+    </symbol>
+    <symbol id='view' width="13" height="13">
+      <g transform='scale(0.81)'>
+        <path style="fill:#999999;stroke:none;"
+          d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5z" />
+      </g>
+    </symbol>
+    <symbol id='logo' width="100" height="100" style="filter:url(#shadow);">
+      <path style='stroke:none;fill:#5d5d5d' d='M2.41,6.80 17.39,0.35 26.83,7.21 28.32,24.45 12.62,29.77 1.74,23.96' />
+      <path style='stroke:none;fill:#efefef' d='M 2.21, 6.45  9.36, 3.49  9.42,11.63  2.04,14.42' />
+      <path style='stroke:none;fill:#efefef' d='M10.23, 3.14 17.39, 0.17 17.68, 8.59 10.29,11.28' />
+      <path style='stroke:none;fill:#d2d2d2' d='M17.44, 0.17 21.59, 3.55 22.36,11.43 17.76,8.63' />
+      <path style='stroke:none;fill:#d2d2d2' d='M22.67, 4.33 26.98, 7.06 27.65,14.77 23.20,11.77' />
+      <path style='stroke:none;fill:#efefef' d='M1.89,15.58  9.39,12.65  9.48,21.14  1.57,24.10' />
+      <path style='stroke:none;fill:#17afde' d='M10.38,12.36 17.70, 9.51 18.11,18.37 10.32 20.96' />
+      <path style='stroke:none;fill:#1389ad' d='M17.73, 9.59 22.41,12.47 22.82,21.14 18.05,18.34' />
+      <path style='stroke:none;fill:#d2d2d2' d='M23.26,12.94 27.62,15.70 28.42,24.54 23.69,21.60' />
+      <path style='stroke:none;fill:#828282' d='M1.57,24.19  9.45,21.22 14.30,24.40  6.80,26.80' />
+      <path style='stroke:none;fill:#0c485c' d='M10.47,20.90 18.11,18.32 22.82,21.19 15.20,23.81' />
+      <path style='stroke:none;fill:#828282' d='M23.69,21.63 28.32,24.65 20.87,27.07 15.84,24.30' />
+      <path style='stroke:none;fill:#828282' d='M14.94,24.68 19.80,27.41 12.59,29.97  7.73,27.21' />
+    </symbol>
+    <symbol id="bulb" viewBox="0 0 24 24">
+      <rect x="10" y="16" width="4" height="6" rx="1.5" ry="1.5"
+        style='fill:#c4ae85;stroke:#c3ad44;stroke-width:0.3;stroke-linecap:round;stroke-linejoin:round;filter:url(#shadow);' />
+      <circle cx="12" cy="12" r="5" style='fill:#fff9c1;stroke:#c3ad44;stroke-width:0.3;filter:url(#shadow);' />
+    </symbol>
+  </defs>
+
+  <defs>
+    <marker id='ZeroMore' viewBox='0 0 9.50 9.50' refX='4.75' refY='4.75' markerWidth='9.50' markerHeight='9.50'
+      orient='auto-start-reverse'>
+      <path d='M 2.38,4.75 L 4.75,4.75 M 7.13,4.75 L 9.50,4.75 z' style='stroke-width:1;' />
+      <path d='M 9.50,0.00 L 4.75,4.75 L 9.50,9.50' style='stroke-width:1;' />
+      <path d='M 0.00,4.75 L 9.50,4.75 z' style='stroke-width:1;' />
+    </marker>
+    <marker id='ZeroOne' viewBox='0 0 9.50 9.50' refX='4.75' refY='4.75' markerWidth='9.50' markerHeight='9.50'
+      orient='auto-start-reverse'>
+      <path d='M 2.38,4.75 L 4.75,4.75 M 7.13,4.75 L 9.50,4.75 z' style='stroke-width:1;' />
+    </marker>
+    <marker id='OneMore' viewBox='0 0 9.50 9.50' refX='4.75' refY='4.75' markerWidth='9.50' markerHeight='9.50'
+      orient='auto-start-reverse'>
+      <path d='M 4.75,4.75 L 9.50,4.75 z' style='stroke-width:1;' />
+      <path d='M 9.50,0.00 L 4.75,4.75 L 9.50,9.50' style='stroke-width:1;' />
+      <path d='M 0.00,4.75 L 9.50,4.75 z' style='stroke-width:1;' />
+    </marker>
+    <marker id='One' viewBox='0 0 9.50 9.50' refX='4.75' refY='4.75' markerWidth='9.50' markerHeight='9.50'
+      orient='auto-start-reverse'>
+      <path d='M 4.75,4.75 L 9.50,4.75 z' style='stroke-width:1;' />
+    </marker>
+    <marker id='Range' viewBox='0 0 9.50 9.50' refX='4.75' refY='4.75' markerWidth='9.50' markerHeight='9.50'
+      orient='auto-start-reverse'>
+      <path d='M 4.75,4.75 L 9.50,4.75 z' style='stroke-width:1;' />
+    </marker>
+    <marker id='Arrow' viewBox='0 0 9.50 9.50' refX='4.75' refY='4.75' markerWidth='9.50' markerHeight='9.50'
+      orient='auto-start-reverse'>
+      <path d='M 4.750,4.750 L 9.500,4.750 L 4.750,0.000 L 9.500,4.750 L 4.750,9.500' style='stroke-width:1;' />
+    </marker>
+    <linearGradient id='ttl_BED3F4' x1='0%' y1='0%' x2='100%' y2='0%'>
+      <stop offset='0%' stop-color='#6C97DE' />
+      <stop offset='100%' stop-color='#A0B7DD' />
+    </linearGradient>
+    <linearGradient id='tbg_BED3F4' x1='0%' y1='0%' x2='100%' y2='0%'>
+      <stop offset='0%' stop-color='#E3E3E5' />
+      <stop offset='100%' stop-color='#F4F5F7' />
+    </linearGradient>
+  </defs>
+
+  <!-- == Shape Colors == -->
+  <!-- == Desktop == -->
+  <rect x='0' y='0' width='1957' height='2200' rx='10' ry='10'
+    style='fill:url(#layoutBgA); stroke:#ccc; stroke-width:.7px; cursor:move;' />
+  <rect x='1' y='1' width='1955' height='2198' rx='10' ry='10' style='fill:url(#layoutBgEval);' />
+
+  <g transform='translate(0,110)'>
+    <!-- == Group 'Exposition' == -->
+    <rect class='grp' style='fill:#FDFDFF;stroke:#AEC1E2' x='41' y='31' width='1875' height='1980' rx='8' ry='8' />
+    <text x='55' y='50' style='fill:#90A4C5;'>Exposition</text>
+    <!-- == Table 'formationsStats' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;formationsStats' class='entity' style='stroke:#F9FAFC' x='57' y='86'
+      width='323' height='1520' rx='4' ry='4' />
+    <rect x='57' y='86' width='323' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='57' y='90' width='323' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='361' y='95' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;formationsStats' x='166' y='108' class='tableHeader'
+      style='fill:#414348;'>formationsStats</text>
+    <title>Collection trajectoires-pro.formationsStats</title>
+    <use x='58' y='129' xlink:href='#nn' />
+    <use x='59' y='128' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;formationsStats&#46;&#95;id' x='80' y='142' class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='361' y='143' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='58' y='148' xlink:href='#nn' />
+    <use x='59' y='147' xlink:href='#unq'>
+      <title>&#x1F50D; uai_1 ( uai ) &#x1F50D; Unq uai_1_code_certification_1_millesime_1 ( uai, code_certification,
+        millesime ) </title>
+    </use><text id='trajectoires&#45;pro&#46;formationsStats&#46;uai' x='80' y='161'>uai</text>
+    <title>&#10697; uai
+      * string</title><text x='361' y='162' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='167' xlink:href='#nn' />
+    <use x='59' y='166' xlink:href='#unq'>
+      <title>&#x1F50D; Unq uai_1_code_certification_1_millesime_1 ( uai, code_certification, millesime ) &#x1F50D;
+        millesime_1 ( millesime ) </title>
+    </use><text id='trajectoires&#45;pro&#46;formationsStats&#46;millesime' x='80' y='180'>millesime</text>
+    <title>&#10697; millesime
+      * string</title><text x='361' y='181' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='186' xlink:href='#nn' />
+    <use x='59' y='185' xlink:href='#unq'>
+      <title>&#x1F50D; code_certification_1 ( code_certification ) &#x1F50D; Unq uai_1_code_certification_1_millesime_1
+        ( uai, code_certification, millesime ) </title>
+    </use><text id='trajectoires&#45;pro&#46;formationsStats&#46;code&#95;certification' x='80'
+      y='199'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      * string</title><text x='361' y='200' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='59' y='204' xlink:href='#idx'>
+      <title>&#x1F50D; code_formation_diplome_1 ( code_formation_diplome ) </title>
+    </use><text id='trajectoires&#45;pro&#46;formationsStats&#46;code&#95;formation&#95;diplome' x='80'
+      y='218'>code&#95;formation&#95;diplome</text>
+    <title>&#10697; code_formation_diplome
+      string</title><text x='361' y='219' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='224' xlink:href='#nn' /><text x='61' y='237'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;diplome' x='80' y='237'>diplome</text>
+    <title>&#10697; diplome
+      * object</title><text x='361' y='238' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='58' y='243' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;code' x='87'
+      y='256'>code</text>
+    <title>&#10697; code
+      * string</title><text x='368' y='257' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='262' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;libelle' x='87'
+      y='275'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='368' y='276' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='281' xlink:href='#nn' /><text x='61' y='294'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;region' x='80' y='294'>region</text>
+    <title>&#10697; region
+      * object</title><text x='361' y='295' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='58' y='300' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;code' x='87'
+      y='313'>code</text>
+    <title>&#10697; code
+      * string</title><text x='368' y='314' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;code&#95;region&#95;academique' x='87'
+      y='332'>code&#95;region&#95;academique</text>
+    <title>&#10697; code_region_academique
+      string</title><text x='368' y='333' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='338' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;nom' x='87'
+      y='351'>nom</text>
+    <title>&#10697; nom
+      * string</title><text x='368' y='352' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;nb&#95;annee&#95;term' x='80'
+      y='370'>nb&#95;annee&#95;term</text>
+    <title>&#10697; nb_annee_term
+      int</title><text x='361' y='371' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;nb&#95;en&#95;emploi&#95;24&#95;mois' x='80'
+      y='389'>nb&#95;en&#95;emploi&#95;24&#95;mois</text>
+    <title>&#10697; nb_en_emploi_24_mois
+      int</title><text x='361' y='390' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;nb&#95;en&#95;emploi&#95;18&#95;mois' x='80'
+      y='408'>nb&#95;en&#95;emploi&#95;18&#95;mois</text>
+    <title>&#10697; nb_en_emploi_18_mois
+      int</title><text x='361' y='409' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;nb&#95;en&#95;emploi&#95;12&#95;mois' x='80'
+      y='427'>nb&#95;en&#95;emploi&#95;12&#95;mois</text>
+    <title>&#10697; nb_en_emploi_12_mois
+      int</title><text x='361' y='428' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;nb&#95;en&#95;emploi&#95;6&#95;mois' x='80'
+      y='446'>nb&#95;en&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; nb_en_emploi_6_mois
+      int</title><text x='361' y='447' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;nb&#95;poursuite&#95;etudes' x='80'
+      y='465'>nb&#95;poursuite&#95;etudes</text>
+    <title>&#10697; nb_poursuite_etudes
+      int</title><text x='361' y='466' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;nb&#95;sortant' x='80' y='484'>nb&#95;sortant</text>
+    <title>&#10697; nb_sortant
+      int</title><text x='361' y='485' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;rupture&#95;contrats' x='80'
+      y='503'>taux&#95;rupture&#95;contrats</text>
+    <title>&#10697; taux_rupture_contrats
+      int</title><text x='361' y='504' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;salaire&#95;12&#95;mois&#95;q1' x='80'
+      y='522'>salaire&#95;12&#95;mois&#95;q1</text>
+    <title>&#10697; salaire_12_mois_q1
+      int</title><text x='361' y='523' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;salaire&#95;12&#95;mois&#95;q2' x='80'
+      y='541'>salaire&#95;12&#95;mois&#95;q2</text>
+    <title>&#10697; salaire_12_mois_q2
+      int</title><text x='361' y='542' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;salaire&#95;12&#95;mois&#95;q3' x='80'
+      y='560'>salaire&#95;12&#95;mois&#95;q3</text>
+    <title>&#10697; salaire_12_mois_q3
+      int</title><text x='361' y='561' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;en&#95;formation' x='80'
+      y='579'>taux&#95;en&#95;formation</text>
+    <title>&#10697; taux_en_formation
+      int</title><text x='361' y='580' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;en&#95;emploi&#95;24&#95;mois' x='80'
+      y='598'>taux&#95;en&#95;emploi&#95;24&#95;mois</text>
+    <title>&#10697; taux_en_emploi_24_mois
+      int</title><text x='361' y='599' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;en&#95;emploi&#95;18&#95;mois' x='80'
+      y='617'>taux&#95;en&#95;emploi&#95;18&#95;mois</text>
+    <title>&#10697; taux_en_emploi_18_mois
+      int</title><text x='361' y='618' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;en&#95;emploi&#95;12&#95;mois' x='80'
+      y='636'>taux&#95;en&#95;emploi&#95;12&#95;mois</text>
+    <title>&#10697; taux_en_emploi_12_mois
+      int</title><text x='361' y='637' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;en&#95;emploi&#95;6&#95;mois' x='80'
+      y='655'>taux&#95;en&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; taux_en_emploi_6_mois
+      int</title><text x='361' y='656' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;autres&#95;6&#95;mois' x='80'
+      y='674'>taux&#95;autres&#95;6&#95;mois</text>
+    <title>&#10697; taux_autres_6_mois
+      int</title><text x='361' y='675' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;autres&#95;12&#95;mois' x='80'
+      y='693'>taux&#95;autres&#95;12&#95;mois</text>
+    <title>&#10697; taux_autres_12_mois
+      int</title><text x='361' y='694' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;autres&#95;18&#95;mois' x='80'
+      y='712'>taux&#95;autres&#95;18&#95;mois</text>
+    <title>&#10697; taux_autres_18_mois
+      int</title><text x='361' y='713' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;autres&#95;24&#95;mois' x='80'
+      y='731'>taux&#95;autres&#95;24&#95;mois</text>
+    <title>&#10697; taux_autres_24_mois
+      int</title><text x='361' y='732' class='dataType' style='fill:#B2B7C0;'>int</text> <text x='61'
+      y='750'>&#9662;</text><text id='trajectoires&#45;pro&#46;formationsStats&#46;donnee&#95;source' x='80'
+      y='750'>donnee&#95;source</text>
+    <title>&#10697; donnee_source
+      object</title><text x='361' y='751' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='58' y='756' xlink:href='#nn' /><text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;code&#95;certification' x='87'
+      y='769'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      * string</title><text x='368' y='770' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='775' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;type' x='87'
+      y='788'>type</text>
+    <title>&#10697; type
+      * enum(&apos;self&apos;,&apos;ancienne&apos;,&apos;nouvelle&apos;)</title><text x='368' y='789' class='dataType'
+      style='fill:#B2B7C0;'>enum&#40;&#39;self&#39;&#44;&#39;ancienne&#39;&#44;…</text>
+    <use x='58' y='794' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;libelle' x='80'
+      y='807'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='361' y='808' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;libelle&#95;ancien' x='80' y='826'>libelle&#95;ancien</text>
+    <title>&#10697; libelle_ancien
+      string</title><text x='361' y='827' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='832' xlink:href='#nn' /><text x='61' y='845'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;academie' x='80' y='845'>academie</text>
+    <title>&#10697; academie
+      * object</title><text x='361' y='846' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='58' y='851' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;code' x='87'
+      y='864'>code</text>
+    <title>&#10697; code
+      * string</title><text x='368' y='865' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='870' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;nom' x='87'
+      y='883'>nom</text>
+    <title>&#10697; nom
+      * string</title><text x='368' y='884' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;uai&#95;type' x='80' y='902'>uai&#95;type</text>
+    <title>&#10697; uai_type
+      enum(&apos;lieu_formation&apos;,&apos;formateur&apos;,&apos;gestionnaire&apos;,&apos;inconnu&apos;)</title><text
+      x='361' y='903' class='dataType' style='fill:#B2B7C0;'>enum&#40;&#39;lieu&#95;formation&#39;&#44;&#39;…</text>
+    <text id='trajectoires&#45;pro&#46;formationsStats&#46;uai&#95;lieu&#95;formation' x='80'
+      y='921'>uai&#95;lieu&#95;formation</text>
+    <title>&#10697; uai_lieu_formation
+      array[string]</title><text x='361' y='922' class='dataType' style='fill:#B2B7C0;'>array&#91;string&#93;</text>
+    <text id='trajectoires&#45;pro&#46;formationsStats&#46;uai&#95;formateur' x='80' y='940'>uai&#95;formateur</text>
+    <title>&#10697; uai_formateur
+      array[string]</title><text x='361' y='941' class='dataType' style='fill:#B2B7C0;'>array&#91;string&#93;</text>
+    <text id='trajectoires&#45;pro&#46;formationsStats&#46;uai&#95;gestionnaire' x='80'
+      y='959'>uai&#95;gestionnaire</text>
+    <title>&#10697; uai_gestionnaire
+      array[string]</title><text x='361' y='960' class='dataType' style='fill:#B2B7C0;'>array&#91;string&#93;</text>
+    <text id='trajectoires&#45;pro&#46;formationsStats&#46;uai&#95;donnee' x='80' y='978'>uai&#95;donnee</text>
+    <title>&#10697; uai_donnee
+      string</title><text x='361' y='979' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;uai&#95;donnee&#95;type' x='80'
+      y='997'>uai&#95;donnee&#95;type</text>
+    <title>&#10697; uai_donnee_type
+      enum(&apos;lieu_formation&apos;,&apos;formateur&apos;,&apos;gestionnaire&apos;,&apos;inconnu&apos;)</title><text
+      x='361' y='998' class='dataType' style='fill:#B2B7C0;'>enum&#40;&#39;lieu&#95;formation&#39;&#44;&#39;…</text>
+    <text id='trajectoires&#45;pro&#46;formationsStats&#46;date&#95;fermeture' x='80' y='1016'>date&#95;fermeture</text>
+    <title>&#10697; date_fermeture
+      date</title><text x='361' y='1017' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='58' y='1022' xlink:href='#nn' /><text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;code&#95;certification&#95;type' x='80'
+      y='1035'>code&#95;certification&#95;type</text>
+    <title>&#10697; code_certification_type
+      * enum(&apos;cfd&apos;,&apos;mef11&apos;,&apos;sise&apos;)</title><text x='361' y='1036' class='dataType'
+      style='fill:#B2B7C0;'>enum&#40;&#39;cfd&#39;&#44;&#39;mef11&#39;&#44;&#39;sis…</text>
+    <use x='58' y='1041' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;filiere' x='80'
+      y='1054'>filiere</text>
+    <title>&#10697; filiere
+      * enum(&apos;apprentissage&apos;,&apos;pro&apos;,&apos;superieur&apos;)</title><text x='361' y='1055'
+      class='dataType' style='fill:#B2B7C0;'>enum&#40;&#39;apprentissage&#39;&#44;&#39;p…</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;nb&#95;diplome' x='80' y='1073'>nb&#95;diplome</text>
+    <title>&#10697; nb_diplome
+      int</title><text x='361' y='1074' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;libelle&#95;etablissement' x='80'
+      y='1092'>libelle&#95;etablissement</text>
+    <title>&#10697; libelle_etablissement
+      string</title><text x='361' y='1093' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='61'
+      y='1111'>&#9662;</text><text id='trajectoires&#45;pro&#46;formationsStats&#46;familleMetier' x='80'
+      y='1111'>familleMetier</text>
+    <title>&#10697; familleMetier
+      object</title><text x='361' y='1112' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='58' y='1117' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;code' x='87'
+      y='1130'>code</text>
+    <title>&#10697; code
+      * string</title><text x='368' y='1131' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='1136' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;libelle' x='87'
+      y='1149'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='368' y='1150' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='1155' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;isAnneeCommune'
+      x='87' y='1168'>isAnneeCommune</text>
+    <title>&#10697; isAnneeCommune
+      * bool</title><text x='368' y='1169' class='dataType' style='fill:#B2B7C0;'>bool</text> <text x='61'
+      y='1187'>&#9662;</text><text id='trajectoires&#45;pro&#46;formationsStats&#46;certificationsTerminales' x='80'
+      y='1187'>certificationsTerminales</text>
+    <title>&#10697; certificationsTerminales
+      array[object]</title><text x='361' y='1188' class='dataType' style='fill:#B2B7C0;'>array&#91;object&#93;</text>
+    <text id='trajectoires&#45;pro&#46;formationsStats&#46;code&#95;certification' x='87'
+      y='1206'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      string</title><text x='368' y='1207' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='61'
+      y='1225'>&#9662;</text><text id='trajectoires&#45;pro&#46;formationsStats&#46;&#95;meta' x='80'
+      y='1225'>&#95;meta</text>
+    <title>&#10697; _meta
+      object</title><text x='361' y='1226' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='58' y='1231' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;formationsStats&#46;date&#95;import'
+      x='87' y='1244'>date&#95;import</text>
+    <title>&#10697; date_import
+      * date</title><text x='368' y='1245' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;created&#95;on' x='87' y='1263'>created&#95;on</text>
+    <title>&#10697; created_on
+      date</title><text x='368' y='1264' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;updated&#95;on' x='87' y='1282'>updated&#95;on</text>
+    <title>&#10697; updated_on
+      date</title><text x='368' y='1283' class='dataType' style='fill:#B2B7C0;'>date</text> <text x='68'
+      y='1301'>&#9662;</text><text id='trajectoires&#45;pro&#46;formationsStats&#46;insersup' x='87'
+      y='1301'>insersup</text>
+    <title>&#10697; insersup
+      object</title><text x='368' y='1302' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;etablissement&#95;libelle' x='94'
+      y='1320'>etablissement&#95;libelle</text>
+    <title>&#10697; etablissement_libelle
+      string</title><text x='375' y='1321' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;etablissement&#95;actuel&#95;libelle' x='94'
+      y='1339'>etablissement&#95;actuel&#95;libelle</text>
+    <title>&#10697; etablissement_actuel_libelle
+      string</title><text x='375' y='1340' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;type&#95;diplome' x='94' y='1358'>type&#95;diplome</text>
+    <title>&#10697; type_diplome
+      string</title><text x='375' y='1359' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;domaine&#95;disciplinaire' x='94'
+      y='1377'>domaine&#95;disciplinaire</text>
+    <title>&#10697; domaine_disciplinaire
+      string</title><text x='375' y='1378' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;secteur&#95;disciplinaire' x='94'
+      y='1396'>secteur&#95;disciplinaire</text>
+    <title>&#10697; secteur_disciplinaire
+      string</title><text x='375' y='1397' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;discipline' x='94' y='1415'>discipline</text>
+    <title>&#10697; discipline
+      string</title><text x='375' y='1416' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='68'
+      y='1434'>&#9662;</text><text id='trajectoires&#45;pro&#46;formationsStats&#46;inserjeunes' x='87'
+      y='1434'>inserjeunes</text>
+    <title>&#10697; inserjeunes
+      object</title><text x='368' y='1435' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;poursuite&#95;etudes' x='94'
+      y='1453'>taux&#95;poursuite&#95;etudes</text>
+    <title>&#10697; taux_poursuite_etudes
+      int</title><text x='375' y='1454' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;emploi&#95;24&#95;mois' x='94'
+      y='1472'>taux&#95;emploi&#95;24&#95;mois</text>
+    <title>&#10697; taux_emploi_24_mois
+      int</title><text x='375' y='1473' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;emploi&#95;18&#95;mois' x='94'
+      y='1491'>taux&#95;emploi&#95;18&#95;mois</text>
+    <title>&#10697; taux_emploi_18_mois
+      int</title><text x='375' y='1492' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;emploi&#95;12&#95;mois' x='94'
+      y='1510'>taux&#95;emploi&#95;12&#95;mois</text>
+    <title>&#10697; taux_emploi_12_mois
+      int</title><text x='375' y='1511' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;taux&#95;emploi&#95;6&#95;mois' x='94'
+      y='1529'>taux&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; taux_emploi_6_mois
+      int</title><text x='375' y='1530' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;DEVENIR&#95;part&#95;autre&#95;situation&#95;6&#95;mois' x='94'
+      y='1548'>DEVENIR&#95;part&#95;autre&#95;situation&#95;6&#95;mois</text>
+    <title>&#10697; DEVENIR_part_autre_situation_6_mois
+      int</title><text x='375' y='1549' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;DEVENIR&#95;part&#95;en&#95;emploi&#95;6&#95;mois' x='94'
+      y='1567'>DEVENIR&#95;part&#95;en&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; DEVENIR_part_en_emploi_6_mois
+      int</title><text x='375' y='1568' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;formationsStats&#46;DEVENIR&#95;part&#95;poursuite&#95;etudes' x='94'
+      y='1586'>DEVENIR&#95;part&#95;poursuite&#95;etudes</text>
+    <title>&#10697; DEVENIR_part_poursuite_etudes
+      int</title><text x='375' y='1587' class='dataType' style='fill:#B2B7C0;'>int</text>
+    <!-- == Table 'regionalesStats' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;regionalesStats' class='entity' style='stroke:#F9FAFC' x='418' y='86'
+      width='323' height='1311' rx='4' ry='4' />
+    <rect x='418' y='86' width='323' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='418' y='90' width='323' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='722' y='95' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;regionalesStats' x='529' y='108' class='tableHeader'
+      style='fill:#414348;'>regionalesStats</text>
+    <title>Collection trajectoires-pro.regionalesStats</title>
+    <use x='419' y='129' xlink:href='#nn' />
+    <use x='420' y='128' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;regionalesStats&#46;&#95;id' x='441' y='142' class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='722' y='143' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='419' y='148' xlink:href='#nn' /><text x='422' y='161'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;region' x='441' y='161'>region</text>
+    <title>&#10697; region
+      * object</title><text x='722' y='162' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='419' y='167' xlink:href='#nn' />
+    <use x='420' y='166' xlink:href='#unq'>
+      <title>&#x1F50D; Unq region.code_1_code_certification_1_millesime_1 ( region.code, code_certification, millesime )
+        &#x1F50D; region.code_1 ( region.code ) </title>
+    </use><text id='trajectoires&#45;pro&#46;regionalesStats&#46;code' x='448' y='180'>code</text>
+    <title>&#10697; code
+      * string</title><text x='729' y='181' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;code&#95;region&#95;academique' x='448'
+      y='199'>code&#95;region&#95;academique</text>
+    <title>&#10697; code_region_academique
+      string</title><text x='729' y='200' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='205' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;regionalesStats&#46;nom' x='448'
+      y='218'>nom</text>
+    <title>&#10697; nom
+      * string</title><text x='729' y='219' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='224' xlink:href='#nn' />
+    <use x='420' y='223' xlink:href='#unq'>
+      <title>&#x1F50D; Unq region.code_1_code_certification_1_millesime_1 ( region.code, code_certification, millesime )
+        &#x1F50D; millesime_1 ( millesime ) </title>
+    </use><text id='trajectoires&#45;pro&#46;regionalesStats&#46;millesime' x='441' y='237'>millesime</text>
+    <title>&#10697; millesime
+      * string</title><text x='722' y='238' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='243' xlink:href='#nn' />
+    <use x='420' y='242' xlink:href='#unq'>
+      <title>&#x1F50D; Unq region.code_1_code_certification_1_millesime_1 ( region.code, code_certification, millesime )
+        &#x1F50D; code_certification_1 ( code_certification ) </title>
+    </use><text id='trajectoires&#45;pro&#46;regionalesStats&#46;code&#95;certification' x='441'
+      y='256'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      * string</title><text x='722' y='257' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='420' y='261' xlink:href='#idx'>
+      <title>&#x1F50D; code_formation_diplome_1 ( code_formation_diplome ) </title>
+    </use><text id='trajectoires&#45;pro&#46;regionalesStats&#46;code&#95;formation&#95;diplome' x='441'
+      y='275'>code&#95;formation&#95;diplome</text>
+    <title>&#10697; code_formation_diplome
+      string</title><text x='722' y='276' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='281' xlink:href='#nn' /><text x='422' y='294'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;diplome' x='441' y='294'>diplome</text>
+    <title>&#10697; diplome
+      * object</title><text x='722' y='295' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='419' y='300' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;regionalesStats&#46;code' x='448'
+      y='313'>code</text>
+    <title>&#10697; code
+      * string</title><text x='729' y='314' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='319' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;regionalesStats&#46;libelle' x='448'
+      y='332'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='729' y='333' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;nb&#95;annee&#95;term' x='441'
+      y='351'>nb&#95;annee&#95;term</text>
+    <title>&#10697; nb_annee_term
+      int</title><text x='722' y='352' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;nb&#95;en&#95;emploi&#95;24&#95;mois' x='441'
+      y='370'>nb&#95;en&#95;emploi&#95;24&#95;mois</text>
+    <title>&#10697; nb_en_emploi_24_mois
+      int</title><text x='722' y='371' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;nb&#95;en&#95;emploi&#95;18&#95;mois' x='441'
+      y='389'>nb&#95;en&#95;emploi&#95;18&#95;mois</text>
+    <title>&#10697; nb_en_emploi_18_mois
+      int</title><text x='722' y='390' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;nb&#95;en&#95;emploi&#95;12&#95;mois' x='441'
+      y='408'>nb&#95;en&#95;emploi&#95;12&#95;mois</text>
+    <title>&#10697; nb_en_emploi_12_mois
+      int</title><text x='722' y='409' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;nb&#95;en&#95;emploi&#95;6&#95;mois' x='441'
+      y='427'>nb&#95;en&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; nb_en_emploi_6_mois
+      int</title><text x='722' y='428' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;nb&#95;poursuite&#95;etudes' x='441'
+      y='446'>nb&#95;poursuite&#95;etudes</text>
+    <title>&#10697; nb_poursuite_etudes
+      int</title><text x='722' y='447' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;nb&#95;sortant' x='441' y='465'>nb&#95;sortant</text>
+    <title>&#10697; nb_sortant
+      int</title><text x='722' y='466' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;rupture&#95;contrats' x='441'
+      y='484'>taux&#95;rupture&#95;contrats</text>
+    <title>&#10697; taux_rupture_contrats
+      int</title><text x='722' y='485' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;salaire&#95;12&#95;mois&#95;q1' x='441'
+      y='503'>salaire&#95;12&#95;mois&#95;q1</text>
+    <title>&#10697; salaire_12_mois_q1
+      int</title><text x='722' y='504' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;salaire&#95;12&#95;mois&#95;q2' x='441'
+      y='522'>salaire&#95;12&#95;mois&#95;q2</text>
+    <title>&#10697; salaire_12_mois_q2
+      int</title><text x='722' y='523' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;salaire&#95;12&#95;mois&#95;q3' x='441'
+      y='541'>salaire&#95;12&#95;mois&#95;q3</text>
+    <title>&#10697; salaire_12_mois_q3
+      int</title><text x='722' y='542' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;en&#95;formation' x='441'
+      y='560'>taux&#95;en&#95;formation</text>
+    <title>&#10697; taux_en_formation
+      int</title><text x='722' y='561' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;en&#95;emploi&#95;24&#95;mois' x='441'
+      y='579'>taux&#95;en&#95;emploi&#95;24&#95;mois</text>
+    <title>&#10697; taux_en_emploi_24_mois
+      int</title><text x='722' y='580' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;en&#95;emploi&#95;18&#95;mois' x='441'
+      y='598'>taux&#95;en&#95;emploi&#95;18&#95;mois</text>
+    <title>&#10697; taux_en_emploi_18_mois
+      int</title><text x='722' y='599' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;en&#95;emploi&#95;12&#95;mois' x='441'
+      y='617'>taux&#95;en&#95;emploi&#95;12&#95;mois</text>
+    <title>&#10697; taux_en_emploi_12_mois
+      int</title><text x='722' y='618' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;en&#95;emploi&#95;6&#95;mois' x='441'
+      y='636'>taux&#95;en&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; taux_en_emploi_6_mois
+      int</title><text x='722' y='637' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;autres&#95;6&#95;mois' x='441'
+      y='655'>taux&#95;autres&#95;6&#95;mois</text>
+    <title>&#10697; taux_autres_6_mois
+      int</title><text x='722' y='656' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;autres&#95;12&#95;mois' x='441'
+      y='674'>taux&#95;autres&#95;12&#95;mois</text>
+    <title>&#10697; taux_autres_12_mois
+      int</title><text x='722' y='675' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;autres&#95;18&#95;mois' x='441'
+      y='693'>taux&#95;autres&#95;18&#95;mois</text>
+    <title>&#10697; taux_autres_18_mois
+      int</title><text x='722' y='694' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;autres&#95;24&#95;mois' x='441'
+      y='712'>taux&#95;autres&#95;24&#95;mois</text>
+    <title>&#10697; taux_autres_24_mois
+      int</title><text x='722' y='713' class='dataType' style='fill:#B2B7C0;'>int</text> <text x='422'
+      y='731'>&#9662;</text><text id='trajectoires&#45;pro&#46;regionalesStats&#46;donnee&#95;source' x='441'
+      y='731'>donnee&#95;source</text>
+    <title>&#10697; donnee_source
+      object</title><text x='722' y='732' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='419' y='737' xlink:href='#nn' /><text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;code&#95;certification' x='448'
+      y='750'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      * string</title><text x='729' y='751' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='756' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;regionalesStats&#46;type' x='448'
+      y='769'>type</text>
+    <title>&#10697; type
+      * enum(&apos;self&apos;,&apos;ancienne&apos;,&apos;nouvelle&apos;)</title><text x='729' y='770' class='dataType'
+      style='fill:#B2B7C0;'>enum&#40;&#39;self&#39;&#44;&#39;ancienne&#39;&#44;…</text>
+    <use x='419' y='775' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;regionalesStats&#46;libelle' x='441'
+      y='788'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='722' y='789' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;libelle&#95;ancien' x='441' y='807'>libelle&#95;ancien</text>
+    <title>&#10697; libelle_ancien
+      string</title><text x='722' y='808' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;date&#95;fermeture' x='441' y='826'>date&#95;fermeture</text>
+    <title>&#10697; date_fermeture
+      date</title><text x='722' y='827' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='419' y='832' xlink:href='#nn' /><text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;code&#95;certification&#95;type' x='441'
+      y='845'>code&#95;certification&#95;type</text>
+    <title>&#10697; code_certification_type
+      * enum(&apos;cfd&apos;,&apos;mef11&apos;,&apos;sise&apos;)</title><text x='722' y='846' class='dataType'
+      style='fill:#B2B7C0;'>enum&#40;&#39;cfd&#39;&#44;&#39;mef11&#39;&#44;&#39;sis…</text>
+    <use x='419' y='851' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;regionalesStats&#46;filiere' x='441'
+      y='864'>filiere</text>
+    <title>&#10697; filiere
+      * enum(&apos;apprentissage&apos;,&apos;pro&apos;,&apos;superieur&apos;)</title><text x='722' y='865'
+      class='dataType' style='fill:#B2B7C0;'>enum&#40;&#39;apprentissage&#39;&#44;&#39;p…</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;nb&#95;diplome' x='441' y='883'>nb&#95;diplome</text>
+    <title>&#10697; nb_diplome
+      int</title><text x='722' y='884' class='dataType' style='fill:#B2B7C0;'>int</text> <text x='422'
+      y='902'>&#9662;</text><text id='trajectoires&#45;pro&#46;regionalesStats&#46;familleMetier' x='441'
+      y='902'>familleMetier</text>
+    <title>&#10697; familleMetier
+      object</title><text x='722' y='903' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='419' y='908' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;regionalesStats&#46;code' x='448'
+      y='921'>code</text>
+    <title>&#10697; code
+      * string</title><text x='729' y='922' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='927' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;regionalesStats&#46;libelle' x='448'
+      y='940'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='729' y='941' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='946' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;regionalesStats&#46;isAnneeCommune'
+      x='448' y='959'>isAnneeCommune</text>
+    <title>&#10697; isAnneeCommune
+      * bool</title><text x='729' y='960' class='dataType' style='fill:#B2B7C0;'>bool</text> <text x='422'
+      y='978'>&#9662;</text><text id='trajectoires&#45;pro&#46;regionalesStats&#46;certificationsTerminales' x='441'
+      y='978'>certificationsTerminales</text>
+    <title>&#10697; certificationsTerminales
+      array[object]</title><text x='722' y='979' class='dataType' style='fill:#B2B7C0;'>array&#91;object&#93;</text>
+    <text id='trajectoires&#45;pro&#46;regionalesStats&#46;code&#95;certification' x='448'
+      y='997'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      string</title><text x='729' y='998' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='422'
+      y='1016'>&#9662;</text><text id='trajectoires&#45;pro&#46;regionalesStats&#46;&#95;meta' x='441'
+      y='1016'>&#95;meta</text>
+    <title>&#10697; _meta
+      object</title><text x='722' y='1017' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='419' y='1022' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;regionalesStats&#46;date&#95;import'
+      x='448' y='1035'>date&#95;import</text>
+    <title>&#10697; date_import
+      * date</title><text x='729' y='1036' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;created&#95;on' x='448' y='1054'>created&#95;on</text>
+    <title>&#10697; created_on
+      date</title><text x='729' y='1055' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;updated&#95;on' x='448' y='1073'>updated&#95;on</text>
+    <title>&#10697; updated_on
+      date</title><text x='729' y='1074' class='dataType' style='fill:#B2B7C0;'>date</text> <text x='429'
+      y='1092'>&#9662;</text><text id='trajectoires&#45;pro&#46;regionalesStats&#46;insersup' x='448'
+      y='1092'>insersup</text>
+    <title>&#10697; insersup
+      object</title><text x='729' y='1093' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;etablissement&#95;libelle' x='455'
+      y='1111'>etablissement&#95;libelle</text>
+    <title>&#10697; etablissement_libelle
+      string</title><text x='736' y='1112' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;etablissement&#95;actuel&#95;libelle' x='455'
+      y='1130'>etablissement&#95;actuel&#95;libelle</text>
+    <title>&#10697; etablissement_actuel_libelle
+      string</title><text x='736' y='1131' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;type&#95;diplome' x='455' y='1149'>type&#95;diplome</text>
+    <title>&#10697; type_diplome
+      string</title><text x='736' y='1150' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;domaine&#95;disciplinaire' x='455'
+      y='1168'>domaine&#95;disciplinaire</text>
+    <title>&#10697; domaine_disciplinaire
+      string</title><text x='736' y='1169' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;secteur&#95;disciplinaire' x='455'
+      y='1187'>secteur&#95;disciplinaire</text>
+    <title>&#10697; secteur_disciplinaire
+      string</title><text x='736' y='1188' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;discipline' x='455' y='1206'>discipline</text>
+    <title>&#10697; discipline
+      string</title><text x='736' y='1207' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='429'
+      y='1225'>&#9662;</text><text id='trajectoires&#45;pro&#46;regionalesStats&#46;inserjeunes' x='448'
+      y='1225'>inserjeunes</text>
+    <title>&#10697; inserjeunes
+      object</title><text x='729' y='1226' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;poursuite&#95;etudes' x='455'
+      y='1244'>taux&#95;poursuite&#95;etudes</text>
+    <title>&#10697; taux_poursuite_etudes
+      int</title><text x='736' y='1245' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;emploi&#95;24&#95;mois' x='455'
+      y='1263'>taux&#95;emploi&#95;24&#95;mois</text>
+    <title>&#10697; taux_emploi_24_mois
+      int</title><text x='736' y='1264' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;emploi&#95;18&#95;mois' x='455'
+      y='1282'>taux&#95;emploi&#95;18&#95;mois</text>
+    <title>&#10697; taux_emploi_18_mois
+      int</title><text x='736' y='1283' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;emploi&#95;12&#95;mois' x='455'
+      y='1301'>taux&#95;emploi&#95;12&#95;mois</text>
+    <title>&#10697; taux_emploi_12_mois
+      int</title><text x='736' y='1302' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;taux&#95;emploi&#95;6&#95;mois' x='455'
+      y='1320'>taux&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; taux_emploi_6_mois
+      int</title><text x='736' y='1321' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;DEVENIR&#95;part&#95;autre&#95;situation&#95;6&#95;mois' x='455'
+      y='1339'>DEVENIR&#95;part&#95;autre&#95;situation&#95;6&#95;mois</text>
+    <title>&#10697; DEVENIR_part_autre_situation_6_mois
+      int</title><text x='736' y='1340' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;DEVENIR&#95;part&#95;en&#95;emploi&#95;6&#95;mois' x='455'
+      y='1358'>DEVENIR&#95;part&#95;en&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; DEVENIR_part_en_emploi_6_mois
+      int</title><text x='736' y='1359' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;regionalesStats&#46;DEVENIR&#95;part&#95;poursuite&#95;etudes' x='455'
+      y='1377'>DEVENIR&#95;part&#95;poursuite&#95;etudes</text>
+    <title>&#10697; DEVENIR_part_poursuite_etudes
+      int</title><text x='736' y='1378' class='dataType' style='fill:#B2B7C0;'>int</text>
+    <!-- == Table 'certificationsStats' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;certificationsStats' class='entity' style='stroke:#F9FAFC' x='779' y='86'
+      width='323' height='1235' rx='4' ry='4' />
+    <rect x='779' y='86' width='323' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='779' y='90' width='323' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='1083' y='95' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;certificationsStats' x='881' y='108' class='tableHeader'
+      style='fill:#414348;'>certificationsStats</text>
+    <title>Collection trajectoires-pro.certificationsStats</title>
+    <use x='780' y='129' xlink:href='#nn' />
+    <use x='781' y='128' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;certificationsStats&#46;&#95;id' x='802' y='142'
+      class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='1083' y='143' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='780' y='148' xlink:href='#nn' />
+    <use x='781' y='147' xlink:href='#unq'>
+      <title>&#x1F50D; millesime_1 ( millesime ) &#x1F50D; Unq millesime_1_code_certification_1 ( millesime,
+        code_certification ) </title>
+    </use><text id='trajectoires&#45;pro&#46;certificationsStats&#46;millesime' x='802' y='161'>millesime</text>
+    <title>&#10697; millesime
+      * string</title><text x='1083' y='162' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='780' y='167' xlink:href='#nn' />
+    <use x='781' y='166' xlink:href='#unq'>
+      <title>&#x1F50D; code_certification_1 ( code_certification ) &#x1F50D; Unq millesime_1_code_certification_1 (
+        millesime, code_certification ) </title>
+    </use><text id='trajectoires&#45;pro&#46;certificationsStats&#46;code&#95;certification' x='802'
+      y='180'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      * string</title><text x='1083' y='181' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='781' y='185' xlink:href='#idx'>
+      <title>&#x1F50D; code_formation_diplome_1 ( code_formation_diplome ) </title>
+    </use><text id='trajectoires&#45;pro&#46;certificationsStats&#46;code&#95;formation&#95;diplome' x='802'
+      y='199'>code&#95;formation&#95;diplome</text>
+    <title>&#10697; code_formation_diplome
+      string</title><text x='1083' y='200' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='780' y='205' xlink:href='#nn' /><text x='783' y='218'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;diplome' x='802' y='218'>diplome</text>
+    <title>&#10697; diplome
+      * object</title><text x='1083' y='219' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='780' y='224' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;certificationsStats&#46;code' x='809'
+      y='237'>code</text>
+    <title>&#10697; code
+      * string</title><text x='1090' y='238' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='780' y='243' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;certificationsStats&#46;libelle' x='809'
+      y='256'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='1090' y='257' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;nb&#95;annee&#95;term' x='802'
+      y='275'>nb&#95;annee&#95;term</text>
+    <title>&#10697; nb_annee_term
+      int</title><text x='1083' y='276' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;nb&#95;en&#95;emploi&#95;24&#95;mois' x='802'
+      y='294'>nb&#95;en&#95;emploi&#95;24&#95;mois</text>
+    <title>&#10697; nb_en_emploi_24_mois
+      int</title><text x='1083' y='295' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;nb&#95;en&#95;emploi&#95;18&#95;mois' x='802'
+      y='313'>nb&#95;en&#95;emploi&#95;18&#95;mois</text>
+    <title>&#10697; nb_en_emploi_18_mois
+      int</title><text x='1083' y='314' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;nb&#95;en&#95;emploi&#95;12&#95;mois' x='802'
+      y='332'>nb&#95;en&#95;emploi&#95;12&#95;mois</text>
+    <title>&#10697; nb_en_emploi_12_mois
+      int</title><text x='1083' y='333' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;nb&#95;en&#95;emploi&#95;6&#95;mois' x='802'
+      y='351'>nb&#95;en&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; nb_en_emploi_6_mois
+      int</title><text x='1083' y='352' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;nb&#95;poursuite&#95;etudes' x='802'
+      y='370'>nb&#95;poursuite&#95;etudes</text>
+    <title>&#10697; nb_poursuite_etudes
+      int</title><text x='1083' y='371' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;nb&#95;sortant' x='802' y='389'>nb&#95;sortant</text>
+    <title>&#10697; nb_sortant
+      int</title><text x='1083' y='390' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;rupture&#95;contrats' x='802'
+      y='408'>taux&#95;rupture&#95;contrats</text>
+    <title>&#10697; taux_rupture_contrats
+      int</title><text x='1083' y='409' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;salaire&#95;12&#95;mois&#95;q1' x='802'
+      y='427'>salaire&#95;12&#95;mois&#95;q1</text>
+    <title>&#10697; salaire_12_mois_q1
+      int</title><text x='1083' y='428' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;salaire&#95;12&#95;mois&#95;q2' x='802'
+      y='446'>salaire&#95;12&#95;mois&#95;q2</text>
+    <title>&#10697; salaire_12_mois_q2
+      int</title><text x='1083' y='447' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;salaire&#95;12&#95;mois&#95;q3' x='802'
+      y='465'>salaire&#95;12&#95;mois&#95;q3</text>
+    <title>&#10697; salaire_12_mois_q3
+      int</title><text x='1083' y='466' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;en&#95;formation' x='802'
+      y='484'>taux&#95;en&#95;formation</text>
+    <title>&#10697; taux_en_formation
+      int</title><text x='1083' y='485' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;en&#95;emploi&#95;24&#95;mois' x='802'
+      y='503'>taux&#95;en&#95;emploi&#95;24&#95;mois</text>
+    <title>&#10697; taux_en_emploi_24_mois
+      int</title><text x='1083' y='504' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;en&#95;emploi&#95;18&#95;mois' x='802'
+      y='522'>taux&#95;en&#95;emploi&#95;18&#95;mois</text>
+    <title>&#10697; taux_en_emploi_18_mois
+      int</title><text x='1083' y='523' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;en&#95;emploi&#95;12&#95;mois' x='802'
+      y='541'>taux&#95;en&#95;emploi&#95;12&#95;mois</text>
+    <title>&#10697; taux_en_emploi_12_mois
+      int</title><text x='1083' y='542' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;en&#95;emploi&#95;6&#95;mois' x='802'
+      y='560'>taux&#95;en&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; taux_en_emploi_6_mois
+      int</title><text x='1083' y='561' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;autres&#95;6&#95;mois' x='802'
+      y='579'>taux&#95;autres&#95;6&#95;mois</text>
+    <title>&#10697; taux_autres_6_mois
+      int</title><text x='1083' y='580' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;autres&#95;12&#95;mois' x='802'
+      y='598'>taux&#95;autres&#95;12&#95;mois</text>
+    <title>&#10697; taux_autres_12_mois
+      int</title><text x='1083' y='599' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;autres&#95;18&#95;mois' x='802'
+      y='617'>taux&#95;autres&#95;18&#95;mois</text>
+    <title>&#10697; taux_autres_18_mois
+      int</title><text x='1083' y='618' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;autres&#95;24&#95;mois' x='802'
+      y='636'>taux&#95;autres&#95;24&#95;mois</text>
+    <title>&#10697; taux_autres_24_mois
+      int</title><text x='1083' y='637' class='dataType' style='fill:#B2B7C0;'>int</text> <text x='783'
+      y='655'>&#9662;</text><text id='trajectoires&#45;pro&#46;certificationsStats&#46;donnee&#95;source' x='802'
+      y='655'>donnee&#95;source</text>
+    <title>&#10697; donnee_source
+      object</title><text x='1083' y='656' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='780' y='661' xlink:href='#nn' /><text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;code&#95;certification' x='809'
+      y='674'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      * string</title><text x='1090' y='675' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='780' y='680' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;certificationsStats&#46;type' x='809'
+      y='693'>type</text>
+    <title>&#10697; type
+      * enum(&apos;self&apos;,&apos;ancienne&apos;,&apos;nouvelle&apos;)</title><text x='1090' y='694' class='dataType'
+      style='fill:#B2B7C0;'>enum&#40;&#39;self&#39;&#44;&#39;ancienne&#39;&#44;…</text>
+    <use x='780' y='699' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;certificationsStats&#46;libelle' x='802'
+      y='712'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='1083' y='713' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;libelle&#95;ancien' x='802' y='731'>libelle&#95;ancien</text>
+    <title>&#10697; libelle_ancien
+      string</title><text x='1083' y='732' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;date&#95;fermeture' x='802' y='750'>date&#95;fermeture</text>
+    <title>&#10697; date_fermeture
+      date</title><text x='1083' y='751' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='780' y='756' xlink:href='#nn' /><text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;code&#95;certification&#95;type' x='802'
+      y='769'>code&#95;certification&#95;type</text>
+    <title>&#10697; code_certification_type
+      * enum(&apos;cfd&apos;,&apos;mef11&apos;,&apos;sise&apos;)</title><text x='1083' y='770' class='dataType'
+      style='fill:#B2B7C0;'>enum&#40;&#39;cfd&#39;&#44;&#39;mef11&#39;&#44;&#39;sis…</text>
+    <use x='780' y='775' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;certificationsStats&#46;filiere' x='802'
+      y='788'>filiere</text>
+    <title>&#10697; filiere
+      * enum(&apos;apprentissage&apos;,&apos;pro&apos;,&apos;superieur&apos;)</title><text x='1083' y='789'
+      class='dataType' style='fill:#B2B7C0;'>enum&#40;&#39;apprentissage&#39;&#44;&#39;p…</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;nb&#95;diplome' x='802' y='807'>nb&#95;diplome</text>
+    <title>&#10697; nb_diplome
+      int</title><text x='1083' y='808' class='dataType' style='fill:#B2B7C0;'>int</text> <text x='783'
+      y='826'>&#9662;</text><text id='trajectoires&#45;pro&#46;certificationsStats&#46;familleMetier' x='802'
+      y='826'>familleMetier</text>
+    <title>&#10697; familleMetier
+      object</title><text x='1083' y='827' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='780' y='832' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;certificationsStats&#46;code' x='809'
+      y='845'>code</text>
+    <title>&#10697; code
+      * string</title><text x='1090' y='846' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='780' y='851' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;certificationsStats&#46;libelle' x='809'
+      y='864'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='1090' y='865' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='780' y='870' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;certificationsStats&#46;isAnneeCommune'
+      x='809' y='883'>isAnneeCommune</text>
+    <title>&#10697; isAnneeCommune
+      * bool</title><text x='1090' y='884' class='dataType' style='fill:#B2B7C0;'>bool</text> <text x='783'
+      y='902'>&#9662;</text><text id='trajectoires&#45;pro&#46;certificationsStats&#46;certificationsTerminales' x='802'
+      y='902'>certificationsTerminales</text>
+    <title>&#10697; certificationsTerminales
+      array[object]</title><text x='1083' y='903' class='dataType' style='fill:#B2B7C0;'>array&#91;object&#93;</text>
+    <text id='trajectoires&#45;pro&#46;certificationsStats&#46;code&#95;certification' x='809'
+      y='921'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      string</title><text x='1090' y='922' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='783'
+      y='940'>&#9662;</text><text id='trajectoires&#45;pro&#46;certificationsStats&#46;&#95;meta' x='802'
+      y='940'>&#95;meta</text>
+    <title>&#10697; _meta
+      object</title><text x='1083' y='941' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='780' y='946' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;certificationsStats&#46;date&#95;import'
+      x='809' y='959'>date&#95;import</text>
+    <title>&#10697; date_import
+      * date</title><text x='1090' y='960' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;created&#95;on' x='809' y='978'>created&#95;on</text>
+    <title>&#10697; created_on
+      date</title><text x='1090' y='979' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;updated&#95;on' x='809' y='997'>updated&#95;on</text>
+    <title>&#10697; updated_on
+      date</title><text x='1090' y='998' class='dataType' style='fill:#B2B7C0;'>date</text> <text x='790'
+      y='1016'>&#9662;</text><text id='trajectoires&#45;pro&#46;certificationsStats&#46;insersup' x='809'
+      y='1016'>insersup</text>
+    <title>&#10697; insersup
+      object</title><text x='1090' y='1017' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;etablissement&#95;libelle' x='816'
+      y='1035'>etablissement&#95;libelle</text>
+    <title>&#10697; etablissement_libelle
+      string</title><text x='1097' y='1036' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;etablissement&#95;actuel&#95;libelle' x='816'
+      y='1054'>etablissement&#95;actuel&#95;libelle</text>
+    <title>&#10697; etablissement_actuel_libelle
+      string</title><text x='1097' y='1055' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;type&#95;diplome' x='816' y='1073'>type&#95;diplome</text>
+    <title>&#10697; type_diplome
+      string</title><text x='1097' y='1074' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;domaine&#95;disciplinaire' x='816'
+      y='1092'>domaine&#95;disciplinaire</text>
+    <title>&#10697; domaine_disciplinaire
+      string</title><text x='1097' y='1093' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;secteur&#95;disciplinaire' x='816'
+      y='1111'>secteur&#95;disciplinaire</text>
+    <title>&#10697; secteur_disciplinaire
+      string</title><text x='1097' y='1112' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;discipline' x='816' y='1130'>discipline</text>
+    <title>&#10697; discipline
+      string</title><text x='1097' y='1131' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='790'
+      y='1149'>&#9662;</text><text id='trajectoires&#45;pro&#46;certificationsStats&#46;inserjeunes' x='809'
+      y='1149'>inserjeunes</text>
+    <title>&#10697; inserjeunes
+      object</title><text x='1090' y='1150' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;poursuite&#95;etudes' x='816'
+      y='1168'>taux&#95;poursuite&#95;etudes</text>
+    <title>&#10697; taux_poursuite_etudes
+      int</title><text x='1097' y='1169' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;emploi&#95;24&#95;mois' x='816'
+      y='1187'>taux&#95;emploi&#95;24&#95;mois</text>
+    <title>&#10697; taux_emploi_24_mois
+      int</title><text x='1097' y='1188' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;emploi&#95;18&#95;mois' x='816'
+      y='1206'>taux&#95;emploi&#95;18&#95;mois</text>
+    <title>&#10697; taux_emploi_18_mois
+      int</title><text x='1097' y='1207' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;emploi&#95;12&#95;mois' x='816'
+      y='1225'>taux&#95;emploi&#95;12&#95;mois</text>
+    <title>&#10697; taux_emploi_12_mois
+      int</title><text x='1097' y='1226' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;taux&#95;emploi&#95;6&#95;mois' x='816'
+      y='1244'>taux&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; taux_emploi_6_mois
+      int</title><text x='1097' y='1245' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;DEVENIR&#95;part&#95;autre&#95;situation&#95;6&#95;mois'
+      x='816' y='1263'>DEVENIR&#95;part&#95;autre&#95;situation&#95;6&#95;mois</text>
+    <title>&#10697; DEVENIR_part_autre_situation_6_mois
+      int</title><text x='1097' y='1264' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;DEVENIR&#95;part&#95;en&#95;emploi&#95;6&#95;mois' x='816'
+      y='1282'>DEVENIR&#95;part&#95;en&#95;emploi&#95;6&#95;mois</text>
+    <title>&#10697; DEVENIR_part_en_emploi_6_mois
+      int</title><text x='1097' y='1283' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;certificationsStats&#46;DEVENIR&#95;part&#95;poursuite&#95;etudes' x='816'
+      y='1301'>DEVENIR&#95;part&#95;poursuite&#95;etudes</text>
+    <title>&#10697; DEVENIR_part_poursuite_etudes
+      int</title><text x='1097' y='1302' class='dataType' style='fill:#B2B7C0;'>int</text>
+    <!-- == Table 'users' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;users' class='entity' style='stroke:#F9FAFC' x='57' y='1625' width='190'
+      height='285' rx='4' ry='4' />
+    <rect x='57' y='1625' width='190' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='57' y='1629' width='190' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='228' y='1634' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;users' x='132' y='1647' class='tableHeader'
+      style='fill:#414348;'>users</text>
+    <title>Collection trajectoires-pro.users</title>
+    <use x='58' y='1668' xlink:href='#nn' />
+    <use x='59' y='1667' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;users&#46;&#95;id' x='80' y='1681' class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='228' y='1682' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='58' y='1687' xlink:href='#nn' />
+    <use x='59' y='1686' xlink:href='#unq'>
+      <title>&#x1F50D; Unq username_1 ( username ) </title>
+    </use><text id='trajectoires&#45;pro&#46;users&#46;username' x='80' y='1700'>username</text>
+    <title>&#10697; username
+      * string</title><text x='228' y='1701' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='1706' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;users&#46;password' x='80'
+      y='1719'>password</text>
+    <title>&#10697; password
+      * string</title><text x='228' y='1720' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='58' y='1725' xlink:href='#nn' /><text x='61' y='1738'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;users&#46;&#95;meta' x='80' y='1738'>&#95;meta</text>
+    <title>&#10697; _meta
+      * object</title><text x='228' y='1739' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;users&#46;created&#95;on' x='87' y='1757'>created&#95;on</text>
+    <title>&#10697; created_on
+      date</title><text x='235' y='1758' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;users&#46;updated&#95;on' x='87' y='1776'>updated&#95;on</text>
+    <title>&#10697; updated_on
+      date</title><text x='235' y='1777' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='58' y='1782' xlink:href='#nn' /><text x='61' y='1795'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;users&#46;widget' x='80' y='1795'>widget</text>
+    <title>&#10697; widget
+      * object</title><text x='228' y='1796' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;users&#46;hash' x='87' y='1814'>hash</text>
+    <title>&#10697; hash
+      string</title><text x='235' y='1815' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='68'
+      y='1833'>&#9662;</text><text id='trajectoires&#45;pro&#46;users&#46;version' x='87' y='1833'>version</text>
+    <title>&#10697; version
+      array[object]</title><text x='235' y='1834' class='dataType' style='fill:#B2B7C0;'>array&#91;object&#93;</text>
+    <text id='trajectoires&#45;pro&#46;users&#46;type' x='94' y='1852'>type</text>
+    <title>&#10697; type
+      string</title><text x='242' y='1853' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;users&#46;theme' x='94' y='1871'>theme</text>
+    <title>&#10697; theme
+      string</title><text x='242' y='1872' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;users&#46;version' x='94' y='1890'>version</text>
+    <title>&#10697; version
+      number</title><text x='242' y='1891' class='dataType' style='fill:#B2B7C0;'>number</text>
+    <!-- == Table 'acceEtablissements' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;acceEtablissements' class='entity' style='stroke:#F9FAFC' x='1178' y='86'
+      width='285' height='1330' rx='4' ry='4' />
+    <rect x='1178' y='86' width='285' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='1178' y='90' width='285' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='1444' y='95' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;acceEtablissements' x='1257' y='108' class='tableHeader'
+      style='fill:#414348;'>acceEtablissements</text>
+    <title>Collection trajectoires-pro.acceEtablissements</title>
+    <use x='1179' y='129' xlink:href='#nn' />
+    <use x='1180' y='128' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;acceEtablissements&#46;&#95;id' x='1201' y='142'
+      class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='1444' y='143' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='1179' y='148' xlink:href='#nn' />
+    <use x='1180' y='147' xlink:href='#unq'>
+      <title>&#x1F50D; Unq numero_uai_1 ( numero_uai ) </title>
+    </use><text id='trajectoires&#45;pro&#46;acceEtablissements&#46;numero&#95;uai' x='1201'
+      y='161'>numero&#95;uai</text>
+    <title>&#10697; numero_uai
+      * string</title><text x='1444' y='162' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;nature&#95;uai' x='1201' y='180'>nature&#95;uai</text>
+    <title>&#10697; nature_uai
+      string</title><text x='1444' y='181' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;nature&#95;uai&#95;libe' x='1201'
+      y='199'>nature&#95;uai&#95;libe</text>
+    <title>&#10697; nature_uai_libe
+      string</title><text x='1444' y='200' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;type&#95;uai' x='1201' y='218'>type&#95;uai</text>
+    <title>&#10697; type_uai
+      string</title><text x='1444' y='219' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;type&#95;uai&#95;libe' x='1201'
+      y='237'>type&#95;uai&#95;libe</text>
+    <title>&#10697; type_uai_libe
+      string</title><text x='1444' y='238' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;etat&#95;etablissement' x='1201'
+      y='256'>etat&#95;etablissement</text>
+    <title>&#10697; etat_etablissement
+      string</title><text x='1444' y='257' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;etat&#95;etablissement&#95;libe' x='1201'
+      y='275'>etat&#95;etablissement&#95;libe</text>
+    <title>&#10697; etat_etablissement_libe
+      string</title><text x='1444' y='276' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;ministere&#95;tutelle' x='1201'
+      y='294'>ministere&#95;tutelle</text>
+    <title>&#10697; ministere_tutelle
+      string</title><text x='1444' y='295' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;ministere&#95;tutelle&#95;libe' x='1201'
+      y='313'>ministere&#95;tutelle&#95;libe</text>
+    <title>&#10697; ministere_tutelle_libe
+      string</title><text x='1444' y='314' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;tutelle&#95;2' x='1201' y='332'>tutelle&#95;2</text>
+    <title>&#10697; tutelle_2
+      string</title><text x='1444' y='333' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;tutelle&#95;2&#95;libe' x='1201'
+      y='351'>tutelle&#95;2&#95;libe</text>
+    <title>&#10697; tutelle_2_libe
+      string</title><text x='1444' y='352' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;secteur&#95;public&#95;prive' x='1201'
+      y='370'>secteur&#95;public&#95;prive</text>
+    <title>&#10697; secteur_public_prive
+      string</title><text x='1444' y='371' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;secteur&#95;public&#95;prive&#95;libe' x='1201'
+      y='389'>secteur&#95;public&#95;prive&#95;libe</text>
+    <title>&#10697; secteur_public_prive_libe
+      string</title><text x='1444' y='390' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;sigle&#95;uai' x='1201' y='408'>sigle&#95;uai</text>
+    <title>&#10697; sigle_uai
+      string</title><text x='1444' y='409' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;categorie&#95;juridique' x='1201'
+      y='427'>categorie&#95;juridique</text>
+    <title>&#10697; categorie_juridique
+      string</title><text x='1444' y='428' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;categorie&#95;juridique&#95;libe' x='1201'
+      y='446'>categorie&#95;juridique&#95;libe</text>
+    <title>&#10697; categorie_juridique_libe
+      string</title><text x='1444' y='447' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;contrat&#95;etablissement' x='1201'
+      y='465'>contrat&#95;etablissement</text>
+    <title>&#10697; contrat_etablissement
+      string</title><text x='1444' y='466' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;contrat&#95;etablissement&#95;libe' x='1201'
+      y='484'>contrat&#95;etablissement&#95;libe</text>
+    <title>&#10697; contrat_etablissement_libe
+      string</title><text x='1444' y='485' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;categorie&#95;financiere' x='1201'
+      y='503'>categorie&#95;financiere</text>
+    <title>&#10697; categorie_financiere
+      string</title><text x='1444' y='504' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;categorie&#95;financiere&#95;libe' x='1201'
+      y='522'>categorie&#95;financiere&#95;libe</text>
+    <title>&#10697; categorie_financiere_libe
+      string</title><text x='1444' y='523' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;situation&#95;comptable' x='1201'
+      y='541'>situation&#95;comptable</text>
+    <title>&#10697; situation_comptable
+      string</title><text x='1444' y='542' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;situation&#95;comptable&#95;libe' x='1201'
+      y='560'>situation&#95;comptable&#95;libe</text>
+    <title>&#10697; situation_comptable_libe
+      string</title><text x='1444' y='561' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;niveau&#95;uai' x='1201' y='579'>niveau&#95;uai</text>
+    <title>&#10697; niveau_uai
+      string</title><text x='1444' y='580' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;niveau&#95;uai&#95;libe' x='1201'
+      y='598'>niveau&#95;uai&#95;libe</text>
+    <title>&#10697; niveau_uai_libe
+      string</title><text x='1444' y='599' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;commune' x='1201' y='617'>commune</text>
+    <title>&#10697; commune
+      string</title><text x='1444' y='618' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;commune&#95;libe' x='1201' y='636'>commune&#95;libe</text>
+    <title>&#10697; commune_libe
+      string</title><text x='1444' y='637' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;academie' x='1201' y='655'>academie</text>
+    <title>&#10697; academie
+      string</title><text x='1444' y='656' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;academie&#95;libe' x='1201' y='674'>academie&#95;libe</text>
+    <title>&#10697; academie_libe
+      string</title><text x='1444' y='675' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;pays' x='1201' y='693'>pays</text>
+    <title>&#10697; pays
+      string</title><text x='1444' y='694' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;pays&#95;libe' x='1201' y='712'>pays&#95;libe</text>
+    <title>&#10697; pays_libe
+      string</title><text x='1444' y='713' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;departement&#95;insee&#95;3' x='1201'
+      y='731'>departement&#95;insee&#95;3</text>
+    <title>&#10697; departement_insee_3
+      string</title><text x='1444' y='732' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;departement&#95;insee&#95;3&#95;libe' x='1201'
+      y='750'>departement&#95;insee&#95;3&#95;libe</text>
+    <title>&#10697; departement_insee_3_libe
+      string</title><text x='1444' y='751' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;denomination&#95;principale' x='1201'
+      y='769'>denomination&#95;principale</text>
+    <title>&#10697; denomination_principale
+      string</title><text x='1444' y='770' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;appellation&#95;officielle' x='1201'
+      y='788'>appellation&#95;officielle</text>
+    <title>&#10697; appellation_officielle
+      string</title><text x='1444' y='789' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;patronyme&#95;uai' x='1201' y='807'>patronyme&#95;uai</text>
+    <title>&#10697; patronyme_uai
+      string</title><text x='1444' y='808' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;hebergement&#95;etablissement' x='1201'
+      y='826'>hebergement&#95;etablissement</text>
+    <title>&#10697; hebergement_etablissement
+      string</title><text x='1444' y='827' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;hebergement&#95;etablissement&#95;libe' x='1201'
+      y='845'>hebergement&#95;etablissement&#95;libe</text>
+    <title>&#10697; hebergement_etablissement_libe
+      string</title><text x='1444' y='846' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;numero&#95;siren&#95;siret&#95;uai' x='1201'
+      y='864'>numero&#95;siren&#95;siret&#95;uai</text>
+    <title>&#10697; numero_siren_siret_uai
+      string</title><text x='1444' y='865' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;numero&#95;finess&#95;uai' x='1201'
+      y='883'>numero&#95;finess&#95;uai</text>
+    <title>&#10697; numero_finess_uai
+      string</title><text x='1444' y='884' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;date&#95;ouverture' x='1201' y='902'>date&#95;ouverture</text>
+    <title>&#10697; date_ouverture
+      date</title><text x='1444' y='903' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;date&#95;fermeture' x='1201' y='921'>date&#95;fermeture</text>
+    <title>&#10697; date_fermeture
+      date</title><text x='1444' y='922' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;date&#95;derniere&#95;mise&#95;a&#95;jour' x='1201'
+      y='940'>date&#95;derniere&#95;mise&#95;a&#95;jour</text>
+    <title>&#10697; date_derniere_mise_a_jour
+      date</title><text x='1444' y='941' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;lieu&#95;dit&#95;uai' x='1201'
+      y='959'>lieu&#95;dit&#95;uai</text>
+    <title>&#10697; lieu_dit_uai
+      string</title><text x='1444' y='960' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;adresse&#95;uai' x='1201' y='978'>adresse&#95;uai</text>
+    <title>&#10697; adresse_uai
+      string</title><text x='1444' y='979' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;boite&#95;postale&#95;uai' x='1201'
+      y='997'>boite&#95;postale&#95;uai</text>
+    <title>&#10697; boite_postale_uai
+      string</title><text x='1444' y='998' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;code&#95;postal&#95;uai' x='1201'
+      y='1016'>code&#95;postal&#95;uai</text>
+    <title>&#10697; code_postal_uai
+      string</title><text x='1444' y='1017' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;etat&#95;sirad&#95;uai' x='1201'
+      y='1035'>etat&#95;sirad&#95;uai</text>
+    <title>&#10697; etat_sirad_uai
+      string</title><text x='1444' y='1036' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;localite&#95;acheminement&#95;uai' x='1201'
+      y='1054'>localite&#95;acheminement&#95;uai</text>
+    <title>&#10697; localite_acheminement_uai
+      string</title><text x='1444' y='1055' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;pays&#95;etranger&#95;acheminement' x='1201'
+      y='1073'>pays&#95;etranger&#95;acheminement</text>
+    <title>&#10697; pays_etranger_acheminement
+      string</title><text x='1444' y='1074' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;numero&#95;telephone&#95;uai' x='1201'
+      y='1092'>numero&#95;telephone&#95;uai</text>
+    <title>&#10697; numero_telephone_uai
+      string</title><text x='1444' y='1093' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;numero&#95;telecopieur&#95;uai' x='1201'
+      y='1111'>numero&#95;telecopieur&#95;uai</text>
+    <title>&#10697; numero_telecopieur_uai
+      string</title><text x='1444' y='1112' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;mention&#95;distribution' x='1201'
+      y='1130'>mention&#95;distribution</text>
+    <title>&#10697; mention_distribution
+      string</title><text x='1444' y='1131' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;mel&#95;uai' x='1201' y='1149'>mel&#95;uai</text>
+    <title>&#10697; mel_uai
+      string</title><text x='1444' y='1150' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;site&#95;web' x='1201' y='1168'>site&#95;web</text>
+    <title>&#10697; site_web
+      string</title><text x='1444' y='1169' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;coordonnee&#95;x' x='1201' y='1187'>coordonnee&#95;x</text>
+    <title>&#10697; coordonnee_x
+      string</title><text x='1444' y='1188' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;coordonnee&#95;y' x='1201' y='1206'>coordonnee&#95;y</text>
+    <title>&#10697; coordonnee_y
+      string</title><text x='1444' y='1207' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;appariement' x='1201' y='1225'>appariement</text>
+    <title>&#10697; appariement
+      string</title><text x='1444' y='1226' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;appariement&#95;complement' x='1201'
+      y='1244'>appariement&#95;complement</text>
+    <title>&#10697; appariement_complement
+      string</title><text x='1444' y='1245' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;localisation' x='1201' y='1263'>localisation</text>
+    <title>&#10697; localisation
+      string</title><text x='1444' y='1264' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;localisation&#95;complement' x='1201'
+      y='1282'>localisation&#95;complement</text>
+    <title>&#10697; localisation_complement
+      string</title><text x='1444' y='1283' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;date&#95;geolocalisation' x='1201'
+      y='1301'>date&#95;geolocalisation</text>
+    <title>&#10697; date_geolocalisation
+      date</title><text x='1444' y='1302' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;source' x='1201' y='1320'>source</text>
+    <title>&#10697; source
+      string</title><text x='1444' y='1321' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1179' y='1326' xlink:href='#nn' /><text x='1182' y='1339'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;&#95;meta' x='1201' y='1339'>&#95;meta</text>
+    <title>&#10697; _meta
+      * object</title><text x='1444' y='1340' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;created&#95;on' x='1208' y='1358'>created&#95;on</text>
+    <title>&#10697; created_on
+      date</title><text x='1451' y='1359' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;acceEtablissements&#46;updated&#95;on' x='1208' y='1377'>updated&#95;on</text>
+    <title>&#10697; updated_on
+      date</title><text x='1451' y='1378' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='1179' y='1383' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;acceEtablissements&#46;date&#95;import'
+      x='1208' y='1396'>date&#95;import</text>
+    <title>&#10697; date_import
+      * date</title><text x='1451' y='1397' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <!-- == Table 'catalogueApprentissageFormations' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;catalogueApprentissageFormations' class='entity' style='stroke:#F9FAFC'
+      x='1482' y='86' width='418' height='893' rx='4' ry='4' />
+    <rect x='1482' y='86' width='418' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='1482' y='90' width='418' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='1881' y='95' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;catalogueApprentissageFormations' x='1581' y='108' class='tableHeader'
+      style='fill:#414348;'>catalogueApprentissageFormations</text>
+    <title>Collection trajectoires-pro.catalogueApprentissageFormations</title>
+    <use x='1483' y='129' xlink:href='#nn' />
+    <use x='1484' y='128' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;&#95;id' x='1505' y='142'
+      class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='1881' y='143' class='dataType' style='fill:#B2B7C0;'>objectId</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;gestionnaire&#95;id' x='1505'
+      y='161'>etablissement&#95;gestionnaire&#95;id</text>
+    <title>&#10697; etablissement_gestionnaire_id
+      objectid</title><text x='1881' y='162' class='dataType' style='fill:#B2B7C0;'>objectId</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;gestionnaire&#95;siret'
+      x='1505' y='180'>etablissement&#95;gestionnaire&#95;siret</text>
+    <title>&#10697; etablissement_gestionnaire_siret
+      string</title><text x='1881' y='181' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;gestionnaire&#95;enseigne'
+      x='1505' y='199'>etablissement&#95;gestionnaire&#95;enseigne</text>
+    <title>&#10697; etablissement_gestionnaire_enseigne
+      string</title><text x='1881' y='200' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1484' y='204' xlink:href='#idx'>
+      <title>&#x1F50D; etablissement_gestionnaire_uai_1 ( etablissement_gestionnaire_uai ) &#x1F50D;
+        cfd_1_etablissement_gestionnaire_uai_1 ( cfd, etablissement_gestionnaire_uai ) </title>
+    </use><text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;gestionnaire&#95;uai' x='1505'
+      y='218'>etablissement&#95;gestionnaire&#95;uai</text>
+    <title>&#10697; etablissement_gestionnaire_uai
+      string</title><text x='1881' y='219' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;gestionnaire&#95;entreprise&#95;raison&#95;sociale'
+      x='1505' y='237'>etablissement&#95;gestionnaire&#95;entreprise&#95;raison&#95;sociale</text>
+    <title>&#10697; etablissement_gestionnaire_entreprise_raison_sociale
+      string</title><text x='1881' y='238' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;gestionnaire&#95;siren'
+      x='1505' y='256'>etablissement&#95;gestionnaire&#95;siren</text>
+    <title>&#10697; etablissement_gestionnaire_siren
+      string</title><text x='1881' y='257' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;formateur&#95;id' x='1505'
+      y='275'>etablissement&#95;formateur&#95;id</text>
+    <title>&#10697; etablissement_formateur_id
+      objectid</title><text x='1881' y='276' class='dataType' style='fill:#B2B7C0;'>objectId</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;formateur&#95;siret' x='1505'
+      y='294'>etablissement&#95;formateur&#95;siret</text>
+    <title>&#10697; etablissement_formateur_siret
+      string</title><text x='1881' y='295' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;formateur&#95;enseigne'
+      x='1505' y='313'>etablissement&#95;formateur&#95;enseigne</text>
+    <title>&#10697; etablissement_formateur_enseigne
+      string</title><text x='1881' y='314' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1484' y='318' xlink:href='#idx'>
+      <title>&#x1F50D; etablissement_formateur_uai_1 ( etablissement_formateur_uai ) &#x1F50D;
+        cfd_1_etablissement_formateur_uai_1 ( cfd, etablissement_formateur_uai ) </title>
+    </use><text id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;formateur&#95;uai'
+      x='1505' y='332'>etablissement&#95;formateur&#95;uai</text>
+    <title>&#10697; etablissement_formateur_uai
+      string</title><text x='1881' y='333' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;formateur&#95;entreprise&#95;raison&#95;sociale'
+      x='1505' y='351'>etablissement&#95;formateur&#95;entreprise&#95;raison&#95;sociale</text>
+    <title>&#10697; etablissement_formateur_entreprise_raison_sociale
+      string</title><text x='1881' y='352' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;formateur&#95;siren' x='1505'
+      y='370'>etablissement&#95;formateur&#95;siren</text>
+    <title>&#10697; etablissement_formateur_siren
+      string</title><text x='1881' y='371' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;etablissement&#95;reference' x='1505'
+      y='389'>etablissement&#95;reference</text>
+    <title>&#10697; etablissement_reference
+      string</title><text x='1881' y='390' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1483' y='395' xlink:href='#nn' />
+    <use x='1484' y='394' xlink:href='#idx'>
+      <title>&#x1F50D; cfd_1_uai_formation_1 ( cfd, uai_formation ) &#x1F50D; cfd_1 ( cfd ) &#x1F50D;
+        cfd_1_etablissement_formateur_uai_1 ( cfd, etablissement_formateur_uai ) &#x1F50D;
+        cfd_1_etablissement_gestionnaire_uai_1 ( cfd, etablissement_gestionnaire_uai ) </title>
+    </use><text id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;cfd' x='1505' y='408'>cfd</text>
+    <title>&#10697; cfd
+      * string</title><text x='1881' y='409' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;cfd&#95;specialite' x='1505'
+      y='427'>cfd&#95;specialite</text>
+    <title>&#10697; cfd_specialite
+      string</title><text x='1881' y='428' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;cfd&#95;outdated' x='1505'
+      y='446'>cfd&#95;outdated</text>
+    <title>&#10697; cfd_outdated
+      bool</title><text x='1881' y='447' class='dataType' style='fill:#B2B7C0;'>bool</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;cfd&#95;date&#95;fermeture' x='1505'
+      y='465'>cfd&#95;date&#95;fermeture</text>
+    <title>&#10697; cfd_date_fermeture
+      date</title><text x='1881' y='466' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;nom&#95;academie' x='1505'
+      y='484'>nom&#95;academie</text>
+    <title>&#10697; nom_academie
+      string</title><text x='1881' y='485' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;num&#95;academie' x='1505'
+      y='503'>num&#95;academie</text>
+    <title>&#10697; num_academie
+      string</title><text x='1881' y='504' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;code&#95;postal' x='1505'
+      y='522'>code&#95;postal</text>
+    <title>&#10697; code_postal
+      string</title><text x='1881' y='523' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;code&#95;commune&#95;insee' x='1505'
+      y='541'>code&#95;commune&#95;insee</text>
+    <title>&#10697; code_commune_insee
+      string</title><text x='1881' y='542' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;num&#95;departement' x='1505'
+      y='560'>num&#95;departement</text>
+    <title>&#10697; num_departement
+      string</title><text x='1881' y='561' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;nom&#95;departement' x='1505'
+      y='579'>nom&#95;departement</text>
+    <title>&#10697; nom_departement
+      string</title><text x='1881' y='580' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;region' x='1505' y='598'>region</text>
+    <title>&#10697; region
+      string</title><text x='1881' y='599' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;localite' x='1505' y='617'>localite</text>
+    <title>&#10697; localite
+      string</title><text x='1881' y='618' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1484' y='622' xlink:href='#idx'>
+      <title>&#x1F50D; uai_formation_1 ( uai_formation ) &#x1F50D; cfd_1_uai_formation_1 ( cfd, uai_formation ) </title>
+    </use><text id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;uai&#95;formation' x='1505'
+      y='636'>uai&#95;formation</text>
+    <title>&#10697; uai_formation
+      string</title><text x='1881' y='637' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;nom' x='1505' y='655'>nom</text>
+    <title>&#10697; nom
+      string</title><text x='1881' y='656' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;intitule&#95;long' x='1505'
+      y='674'>intitule&#95;long</text>
+    <title>&#10697; intitule_long
+      string</title><text x='1881' y='675' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;intitule&#95;court' x='1505'
+      y='693'>intitule&#95;court</text>
+    <title>&#10697; intitule_court
+      string</title><text x='1881' y='694' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;diplome' x='1505' y='712'>diplome</text>
+    <title>&#10697; diplome
+      string</title><text x='1881' y='713' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;niveau' x='1505' y='731'>niveau</text>
+    <title>&#10697; niveau
+      string</title><text x='1881' y='732' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;libelle&#95;court' x='1505'
+      y='750'>libelle&#95;court</text>
+    <title>&#10697; libelle_court
+      string</title><text x='1881' y='751' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='1486'
+      y='769'>&#9662;</text><text id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;bcn&#95;mefs&#95;10'
+      x='1505' y='769'>bcn&#95;mefs&#95;10</text>
+    <title>&#10697; bcn_mefs_10
+      array[object]</title><text x='1881' y='770' class='dataType' style='fill:#B2B7C0;'>array&#91;object&#93;</text>
+    <text id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;date&#95;fermeture' x='1512'
+      y='788'>date&#95;fermeture</text>
+    <title>&#10697; date_fermeture
+      date</title><text x='1888' y='789' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;mef10' x='1512' y='807'>mef10</text>
+    <title>&#10697; mef10
+      string</title><text x='1888' y='808' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='1493'
+      y='826'>&#9662;</text><text id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;modalite' x='1512'
+      y='826'>modalite</text>
+    <title>&#10697; modalite
+      object</title><text x='1888' y='827' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;duree' x='1519' y='845'>duree</text>
+    <title>&#10697; duree
+      string</title><text x='1895' y='846' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;annee' x='1519' y='864'>annee</text>
+    <title>&#10697; annee
+      string</title><text x='1895' y='865' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1483' y='870' xlink:href='#nn' />
+    <use x='1484' y='869' xlink:href='#unq'>
+      <title>&#x1F50D; Unq id_1 ( id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;id' x='1505' y='883'>id</text>
+    <title>&#10697; id
+      * objectid</title><text x='1881' y='884' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='1483' y='889' xlink:href='#nn' /><text x='1486' y='902'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;&#95;meta' x='1505' y='902'>&#95;meta</text>
+    <title>&#10697; _meta
+      * object</title><text x='1881' y='903' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;created&#95;on' x='1512'
+      y='921'>created&#95;on</text>
+    <title>&#10697; created_on
+      date</title><text x='1888' y='922' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;updated&#95;on' x='1512'
+      y='940'>updated&#95;on</text>
+    <title>&#10697; updated_on
+      date</title><text x='1888' y='941' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='1483' y='946' xlink:href='#nn' /><text
+      id='trajectoires&#45;pro&#46;catalogueApprentissageFormations&#46;date&#95;import' x='1512'
+      y='959'>date&#95;import</text>
+    <title>&#10697; date_import
+      * date</title><text x='1888' y='960' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <!-- == Table 'metrics' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;metrics' class='entity' style='stroke:#F9FAFC' x='1482' y='998'
+      width='247' height='266' rx='4' ry='4' />
+    <rect x='1482' y='998' width='247' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='1482' y='1002' width='247' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='1710' y='1007' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;metrics' x='1578' y='1020' class='tableHeader'
+      style='fill:#414348;'>metrics</text>
+    <title>Collection trajectoires-pro.metrics</title>
+    <use x='1483' y='1041' xlink:href='#nn' />
+    <use x='1484' y='1040' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;metrics&#46;&#95;id' x='1505' y='1054' class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='1710' y='1055' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='1483' y='1060' xlink:href='#nn' />
+    <use x='1484' y='1059' xlink:href='#unq'>
+      <title>&#x1F50D; Unq time_1_consumer_1_url_1 ( time, consumer, url ) &#x1F50D; time_1 ( time ) </title>
+    </use><text id='trajectoires&#45;pro&#46;metrics&#46;time' x='1505' y='1073'>time</text>
+    <title>&#10697; time
+      * date</title><text x='1710' y='1074' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='1483' y='1079' xlink:href='#nn' />
+    <use x='1484' y='1078' xlink:href='#unq'>
+      <title>&#x1F50D; Unq time_1_consumer_1_url_1 ( time, consumer, url ) &#x1F50D; consumer_1 ( consumer ) </title>
+    </use><text id='trajectoires&#45;pro&#46;metrics&#46;consumer' x='1505' y='1092'>consumer</text>
+    <title>&#10697; consumer
+      * string</title><text x='1710' y='1093' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1483' y='1098' xlink:href='#nn' />
+    <use x='1484' y='1097' xlink:href='#unq'>
+      <title>&#x1F50D; Unq time_1_consumer_1_url_1 ( time, consumer, url ) &#x1F50D; url_1 ( url ) </title>
+    </use><text id='trajectoires&#45;pro&#46;metrics&#46;url' x='1505' y='1111'>url</text>
+    <title>&#10697; url
+      * string</title><text x='1710' y='1112' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1484' y='1116' xlink:href='#idx'>
+      <title>&#x1F50D; extension_1 ( extension ) </title>
+    </use><text id='trajectoires&#45;pro&#46;metrics&#46;extension' x='1505' y='1130'>extension</text>
+    <title>&#10697; extension
+      string</title><text x='1710' y='1131' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1484' y='1135' xlink:href='#idx'>
+      <title>&#x1F50D; uai_1 ( uai ) </title>
+    </use><text id='trajectoires&#45;pro&#46;metrics&#46;uai' x='1505' y='1149'>uai</text>
+    <title>&#10697; uai
+      string</title><text x='1710' y='1150' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1484' y='1154' xlink:href='#idx'>
+      <title>&#x1F50D; code_certification_1 ( code_certification ) </title>
+    </use><text id='trajectoires&#45;pro&#46;metrics&#46;code&#95;certification' x='1505'
+      y='1168'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      string</title><text x='1710' y='1169' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1484' y='1173' xlink:href='#idx'>
+      <title>&#x1F50D; codes_certifications_1 ( codes_certifications ) </title>
+    </use><text id='trajectoires&#45;pro&#46;metrics&#46;codes&#95;certifications' x='1505'
+      y='1187'>codes&#95;certifications</text>
+    <title>&#10697; codes_certifications
+      array[string]</title><text x='1710' y='1188' class='dataType' style='fill:#B2B7C0;'>array&#91;string&#93;</text>
+    <use x='1484' y='1192' xlink:href='#idx'>
+      <title>&#x1F50D; regions_1 ( regions ) </title>
+    </use><text id='trajectoires&#45;pro&#46;metrics&#46;regions' x='1505' y='1206'>regions</text>
+    <title>&#10697; regions
+      array[string]</title><text x='1710' y='1207' class='dataType' style='fill:#B2B7C0;'>array&#91;string&#93;</text>
+    <text id='trajectoires&#45;pro&#46;metrics&#46;v' x='1505' y='1225'>v</text>
+    <title>&#10697; v
+      int</title><text x='1710' y='1226' class='dataType' style='fill:#B2B7C0;'>int</text>
+    <use x='1484' y='1230' xlink:href='#idx'>
+      <title>&#x1F50D; user_1 ( user ) </title>
+    </use><text id='trajectoires&#45;pro&#46;metrics&#46;user' x='1505' y='1244'>user</text>
+    <title>&#10697; user
+      string</title><text x='1710' y='1245' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <!-- == Table 'logs' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;logs' class='entity' style='stroke:#F9FAFC' x='1748' y='998' width='152'
+      height='209' rx='4' ry='4' />
+    <rect x='1748' y='998' width='152' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='1748' y='1002' width='152' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='1881' y='1007' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;logs' x='1808' y='1020' class='tableHeader'
+      style='fill:#414348;'>logs</text>
+    <title>Collection trajectoires-pro.logs</title>
+    <use x='1749' y='1041' xlink:href='#nn' />
+    <use x='1750' y='1040' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;logs&#46;&#95;id' x='1771' y='1054' class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='1881' y='1055' class='dataType' style='fill:#B2B7C0;'>objectId</text> <text
+      id='trajectoires&#45;pro&#46;logs&#46;name' x='1771' y='1073'>name</text>
+    <title>&#10697; name
+      string</title><text x='1881' y='1074' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;logs&#46;hostname' x='1771' y='1092'>hostname</text>
+    <title>&#10697; hostname
+      string</title><text x='1881' y='1093' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;logs&#46;pid' x='1771' y='1111'>pid</text>
+    <title>&#10697; pid
+      int</title><text x='1881' y='1112' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;logs&#46;level' x='1771' y='1130'>level</text>
+    <title>&#10697; level
+      int</title><text x='1881' y='1131' class='dataType' style='fill:#B2B7C0;'>int</text> <text
+      id='trajectoires&#45;pro&#46;logs&#46;msg' x='1771' y='1149'>msg</text>
+    <title>&#10697; msg
+      string</title><text x='1881' y='1150' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1749' y='1155' xlink:href='#nn' />
+    <use x='1750' y='1154' xlink:href='#idx'>
+      <title>&#x1F50D; time_1 ( time ) </title>
+    </use><text id='trajectoires&#45;pro&#46;logs&#46;time' x='1771' y='1168'>time</text>
+    <title>&#10697; time
+      * date</title><text x='1881' y='1169' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;logs&#46;v' x='1771' y='1187'>v</text>
+    <title>&#10697; v
+      int</title><text x='1881' y='1188' class='dataType' style='fill:#B2B7C0;'>int</text>
+    <!-- == Table 'changelog' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;changelog' class='entity' style='stroke:#F9FAFC' x='1482' y='1283'
+      width='190' height='133' rx='4' ry='4' />
+    <rect x='1482' y='1283' width='190' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='1482' y='1287' width='190' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='1653' y='1292' xlink:href='#shield-slash' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;changelog' x='1542' y='1305' class='tableHeader'
+      style='fill:#414348;'>changelog</text>
+    <title>Collection trajectoires-pro.changelog</title>
+    <use x='1483' y='1326' xlink:href='#nn' />
+    <use x='1484' y='1325' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;changelog&#46;&#95;id' x='1505' y='1339' class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='1653' y='1340' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='1483' y='1345' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;changelog&#46;fileName' x='1505'
+      y='1358'>fileName</text>
+    <title>&#10697; fileName
+      * string</title><text x='1653' y='1359' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='1483' y='1364' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;changelog&#46;appliedAt' x='1505'
+      y='1377'>appliedAt</text>
+    <title>&#10697; appliedAt
+      * date</title><text x='1653' y='1378' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='1483' y='1383' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;changelog&#46;migrationBlock' x='1505'
+      y='1396'>migrationBlock</text>
+    <title>&#10697; migrationBlock
+      * double</title><text x='1653' y='1397' class='dataType' style='fill:#B2B7C0;'>double</text>
+    <!-- == Table 'bcn' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;bcn' class='entity' style='stroke:#F9FAFC' x='418' y='1416' width='247'
+      height='570' rx='4' ry='4' />
+    <rect x='418' y='1416' width='247' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='418' y='1420' width='247' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='646' y='1425' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;bcn' x='526' y='1438' class='tableHeader'
+      style='fill:#414348;'>bcn</text>
+    <title>Collection trajectoires-pro.bcn</title>
+    <use x='419' y='1459' xlink:href='#nn' />
+    <use x='420' y='1458' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;bcn&#46;&#95;id' x='441' y='1472' class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='646' y='1473' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='419' y='1478' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#46;type' x='441'
+      y='1491'>type</text>
+    <title>&#10697; type
+      * enum(&apos;mef&apos;,&apos;cfd&apos;)</title><text x='646' y='1492' class='dataType'
+      style='fill:#B2B7C0;'>enum&#40;&#39;mef&#39;&#44;&#39;cfd&#39;&#41;</text>
+    <use x='419' y='1497' xlink:href='#nn' />
+    <use x='420' y='1496' xlink:href='#unq'>
+      <title>&#x1F50D; Unq code_certification_1 ( code_certification ) </title>
+    </use><text id='trajectoires&#45;pro&#46;bcn&#46;code&#95;certification' x='441'
+      y='1510'>code&#95;certification</text>
+    <title>&#10697; code_certification
+      * string</title><text x='646' y='1511' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='1516' xlink:href='#nn' />
+    <use x='420' y='1515' xlink:href='#idx'>
+      <title>&#x1F50D; code_formation_diplome_1 ( code_formation_diplome ) </title>
+    </use><text id='trajectoires&#45;pro&#46;bcn&#46;code&#95;formation&#95;diplome' x='441'
+      y='1529'>code&#95;formation&#95;diplome</text>
+    <title>&#10697; code_formation_diplome
+      * string</title><text x='646' y='1530' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#46;date&#95;fermeture' x='441' y='1548'>date&#95;fermeture</text>
+    <title>&#10697; date_fermeture
+      date</title><text x='646' y='1549' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='419' y='1554' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#46;libelle' x='441'
+      y='1567'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='646' y='1568' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='422'
+      y='1586'>&#9662;</text><text id='trajectoires&#45;pro&#46;bcn&#46;diplome' x='441' y='1586'>diplome</text>
+    <title>&#10697; diplome
+      object</title><text x='646' y='1587' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='419' y='1592' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#46;code' x='448'
+      y='1605'>code</text>
+    <title>&#10697; code
+      * string</title><text x='653' y='1606' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='1611' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#46;libelle' x='448'
+      y='1624'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='653' y='1625' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='1630' xlink:href='#nn' /><text x='422' y='1643'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;bcn&#46;&#95;meta' x='441' y='1643'>&#95;meta</text>
+    <title>&#10697; _meta
+      * object</title><text x='646' y='1644' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#46;created&#95;on' x='448' y='1662'>created&#95;on</text>
+    <title>&#10697; created_on
+      date</title><text x='653' y='1663' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#46;updated&#95;on' x='448' y='1681'>updated&#95;on</text>
+    <title>&#10697; updated_on
+      date</title><text x='653' y='1682' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='419' y='1687' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#46;date&#95;import' x='448'
+      y='1700'>date&#95;import</text>
+    <title>&#10697; date_import
+      * date</title><text x='653' y='1701' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='419' y='1706' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#46;libelle&#95;long' x='441'
+      y='1719'>libelle&#95;long</text>
+    <title>&#10697; libelle_long
+      * string</title><text x='646' y='1720' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#46;date&#95;ouverture' x='441' y='1738'>date&#95;ouverture</text>
+    <title>&#10697; date_ouverture
+      date</title><text x='646' y='1739' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#46;date&#95;premiere&#95;session' x='441'
+      y='1757'>date&#95;premiere&#95;session</text>
+    <title>&#10697; date_premiere_session
+      string</title><text x='646' y='1758' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#46;date&#95;derniere&#95;session' x='441'
+      y='1776'>date&#95;derniere&#95;session</text>
+    <title>&#10697; date_derniere_session
+      string</title><text x='646' y='1777' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#46;ancien&#95;diplome' x='441' y='1795'>ancien&#95;diplome</text>
+    <title>&#10697; ancien_diplome
+      array[string]</title><text x='646' y='1796' class='dataType' style='fill:#B2B7C0;'>array&#91;string&#93;</text>
+    <text id='trajectoires&#45;pro&#46;bcn&#46;nouveau&#95;diplome' x='441' y='1814'>nouveau&#95;diplome</text>
+    <title>&#10697; nouveau_diplome
+      array[string]</title><text x='646' y='1815' class='dataType' style='fill:#B2B7C0;'>array&#91;string&#93;</text>
+    <text id='trajectoires&#45;pro&#46;bcn&#46;libelle&#95;long&#95;ancien' x='441'
+      y='1833'>libelle&#95;long&#95;ancien</text>
+    <title>&#10697; libelle_long_ancien
+      string</title><text x='646' y='1834' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#46;niveauFormationDiplome' x='441' y='1852'>niveauFormationDiplome</text>
+    <title>&#10697; niveauFormationDiplome
+      string</title><text x='646' y='1853' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#46;groupeSpecialite' x='441' y='1871'>groupeSpecialite</text>
+    <title>&#10697; groupeSpecialite
+      string</title><text x='646' y='1872' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#46;lettreSpecialite' x='441' y='1890'>lettreSpecialite</text>
+    <title>&#10697; lettreSpecialite
+      string</title><text x='646' y='1891' class='dataType' style='fill:#B2B7C0;'>string</text> <text x='422'
+      y='1909'>&#9662;</text><text id='trajectoires&#45;pro&#46;bcn&#46;familleMetier' x='441'
+      y='1909'>familleMetier</text>
+    <title>&#10697; familleMetier
+      object</title><text x='646' y='1910' class='dataType' style='fill:#B2B7C0;'>object</text>
+    <use x='419' y='1915' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#46;code' x='448'
+      y='1928'>code</text>
+    <title>&#10697; code
+      * string</title><text x='653' y='1929' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='1934' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#46;libelle' x='448'
+      y='1947'>libelle</text>
+    <title>&#10697; libelle
+      * string</title><text x='653' y='1948' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='419' y='1953' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#46;isAnneeCommune' x='448'
+      y='1966'>isAnneeCommune</text>
+    <title>&#10697; isAnneeCommune
+      * bool</title><text x='653' y='1967' class='dataType' style='fill:#B2B7C0;'>bool</text>
+    <!-- == Table 'bcn_mef' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;bcn&#95;mef' class='entity' style='stroke:#F9FAFC' x='722' y='1416'
+      width='247' height='570' rx='4' ry='4' />
+    <rect x='722' y='1416' width='247' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='722' y='1420' width='247' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='950' y='1425' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;bcn&#95;mef' x='815' y='1438' class='tableHeader'
+      style='fill:#414348;'>bcn&#95;mef</text>
+    <title>Collection trajectoires-pro.bcn_mef</title>
+    <use x='723' y='1459' xlink:href='#nn' />
+    <use x='724' y='1458' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;&#95;id' x='745' y='1472' class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='950' y='1473' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='723' y='1478' xlink:href='#nn' />
+    <use x='724' y='1477' xlink:href='#unq'>
+      <title>&#x1F50D; Unq mef_stat_11_1 ( mef_stat_11 ) </title>
+    </use><text id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;mef&#95;stat&#95;11' x='745'
+      y='1491'>mef&#95;stat&#95;11</text>
+    <title>&#10697; mef_stat_11
+      * string</title><text x='950' y='1492' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='723' y='1497' xlink:href='#nn' />
+    <use x='724' y='1496' xlink:href='#idx'>
+      <title>&#x1F50D; mef_1 ( mef ) </title>
+    </use><text id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;mef' x='745' y='1510'>mef</text>
+    <title>&#10697; mef
+      * string</title><text x='950' y='1511' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='723' y='1516' xlink:href='#nn' /><text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;dispositif&#95;formation' x='745'
+      y='1529'>dispositif&#95;formation</text>
+    <title>&#10697; dispositif_formation
+      * string</title><text x='950' y='1530' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='723' y='1535' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;formation&#95;diplome'
+      x='745' y='1548'>formation&#95;diplome</text>
+    <title>&#10697; formation_diplome
+      * string</title><text x='950' y='1549' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='723' y='1554' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;duree&#95;dispositif'
+      x='745' y='1567'>duree&#95;dispositif</text>
+    <title>&#10697; duree_dispositif
+      * string</title><text x='950' y='1568' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='723' y='1573' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;annee&#95;dispositif'
+      x='745' y='1586'>annee&#95;dispositif</text>
+    <title>&#10697; annee_dispositif
+      * string</title><text x='950' y='1587' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='723' y='1592' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;libelle&#95;court'
+      x='745' y='1605'>libelle&#95;court</text>
+    <title>&#10697; libelle_court
+      * string</title><text x='950' y='1606' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='723' y='1611' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;libelle&#95;long'
+      x='745' y='1624'>libelle&#95;long</text>
+    <title>&#10697; libelle_long
+      * string</title><text x='950' y='1625' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;date&#95;ouverture' x='745' y='1643'>date&#95;ouverture</text>
+    <title>&#10697; date_ouverture
+      date</title><text x='950' y='1644' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;date&#95;fermeture' x='745' y='1662'>date&#95;fermeture</text>
+    <title>&#10697; date_fermeture
+      date</title><text x='950' y='1663' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;statut&#95;mef' x='745' y='1681'>statut&#95;mef</text>
+    <title>&#10697; statut_mef
+      string</title><text x='950' y='1682' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;nb&#95;option&#95;obligatoire' x='745'
+      y='1700'>nb&#95;option&#95;obligatoire</text>
+    <title>&#10697; nb_option_obligatoire
+      string</title><text x='950' y='1701' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;nb&#95;option&#95;facultatif' x='745'
+      y='1719'>nb&#95;option&#95;facultatif</text>
+    <title>&#10697; nb_option_facultatif
+      string</title><text x='950' y='1720' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;renforcement&#95;langue' x='745'
+      y='1738'>renforcement&#95;langue</text>
+    <title>&#10697; renforcement_langue
+      string</title><text x='950' y='1739' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;duree&#95;projet' x='745' y='1757'>duree&#95;projet</text>
+    <title>&#10697; duree_projet
+      string</title><text x='950' y='1758' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;duree&#95;stage' x='745' y='1776'>duree&#95;stage</text>
+    <title>&#10697; duree_stage
+      string</title><text x='950' y='1777' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;horaire' x='745' y='1795'>horaire</text>
+    <title>&#10697; horaire
+      string</title><text x='950' y='1796' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;mef&#95;inscription&#95;scolarite' x='745'
+      y='1814'>mef&#95;inscription&#95;scolarite</text>
+    <title>&#10697; mef_inscription_scolarite
+      string</title><text x='950' y='1815' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;mef&#95;stat&#95;9' x='745' y='1833'>mef&#95;stat&#95;9</text>
+    <title>&#10697; mef_stat_9
+      string</title><text x='950' y='1834' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;date&#95;intervention' x='745' y='1852'>date&#95;intervention</text>
+    <title>&#10697; date_intervention
+      date</title><text x='950' y='1853' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;libelle&#95;edition' x='745' y='1871'>libelle&#95;edition</text>
+    <title>&#10697; libelle_edition
+      string</title><text x='950' y='1872' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;commentaire' x='745' y='1890'>commentaire</text>
+    <title>&#10697; commentaire
+      string</title><text x='950' y='1891' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='723' y='1896' xlink:href='#nn' /><text x='726' y='1909'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;&#95;meta' x='745' y='1909'>&#95;meta</text>
+    <title>&#10697; _meta
+      * object</title><text x='950' y='1910' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;created&#95;on' x='752' y='1928'>created&#95;on</text>
+    <title>&#10697; created_on
+      date</title><text x='957' y='1929' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;updated&#95;on' x='752' y='1947'>updated&#95;on</text>
+    <title>&#10697; updated_on
+      date</title><text x='957' y='1948' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='723' y='1953' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#95;mef&#46;date&#95;import' x='752'
+      y='1966'>date&#95;import</text>
+    <title>&#10697; date_import
+      * date</title><text x='957' y='1967' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <!-- == Table 'bcn_sise' == -->
+    <rect id='depict_trajectoires&#45;pro&#46;bcn&#95;sise' class='entity' style='stroke:#F9FAFC' x='988' y='1435'
+      width='247' height='532' rx='4' ry='4' />
+    <rect x='988' y='1435' width='247' height='8' rx='4' ry='4' style='stroke-width:0;fill:url(#ttl_BED3F4);' />
+    <rect x='988' y='1439' width='247' height='29' style='stroke-width:0;fill:url(#tbg_BED3F4);' />
+    <use x='1216' y='1444' xlink:href='#shield' />
+    <text id='depict&#45;trajectoires&#45;pro&#46;bcn&#95;sise' x='1081' y='1457' class='tableHeader'
+      style='fill:#414348;'>bcn&#95;sise</text>
+    <title>Collection trajectoires-pro.bcn_sise</title>
+    <use x='989' y='1478' xlink:href='#nn' />
+    <use x='990' y='1477' xlink:href='#pk'>
+      <title>&#x1F511; Pk _id_ ( _id ) </title>
+    </use><text id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;&#95;id' x='1011' y='1491' class='colPk'>&#95;id</text>
+    <title>&#10697; _id
+      * objectid</title><text x='1216' y='1492' class='dataType' style='fill:#B2B7C0;'>objectId</text>
+    <use x='989' y='1497' xlink:href='#nn' />
+    <use x='990' y='1496' xlink:href='#unq'>
+      <title>&#x1F50D; Unq diplome_sise_1 ( diplome_sise ) </title>
+    </use><text id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;diplome&#95;sise' x='1011'
+      y='1510'>diplome&#95;sise</text>
+    <title>&#10697; diplome_sise
+      * string</title><text x='1216' y='1511' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='989' y='1516' xlink:href='#nn' /><text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;type&#95;diplome&#95;sise' x='1011'
+      y='1529'>type&#95;diplome&#95;sise</text>
+    <title>&#10697; type_diplome_sise
+      * string</title><text x='1216' y='1530' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;voie&#95;lmd' x='1011' y='1548'>voie&#95;lmd</text>
+    <title>&#10697; voie_lmd
+      string</title><text x='1216' y='1549' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;domaine&#95;formation' x='1011'
+      y='1567'>domaine&#95;formation</text>
+    <title>&#10697; domaine_formation
+      string</title><text x='1216' y='1568' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='989' y='1573' xlink:href='#nn' /><text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;libelle&#95;intitule&#95;1' x='1011'
+      y='1586'>libelle&#95;intitule&#95;1</text>
+    <title>&#10697; libelle_intitule_1
+      * string</title><text x='1216' y='1587' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;libelle&#95;intitule&#95;2' x='1011'
+      y='1605'>libelle&#95;intitule&#95;2</text>
+    <title>&#10697; libelle_intitule_2
+      string</title><text x='1216' y='1606' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;groupe&#95;specialite' x='1011'
+      y='1624'>groupe&#95;specialite</text>
+    <title>&#10697; groupe_specialite
+      string</title><text x='1216' y='1625' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;lettre&#95;specialite' x='1011'
+      y='1643'>lettre&#95;specialite</text>
+    <title>&#10697; lettre_specialite
+      string</title><text x='1216' y='1644' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;secteur&#95;disciplinaire&#95;sise' x='1011'
+      y='1662'>secteur&#95;disciplinaire&#95;sise</text>
+    <title>&#10697; secteur_disciplinaire_sise
+      string</title><text x='1216' y='1663' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;cite&#95;domaine&#95;formation' x='1011'
+      y='1681'>cite&#95;domaine&#95;formation</text>
+    <title>&#10697; cite_domaine_formation
+      string</title><text x='1216' y='1682' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;duree' x='1011' y='1700'>duree</text>
+    <title>&#10697; duree
+      string</title><text x='1216' y='1701' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;nature&#95;diplome&#95;sise' x='1011'
+      y='1719'>nature&#95;diplome&#95;sise</text>
+    <title>&#10697; nature_diplome_sise
+      string</title><text x='1216' y='1720' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;date&#95;ouverture' x='1011' y='1738'>date&#95;ouverture</text>
+    <title>&#10697; date_ouverture
+      date</title><text x='1216' y='1739' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;date&#95;fermeture' x='1011' y='1757'>date&#95;fermeture</text>
+    <title>&#10697; date_fermeture
+      date</title><text x='1216' y='1758' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;date&#95;intervention' x='1011'
+      y='1776'>date&#95;intervention</text>
+    <title>&#10697; date_intervention
+      date</title><text x='1216' y='1777' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;definitif' x='1011' y='1795'>definitif</text>
+    <title>&#10697; definitif
+      string</title><text x='1216' y='1796' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;n&#95;commentaire' x='1011' y='1814'>n&#95;commentaire</text>
+    <title>&#10697; n_commentaire
+      string</title><text x='1216' y='1815' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;categorie&#95;formation&#95;sise' x='1011'
+      y='1833'>categorie&#95;formation&#95;sise</text>
+    <title>&#10697; categorie_formation_sise
+      string</title><text x='1216' y='1834' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;cite&#95;domaine&#95;detaille' x='1011'
+      y='1852'>cite&#95;domaine&#95;detaille</text>
+    <title>&#10697; cite_domaine_detaille
+      string</title><text x='1216' y='1853' class='dataType' style='fill:#B2B7C0;'>string</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;secteur&#95;discipl&#95;detail&#95;sise' x='1011'
+      y='1871'>secteur&#95;discipl&#95;detail&#95;sise</text>
+    <title>&#10697; secteur_discipl_detail_sise
+      string</title><text x='1216' y='1872' class='dataType' style='fill:#B2B7C0;'>string</text>
+    <use x='989' y='1877' xlink:href='#nn' /><text x='992' y='1890'>&#9662;</text><text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;&#95;meta' x='1011' y='1890'>&#95;meta</text>
+    <title>&#10697; _meta
+      * object</title><text x='1216' y='1891' class='dataType' style='fill:#B2B7C0;'>object</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;created&#95;on' x='1018' y='1909'>created&#95;on</text>
+    <title>&#10697; created_on
+      date</title><text x='1223' y='1910' class='dataType' style='fill:#B2B7C0;'>date</text> <text
+      id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;updated&#95;on' x='1018' y='1928'>updated&#95;on</text>
+    <title>&#10697; updated_on
+      date</title><text x='1223' y='1929' class='dataType' style='fill:#B2B7C0;'>date</text>
+    <use x='989' y='1934' xlink:href='#nn' /><text id='trajectoires&#45;pro&#46;bcn&#95;sise&#46;date&#95;import'
+      x='1018' y='1947'>date&#95;import</text>
+    <title>&#10697; date_import
+      * date</title><text x='1223' y='1948' class='dataType' style='fill:#B2B7C0;'>date</text>
+  </g>
+</svg>
