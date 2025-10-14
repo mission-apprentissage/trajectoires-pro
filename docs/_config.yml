@@ -29,5 +29,5 @@ gh_edit_source: "docs"
 gh_edit_view_mode: "tree"
 
 exclude:
- - dat
+ - dat/**
  
