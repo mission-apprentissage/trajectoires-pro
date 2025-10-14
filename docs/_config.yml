@@ -30,4 +30,14 @@ gh_edit_view_mode: "tree"
 
 exclude:
  - dat/**
+ - .sass-cache/
+ - .jekyll-cache/
+ - gemfiles/
+ - Gemfile
+ - Gemfile.lock
+ - node_modules/
+ - vendor/bundle/
+ - vendor/cache/
+ - vendor/gems/
+ - vendor/ruby/
  
