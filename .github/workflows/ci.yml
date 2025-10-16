@@ -9,6 +9,17 @@ jobs:
         with:
           node-version: 24.10.0
 
+      - name: Setup MongoDB binary cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-${{ runner.os }}-8.0.15
+
+      - name: Download MongoDB binary
+        run: |
+          npx mongodb-memory-server-core download --version 8.0.15
+        working-directory: ./server
+        
       - run: make ci
         env:
           MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
