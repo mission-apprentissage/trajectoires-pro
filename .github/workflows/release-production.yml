@@ -86,9 +86,6 @@ jobs:
       # Install yarn dependencies
       - name: Run yarn Install server
         run: yarn --cwd server install --frozen-lockfile
-        env:
-          MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
-
       
       # Lint
       - name: Run Lint
