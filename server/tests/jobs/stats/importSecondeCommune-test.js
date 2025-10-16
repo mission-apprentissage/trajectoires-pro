@@ -1,4 +1,5 @@
-import chai, { assert } from "chai";
+import * as chai from "chai";
+import { assert } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import MockDate from "mockdate";
 import { omit } from "lodash-es";
@@ -118,40 +119,38 @@ describe("importSecondeCommune", () => {
 
   describe("Au niveau régionales", () => {
     it("Vérifie que l'on ajoute la seconde commune pour les certifications dans une famille de métier", async () => {
-      await Promise.all([
-        insertMEF({
-          code_certification: "23810031211",
-          code_formation_diplome: "40031211",
-          libelle_long: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: true },
-        }),
-        insertMEF({
-          code_certification: "23830031212",
-          code_formation_diplome: "40031212",
-          libelle_long: "TLEPRO METIERS DE L'ACCUEIL",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
-        }),
-        insertMEF({
-          code_certification: "23830031213",
-          code_formation_diplome: "40031213",
-          libelle_long: "TLEPRO MET.COM.VEN.OP.A ANI.GES.ESP.COM. ",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
-        }),
-        insertRegionalesStats({
-          code_certification: "23830031212",
-          code_formation_diplome: "40031212",
-          filiere: "pro",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
-          ...DEFAULT_STATS,
-        }),
-        insertRegionalesStats({
-          code_certification: "23830031213",
-          code_formation_diplome: "40031213",
-          filiere: "pro",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
-          ...DEFAULT_STATS,
-        }),
-      ]);
+      await insertMEF({
+        code_certification: "23810031211",
+        code_formation_diplome: "40031211",
+        libelle_long: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
+        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: true },
+      });
+      await insertMEF({
+        code_certification: "23830031212",
+        code_formation_diplome: "40031212",
+        libelle_long: "TLEPRO METIERS DE L'ACCUEIL",
+        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+      });
+      await insertMEF({
+        code_certification: "23830031213",
+        code_formation_diplome: "40031213",
+        libelle_long: "TLEPRO MET.COM.VEN.OP.A ANI.GES.ESP.COM. ",
+        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+      });
+      await insertRegionalesStats({
+        code_certification: "23830031212",
+        code_formation_diplome: "40031212",
+        filiere: "pro",
+        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        ...DEFAULT_STATS,
+      });
+      await insertRegionalesStats({
+        code_certification: "23830031213",
+        code_formation_diplome: "40031213",
+        filiere: "pro",
+        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        ...DEFAULT_STATS,
+      });
 
       const result = await importSecondeCommune({ stats: "regionales" });
       assert.deepEqual(result, {
@@ -195,42 +194,40 @@ describe("importSecondeCommune", () => {
 
   describe("Au niveau formations", () => {
     it("Vérifie que l'on ajoute la seconde commune pour les certifications dans une famille de métier", async () => {
-      await Promise.all([
-        insertMEF({
-          code_certification: "23810031211",
-          code_formation_diplome: "40031211",
-          libelle_long: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: true },
-        }),
-        insertMEF({
-          code_certification: "23830031212",
-          code_formation_diplome: "40031212",
-          libelle_long: "TLEPRO METIERS DE L'ACCUEIL",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
-        }),
-        insertMEF({
-          code_certification: "23830031213",
-          code_formation_diplome: "40031213",
-          libelle_long: "TLEPRO MET.COM.VEN.OP.A ANI.GES.ESP.COM. ",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
-        }),
-        insertFormationsStats({
-          uai: "01234567",
-          code_certification: "23830031212",
-          code_formation_diplome: "40031212",
-          filiere: "pro",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
-          ...DEFAULT_STATS,
-        }),
-        insertFormationsStats({
-          uai: "01234567",
-          code_certification: "23830031213",
-          code_formation_diplome: "40031213",
-          filiere: "pro",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
-          ...DEFAULT_STATS,
-        }),
-      ]);
+      await insertMEF({
+        code_certification: "23810031211",
+        code_formation_diplome: "40031211",
+        libelle_long: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
+        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: true },
+      });
+      await insertMEF({
+        code_certification: "23830031212",
+        code_formation_diplome: "40031212",
+        libelle_long: "TLEPRO METIERS DE L'ACCUEIL",
+        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+      });
+      await insertMEF({
+        code_certification: "23830031213",
+        code_formation_diplome: "40031213",
+        libelle_long: "TLEPRO MET.COM.VEN.OP.A ANI.GES.ESP.COM. ",
+        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+      });
+      await insertFormationsStats({
+        uai: "01234567",
+        code_certification: "23830031212",
+        code_formation_diplome: "40031212",
+        filiere: "pro",
+        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        ...DEFAULT_STATS,
+      });
+      await insertFormationsStats({
+        uai: "01234567",
+        code_certification: "23830031213",
+        code_formation_diplome: "40031213",
+        filiere: "pro",
+        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        ...DEFAULT_STATS,
+      });
 
       const result = await importSecondeCommune({ stats: "formations" });
       assert.deepEqual(result, {

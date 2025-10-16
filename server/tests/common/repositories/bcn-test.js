@@ -1,5 +1,5 @@
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
-import chai from "chai";
+import * as chai from "chai";
 import streamToArray from "stream-to-array";
 import { omit } from "lodash-es";
 import MockDate from "mockdate";

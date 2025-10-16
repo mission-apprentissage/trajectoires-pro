@@ -206,7 +206,7 @@ Voir [workflow](.github/workflows/jekyll-gh-pages.yml) pour le déploiement.
 
 #### Base de données
 
-Ce projet utilise `mongodb` version 7.
+Ce projet utilise `mongodb` version 8.0.15.
 
 ## [Déploiement](.infra/README.md)
 

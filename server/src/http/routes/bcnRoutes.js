@@ -13,7 +13,7 @@ export default () => {
   const router = express.Router();
 
   router.get(
-    "/api/inserjeunes/bcn.:ext?",
+    "/api/inserjeunes/bcn{.:ext}",
     authMiddleware("private"),
     tryCatch(async (req, res) => {
       const { page, items_par_page, ext } = await validate(

@@ -1,4 +1,5 @@
-import chai, { assert } from "chai";
+import * as chai from "chai";
+import { assert } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import fs from "fs";
 import sinon, { stub } from "sinon";

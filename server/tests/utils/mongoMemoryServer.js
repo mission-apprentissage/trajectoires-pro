@@ -1,4 +1,4 @@
-import { MongoMemoryServer } from "mongodb-memory-server"; // eslint-disable-line node/no-unpublished-import
+import { MongoMemoryServer } from "mongodb-memory-server";
 import { connectToMongodb, getDatabase } from "#src/common/db/mongodb.js";
 import * as MigrateMongo from "migrate-mongo";
 
@@ -11,7 +11,7 @@ export async function startMongod() {
       dbName: "test",
     },
     binary: {
-      version: "5.0.6",
+      version: "8.0.15",
     },
   });
   let uri = mongodHolder.getUri();
@@ -25,7 +25,6 @@ async function runMigration(uri) {
   const config = {
     mongodb: {
       url: uri,
-      options: { useNewUrlParser: true },
     },
     migrationsDir: "migrations",
     changelogCollectionName: "changelog",

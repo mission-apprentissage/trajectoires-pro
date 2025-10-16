@@ -1,7 +1,6 @@
-import axiosist from "axiosist"; // eslint-disable-line node/no-unpublished-import
-import { Readable } from "stream"; // eslint-disable-line node/no-unpublished-require
+import axiosist from "axiosist";
+import { Readable } from "stream";
 import server from "#src/http/server.js";
-// eslint-disable-next-line node/no-unpublished-import
 import { faker } from "@faker-js/faker";
 
 export async function startServer() {

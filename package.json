@@ -9,17 +9,17 @@
   "scripts": {
     "npm:release": "semantic-release",
     "npm:release:local": "CI=true LOCAL_RELEASE=true semantic-release",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@commitlint/cli": "16.2.4",
-    "@commitlint/config-conventional": "16.2.4",
-    "@semantic-release/changelog": "6.0.1",
-    "@semantic-release/exec": "6.0.3",
+    "@commitlint/cli": "20.1.0",
+    "@commitlint/config-conventional": "20.0.0",
+    "@semantic-release/changelog": "6.0.3",
+    "@semantic-release/exec": "7.1.0",
     "@semantic-release/git": "10.0.1",
-    "husky": "^8.0.3",
-    "semantic-release": "19.0.2",
-    "semantic-release-slack-bot": "3.5.2"
+    "husky": "9.1.7",
+    "semantic-release": "25.0.0",
+    "semantic-release-slack-bot": "4.0.2"
   },
   "prettier": {
     "printWidth": 120,
