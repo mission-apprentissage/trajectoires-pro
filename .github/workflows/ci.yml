@@ -15,6 +15,11 @@ jobs:
 
 
       - run: make test
+        env:
+          MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+
+      
+      
 
       # codecov server
       - name: Upload Server coverage to Codecov
