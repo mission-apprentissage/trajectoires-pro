@@ -2,5 +2,5 @@
 
 next_version="${1}"
 
-cd ../server
+cd server
 npm version ${next_version}
