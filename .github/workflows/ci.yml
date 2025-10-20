@@ -9,13 +9,17 @@ jobs:
         with:
           node-version: 24.10.0
 
+      - name: Cache MongoDB binaries
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: ${{ runner.os }}-mongodb
+            
       - run: make ci
-        env:
-          MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
-
 
       - run: make test
         env:
+          MONGOMS_DOWNLOAD_DIR: ~/.cache/mongodb-binaries
           MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
 
       
