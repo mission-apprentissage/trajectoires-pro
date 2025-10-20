@@ -72,26 +72,24 @@ function sendLogsToConsole(outputName) {
 }
 
 function sendLogsToSlack() {
-  const stream = new BunyanSlack(
-    {
-      webhook_url: config.slackWebhookUrl,
-      customFormatter: (record, levelName) => {
-        if (record.type === "http") {
-          record = {
-            url: record.request.url.relative,
-            statusCode: record.response.status,
-            ...(record.error ? { message: record.error.message } : {}),
-          };
-        }
-        return {
-          text: util.format(`[%s][${config.env}] %O`, levelName.toUpperCase(), record),
+  const stream = new BunyanSlack.default({
+    webhookUrl: config.slackWebhookUrl,
+    customFormatter: (record, levelName) => {
+      if (record.type === "http") {
+        record = {
+          url: record.request.url.relative,
+          statusCode: record.response.status,
+          ...(record.error ? { message: record.error.message } : {}),
         };
-      },
+      }
+      return {
+        text: util.format(`[%s][${config.env}] %O`, levelName.toUpperCase(), record),
+      };
     },
-    (error) => {
+    onError: function (error) {
       console.error("Unable to send log to slack", error);
-    }
-  );
+    },
+  });
 
   stream.write = throttle(stream.write, 5000);
 
