@@ -24,14 +24,12 @@ jobs:
               
       - run: make ci
         env:
-          #MONGOMS_DOWNLOAD_DIR: ~/.cache/mongodb-binaries
-          #MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+          # Using mongodb binary download manualy (the download fails when using mongodb-memory-server auto download)
           MONGOMS_SYSTEM_BINARY: /home/runner/.cache/mongodb-binaries/mongodb-linux-x86_64-ubuntu2404-8.0.15/bin/mongod
 
       - run: make test
         env:
-          #MONGOMS_DOWNLOAD_DIR: ~/.cache/mongodb-binaries
-          #MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+          # Using mongodb binary download manualy (the download fails when using mongodb-memory-server auto download)
           MONGOMS_SYSTEM_BINARY: /home/runner/.cache/mongodb-binaries/mongodb-linux-x86_64-ubuntu2404-8.0.15/bin/mongod
 
       

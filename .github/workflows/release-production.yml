@@ -71,7 +71,14 @@ jobs:
         with:
           path: ~/.cache/mongodb-binaries
           key: ${{ runner.os }}-mongodb
-           
+      
+      - name: Download MongoDB Binary
+        run: |
+          mkdir -p ~/.cache/mongodb-binaries/mongodb-linux-x86_64-ubuntu2404-8.0.15
+          wget -q https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz -O /tmp/mongodb.tgz
+          tar -xzf /tmp/mongodb.tgz -C ~/.cache/mongodb-binaries/mongodb-linux-x86_64-ubuntu2404-8.0.15 --strip-components=1
+          ls -la ~/.cache/mongodb-binaries/mongodb-linux-x86_64-ubuntu2404-8.0.15/bin/mongod
+   
       # Install dependencies
       - name: Run yarn Install
         run: yarn install
@@ -89,8 +96,8 @@ jobs:
         run: |
           yarn --cwd server test
         env:
-          MONGOMS_DOWNLOAD_DIR: ~/.cache/mongodb-binaries
-          MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+          # Using mongodb binary download manualy (the download fails when using mongodb-memory-server auto download)
+          MONGOMS_SYSTEM_BINARY: /home/runner/.cache/mongodb-binaries/mongodb-linux-x86_64-ubuntu2404-8.0.15/bin/mongod
 
 
       # codecov
