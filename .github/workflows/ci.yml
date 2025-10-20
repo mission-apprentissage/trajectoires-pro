@@ -14,16 +14,25 @@ jobs:
         with:
           path: ~/.cache/mongodb-binaries
           key: ${{ runner.os }}-mongodb
-            
+      
+      - name: Download MongoDB Binary
+        run: |
+          wget -q https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz -O /tmp/mongodb.tgz
+          mkdir -p ~/.cache/mongodb-binaries/mongodb-linux-x86_64-ubuntu2404-8.0.15
+          tar -xzf /tmp/mongodb.tgz -C ~/.cache/mongodb-binaries/mongodb-linux-x86_64-ubuntu2404-8.0.15 --strip-components=1
+        
+        
       - run: make ci
         env:
-          MONGOMS_DOWNLOAD_DIR: ~/.cache/mongodb-binaries
-          MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+          #MONGOMS_DOWNLOAD_DIR: ~/.cache/mongodb-binaries
+          #MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+          MONGOMS_SYSTEM_BINARY: ~/.cache/mongodb-binaries/mongodb-linux-x86_64-ubuntu2404-8.0.15/bin/mongod
 
       - run: make test
         env:
-          MONGOMS_DOWNLOAD_DIR: ~/.cache/mongodb-binaries
-          MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+          #MONGOMS_DOWNLOAD_DIR: ~/.cache/mongodb-binaries
+          #MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+          MONGOMS_SYSTEM_BINARY: ~/.cache/mongodb-binaries/mongodb-linux-x86_64-ubuntu2404-8.0.15/bin/mongod
 
       
       
