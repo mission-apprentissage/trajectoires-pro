@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:24-alpine
 
 #Install and cache node_modules
 COPY package.json yarn.lock /tmp/

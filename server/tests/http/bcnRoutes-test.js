@@ -1,4 +1,4 @@
-import chai from "chai";
+import * as chai from "chai";
 import chaiDiff from "chai-diff";
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import MockDate from "mockdate";

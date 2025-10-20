@@ -109,7 +109,7 @@ export default () => {
   }
 
   router.get(
-    "/api/inserjeunes/regionales.:ext?",
+    "/api/inserjeunes/regionales{.:ext}",
     authMiddleware("private"),
     tryCatch(async (req, res) => {
       const { millesimes, code_certifications, regions, page, items_par_page, ...rest } = await validate(
@@ -134,7 +134,7 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/regionales/:region.:ext?",
+    "/api/inserjeunes/regionales/:region{.:ext}",
     authMiddleware("private"),
     tryCatch(async (req, res) => {
       const { region, millesimes, code_certifications, page, items_par_page, ...rest } = await validate(
@@ -159,7 +159,7 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/regionales/:region/certifications/:codes_certifications.:ext?",
+    "/api/inserjeunes/regionales/:region/certifications/:codes_certifications{.:ext}",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
       const { region, codes_certifications, millesime, vue, ...options } = await validate(

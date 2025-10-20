@@ -91,7 +91,7 @@ export default () => {
   const router = express.Router();
 
   router.get(
-    "/api/inserjeunes/formations.:ext?",
+    "/api/inserjeunes/formations{.:ext}",
     authMiddleware("private"),
     tryCatch(async (req, res) => {
       const { uais, regions, academies, millesimes, code_certifications, page, items_par_page, ext } = await validate(
@@ -174,7 +174,7 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/formations/:uai-:code_certification.:ext?",
+    "/api/inserjeunes/formations/:uai-:code_certification{.:ext}",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
       const {

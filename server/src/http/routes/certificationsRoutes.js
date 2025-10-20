@@ -74,7 +74,7 @@ export default () => {
   const router = express.Router();
 
   router.get(
-    "/api/inserjeunes/certifications.:ext?",
+    "/api/inserjeunes/certifications{.:ext}",
     authMiddleware("private"),
     tryCatch(async (req, res) => {
       const { millesimes, code_certifications, page, items_par_page, ext } = await validate(
@@ -132,7 +132,7 @@ export default () => {
   );
 
   router.get(
-    "/api/inserjeunes/certifications/:codes_certifications.:ext?",
+    "/api/inserjeunes/certifications/:codes_certifications{.:ext}",
     authMiddleware("public"),
     tryCatch(async (req, res) => {
       const {

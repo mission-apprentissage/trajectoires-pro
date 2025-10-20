@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import config from "#src/config.js";
 import { logger } from "#src/common/logger.js";
-import mongoSanitize from "express-mongo-sanitize";
+import mongoSanitize from "@exortek/express-mongo-sanitize";
 import { logMiddleware } from "./middlewares/logMiddleware.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import { tryCatch } from "./middlewares/tryCatchMiddleware.js";
@@ -50,7 +50,7 @@ export default async () => {
       let mongodbStatus;
 
       await dbCollection("logs")
-        .stats()
+        .findOne({})
         .then(() => {
           mongodbStatus = true;
         })

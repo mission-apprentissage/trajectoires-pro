@@ -1,6 +1,6 @@
 import "./testConfig.js";
 import { stopMongod, removeAll, startMongod } from "./mongoMemoryServer.js";
-import nock from "nock"; // eslint-disable-line node/no-unpublished-import
+import nock from "nock";
 
 nock.disableNetConnect();
 nock.enableNetConnect((host) => {

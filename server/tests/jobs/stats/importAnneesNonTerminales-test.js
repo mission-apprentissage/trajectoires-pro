@@ -1,4 +1,5 @@
-import chai, { assert } from "chai";
+import * as chai from "chai";
+import { assert } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import MockDate from "mockdate";
 import { omit } from "lodash-es";

@@ -2,16 +2,24 @@ name: CI
 on: [push]
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 18.20.2
+          node-version: 24.10.0
 
       - run: make ci
+        env:
+          MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+
 
       - run: make test
+        env:
+          MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+
+      
+      
 
       # codecov server
       - name: Upload Server coverage to Codecov

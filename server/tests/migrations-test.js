@@ -1,4 +1,4 @@
-import chai from "chai";
+import * as chai from "chai";
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
 import { isEqual } from "lodash-es";
 import { getCollectionDescriptors } from "#src/common/db/collections/collections.js";

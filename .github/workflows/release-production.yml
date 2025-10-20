@@ -13,9 +13,9 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 18.20.2
+          node-version: 24.10.0
       - uses: actions/cache@v4
         with:
           path: "**/node_modules"
@@ -55,9 +55,9 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 18.20.2
+          node-version: 24.10.0
       - uses: actions/cache@v4
         with:
           path: "**/node_modules"
@@ -81,6 +81,9 @@ jobs:
       - name: Run Tests
         run: |
           yarn --cwd server test
+        env:
+          MONGOMS_DOWNLOAD_URL: https://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-8.0.15.tgz
+
 
       # codecov
       - name: Upload coverage to Codecov

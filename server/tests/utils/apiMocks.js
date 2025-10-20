@@ -1,4 +1,4 @@
-import nock from "nock"; // eslint-disable-line node/no-unpublished-import
+import nock from "nock";
 import { InserJeunesApi } from "#src/services/inserjeunes/InserJeunesApi.js";
 import { generateCodeCertification } from "./testUtils.js";
 import { CatalogueApprentissageApi } from "#src/services/catalogueApprentissage/CatalogueApprentissageApi.js";

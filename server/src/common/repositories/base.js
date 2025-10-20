@@ -66,7 +66,6 @@ export class MongoRepository extends Repository {
     return dbCollection(this.getCollection()).find({}).stream();
   }
 
-  // eslint-disable-next-line no-unused-vars
   async first(query) {
     const queryPrepared = this.prepare(query);
     return dbCollection(this.getCollection()).find(queryPrepared).limit(1).next();

@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker"; // eslint-disable-line node/no-unpublished-import
+import { faker } from "@faker-js/faker";
 import { merge } from "lodash-es";
 import { createUAI } from "#src/common/utils/validationUtils.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";

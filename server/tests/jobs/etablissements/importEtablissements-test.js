@@ -1,4 +1,4 @@
-import chai from "chai";
+import * as chai from "chai";
 import path from "path";
 import { omit } from "lodash-es";
 import MockDate from "mockdate";

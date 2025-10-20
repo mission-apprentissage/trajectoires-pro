@@ -2,10 +2,8 @@
 // https://mochajs.org/#nodejs-native-esm-support
 const util = require("util");
 const Mocha = require("mocha");
-const chalk = require("chalk");
 const { Base, Spec } = Mocha.reporters;
 const { inherits } = require("util");
-const prettyMilliseconds = require("pretty-ms");
 const color = Base.color;
 const {
   EVENT_RUN_BEGIN,
@@ -18,6 +16,20 @@ const {
 } = Mocha.Runner.constants;
 
 const log = Base.consoleLog;
+
+// Load chalk dynamically (ESM only package)
+let chalk;
+(async () => {
+  const module = await import("chalk");
+  chalk = module.default;
+})();
+
+// Load pretty-ms dynamically (ESM only package)
+let prettyMilliseconds;
+(async () => {
+  const module = await import("pretty-ms");
+  prettyMilliseconds = module.default;
+})();
 
 function stringifyDiffObjs(err) {
   if (typeof err.actual !== "string" || typeof err.expected !== "string") {

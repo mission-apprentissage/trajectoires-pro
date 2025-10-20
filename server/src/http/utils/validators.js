@@ -30,8 +30,7 @@ const customJoi = Joi.extend(
   (joi) => ({
     type: "arrayOf",
     base: joi.array(),
-    // eslint-disable-next-line no-unused-vars
-    coerce(value, helpers) {
+    coerce(value) {
       return { value: formatArrayParameters(value) };
     },
   }),
@@ -41,7 +40,6 @@ const customJoi = Joi.extend(
     messages: {
       "postal_code.invalid": "{{#label}} must be a valid postal code or region code",
     },
-    // eslint-disable-next-line no-unused-vars
     coerce(value, helpers) {
       if (value.length !== 5) {
         return { value };
@@ -59,7 +57,6 @@ const customJoi = Joi.extend(
     messages: {
       "code_certification.invalid": "{{#label}} must be a valid certification code.",
     },
-    // eslint-disable-next-line no-unused-vars
     coerce(value, helpers) {
       const errors = ![CFD_PATTERN, MEF11_PATTERN, SISE_PATTERN].some((r) => r.test(value));
       return { value: value, errors: errors ? helpers.error("code_certification.invalid") : null };

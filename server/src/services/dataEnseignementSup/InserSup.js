@@ -14,7 +14,7 @@ function mergeApiStats(statsStream, millesime) {
     }),
     // Format data
     transformData((stats) => {
-      const formatNd = (parser) => (s) => s === null || s === "nd" ? null : parser(s);
+      const formatNd = (parser) => (s) => (s === null || s === "nd" ? null : parser(s));
 
       const transformations = {
         nb_poursuivants: formatNd(parseInt),

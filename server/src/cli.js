@@ -13,7 +13,6 @@ import { importLibelle } from "./jobs/bcn/importLibelle.js";
 import { importStats, importSupStats } from "./jobs/stats/importStats.js";
 import { importEtablissements } from "./jobs/etablissements/importEtablissements.js";
 import { importFormations as importCAFormations } from "./jobs/catalogueApprentissage/importFormations.js";
-import { backfillMetrics } from "./jobs/backfillMetrics.js";
 import { asArray } from "./common/utils/stringUtils.js";
 import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
 import { computeUAI } from "./jobs/stats/computeUAI.js";
@@ -165,15 +164,6 @@ cli
       const output = out || writeToStdout();
 
       await exportCodeCertifications(output);
-    });
-  });
-
-cli
-  .command("backfillMetrics")
-  .description("Backfill les metrics (champs codes_certifications et regions)")
-  .action((options) => {
-    runScript(() => {
-      return backfillMetrics(options);
     });
   });
 

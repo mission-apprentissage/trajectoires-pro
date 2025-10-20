@@ -24,7 +24,6 @@ watch(yaml, (eventType) => {
 });
 
 export default () => {
-  // eslint-disable-next-line new-cap
   const router = express.Router();
 
   router.use("/api/doc", authMiddleware("public"), swagger.serve, async (req, res) => {

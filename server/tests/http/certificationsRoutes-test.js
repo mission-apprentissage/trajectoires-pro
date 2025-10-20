@@ -1,4 +1,5 @@
-import chai, { expect } from "chai";
+import * as chai from "chai";
+import { expect } from "chai";
 import chaiDiff from "chai-diff";
 import chaiDom from "chai-dom";
 import fs from "fs";

@@ -1,5 +1,5 @@
 import deepEqualInAnyOrder from "deep-equal-in-any-order";
-import chai from "chai";
+import * as chai from "chai";
 
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 
