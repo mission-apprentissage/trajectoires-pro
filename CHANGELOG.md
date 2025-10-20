@@ -1,3 +1,10 @@
+## [1.31.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.31.1...v1.31.2) (2025-10-20)
+
+
+### Bug Fixes
+
+* bunyan slack constructor ([#378](https://github.com/mission-apprentissage/trajectoires-pro/issues/378)) ([0e6be72](https://github.com/mission-apprentissage/trajectoires-pro/commit/0e6be7281a9eaf69156431bedd055c6b9730ff79))
+
 ## [1.31.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.31.0...v1.31.1) (2025-05-26)
 
 
