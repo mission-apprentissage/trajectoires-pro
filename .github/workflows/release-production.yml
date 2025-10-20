@@ -50,7 +50,7 @@ jobs:
   ciserver:
     needs: release
     if: "!startsWith(github.event.head_commit.message, 'chore(release')"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
