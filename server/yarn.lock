@@ -1954,11 +1954,6 @@ fast-levenshtein@^2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
 
-fast-luhn@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/fast-luhn/-/fast-luhn-2.0.2.tgz#abba8fe690417099e2d34dc6ef3c70eafc7105af"
-  integrity sha512-aaIb41cPmEJd2kltUEskBGx4YfASSdTdvuvjfdb70OvUtn+mUAjDzz6o7SnV0h5p2JC63cIYyY+bQ+WnY1/9HA==
-
 file-entry-cache@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/file-entry-cache/-/file-entry-cache-8.0.0.tgz#7787bddcf1131bffb92636c69457bbc0edd6d81f"

@@ -1,5 +1,3 @@
-import { isEmpty } from "lodash-es";
-import luhn from "fast-luhn";
 const ALPHABET_23_LETTERS = [
   "a",
   "b",
@@ -47,7 +45,4 @@ export function isUAIValid(code) {
   let checksum = code.substring(7, 8).toLowerCase();
 
   return checksum === computeChecksum(numbers);
-}
-export function isSiretValid(siret) {
-  return !isEmpty(siret) && siret.length === 14 && luhn(siret);
 }

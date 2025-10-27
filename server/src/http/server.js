@@ -32,15 +32,16 @@ export default async () => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(mongoSanitize({ replaceWith: "_" }));
   app.use(corsMiddleware());
   app.use(logMiddleware());
+  app.use(authRoutes());
+
+  app.use(mongoSanitize({ replaceWith: "_" }));
   app.use(certificationsRoutes());
   app.use(regionalesRoutes());
   app.use(formationsRoutes());
   app.use(bcnRoutes());
   app.use(swaggerRoutes());
-  app.use(authRoutes());
 
   app.use("/static", express.static("public"));
 
