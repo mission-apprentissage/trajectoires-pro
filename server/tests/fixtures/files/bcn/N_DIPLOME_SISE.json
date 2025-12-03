@@ -1,0 +1,33 @@
+{
+    "data": [
+        {
+            "diplome_sise": "2001235",
+            "type_diplome_sise": "DJ",
+            "voie_lmd": null,
+            "domaine_formation": null,
+            "libelle_intitule_1": "INGENIERIE DU COMMERCE ET DE LA VENTE",
+            "libelle_intitule_2": "GESTION COMMERCIALE DES P M E",
+            "groupe_specialite": "312",
+            "lettre_specialite": "P",
+            "secteur_disciplinaire_sise": "39",
+            "cite_domaine_formation": "341",
+            "duree": null,
+            "nature_diplome_sise": null,
+            "date_ouverture": "2009-09-01 00:00:00",
+            "date_fermeture": "2000-08-31 00:00:00",
+            "date_intervention": "2012-10-31 00:00:00",
+            "numero_compte": "BCNSIS2",
+            "gestion_diffusion": "04",
+            "definitif": "O",
+            "id": 38485,
+            "created_at": null,
+            "updated_at": null,
+            "n_commentaire": null,
+            "categorie_formation_sise": null,
+            "cite_domaine_detaille": "0841",
+            "secteur_discipl_detail_sise": "39",
+            "statut_id": 1,
+            "date_statut": "2021-07-12 00:00:00"
+        }
+    ]
+}

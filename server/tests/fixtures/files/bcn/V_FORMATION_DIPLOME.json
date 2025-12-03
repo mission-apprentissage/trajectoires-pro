@@ -1,0 +1,42 @@
+{
+    "data": [
+        {
+            "formation_diplome": "40023203",
+            "niveau_formation_diplome": "403",
+            "groupe_specialite": "4",
+            "lettre_specialite": "T",
+            "ancien_recme": null,
+            "libelle_court": "BAC PRO",
+            "libelle_stat_33": "BATIMENT",
+            "libelle_long_200": "BAC PRO BATIMENT",
+            "date_ouverture": "2022-07-31 00:00:00",
+            "date_fermeture": "2022-08-31 00:00:00",
+            "unite_capitalisable": "N",
+            "date_premiere_session": 1996,
+            "date_derniere_session": 2024,
+            "date_arrete_creation": "1995-10-09 00:00:00",
+            "date_arrete_abrogation": "2023-08-25 00:00:00",
+            "date_arrete_modification_1": "2020-12-14 00:00:00",
+            "date_arrete_modification_2": "2023-11-28 00:00:00",
+            "date_arrete_modification_3": null,
+            "date_arrete_modification_4": null,
+            "date_arrete_modification_5": null,
+            "date_arrete_modification_6": null,
+            "date_arrete_modification_7": null,
+            "date_arrete_modification_8": null,
+            "date_arrete_modification_9": null,
+            "date_arrete_modification_10": null,
+            "commentaire": "CREATION EX NIHILO.",
+            "nature_formation_diplome": "1",
+            "gestionnaire_formation_diplome": "DGESCO A2-3",
+            "date_intervention": "2024-01-06 00:00:00",
+            "numero_compte": "BCNSCO7",
+            "gestion_diffusion": "13",
+            "id_document": null,
+            "cite_domaine_formation": "520",
+            "id": 1,
+            "updated_at": null,
+            "niveau_qualification_rncp": "04"
+        }
+    ]
+}

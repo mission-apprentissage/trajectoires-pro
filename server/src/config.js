@@ -62,6 +62,12 @@ const config = {
     },
   },
   bcn: {
+    api: {
+      baseUrl: env.get("BCN_BASE_URL").default("https://omogen-api-pr.phm.education.gouv.fr/bcnAPI").asString(),
+      login: env.get("BCN_LOGIN").required().asString(),
+      password: env.get("BCN_PASSWORD").required().asString(),
+      omogenKey: env.get("BCN_OMOGEN_KEY").required().asString(),
+    },
     files: {
       familleMetier: path.join(getDirname(import.meta.url), "..", "data", "bcn", "n_famille_metier_spec_pro.csv"),
       lienFamilleMetier: path.join(getDirname(import.meta.url), "..", "data", "bcn", "n_lien_mef_famille_metier.csv"),

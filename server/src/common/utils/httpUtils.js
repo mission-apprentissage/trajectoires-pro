@@ -24,10 +24,22 @@ async function fetchJson(url, options = {}) {
   return JSON.parse(response.data);
 }
 
-async function fetchJsonWithRetry(url, options = {}, retryOptions = { retries: 3 }) {
+async function ignoreRetry(cb, bail, ignoreWhen) {
+  try {
+    return await cb();
+  } catch (err) {
+    if (ignoreWhen && ignoreWhen(err)) {
+      bail(err);
+      return;
+    }
+    throw err;
+  }
+}
+
+async function fetchJsonWithRetry(url, options = {}, retryOptions = { retries: 3, ignoreWhen: () => false }) {
   return asyncRetry(
-    () => {
-      return fetchJson(url, options);
+    (bail) => {
+      return ignoreRetry(async () => fetchJson(url, options), bail, retryOptions.ignoreWhen);
     },
     {
       ...(retryOptions || {}),
@@ -38,11 +50,17 @@ async function fetchJsonWithRetry(url, options = {}, retryOptions = { retries: 3
   );
 }
 
-async function fetchWithRetry(url, options = {}, retryOptions = { retries: 3 }) {
+async function fetchWithRetry(url, options = {}, retryOptions = { retries: 3, ignoreWhen: () => false }) {
   return asyncRetry(
-    async () => {
-      let response = await _fetch(url, { ...options, responseType: "text" });
-      return response.data;
+    async (bail) => {
+      return ignoreRetry(
+        async () => {
+          let response = await _fetch(url, { ...options, responseType: "text" });
+          return response.data;
+        },
+        bail,
+        retryOptions.ignoreWhen
+      );
     },
     {
       ...(retryOptions || {}),
@@ -53,10 +71,16 @@ async function fetchWithRetry(url, options = {}, retryOptions = { retries: 3 }) 
   );
 }
 
-async function fetchStreamWithRetry(url, options = {}, retryOptions = { retries: 3 }) {
+async function fetchStreamWithRetry(url, options = {}, retryOptions = { retries: 3, ignoreWhen: () => false }) {
   return asyncRetry(
-    () => {
-      return fetchStream(url, options);
+    (bail) => {
+      return ignoreRetry(
+        async () => {
+          return fetchStream(url, options);
+        },
+        bail,
+        retryOptions.ignoreWhen
+      );
     },
     {
       ...(retryOptions || {}),

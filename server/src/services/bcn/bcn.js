@@ -1,6 +1,4 @@
-import { compose, transformData, writeData, oleoduc } from "oleoduc";
-import { fetchStream } from "#src/common/utils/httpUtils.js";
-import iconv from "iconv-lite";
+import { compose, writeData, oleoduc } from "oleoduc";
 import { createReadStream } from "fs";
 import { parseCsv } from "#src/common/utils/csvUtils.js";
 import config from "#src/config.js";
@@ -33,16 +31,16 @@ export function getDiplome(codeFormation, niveauxDiplome) {
   };
 }
 
-export async function getNiveauxDiplome(options) {
+export async function getNiveauxDiplome(bcnApi) {
   const niveauxDiplome = [];
 
   await oleoduc(
-    await getBCNTable("N_NIVEAU_FORMATION_DIPLOME", options),
+    await bcnApi.fetchNomenclature("N_NIVEAU_FORMATION_DIPLOME"),
     writeData((data) => {
       niveauxDiplome.push({
-        niveau: data["NIVEAU_FORMATION_DIPLOME"],
-        libelle_court: data["LIBELLE_COURT"],
-        libelle: data["LIBELLE_100"],
+        niveau: data["niveau_formation_diplome"],
+        libelle_court: data["libelle_court"],
+        libelle: data["libelle_100"],
       });
     })
   );
@@ -72,42 +70,22 @@ export function getDiplomeSup(typeDiplomeSise, typesDiplome) {
   };
 }
 
-export async function getTypeDiplomeSise(options) {
+export async function getTypeDiplomeSise(bcnApi) {
   const typesDiplome = [];
 
   await oleoduc(
-    await getBCNTable("N_TYPE_DIPLOME_SISE", options),
+    await bcnApi.fetchNomenclature("N_TYPE_DIPLOME_SISE"),
     writeData((data) => {
       typesDiplome.push({
-        typeDiplome: data["TYPE_DIPLOME_SISE"],
-        niveau: data["NIVEAU_INTERMINISTERIEL"],
-        libelle_court: data["LIBELLE_COURT"],
-        libelle: data["LIBELLE_LONG"],
+        typeDiplome: data["type_diplome_sise"],
+        niveau: data["niveau_interministeriel"],
+        libelle_court: data["libelle_court"],
+        libelle: data["libelle_long"],
       });
     })
   );
 
   return typesDiplome;
-}
-
-export async function getBCNTable(tableName, options = {}) {
-  let stream =
-    options[tableName] ||
-    compose(
-      await fetchStream(`https://bcn.depp.education.fr/bcn/index.php/export/CSV?n=${tableName}&separator=%7C`),
-      iconv.decodeStream("iso-8859-1")
-    );
-
-  return compose(
-    stream,
-    transformData(
-      (data) => {
-        return data.toString().replace(/"/g, "'");
-      },
-      { objectMode: false }
-    ),
-    parseCsv({ delimiter: "|" })
-  );
 }
 
 export async function getFamilleMetier(filePath = null) {
@@ -125,22 +103,6 @@ export async function getFamilleMetier(filePath = null) {
   );
 
   return familleMetier;
-}
-
-export async function getFamilleMetierSecondeCommune(options) {
-  const secondeCommune = [];
-
-  await oleoduc(
-    await getBCNTable("N_LIEN_MEF_FAMILLE_METIER", options),
-    writeData((data) => {
-      secondeCommune.push({
-        code: data["FAMILLE_METIER"],
-        mef: data["MEF"],
-      });
-    })
-  );
-
-  return secondeCommune;
 }
 
 export function getLienFamilleMetier(filePath = null) {

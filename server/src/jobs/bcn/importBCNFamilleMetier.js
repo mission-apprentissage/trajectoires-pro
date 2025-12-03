@@ -2,7 +2,7 @@ import { filterData, flattenArray, oleoduc, transformData, writeData } from "ole
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
-import * as BCN from "#src/services/bcn.js";
+import * as BCN from "#src/services/bcn/bcn.js";
 import BCNMefRepository from "#src/common/repositories/bcnMef.js";
 
 const logger = getLoggerWithContext("import");

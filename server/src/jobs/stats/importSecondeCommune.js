@@ -12,7 +12,7 @@ import BCNRepository from "#src/common/repositories/bcn.js";
 import CertificationStatsRepository from "#src/common/repositories/certificationStats.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
-import * as BCN from "#src/services/bcn.js";
+import * as BCN from "#src/services/bcn/bcn.js";
 import { REGIONS } from "#src/services/regions.js";
 
 const logger = getLoggerWithContext("import");

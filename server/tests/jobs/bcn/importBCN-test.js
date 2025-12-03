@@ -1,22 +1,10 @@
 import assert from "assert";
-import { merge, omit } from "lodash-es";
+import { omit } from "lodash-es";
 import MockDate from "mockdate";
-import { createStream } from "#tests/utils/testUtils.js";
 import { importBCN } from "#src/jobs/bcn/importBCN.js";
 import { bcn } from "#src/common/db/collections/collections.js";
 import { mockBCN } from "#tests/utils/apiMocks.js";
-
-function getBcnTables(custom = {}) {
-  return merge(
-    {},
-    {
-      N_MEF: createStream(`MEF|FORMATION_DIPLOME|LIBELLE_LONG|DATE_FERMETURE`),
-      N_FORMATION_DIPLOME: createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|LIBELLE_COURT|LIBELLE_STAT_33`),
-      V_FORMATION_DIPLOME: createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|LIBELLE_COURT|LIBELLE_STAT_33`),
-    },
-    custom
-  );
-}
+import * as Fixtures from "#tests/utils/fixtures.js";
 
 describe("importBCN", () => {
   before(() => {
@@ -28,20 +16,23 @@ describe("importBCN", () => {
   });
 
   it("Vérifie qu'on peut importer les mefs", async () => {
-    mockBCN((client) => {
-      client.get("/CSV?n=N_NIVEAU_FORMATION_DIPLOME&separator=%7C").reply(
-        200,
-        `NIVEAU_FORMATION_DIPLOME|NIVEAU_INTERMINISTERIEL|LIBELLE_COURT|LIBELLE_100|ANCIEN_NIVEAU|DATE_OUVERTURE|DATE_FERMETURE|DATE_INTERVENTION|N_COMMENTAIRE|NIVEAU_QUALIFICATION_RNCP
-        400|4|BAC PRO|BAC PROFESSIONNEL|40|||10/12/2020||04`
-      );
+    await mockBCN(async (client) => {
+      client
+        .get("/nomenclature/N_NIVEAU_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_NIVEAU_FORMATION_DIPLOME"));
+
+      client.get("/nomenclature/N_MEF?schema=consultation").reply(200, await Fixtures.BCN("N_MEF"));
+
+      client
+        .get("/nomenclature/V_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("V_FORMATION_DIPLOME_EMPTY"));
+
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_EMPTY"));
     });
 
-    let stats = await importBCN(
-      getBcnTables({
-        N_MEF: createStream(`MEF|MEF_STAT_11|MEF_STAT_9|FORMATION_DIPLOME|LIBELLE_LONG|DATE_FERMETURE|DATE_OUVERTURE
-999999991|99999999911|999999999|40023203|BAC PRO|31/08/2022|31/07/2022`),
-      })
-    );
+    let stats = await importBCN();
 
     const found = await bcn().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found, {
@@ -70,21 +61,23 @@ describe("importBCN", () => {
   });
 
   it("Vérifie qu'on peut importer un mef avec diplome inconnu", async () => {
-    mockBCN((client) => {
+    await mockBCN(async (client) => {
       client
-        .get("/CSV?n=N_NIVEAU_FORMATION_DIPLOME&separator=%7C")
-        .reply(
-          200,
-          `NIVEAU_FORMATION_DIPLOME|NIVEAU_INTERMINISTERIEL|LIBELLE_COURT|LIBELLE_100|ANCIEN_NIVEAU|DATE_OUVERTURE|DATE_FERMETURE|DATE_INTERVENTION|N_COMMENTAIRE|NIVEAU_QUALIFICATION_RNCP`
-        );
+        .get("/nomenclature/N_NIVEAU_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_NIVEAU_FORMATION_DIPLOME"));
+
+      client.get("/nomenclature/N_MEF?schema=consultation").reply(200, await Fixtures.BCN("N_MEF_DIPLOME_INCONNU"));
+
+      client
+        .get("/nomenclature/V_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("V_FORMATION_DIPLOME_EMPTY"));
+
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_EMPTY"));
     });
 
-    let stats = await importBCN(
-      getBcnTables({
-        N_MEF: createStream(`MEF|MEF_STAT_11|MEF_STAT_9|FORMATION_DIPLOME|LIBELLE_LONG|DATE_FERMETURE|DATE_OUVERTURE
-999999991|99999999911|999999999|INCONNU|BAC PRO|31/08/2022|31/07/2022`),
-      })
-    );
+    let stats = await importBCN();
 
     let found = await bcn().findOne({}, { projection: { _id: 0 } });
     assert.ok(!found.diplome);
@@ -97,21 +90,23 @@ describe("importBCN", () => {
   });
 
   it("Vérifie qu'on peut importer les CFD (V_FORMATION_DIPLOME)", async () => {
-    mockBCN((client) => {
-      client.get("/CSV?n=N_NIVEAU_FORMATION_DIPLOME&separator=%7C").reply(
-        200,
-        `NIVEAU_FORMATION_DIPLOME|NIVEAU_INTERMINISTERIEL|LIBELLE_COURT|LIBELLE_100|ANCIEN_NIVEAU|DATE_OUVERTURE|DATE_FERMETURE|DATE_INTERVENTION|N_COMMENTAIRE|NIVEAU_QUALIFICATION_RNCP
-        400|4|BAC PRO|BAC PROFESSIONNEL|40|||10/12/2020||04`
-      );
+    await mockBCN(async (client) => {
+      client
+        .get("/nomenclature/N_NIVEAU_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_NIVEAU_FORMATION_DIPLOME"));
+
+      client.get("/nomenclature/N_MEF?schema=consultation").reply(200, await Fixtures.BCN("N_MEF_EMPTY"));
+
+      client
+        .get("/nomenclature/V_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("V_FORMATION_DIPLOME"));
+
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_EMPTY"));
     });
 
-    let stats = await importBCN(
-      getBcnTables({
-        V_FORMATION_DIPLOME:
-          createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|GROUPE_SPECIALITE|LETTRE_SPECIALITE|LIBELLE_COURT|LIBELLE_STAT_33|LIBELLE_LONG_200|DATE_FERMETURE|DATE_OUVERTURE
-40023203|403|4|T|BAC PRO|BATIMENT|BAC PRO BATIMENT|31/08/2022|31/07/2022`),
-      })
-    );
+    let stats = await importBCN();
 
     const found = await bcn().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found, {
@@ -146,22 +141,23 @@ describe("importBCN", () => {
   });
 
   it("Vérifie qu'on peut importer les CFD (N_FORMATION_DIPLOME)", async () => {
-    mockBCN((client) => {
-      client.get("/CSV?n=N_NIVEAU_FORMATION_DIPLOME&separator=%7C").reply(
-        200,
-        `NIVEAU_FORMATION_DIPLOME|NIVEAU_INTERMINISTERIEL|LIBELLE_COURT|LIBELLE_100|ANCIEN_NIVEAU|DATE_OUVERTURE|DATE_FERMETURE|DATE_INTERVENTION|N_COMMENTAIRE|NIVEAU_QUALIFICATION_RNCP
-        145|1|MASTER|MASTER (LMD) INDIFFERENCIE||01/09/2004||10/12/2020||07`
-      );
+    await mockBCN(async (client) => {
+      client
+        .get("/nomenclature/N_NIVEAU_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_NIVEAU_FORMATION_DIPLOME"));
+
+      client.get("/nomenclature/N_MEF?schema=consultation").reply(200, await Fixtures.BCN("N_MEF_EMPTY"));
+
+      client
+        .get("/nomenclature/V_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("V_FORMATION_DIPLOME_EMPTY"));
+
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME"));
     });
 
-    let stats = await importBCN(
-      getBcnTables({
-        N_FORMATION_DIPLOME: createStream(
-          `FORMATION_DIPLOME|ANCIEN_DIPLOME_1|NOUVEAU_DIPLOME_1|LIBELLE_COURT|LIBELLE_STAT_33|LIBELLE_LONG_200|DATE_OUVERTURE
-14545678|||BAC PRO|BATIMENT|BAC PRO BATIMENT|31/07/2022`
-        ),
-      })
-    );
+    let stats = await importBCN();
 
     const found = await bcn().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(omit(found, ["_meta"]), {
@@ -175,6 +171,9 @@ describe("importBCN", () => {
         code: "7",
         libelle: "MASTER",
       },
+      niveauFormationDiplome: "463",
+      groupeSpecialite: "212",
+      lettreSpecialite: "S",
       ancien_diplome: [],
       nouveau_diplome: [],
     });
@@ -183,21 +182,23 @@ describe("importBCN", () => {
   });
 
   it("Vérifie qu'on peut gérer les codes formation avec diplome inconnu", async () => {
-    mockBCN((client) => {
+    await mockBCN(async (client) => {
       client
-        .get("/CSV?n=N_NIVEAU_FORMATION_DIPLOME&separator=%7C")
-        .reply(
-          200,
-          `NIVEAU_FORMATION_DIPLOME|NIVEAU_INTERMINISTERIEL|LIBELLE_COURT|LIBELLE_100|ANCIEN_NIVEAU|DATE_OUVERTURE|DATE_FERMETURE|DATE_INTERVENTION|N_COMMENTAIRE|NIVEAU_QUALIFICATION_RNCP`
-        );
+        .get("/nomenclature/N_NIVEAU_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_NIVEAU_FORMATION_DIPLOME"));
+
+      client.get("/nomenclature/N_MEF?schema=consultation").reply(200, await Fixtures.BCN("N_MEF_EMPTY"));
+
+      client
+        .get("/nomenclature/V_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("V_FORMATION_DIPLOME_EMPTY"));
+
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_UNKNOW"));
     });
 
-    let stats = await importBCN(
-      getBcnTables({
-        N_FORMATION_DIPLOME: createStream(`FORMATION_DIPLOME|NIVEAU_FORMATION_DIPLOME|LIBELLE_LONG_200|DATE_OUVERTURE
-        99999902|999|TEST|31/07/2022`),
-      })
-    );
+    let stats = await importBCN();
 
     let found = await bcn().findOne({}, { projection: { _id: 0 } });
     assert.ok(!found.diplome);

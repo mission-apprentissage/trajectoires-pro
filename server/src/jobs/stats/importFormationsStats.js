@@ -1,16 +1,14 @@
-import { compose, flattenArray, mergeStreams, oleoduc, transformData, writeData, filterData } from "oleoduc";
-import { createReadStream } from "fs";
+import { flattenArray, oleoduc, transformData, writeData, filterData, compose } from "oleoduc";
 import { Readable } from "stream";
 import { pick, merge } from "lodash-es";
 import { upsert } from "#src/common/db/mongodb.js";
-import path from "path";
-import { parseCsv } from "#src/common/utils/csvUtils.js";
 import { isUAIValid } from "#src/common/utils/validationUtils.js";
 import { InserJeunes } from "#src/services/inserjeunes/InserJeunes.js";
 import { formationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
-import { findRegionByNom, findAcademieByCode } from "#src/services/regions.js";
+import { findRegionByCodeInsee, findAcademieByCode } from "#src/services/regions.js";
+import { NATURE_UAI_ETABLISSEMENTS_INSERJEUNES } from "#src/services/acce.js";
 import {
   computeCustomStats,
   getMillesimesFormations,
@@ -19,97 +17,18 @@ import {
   getUnknownIJFields,
 } from "#src/common/stats.js";
 import { getCertificationInfo } from "#src/common/certification.js";
-import { getDirname } from "#src/common/utils/esmUtils.js";
 import AcceEtablissementRepository from "#src/common/repositories/acceEtablissement.js";
 
-const __dirname = getDirname(import.meta.url);
 const logger = getLoggerWithContext("import");
 
-async function convertEtablissementsIntoParameters(millesime) {
-  const files = [
-    `depp-2022-etablissements-${millesime}-pro.csv`,
-    `depp-2022-etablissements-${millesime}-apprentissage.csv`,
-  ];
-
-  const streams = await Promise.all(
-    files.map(async (fileName) => {
-      const stream = createReadStream(path.join(__dirname, "../../../data/", fileName));
-      return compose(stream, parseCsv());
-    })
-  );
-
-  return compose(
-    mergeStreams(streams),
-    transformData((data) => {
-      return {
-        uai: data["n°UAI de l'établissement"],
-        region: data["Région"],
-        millesime,
-      };
-    })
-  );
-}
-
-async function streamDefaultParameters(millesimes) {
-  const streams = await Promise.all(millesimes.map((millesime) => convertEtablissementsIntoParameters(millesime)));
-
-  return mergeStreams(streams);
-}
-
-async function loadParameters(parameters, millesimes) {
-  const results = [];
-
-  logger.info(`Création de la liste des établissements à importer par millésime`);
-
-  const stream = parameters ? Readable.from(parameters) : await streamDefaultParameters(millesimes);
-
-  const logCurrentList = (millesimes, results) =>
-    logger.debug(`Etablissements à importer pour les millésimes ${millesimes.join(",")} : ${results.length}`);
-
-  await oleoduc(
-    stream,
-    writeData(
-      async (data) => {
-        const { uai, millesime } = data;
-
-        if (!isUAIValid(uai)) {
-          logger.warn(`UAI invalide détecté ${uai}`);
-          return;
-        }
-
-        const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
-
-        const index = results.findIndex((e) => e.uai === uai && e.millesime === millesime);
-        if (index === -1) {
-          results.push({
-            uai,
-            libelle_etablissement: etablissement?.appellation_officielle,
-            millesime,
-            region: findRegionByNom(data.region),
-            academie: findAcademieByCode(etablissement?.academie),
-          });
-
-          if (results.length % 100 === 0) {
-            logCurrentList(millesimes, results);
-          }
-        }
-      },
-      { parallel: 10 }
-    )
-  );
-
-  logCurrentList(millesimes, results);
-
-  return results;
-}
-
 export async function importFormationsStats(options = {}) {
-  const jobStats = { created: 0, updated: 0, failed: 0 };
+  const jobStats = { created: 0, updated: 0, failed: 0, ignored: 0 };
 
   // Set a default retry for the InserJeunes API
   const inserjeunesOptions = merge({ apiOptions: { retry: { retries: 5 } } }, options.inserjeunesOptions || {});
   const ij = options.inserjeunes || new InserJeunes(inserjeunesOptions);
   const millesimes = options.millesimes || getMillesimesFormations();
+  const parameters = options.parameters || null;
 
   function handleError(e, context) {
     logger.error({ err: e, ...context }, `Impossible d'importer les stats`);
@@ -117,12 +36,48 @@ export async function importFormationsStats(options = {}) {
     return null; //ignore chunk
   }
 
-  const parameters = await loadParameters(options.parameters, millesimes);
-
-  logger.info(`Import des stats pour ${parameters.length} UAI/millesime...`);
-
+  logger.info(`Import des stats...`, { parameters, millesimes });
   await oleoduc(
-    Readable.from(parameters),
+    parameters
+      ? compose(
+          Readable.from(parameters.map((d) => d.uai)),
+          transformData(async (uai) => {
+            const etablissement = await AcceEtablissementRepository.first({ numero_uai: uai });
+            if (!etablissement) {
+              handleError(new Error(`Etablissement inconnue dans la base ACCE`, parameters.uai));
+              return null;
+            }
+
+            return etablissement;
+          })
+        )
+      : await AcceEtablissementRepository.find({ nature_uai: NATURE_UAI_ETABLISSEMENTS_INSERJEUNES }),
+    transformData((data) => {
+      return millesimes.map((millesime) => ({
+        millesime,
+        etablissement: data,
+      }));
+    }),
+    flattenArray(),
+    transformData(
+      async (data) => {
+        const { etablissement, millesime } = data;
+
+        if (!isUAIValid(etablissement.numero_uai)) {
+          logger.warn(`UAI invalide détecté ${etablissement.numero_uai}`);
+          return;
+        }
+
+        return {
+          uai: etablissement.numero_uai,
+          libelle_etablissement: etablissement.appellation_officielle,
+          millesime,
+          region: findRegionByCodeInsee(etablissement.departement_insee_3),
+          academie: findAcademieByCode(etablissement.academie),
+        };
+      },
+      { parallel: 10 }
+    ),
     filterData((parameters) => {
       if (!parameters.academie) {
         handleError(new Error(`Académie inconnue pour l'établissement ${parameters.uai}`));
@@ -142,9 +97,19 @@ export async function importFormationsStats(options = {}) {
               };
             });
           })
-          .catch((e) => handleError(e, params));
+          .catch((e) => {
+            if (e.httpStatusCode === 400 && e.data === '{"msg":"UAI incorrect ou agricole"}') {
+              logger.info("Pas de statistiques pour cet établissement.", {
+                uai: params.uai,
+                millesime: params.millesime,
+              });
+              jobStats.ignored++;
+              return;
+            }
+            return handleError(e, params);
+          });
       },
-      { parallel: 10 }
+      { parallel: 1 }
     ),
     flattenArray(),
     transformData((data) => {

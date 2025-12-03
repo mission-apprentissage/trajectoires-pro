@@ -2,12 +2,14 @@ import { RateLimitedApi } from "#src/common/api/RateLimitedApi.js";
 import config from "#src/config.js";
 import { fetchJsonWithRetry, fetchStreamWithRetry } from "#src/common/utils/httpUtils.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
+import { text } from "stream/consumers";
+import { ApiError } from "#src/common/api/ApiError.js";
 
 const logger = getLoggerWithContext("api/inserjeunes");
 
 class InserJeunesApi extends RateLimitedApi {
   constructor(options = {}) {
-    super("InserJeunesApi", { nbRequests: 5, durationInSeconds: 1, ...options });
+    super("InserJeunesApi", { nbRequests: 10, durationInSeconds: 1, ...options });
     this.access_token = null;
     this.access_token_timestamp = null;
     this.access_token_timeout = options.access_token_timeout || 60000 * 2; //minutes
@@ -61,17 +63,36 @@ class InserJeunesApi extends RateLimitedApi {
       }
 
       // /!\ L'API Inserjeunes retourne un json dans un json, on retourne le json en string ici
-      const response = await fetchStreamWithRetry(
-        `${InserJeunesApi.baseApiUrl}/UAI/${uai}/millesime/${millesime}`,
-        {
-          headers: {
-            ...this.getAuthHeaders(),
+      try {
+        const response = await fetchStreamWithRetry(
+          `${InserJeunesApi.baseApiUrl}/UAI/${uai}/millesime/${millesime}`,
+          {
+            headers: {
+              ...this.getAuthHeaders(),
+            },
           },
-        },
-        { ...this.retry }
-      );
+          {
+            ignoreWhen: (err) => {
+              //No retry on 400
+              if (err?.response?.status === 400) {
+                return true;
+              }
+              return false;
+            },
+            ...this.retry,
+          }
+        );
 
-      return response;
+        return response;
+      } catch (e) {
+        throw new ApiError(
+          this.name,
+          e.message,
+          e.response?.status || e.code,
+          e?.response?.data ? await text(e?.response?.data) : null,
+          { cause: e }
+        );
+      }
     });
   }
 

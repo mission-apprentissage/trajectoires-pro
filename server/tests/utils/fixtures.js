@@ -29,3 +29,7 @@ export async function FormationsInserSupMillesimesMixtes(withDouble = false) {
 
   return readJson("../fixtures/files/inserSup/formationsMillesimesMixtes.json");
 }
+
+export async function BCN(nomenclature) {
+  return readJson(`../fixtures/files/bcn/${nomenclature}.json`);
+}

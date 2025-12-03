@@ -5,6 +5,7 @@ import { bcn } from "#src/common/db/collections/collections.js";
 import { mockBCN } from "#tests/utils/apiMocks.js";
 import { importBCNContinuum } from "#src/jobs/bcn/importBCNContinuum.js";
 import { insertCFD } from "#tests/utils/fakeData.js";
+import * as Fixtures from "#tests/utils/fixtures.js";
 
 describe("importBCNContinuum", () => {
   before(() => {
@@ -16,12 +17,10 @@ describe("importBCNContinuum", () => {
   });
 
   it("Vérifie qu'on peut importer les anciens/nouveaux diplomes", async () => {
-    mockBCN((client) => {
-      client.get("/CSV?n=N_FORMATION_DIPLOME&separator=%7C").reply(
-        200,
-        `FORMATION_DIPLOME|DATE_PREMIERE_SESSION|DATE_DERNIERE_SESSION|ANCIEN_DIPLOME_1|ANCIEN_DIPLOME_2|NOUVEAU_DIPLOME_1|NOUVEAU_DIPLOME_2
-      14545678|2018|2023|old_1|old_2|new_1|new_2`
-      );
+    await mockBCN(async (client) => {
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_CONTINUUM"));
     });
 
     await insertCFD({
@@ -57,14 +56,10 @@ describe("importBCNContinuum", () => {
   });
 
   it("Vérifie qu'on ajoute les anciens/nouveaux diplomes manquants", async () => {
-    mockBCN((client) => {
-      client.get("/CSV?n=N_FORMATION_DIPLOME&separator=%7C").reply(
-        200,
-        `FORMATION_DIPLOME|DATE_PREMIERE_SESSION|DATE_DERNIERE_SESSION|ANCIEN_DIPLOME_1|ANCIEN_DIPLOME_2|NOUVEAU_DIPLOME_1|NOUVEAU_DIPLOME_2
-      14545678|2018|2023|old_1|old_2|new_1|new_2
-      old_1|2018|2023|old||new|
-      new_1|2018|2023|old||new|`
-      );
+    await mockBCN(async (client) => {
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_CONTINUUM_MISSING"));
     });
 
     await Promise.all([

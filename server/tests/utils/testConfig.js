@@ -11,3 +11,6 @@ process.env.CATALOGUE_APPRENTISSAGE_USERNAME = "username";
 process.env.CATALOGUE_APPRENTISSAGE_PASSWORD = "password";
 process.env.TRAJECTOIRES_PRO_INSERSUP_BASE_URL = "https://insersup";
 process.env.TRAJECTOIRES_PRO_INSERSUP_API_KEY = "secret";
+process.env.BCN_LOGIN = "login";
+process.env.BCN_PASSWORD = "password";
+process.env.BCN_OMOGEN_KEY = "key";

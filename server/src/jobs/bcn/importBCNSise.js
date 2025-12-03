@@ -1,59 +1,63 @@
 import { oleoduc, transformData, writeData } from "oleoduc";
 import { upsert } from "#src/common/db/mongodb.js";
-import { getBCNTable, getDiplomeSup, getTypeDiplomeSise } from "#src/services/bcn.js";
+import { getDiplomeSup, getTypeDiplomeSise } from "#src/services/bcn/bcn.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { bcnSise } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { parseAsUTCDate } from "#src/common/utils/dateUtils.js";
 import { fromPairs } from "lodash-es";
+import { BCNApi } from "#src/services/bcn/BCNApi.js";
 
 const logger = getLoggerWithContext("import");
 
 function fieldsValue(data, typesDiplome) {
   const FIELDS_MAPPER = {
-    DIPLOME_SISE: "diplome_sise",
-    TYPE_DIPLOME_SISE: "type_diplome_sise",
-    VOIE_LMD: "voie_lmd",
-    DOMAINE_FORMATION: "domaine_formation",
-    LIBELLE_INTITULE_1: "libelle_intitule_1",
-    LIBELLE_INTITULE_2: "libelle_intitule_2",
-    GROUPE_SPECIALITE: "groupe_specialite",
-    LETTRE_SPECIALITE: "lettre_specialite",
-    SECTEUR_DISCIPLINAIRE_SISE: "secteur_disciplinaire_sise",
-    CITE_DOMAINE_FORMATION: "cite_domaine_formation",
-    DUREE: "duree",
-    NATURE_DIPLOME_SISE: "nature_diplome_sise",
-    DATE_OUVERTURE: "date_ouverture",
-    DATE_FERMETURE: "date_fermeture",
-    DATE_INTERVENTION: "date_intervention",
-    DEFINITIF: "definitif",
-    N_COMMENTAIRE: "n_commentaire",
-    CATEGORIE_FORMATION_SISE: "categorie_formation_sise",
-    CITE_DOMAINE_DETAILLE: "cite_domaine_detaille",
-    SECTEUR_DISCIPL_DETAIL_SISE: "secteur_discipl_detail_sise",
+    diplome_sise: "diplome_sise",
+    type_diplome_sise: "type_diplome_sise",
+    voie_lmd: "voie_lmd",
+    domaine_formation: "domaine_formation",
+    libelle_intitule_1: "libelle_intitule_1",
+    libelle_intitule_2: "libelle_intitule_2",
+    groupe_specialite: "groupe_specialite",
+    lettre_specialite: "lettre_specialite",
+    secteur_disciplinaire_sise: "secteur_disciplinaire_sise",
+    cite_domaine_formation: "cite_domaine_formation",
+    duree: "duree",
+    nature_diplome_sise: "nature_diplome_sise",
+    date_ouverture: "date_ouverture",
+    date_fermeture: "date_fermeture",
+    date_intervention: "date_intervention",
+    definitif: "definitif",
+    n_commentaire: "n_commentaire",
+    categorie_formation_sise: "categorie_formation_sise",
+    cite_domaine_detaille: "cite_domaine_detaille",
+    secteur_discipl_detail_sise: "secteur_discipl_detail_sise",
   };
 
   return {
     ...fromPairs(
       Object.keys(FIELDS_MAPPER).map((k) => {
-        const value = ["DATE_OUVERTURE", "DATE_FERMETURE", "DATE_INTERVENTION"].includes(k)
+        const value = ["date_ouverture", "date_fermeture", "date_intervention"].includes(k)
           ? parseAsUTCDate(data[k])
-          : data[k];
+          : data[k] !== null
+            ? `${data[k]}`
+            : null;
         return [FIELDS_MAPPER[k], value];
       })
     ),
-    diplome: getDiplomeSup(data["TYPE_DIPLOME_SISE"], typesDiplome),
+    diplome: getDiplomeSup(data["type_diplome_sise"], typesDiplome),
   };
 }
 
-export async function importBCNSise(options = {}) {
+export async function importBCNSise() {
   logger.info(`Importation des formations du superieur depuis la BCN`);
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
 
-  const typesDiplome = await getTypeDiplomeSise(options);
+  const bcnApi = new BCNApi();
+  const typesDiplome = await getTypeDiplomeSise(bcnApi);
 
   await oleoduc(
-    await getBCNTable("N_DIPLOME_SISE", options),
+    await bcnApi.fetchNomenclature("N_DIPLOME_SISE"),
     transformData(async (data) => fieldsValue(data, typesDiplome)),
     writeData(
       async (data) => {
