@@ -15,7 +15,7 @@ describe("importBCNSise", () => {
   });
 
   it("Vérifie qu'on peut importer les sises", async () => {
-    await mockBCN(async (client, responses) => {
+    await mockBCN(async (client) => {
       client
         .get("/nomenclature/N_TYPE_DIPLOME_SISE?schema=consultation")
         .reply(200, await Fixtures.BCN("N_TYPE_DIPLOME_SISE"));
