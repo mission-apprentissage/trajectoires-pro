@@ -153,21 +153,5 @@ describe("bcnRoutes", () => {
         statusCode: 400,
       });
     });
-
-    it("Vérifie qu'on retourne une 401 sans apiKey", async () => {
-      const { httpClient } = await startServer();
-
-      const response = await httpClient.get(`/api/inserjeunes/bcn`);
-
-      assert.strictEqual(response.status, 401);
-    });
-
-    it("Vérifie qu'on peut passer l'apiKey en paramètre", async () => {
-      const { httpClient } = await startServer();
-
-      const response = await httpClient.get(`/api/inserjeunes/bcn?apiKey=${config.inserJeunes.api.key}`);
-
-      assert.strictEqual(response.status, 200);
-    });
   });
 });

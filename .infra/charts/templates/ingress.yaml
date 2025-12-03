@@ -16,6 +16,10 @@ metadata:
 
     nginx.ingress.kubernetes.io/custom-headers: "{{ .Release.Namespace }}/{{ include "app.fullname" . }}-custom-headers"
 
+    {{- if .Values.ingress.allow_ips }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ .Values.ingress.allow_ips | join "," | quote }}
+    {{- end }}
+
     {{- if .Values.ingress.certManager.enabled }}
     cert-manager.io/cluster-issuer: {{ .Values.ingress.certManager.clusterIssuer }}
     {{- end }}

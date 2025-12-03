@@ -88,3 +88,5 @@ ingress:
     enabled: true
     clusterIssuer: letsencrypt-prod
 
+  allow_ips: []
+

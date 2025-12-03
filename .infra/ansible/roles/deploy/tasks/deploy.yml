@@ -34,6 +34,7 @@
             username:  "{{ docker_username }}"
             password: "{{ docker_password }}"
           ingress:
+            allow_ips: "{{ allow_ips | default([]) }}"
             hosts:
               - host: "{{ dns_name }}"
             tls:

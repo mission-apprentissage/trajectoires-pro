@@ -15,8 +15,8 @@ metadata:
     nginx.ingress.kubernetes.io/send-timeout: "300"
     nginx.ingress.kubernetes.io/custom-headers: "{{ .Release.Namespace }}/{{ include "app.fullname" . }}-custom-headers"
     
-    {{- if .Values.ingress.certManager.enabled }}
-    cert-manager.io/cluster-issuer: {{ .Values.ingress.certManager.clusterIssuer }}
+    {{- if .Values.ingress.allow_ips }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ .Values.ingress.allow_ips | join "," | quote }}
     {{- end }}
 spec:
   ingressClassName: nginx
@@ -61,8 +61,8 @@ metadata:
     nginx.ingress.kubernetes.io/send-timeout: "300"
     nginx.ingress.kubernetes.io/custom-headers: "{{ .Release.Namespace }}/{{ include "app.fullname" . }}-custom-headers"
     
-    {{- if .Values.ingress.certManager.enabled }}
-    cert-manager.io/cluster-issuer: {{ .Values.ingress.certManager.clusterIssuer }}
+    {{- if .Values.ingress.allow_ips }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ .Values.ingress.allow_ips | join "," | quote }}
     {{- end }}
 spec:
   ingressClassName: nginx
@@ -110,8 +110,8 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /api/$1
     nginx.ingress.kubernetes.io/use-regex: "true"
     
-    {{- if .Values.ingress.certManager.enabled }}
-    cert-manager.io/cluster-issuer: {{ .Values.ingress.certManager.clusterIssuer }}
+    {{- if .Values.ingress.allow_ips }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ .Values.ingress.allow_ips | join "," | quote }}
     {{- end }}
 spec:
   ingressClassName: nginx

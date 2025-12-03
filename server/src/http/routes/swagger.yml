@@ -44,9 +44,6 @@ paths:
   /api/inserjeunes/certifications:
     get:
       description: Rechercher des statistiques de certifications
-      security:
-        - BearerAuth: [ ]
-        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/millesimes"
         - $ref: "#/components/parameters/code_certifications_with_sise"
@@ -65,9 +62,6 @@ paths:
   /api/inserjeunes/certifications.{ext}:
     get:
       description: Exporter des statistiques de certifications
-      security:
-        - BearerAuth: [ ]
-        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/millesimes"
         - $ref: "#/components/parameters/code_certifications_with_sise"
@@ -120,9 +114,6 @@ paths:
   /api/inserjeunes/regionales:
     get:
       description: Rechercher des statistiques régionales
-      security:
-        - BearerAuth: [ ]
-        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/regions"
         - $ref: "#/components/parameters/millesimesRegional"
@@ -142,9 +133,6 @@ paths:
   /api/inserjeunes/regionales.{ext}:
     get:
       description: Exporter des statistiques régionales
-      security:
-        - BearerAuth: [ ]
-        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/regions"
         - $ref: "#/components/parameters/millesimesRegional"
@@ -165,9 +153,6 @@ paths:
   /api/inserjeunes/regionales/{code_region}:
     get:
       description: Rechercher des statistiques d'une région
-      security:
-        - BearerAuth: [ ]
-        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/code_region"
         - $ref: "#/components/parameters/millesimesRegional"
@@ -187,9 +172,6 @@ paths:
   /api/inserjeunes/regionales/{code_region}.{ext}:
     get:
       description: Exporter des statistiques d'une région
-      security:
-        - BearerAuth: [ ]
-        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/code_region"
         - $ref: "#/components/parameters/millesimesRegional"
@@ -245,9 +227,6 @@ paths:
   /api/inserjeunes/formations:
     get:
       description: Rechercher des statistiques de formations
-      security:
-        - BearerAuth: [ ]
-        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/uais"
         - $ref: "#/components/parameters/regions"
@@ -269,9 +248,6 @@ paths:
   /api/inserjeunes/formations.{ext}:
     get:
       description: Exporter des statistiques de formations
-      security:
-        - BearerAuth: [ ]
-        - ApiKeyAuth: [ ]
       parameters:
         - $ref: "#/components/parameters/ext"
         - $ref: "#/components/parameters/uais"

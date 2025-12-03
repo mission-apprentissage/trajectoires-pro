@@ -92,7 +92,7 @@ export default () => {
 
   router.get(
     "/api/inserjeunes/formations{.:ext}",
-    authMiddleware("private"),
+    authMiddleware("public"),
     tryCatch(async (req, res) => {
       const { uais, regions, academies, millesimes, code_certifications, page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
