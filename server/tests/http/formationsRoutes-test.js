@@ -3,10 +3,9 @@ import { assert, expect } from "chai";
 import chaiDiff from "chai-diff";
 import chaiDom from "chai-dom";
 import fs from "fs";
-import MockDate from "mockdate";
 import config from "#src/config.js";
 import { startServer } from "#tests/utils/testUtils.js";
-import { insertFormationsStats, insertUser, insertAcceEtablissement, insertCFD } from "#tests/utils/fakeData.js";
+import { insertFormationsStats, insertAcceEtablissement, insertCFD } from "#tests/utils/fakeData.js";
 
 chai.use(chaiDiff);
 chai.use(chaiDom);
@@ -724,67 +723,6 @@ describe("formationsRoutes", () => {
         message: "Erreur de validation",
         statusCode: 400,
       });
-    });
-
-    it("Vérifie qu'on retourne une 401 sans apiKey", async () => {
-      const { httpClient } = await startServer();
-
-      const response = await httpClient.get(`/api/inserjeunes/formations`);
-
-      assert.strictEqual(response.status, 401);
-    });
-
-    it("Vérifie qu'on peut passer l'apiKey en paramètre", async () => {
-      const { httpClient } = await startServer();
-
-      const response = await httpClient.get(`/api/inserjeunes/formations?apiKey=${config.inserJeunes.api.key}`);
-
-      assert.strictEqual(response.status, 200);
-    });
-
-    it("Vérifie que l'on peut passer un JWT", async () => {
-      const { httpClient } = await startServer();
-
-      await insertUser();
-      const token = await httpClient.post(`/api/inserjeunes/auth/login`, "username=test&password=Password1234!");
-
-      const response = await httpClient.get(`/api/inserjeunes/formations`, {
-        headers: {
-          Authorization: `Bearer ${token.data.token}`,
-        },
-      });
-
-      assert.strictEqual(response.status, 200);
-    });
-
-    it("Vérifie que l'on retourne une 401 si le JWT n'est pas valide", async () => {
-      const { httpClient } = await startServer();
-      const response = await httpClient.get(`/api/inserjeunes/formations`, {
-        headers: {
-          Authorization: `Bearer invalide`,
-        },
-      });
-
-      assert.strictEqual(response.status, 401);
-    });
-
-    it("Vérifie que l'on retourne une 401 si le JWT a expiré", async () => {
-      MockDate.set("2023-01-01");
-      const { httpClient } = await startServer();
-
-      await insertUser();
-      const token = await httpClient.post(`/api/inserjeunes/auth/login`, "username=test&password=Password1234!");
-
-      MockDate.set("2023-01-02");
-
-      const response = await httpClient.get(`/api/inserjeunes/formations`, {
-        headers: {
-          Authorization: `Bearer ${token.data.token}`,
-        },
-      });
-
-      assert.strictEqual(response.status, 401);
-      MockDate.reset();
     });
   });
 

@@ -18,7 +18,7 @@
     app_name: "exposition"
     # Clean app version to use it in namespace, tag and domain
     app_version: "{{ APP_VERSION | lower | regex_replace('[^a-z0-9-]', '-') | regex_replace('^-+', '') | regex_replace('-+$', '') | truncate(63, True, '') }}"
-    with_metabase: "{{ (env_type != 'dev') | bool }}"
+    with_metabase: "{{ (env_type != 'dev' and env_type != 'omogen') | bool }}"
     server:
       port: 5000
 

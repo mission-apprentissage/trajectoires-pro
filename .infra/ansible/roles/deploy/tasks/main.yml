@@ -27,6 +27,9 @@
               - title: "Environment"
                 value: "{{ env_name }}"
                 short: true
+              - title: "Environment type"
+                value: "{{ env_type }}"
+                short: true
               - title: "Version"
                 value: "{{ app_version }}"
                 short: true
@@ -39,7 +42,7 @@
       community.general.slack:
         token: "{{ setup.SLACK_OAUTH }}"
         msg: |
-          :x: *Deployment {{ app_version }} failed on {{ env_name }}*
+          :x: *Deployment {{ app_version }} failed on {{ env_type }}*
           Error: {{ ansible_failed_result.msg | default('Unknown error') }}
         channel: "{{ slack_channel }}"
         username: "Ansible"

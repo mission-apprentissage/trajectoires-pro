@@ -96,6 +96,9 @@
               - title: "Environment"
                 value: "{{ env_name }}"
                 short: true
+              - title: "Environment Type"
+                value: "{{ env_type }}"
+                short: true
               - title: "Version"
                 value: "{{ app_version }}"
                 short: true
@@ -120,6 +123,9 @@
             fields:
               - title: "Environment"
                 value: "{{ env_name }}"
+                short: true
+              - title: "Environment type"
+                value: "{{ env_type }}"
                 short: true
               - title: "Version"
                 value: "{{ app_version }}"

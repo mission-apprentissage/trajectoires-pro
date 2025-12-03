@@ -14,7 +14,7 @@ export default () => {
 
   router.get(
     "/api/inserjeunes/bcn{.:ext}",
-    authMiddleware("private"),
+    authMiddleware("public"),
     tryCatch(async (req, res) => {
       const { page, items_par_page, ext } = await validate(
         { ...req.query, ...req.params },
