@@ -29,6 +29,10 @@ Certaine variable d'environnement sont requises pour démarrer le projet et impo
 - Accès au catalogue de l'apprentissage
   - CATALOGUE_APPRENTISSAGE_USERNAME
   - CATALOGUE_APPRENTISSAGE_PASSWORD
+- Accès à l'API de la BCN
+  - BCN_LOGIN
+  - BCN_PASSWORD
+  - BCN_OMOGEN_KEY
 - TRAJECTOIRES_PRO_API_KEY: Api key statique pour accèder aux routes protéger de l'API exposition (son usage est déprécié en faveur de la création d'utilisateur, elle ne doit plus être partagée).
 
 ### Démarrage
