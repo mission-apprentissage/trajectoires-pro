@@ -216,11 +216,40 @@ describe("importRegionalesStats", () => {
     assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
   });
 
-  it("Vérifie qu'on peut recalcule les taux", async () => {
+  it("Vérifie qu'on recalcule les taux à 12/18/24 mois", async () => {
     mockApi("2020_2021", "01", {
       data: [
         {
-          id_mesure: "nb_en_emploi_6_mois",
+          id_mesure: "DEVENIR_part_poursuite_etudes",
+          valeur_mesure: 50,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_12_mois",
+          filiere: "voie_pro_sco_educ_nat",
+          valeur_mesure: 10,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_18_mois",
+          filiere: "voie_pro_sco_educ_nat",
+          valeur_mesure: 10,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_24_mois",
           filiere: "voie_pro_sco_educ_nat",
           valeur_mesure: 10,
           dimensions: [
@@ -262,8 +291,12 @@ describe("importRegionalesStats", () => {
     const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     const taux = pickBy(found, (value, key) => key.startsWith("taux"));
     assert.deepStrictEqual(taux, {
-      taux_autres_6_mois: 40,
-      taux_en_emploi_6_mois: 10,
+      taux_autres_12_mois: 40,
+      taux_en_emploi_12_mois: 10,
+      taux_autres_18_mois: 40,
+      taux_en_emploi_18_mois: 10,
+      taux_autres_24_mois: 40,
+      taux_en_emploi_24_mois: 10,
       taux_en_formation: 50,
     });
   });
@@ -272,7 +305,16 @@ describe("importRegionalesStats", () => {
     mockApi("2020_2021", "01", {
       data: [
         {
-          id_mesure: "nb_en_emploi_6_mois",
+          id_mesure: "DEVENIR_part_poursuite_etudes",
+          valeur_mesure: 28,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_12_mois",
           filiere: "voie_pro_sco_educ_nat",
           valeur_mesure: 13,
           dimensions: [
@@ -314,11 +356,11 @@ describe("importRegionalesStats", () => {
     const found = await regionalesStats().findOne({}, { projection: { _id: 0 } });
     const taux = pickBy(found, (value, key) => key.startsWith("taux"));
     assert.deepStrictEqual(taux, {
-      taux_autres_6_mois: 40,
-      taux_en_emploi_6_mois: 32,
+      taux_autres_12_mois: 40,
+      taux_en_emploi_12_mois: 32,
       taux_en_formation: 28,
     });
-    assert.equal(taux.taux_autres_6_mois + taux.taux_en_emploi_6_mois + taux.taux_en_formation, 100);
+    assert.equal(taux.taux_autres_12_mois + taux.taux_en_emploi_12_mois + taux.taux_en_formation, 100);
   });
 
   it("Vérifie qu'on fusionne les mesures pour une même certification", async () => {

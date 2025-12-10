@@ -1,4 +1,4 @@
-import { isNil, mapValues, flow, merge, omit } from "lodash-es";
+import { isNil, mapValues, flow, merge, omit, pick } from "lodash-es";
 import { transformData } from "oleoduc";
 import { $field, $percentage, $removeNullOrZero, $removeWhenAllNull } from "./utils/mongodbUtils.js";
 import { percentage } from "./utils/numberUtils.js";
@@ -17,6 +17,9 @@ export const INSERJEUNES_STATS_NAMES = [
   "salaire_12_mois_q1",
   "salaire_12_mois_q2",
   "salaire_12_mois_q3",
+  "taux_autres_6_mois",
+  "taux_en_emploi_6_mois",
+  "taux_en_formation",
 ];
 export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "taux_poursuite_etudes",
@@ -34,6 +37,12 @@ export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "salaire_TS_Q2_12_mois_prec",
   "salaire_TS_Q3_12_mois_prec",
 ];
+
+export const INSERJEUNES_STATS_TO_RENAME = {
+  DEVENIR_part_autre_situation_6_mois: "taux_autres_6_mois",
+  DEVENIR_part_en_emploi_6_mois: "taux_en_emploi_6_mois",
+  DEVENIR_part_poursuite_etudes: "taux_en_formation",
+};
 
 export const INSERSUP_STATS_NAMES = [
   "nb_annee_term",
@@ -57,7 +66,16 @@ export const INSERSUP_META = [
   "discipline",
 ];
 
-export const CUSTOM_STATS_NAMES = [
+export const INSERJEUNES_CUSTOM_STATS_NAMES = [
+  "taux_en_emploi_24_mois",
+  "taux_en_emploi_18_mois",
+  "taux_en_emploi_12_mois",
+  "taux_autres_12_mois",
+  "taux_autres_18_mois",
+  "taux_autres_24_mois",
+];
+
+export const INSERSUP_CUSTOM_STATS_NAMES = [
   "taux_en_formation",
   "taux_en_emploi_24_mois",
   "taux_en_emploi_18_mois",
@@ -146,13 +164,13 @@ function divide({ dividend, divisor }) {
   };
 }
 
-function percentageAndSubtract({ dividends, divisor, minuend }) {
+function percentageAndSubtract({ dividends, divisor, minuend, add }) {
   return {
     compute: (data) => {
       const sum = dividends.reduce((s, d) => {
         return s + percentage(data[d], data[divisor]);
       }, 0);
-      return Math.max(minuend - sum, 0);
+      return Math.max(minuend - sum - (add ? data[add] : 0), 0);
     },
 
     aggregate: () => {
@@ -161,7 +179,17 @@ function percentageAndSubtract({ dividends, divisor, minuend }) {
         $removeNullOrZero($field(divisor), {
           $max: [
             0,
-            { $subtract: [minuend, { $sum: [...dividends.map((d) => $percentage($field(d), $field(divisor)))] }] },
+            {
+              $subtract: [
+                minuend,
+                {
+                  $sum: [
+                    ...dividends.map((d) => $percentage($field(d), $field(divisor))),
+                    ...(add ? [$field(add)] : []),
+                  ],
+                },
+              ],
+            },
           ],
         }),
         null
@@ -170,38 +198,77 @@ function percentageAndSubtract({ dividends, divisor, minuend }) {
   };
 }
 
-export function getReglesDeCalcul() {
-  return {
-    taux_en_emploi_24_mois: divide({ dividend: "nb_en_emploi_24_mois", divisor: "nb_annee_term" }),
-    taux_en_emploi_18_mois: divide({ dividend: "nb_en_emploi_18_mois", divisor: "nb_annee_term" }),
-    taux_en_emploi_12_mois: divide({ dividend: "nb_en_emploi_12_mois", divisor: "nb_annee_term" }),
-    taux_en_emploi_6_mois: divide({ dividend: "nb_en_emploi_6_mois", divisor: "nb_annee_term" }),
-    taux_en_formation: divide({ dividend: "nb_poursuite_etudes", divisor: "nb_annee_term" }),
-    taux_autres_6_mois: percentageAndSubtract({
-      dividends: ["nb_en_emploi_6_mois", "nb_poursuite_etudes"],
-      divisor: ["nb_annee_term"],
-      minuend: 100,
-    }),
-    taux_autres_12_mois: percentageAndSubtract({
-      dividends: ["nb_en_emploi_12_mois", "nb_poursuite_etudes"],
-      divisor: ["nb_annee_term"],
-      minuend: 100,
-    }),
-    taux_autres_18_mois: percentageAndSubtract({
-      dividends: ["nb_en_emploi_18_mois", "nb_poursuite_etudes"],
-      divisor: ["nb_annee_term"],
-      minuend: 100,
-    }),
-    taux_autres_24_mois: percentageAndSubtract({
-      dividends: ["nb_en_emploi_24_mois", "nb_poursuite_etudes"],
-      divisor: ["nb_annee_term"],
-      minuend: 100,
-    }),
+export function getReglesDeCalcul(method = "compute", type = "inserjeunes") {
+  const regles = {
+    inserjeunes: {
+      taux_en_emploi_24_mois: divide({ dividend: "nb_en_emploi_24_mois", divisor: "nb_annee_term" }),
+      taux_en_emploi_18_mois: divide({ dividend: "nb_en_emploi_18_mois", divisor: "nb_annee_term" }),
+      taux_en_emploi_12_mois: divide({ dividend: "nb_en_emploi_12_mois", divisor: "nb_annee_term" }),
+      taux_en_emploi_6_mois: divide({ dividend: "nb_en_emploi_6_mois", divisor: "nb_annee_term" }),
+      taux_en_formation: divide({ dividend: "nb_poursuite_etudes", divisor: "nb_annee_term" }),
+      taux_autres_6_mois: percentageAndSubtract({
+        dividends: ["nb_en_emploi_6_mois", ...(method === "aggregate" ? ["nb_poursuite_etudes"] : [])], // Pour aggréger les stats, on doit passer obligatoirement par les nombres
+        divisor: ["nb_annee_term"],
+        minuend: 100,
+        add: method === "aggregate" ? null : "taux_en_formation",
+      }),
+      taux_autres_12_mois: percentageAndSubtract({
+        dividends: ["nb_en_emploi_12_mois", ...(method === "aggregate" ? ["nb_poursuite_etudes"] : [])],
+        divisor: ["nb_annee_term"],
+        minuend: 100,
+        add: method === "aggregate" ? null : "taux_en_formation",
+      }),
+      taux_autres_18_mois: percentageAndSubtract({
+        dividends: ["nb_en_emploi_18_mois", ...(method === "aggregate" ? ["nb_poursuite_etudes"] : [])],
+        divisor: ["nb_annee_term"],
+        minuend: 100,
+        add: method === "aggregate" ? null : "taux_en_formation",
+      }),
+      taux_autres_24_mois: percentageAndSubtract({
+        dividends: ["nb_en_emploi_24_mois", ...(method === "aggregate" ? ["nb_poursuite_etudes"] : [])],
+        divisor: ["nb_annee_term"],
+        minuend: 100,
+        add: method === "aggregate" ? null : "taux_en_formation",
+      }),
+    },
+    insersup: {
+      taux_en_emploi_24_mois: divide({ dividend: "nb_en_emploi_24_mois", divisor: "nb_annee_term" }),
+      taux_en_emploi_18_mois: divide({ dividend: "nb_en_emploi_18_mois", divisor: "nb_annee_term" }),
+      taux_en_emploi_12_mois: divide({ dividend: "nb_en_emploi_12_mois", divisor: "nb_annee_term" }),
+      taux_en_emploi_6_mois: divide({ dividend: "nb_en_emploi_6_mois", divisor: "nb_annee_term" }),
+      taux_en_formation: divide({ dividend: "nb_poursuite_etudes", divisor: "nb_annee_term" }),
+      taux_autres_6_mois: percentageAndSubtract({
+        dividends: ["nb_en_emploi_6_mois", "nb_poursuite_etudes"],
+        divisor: ["nb_annee_term"],
+        minuend: 100,
+      }),
+      taux_autres_12_mois: percentageAndSubtract({
+        dividends: ["nb_en_emploi_12_mois", "nb_poursuite_etudes"],
+        divisor: ["nb_annee_term"],
+        minuend: 100,
+      }),
+      taux_autres_18_mois: percentageAndSubtract({
+        dividends: ["nb_en_emploi_18_mois", "nb_poursuite_etudes"],
+        divisor: ["nb_annee_term"],
+        minuend: 100,
+      }),
+      taux_autres_24_mois: percentageAndSubtract({
+        dividends: ["nb_en_emploi_24_mois", "nb_poursuite_etudes"],
+        divisor: ["nb_annee_term"],
+        minuend: 100,
+      }),
+    },
   };
+
+  if (!["compute", "aggregate"].includes(method) || !regles[type]) {
+    throw new Error(`Regles de calcul pour ${type} inconnues`);
+  }
+
+  return regles[type];
 }
 
 export function filterStatsNames(regex = ALL) {
-  return [...INSERJEUNES_STATS_NAMES, ...CUSTOM_STATS_NAMES].sort().filter((k) => regex.test(k));
+  return [...INSERJEUNES_STATS_NAMES, ...INSERJEUNES_CUSTOM_STATS_NAMES].sort().filter((k) => regex.test(k));
 }
 
 export function getStats(regex, mapValue) {
@@ -224,9 +291,9 @@ export function getStatsCompute(regex, mapValue) {
   }, {});
 }
 
-export function computeCustomStats(data) {
+export function computeCustomStats(data, regleType = "inserjeunes", fields = null) {
   const type = data === "aggregate" ? "aggregate" : "compute";
-  const regles = getReglesDeCalcul();
+  const regles = fields ? pick(getReglesDeCalcul(type, regleType), fields) : getReglesDeCalcul(type, regleType);
 
   if (type === "compute") {
     return getStatsCompute(TAUX, (statName) => {

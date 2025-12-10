@@ -317,9 +317,36 @@ describe("importFormationsStats", () => {
     });
   });
 
-  it("Vérifie qu'on recalcule les taux", async () => {
+  it("Vérifie qu'on ne recalcule pas les taux à 6 mois", async () => {
     mockApi("0751234J", "2018_2019", {
       data: [
+        {
+          id_mesure: "DEVENIR_part_autre_situation_6_mois",
+          valeur_mesure: 15,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "DEVENIR_part_en_emploi_6_mois",
+          valeur_mesure: 25,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "DEVENIR_part_poursuite_etudes",
+          valeur_mesure: 60,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
         {
           id_mesure: "nb_en_emploi_6_mois",
           valeur_mesure: 10,
@@ -369,8 +396,96 @@ describe("importFormationsStats", () => {
     const found = await formationsStats().findOne({});
     const taux = pickBy(found, (value, key) => key.startsWith("taux"));
     assert.deepStrictEqual(taux, {
-      taux_autres_6_mois: 40,
-      taux_en_emploi_6_mois: 10,
+      taux_autres_6_mois: 15,
+      taux_en_emploi_6_mois: 25,
+      taux_en_formation: 60,
+    });
+  });
+
+  it("Vérifie qu'on recalcule les taux à 12/18/24 mois", async () => {
+    mockApi("0751234J", "2018_2019", {
+      data: [
+        {
+          id_mesure: "DEVENIR_part_poursuite_etudes",
+          valeur_mesure: 50,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_12_mois",
+          valeur_mesure: 10,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_18_mois",
+          valeur_mesure: 10,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_24_mois",
+          valeur_mesure: 10,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_poursuite_etudes",
+          valeur_mesure: 50,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_annee_term",
+          valeur_mesure: 100,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+      ],
+    });
+    await insertMEF({
+      code_certification: "12345678900",
+      code_formation_diplome: "12345678",
+      diplome: { code: "4", libelle: "BAC" },
+    });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+    });
+
+    await importFormationsStats({
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
+    });
+
+    const found = await formationsStats().findOne({});
+    const taux = pickBy(found, (value, key) => key.startsWith("taux"));
+    assert.deepStrictEqual(taux, {
+      taux_autres_12_mois: 40,
+      taux_en_emploi_12_mois: 10,
+      taux_autres_18_mois: 40,
+      taux_en_emploi_18_mois: 10,
+      taux_autres_24_mois: 40,
+      taux_en_emploi_24_mois: 10,
       taux_en_formation: 50,
     });
   });
@@ -378,6 +493,15 @@ describe("importFormationsStats", () => {
   it("Vérifie que l'on arrondit correctement les taux", async () => {
     mockApi("0751234J", "2018_2019", {
       data: [
+        {
+          id_mesure: "DEVENIR_part_poursuite_etudes",
+          valeur_mesure: 28,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
         {
           id_mesure: "nb_annee_term",
           valeur_mesure: 40,
@@ -388,7 +512,7 @@ describe("importFormationsStats", () => {
           ],
         },
         {
-          id_mesure: "nb_en_emploi_6_mois",
+          id_mesure: "nb_en_emploi_12_mois",
           valeur_mesure: 13,
           dimensions: [
             {
@@ -427,11 +551,11 @@ describe("importFormationsStats", () => {
     const found = await formationsStats().findOne({});
     const taux = pickBy(found, (value, key) => key.startsWith("taux"));
     assert.deepStrictEqual(taux, {
-      taux_autres_6_mois: 40,
-      taux_en_emploi_6_mois: 32,
+      taux_autres_12_mois: 40,
+      taux_en_emploi_12_mois: 32,
       taux_en_formation: 28,
     });
-    assert.equal(taux.taux_autres_6_mois + taux.taux_en_emploi_6_mois + taux.taux_en_formation, 100);
+    assert.equal(taux.taux_autres_12_mois + taux.taux_en_emploi_12_mois + taux.taux_en_formation, 100);
   });
 
   it("Vérifie qu'on fusionne les mesures d'une formation", async () => {

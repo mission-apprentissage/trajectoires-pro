@@ -5,7 +5,12 @@ import { formationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { findAcademieByCode, findRegionByCodeInsee } from "#src/services/regions.js";
-import { computeCustomStats, getMillesimesFormationsSup, INSERSUP_STATS_NAMES } from "#src/common/stats.js";
+import {
+  computeCustomStats,
+  getMillesimesFormationsSup,
+  INSERSUP_CUSTOM_STATS_NAMES,
+  INSERSUP_STATS_NAMES,
+} from "#src/common/stats.js";
 import { getCertificationSupInfo } from "#src/common/certification.js";
 import { InserSupApi } from "#src/services/insersup/InsersupApi.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
@@ -159,7 +164,7 @@ export async function importFormationsSupStats(options = {}) {
       try {
         const certification = await getCertificationSupInfo(formationStats.code_certification);
         const stats = omitNil(pick(formationStats, ["uai", "millesime", ...INSERSUP_STATS_NAMES]));
-        const customStats = computeCustomStats(stats);
+        const customStats = computeCustomStats(stats, "insersup", INSERSUP_CUSTOM_STATS_NAMES);
 
         // Delete data compute with continuum job (= when type is not self)
         await formationsStats().deleteOne({

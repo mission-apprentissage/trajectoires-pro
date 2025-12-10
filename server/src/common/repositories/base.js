@@ -149,7 +149,7 @@ export class StatsRepository extends MongoRepository {
         },
         {
           $addFields: {
-            ...Stats.computeCustomStats("aggregate"),
+            ...Stats.computeCustomStats("aggregate", "inserjeunes"),
           },
         },
         {
