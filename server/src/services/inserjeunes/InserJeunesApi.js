@@ -74,7 +74,7 @@ class InserJeunesApi extends RateLimitedApi {
           {
             ignoreWhen: (err) => {
               //No retry on 400
-              if (err?.response?.status === 400) {
+              if (err?.status === 400) {
                 return true;
               }
               return false;
@@ -85,13 +85,7 @@ class InserJeunesApi extends RateLimitedApi {
 
         return response;
       } catch (e) {
-        throw new ApiError(
-          this.name,
-          e.message,
-          e.response?.status || e.code,
-          e?.response?.data ? await text(e?.response?.data) : null,
-          { cause: e }
-        );
+        throw new ApiError(this.name, e.message, e.status || e.code, e?.data ? await text(e?.data) : null);
       }
     });
   }

@@ -27,7 +27,7 @@ class RateLimitedApi {
       if (e instanceof ApiError) {
         throw e;
       }
-      throw new ApiError(this.name, e.message, e.response?.status || e.code, e.data, { cause: e });
+      throw new ApiError(this.name, e.message, e.status || e.code, e?.data);
     }
   }
 }

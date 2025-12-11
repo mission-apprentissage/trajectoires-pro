@@ -14,7 +14,7 @@ export function fields() {
     code_formation_diplome: string(),
     libelle: string(),
     libelle_ancien: string(),
-    filiere: string({ enum: ["apprentissage", "pro", "superieur"] }),
+    filiere: string({ enum: ["apprentissage", "pro", "superieur", "agricole"] }),
     diplome: diplomeSchema(),
     date_fermeture: date(),
     familleMetier: familleMetierSchema(),

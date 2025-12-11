@@ -3,15 +3,32 @@ import asyncRetry from "async-retry";
 import { getLoggerWithContext } from "#src/common/logger.js";
 const logger = getLoggerWithContext("http");
 
+async function axiosErrorToJSON(err) {
+  const { url, method, params, data } = err.config || {};
+  return {
+    message: err.message,
+    code: err.code,
+    status: err.response?.status,
+    data: err.response?.data,
+    request: { url, method, params, data },
+  };
+}
+
 async function _fetch(url, options = {}) {
   let { method = "GET", ...rest } = options;
   logger.debug(`${method} ${url}...`);
 
-  return axios.request({
-    url,
-    method,
-    ...rest,
-  });
+  try {
+    return await axios.request({
+      url,
+      method,
+      ...rest,
+    });
+  } catch (err) {
+    const cleanError = new Error(err.message);
+    Object.assign(cleanError, await axiosErrorToJSON(err));
+    throw cleanError;
+  }
 }
 
 async function fetchStream(url, options = {}) {
@@ -20,8 +37,8 @@ async function fetchStream(url, options = {}) {
 }
 
 async function fetchJson(url, options = {}) {
-  let response = await _fetch(url, { ...options, responseType: "text" });
-  return JSON.parse(response.data);
+  let response = await _fetch(url, { ...options, responseType: "json" });
+  return response.data;
 }
 
 async function ignoreRetry(cb, bail, ignoreWhen) {

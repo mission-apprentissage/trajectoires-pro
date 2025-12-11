@@ -7,6 +7,7 @@ import { InserJeunes } from "#src/services/inserjeunes/InserJeunes.js";
 import { formationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
+import { safeJsonParse } from "#src/common/utils/stringUtils.js";
 import { findRegionByCodeInsee, findAcademieByCode } from "#src/services/regions.js";
 import { NATURE_UAI_ETABLISSEMENTS_INSERJEUNES } from "#src/services/acce.js";
 import {
@@ -99,13 +100,16 @@ export async function importFormationsStats(options = {}) {
             });
           })
           .catch((e) => {
-            if (e.httpStatusCode === 400 && e.data === '{"msg":"UAI incorrect ou agricole"}') {
-              logger.info("Pas de statistiques pour cet établissement.", {
-                uai: params.uai,
-                millesime: params.millesime,
-              });
-              jobStats.ignored++;
-              return;
+            if (e.httpStatusCode === 400) {
+              const data = safeJsonParse(e.data, null);
+              if (data?.msg === "UAI incorrect ou agricole") {
+                logger.info("Pas de statistiques pour cet établissement.", {
+                  uai: params.uai,
+                  millesime: params.millesime,
+                });
+                jobStats.ignored++;
+                return;
+              }
             }
             return handleError(e, params);
           });
