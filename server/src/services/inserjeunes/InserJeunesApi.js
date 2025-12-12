@@ -9,7 +9,7 @@ const logger = getLoggerWithContext("api/inserjeunes");
 
 class InserJeunesApi extends RateLimitedApi {
   constructor(options = {}) {
-    super("InserJeunesApi", { nbRequests: 10, durationInSeconds: 1, ...options });
+    super("InserJeunesApi", { nbRequests: 5, durationInSeconds: 1, ...options });
     this.access_token = null;
     this.access_token_timestamp = null;
     this.access_token_timeout = options.access_token_timeout || 60000 * 2; //minutes

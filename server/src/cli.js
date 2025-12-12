@@ -78,7 +78,8 @@ cli
   .argument("[stats]", "Le nom des stats à importer (formations,certifications,regionales)", asArray)
   .option(
     "--millesime [millesime]",
-    "Spécifie un millésime à importer (attention les millésimes nationales et formations/regionales sont différents"
+    "Spécifie un millésime à importer (indiquer une seule année, les millésmes sur deux années seront calculés automatiquement : millesime-1_millesime)\n" +
+      "Ex: --millesime 2023 deviendra 2022_2023 pour les millésimes sur deux ans"
   )
   .action((stats, options) => {
     runScript(() => {
@@ -93,7 +94,8 @@ cli
   .argument("[stats]", "Le nom des stats à importer (formations,certifications,regionales)", asArray)
   .option(
     "--millesime [millesime]",
-    "Spécifie un millésime à importer (attention les millésimes nationales et formations/regionales sont différents"
+    "Spécifie un millésime à importer (indiquer une seule année, les millésmes sur deux années seront calculés automatiquement : millesime-1_millesime)\n" +
+      "Ex: --millesime 2023 deviendra 2022_2023 pour les millésimes sur deux ans"
   )
   .action((stats, options) => {
     runScript(() => {
@@ -108,7 +110,8 @@ cli
   .argument("[stats]", "Le nom des stats à importer (certifications,formations)", asArray)
   .option(
     "--millesime [millesime]",
-    "Spécifie un millésime à importer (attention les millésimes nationales et formations/regionales sont différents"
+    "Spécifie un millésime à importer (indiquer une seule année, les millésmes sur deux années seront calculés automatiquement : millesime-1_millesime)\n" +
+      "Ex: --millesime 2023 deviendra 2022_2023 pour les millésimes sur deux ans"
   )
   .action((stats, options) => {
     runScript(() => {
@@ -123,7 +126,8 @@ cli
   .argument("[stats]", "Le nom des stats à importer (formations,certifications,regionales)", asArray)
   .option(
     "--millesime [millesime]",
-    "Spécifie un millésime à importer (attention les millésimes nationales et formations/regionales sont différents"
+    "Spécifie un millésime à importer (indiquer une seule année, les millésmes sur deux années seront calculés automatiquement : millesime-1_millesime)\n" +
+      "Ex: --millesime 2023 deviendra 2022_2023 pour les millésimes sur deux ans"
   )
   .action((stats, options) => {
     runScript(() => computeContinuumStats({ stats, millesime: options.millesime }));
@@ -132,7 +136,11 @@ cli
 cli
   .command("computeUAI")
   .description("Associe les UAIs gestionnaires, formateurs et lieux de formation aux stats de formations")
-  .option("--millesime [millesime]", "Spécifie un millésime à importer")
+  .option(
+    "--millesime [millesime]",
+    "Spécifie un millésime à importer (indiquer une seule année, les millésmes sur deux années seront calculés automatiquement : millesime-1_millesime)\n" +
+      "Ex: --millesime 2023 deviendra 2022_2023 pour les millésimes sur deux ans"
+  )
   .action((options) => {
     runScript(() => computeUAI({ millesime: options.millesime }));
   });
@@ -140,17 +148,26 @@ cli
 cli
   .command("importAll")
   .description("Effectue toute les taches d'importations et de calculs des données")
-  .action(() => {
+  .option(
+    "--millesime [millesime]",
+    "Spécifie un millésime à importer (indiquer une seule année, les millésmes sur deux années seront calculés automatiquement : millesime-1_millesime)\n" +
+      "Ex: --millesime 2023 deviendra 2022_2023 pour les millésimes sur deux ans"
+  )
+  .action((options) => {
+    const { millesime } = options;
+
     runScript(async () => {
       return {
         importBCN: await importBCNCommand(),
         importEtablissements: await importEtablissements(),
-        importStats: await importStats(),
-        importSupStats: await importSupStats(),
-        computeContinuumStats: await computeContinuumStats(),
-        importAnneesNonTerminales: await importAnneesNonTerminalesCommand(),
+        importStats: await importStats({ millesimes: millesime ? [millesime] : null }),
+        importSupStats: await importSupStats({ millesimes: millesime ? [millesime] : null }),
+        computeContinuumStats: await computeContinuumStats({ millesime }),
+        importAnneesNonTerminales: await importAnneesNonTerminalesCommand({
+          millesimes: millesime ? [millesime] : null,
+        }),
         importCatalogueApprentissage: await importCAFormations(),
-        computeUAI: await computeUAI(),
+        computeUAI: await computeUAI({ millesime }),
       };
     });
   });

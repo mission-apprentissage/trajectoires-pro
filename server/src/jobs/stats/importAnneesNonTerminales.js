@@ -64,7 +64,9 @@ async function getCertificationForYear(year, { code_certification, code_formatio
 export async function importAnneesNonTerminales(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
   const statsType = options.stats || ["certifications", "formations", "regionales"];
-  const millesimesFilter = options.millesimes || null;
+  const millesimes = options.millesimes || null;
+  const millesimesDouble = millesimes ? millesimes.map((m) => `${m - 1}_${m}`) : null;
+  const millesimesFilter = millesimes ? [...millesimes, ...millesimesDouble] : null;
 
   await oleoduc(
     Readable.from(statsType),

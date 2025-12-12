@@ -1,5 +1,6 @@
 import { flattenArray, oleoduc, transformData, writeData, filterData, compose } from "oleoduc";
 import { Readable } from "stream";
+import streamToArray from "stream-to-array";
 import { pick, merge } from "lodash-es";
 import { upsert } from "#src/common/db/mongodb.js";
 import { isUAIValid } from "#src/common/utils/validationUtils.js";
@@ -53,7 +54,11 @@ export async function importFormationsStats(options = {}) {
             return etablissement;
           })
         )
-      : await AcceEtablissementRepository.find({ nature_uai: NATURE_UAI_ETABLISSEMENTS_INSERJEUNES }),
+      : Readable.from(
+          await streamToArray(
+            await AcceEtablissementRepository.find({ nature_uai: NATURE_UAI_ETABLISSEMENTS_INSERJEUNES })
+          )
+        ),
     transformData((data) => {
       return millesimes.map((millesime) => ({
         millesime,
@@ -114,7 +119,7 @@ export async function importFormationsStats(options = {}) {
             return handleError(e, params);
           });
       },
-      { parallel: 1 }
+      { parallel: 10 }
     ),
     flattenArray(),
     transformData((data) => {
