@@ -56,7 +56,10 @@ export async function importFormationsStats(options = {}) {
         )
       : Readable.from(
           await streamToArray(
-            await AcceEtablissementRepository.find({ nature_uai: NATURE_UAI_ETABLISSEMENTS_INSERJEUNES })
+            await AcceEtablissementRepository.find({
+              nature_uai: NATURE_UAI_ETABLISSEMENTS_INSERJEUNES,
+              pays_libe: "France",
+            })
           )
         ),
     transformData((data) => {
@@ -69,9 +72,21 @@ export async function importFormationsStats(options = {}) {
     transformData(
       async (data) => {
         const { etablissement, millesime } = data;
+        const region = findRegionByCodeInsee(etablissement.departement_insee_3);
+        const academie = findAcademieByCode(etablissement.academie);
 
         if (!isUAIValid(etablissement.numero_uai)) {
           logger.warn(`UAI invalide détecté ${etablissement.numero_uai}`);
+          return;
+        }
+
+        if (!region || !academie) {
+          handleError(
+            new Error(`Région ou académie invalide ${etablissement.numero_uai}`, {
+              departement: etablissement.departement_insee_3,
+              academie: etablissement.academie,
+            })
+          );
           return;
         }
 
@@ -79,8 +94,8 @@ export async function importFormationsStats(options = {}) {
           uai: etablissement.numero_uai,
           libelle_etablissement: etablissement.appellation_officielle,
           millesime,
-          region: findRegionByCodeInsee(etablissement.departement_insee_3),
-          academie: findAcademieByCode(etablissement.academie),
+          region,
+          academie,
         };
       },
       { parallel: 10 }

@@ -22,6 +22,12 @@ describe("regions", () => {
     assert.deepStrictEqual(findRegionByCodeInsee("75001").nom, "Île-de-France");
   });
 
+  it("Permet de trouver une région à partir d'un code INSEE3", () => {
+    assert.deepStrictEqual(findRegionByCodeInsee(null), null);
+    assert.deepStrictEqual(findRegionByCodeInsee("974").nom, "La Réunion");
+    assert.deepStrictEqual(findRegionByCodeInsee("075").nom, "Île-de-France");
+  });
+
   it("Permet de trouver une région à partir du code de l'académie", () => {
     assert.deepStrictEqual(findRegionByAcademie("01").nom, "Île-de-France");
     assert.deepStrictEqual(findRegionByAcademie("16").nom, "Occitanie");

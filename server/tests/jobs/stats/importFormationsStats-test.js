@@ -180,6 +180,46 @@ describe("importFormationsStats", () => {
     assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0, ignored: 0 });
   });
 
+  it("Vérifie qu'on peut gérer les erreurs pour les établissements avec une région invalide", async () => {
+    mockApi("0751234J", "2018_2019", {
+      data: [
+        {
+          id_mesure: "nb_en_emploi_6_mois",
+          valeur_mesure: 6,
+          dimensions: [
+            {
+              id_formation_apprentissage: "12345678",
+            },
+          ],
+        },
+      ],
+    });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+      departement_insee_3: "invalid",
+    });
+
+    await insertCFD({
+      code_certification: "12345678",
+      code_formation_diplome: "12345678",
+      diplome: {
+        code: "4",
+        libelle: "BAC",
+      },
+    });
+
+    const stats = await importFormationsStats({
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
+    });
+
+    const count = await formationsStats().countDocuments({});
+    assert.strictEqual(count, 0);
+    assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0, ignored: 0 });
+  });
+
   describe("Vérifie que l'on calcule les nombres manquants quand cela est possible", () => {
     it("Ne calcule pas le nb_annee_term si on a le nb_poursuite_etudes et le nb_sortant", async () => {
       mockApi("0751234J", "2018_2019", {
