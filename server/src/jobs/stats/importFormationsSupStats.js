@@ -44,11 +44,12 @@ function formatData(data) {
     }
     return data.annee_universitaire.replace("-", "_");
   };
-  const formatInt = (str) => (str === "nd" || str === "na" ? null : parseInt(str.replaceAll("*", "")));
+  const formatInt = (str) =>
+    str.substr(0, 2) === "nd" || str.substr(0, 2) === "na" ? null : parseInt(str.replaceAll("*", ""));
 
   const formatted = {
     uai: data.etablissement,
-    code_certification: data.diplome,
+    code_certification: data.diplome || data.diplome_consol, // InserSup API changed its specifications
     millesime: formatMillesime(data),
     nb_poursuite_etudes: formatInt(data.nb_poursuivants),
     nb_annee_term: formatInt(data.nb_inscrits),
@@ -131,6 +132,7 @@ export async function importFormationsSupStats(options = {}) {
       const acce = await AcceEtablissementRepository.first({ numero_uai: stats.uai });
       if (!acce) {
         handleError(new Error(`Etablissement ${stats.uai} inconnu dans l'ACCE`));
+        return null;
       }
 
       const region = findRegionByCodeInsee(acce.departement_insee_3);

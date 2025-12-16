@@ -1,5 +1,4 @@
 import { InserJeunes } from "#src/services/inserjeunes/InserJeunes.js";
-import { promiseAllProps } from "#src/common/utils/asyncUtils.js";
 import { importFormationsStats } from "./importFormationsStats.js";
 import { importFormationsSupStats } from "./importFormationsSupStats.js";
 import { importCertificationsStats } from "./importCertificationsStats.js";
@@ -39,12 +38,12 @@ export async function importSupStats(options = {}) {
   const insersupData = new InserSupData(insersupOptions); //Permet de partager le rate limiter entre les deux imports
   const insersupApi = new InserSupApi(insersupOptions);
 
-  return promiseAllProps({
+  return {
     ...(stats.includes("certifications")
-      ? { certifications: importCertificationsSupStats({ insersup: insersupData, millesimes }) }
+      ? { certifications: await importCertificationsSupStats({ insersup: insersupData, millesimes }) }
       : {}),
     ...(stats.includes("formations")
-      ? { formations: importFormationsSupStats({ insersup: insersupApi, millesimes: millesimesDouble }) }
+      ? { formations: await importFormationsSupStats({ insersup: insersupApi, millesimes: millesimesDouble }) }
       : {}),
-  });
+  };
 }
