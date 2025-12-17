@@ -1,41 +1,30 @@
-import { filterData, flattenArray, oleoduc, transformData, writeData } from "oleoduc";
+import { flattenArray, oleoduc, transformData, writeData, transformStream, compose } from "oleoduc";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
+import { BCNApi } from "#src/services/bcn/BCNApi.js";
 import * as BCN from "#src/services/bcn/bcn.js";
 import BCNMefRepository from "#src/common/repositories/bcnMef.js";
 
 const logger = getLoggerWithContext("import");
 
-export async function importBCNFamilleMetier(options = {}) {
+export async function importBCNFamilleMetier() {
   logger.info(`Importation des familles de métiers`);
   const stats = { total: 0, updated: 0, failed: 0 };
 
-  const familleMetierFilePath = options.familleMetierFilePath || null;
-  const lienFamilleMetierFilePath = options.lienFamilleMetierFilePath || null;
-
-  const familleMetier = await BCN.getFamilleMetier(familleMetierFilePath);
+  const bcnApi = new BCNApi();
+  const familleMetier = await BCN.getFamilleMetier(bcnApi);
 
   await oleoduc(
-    BCN.getLienFamilleMetier(lienFamilleMetierFilePath),
-    transformData(async (data) => {
-      const bcnMef = await BCNMefRepository.first({
-        mef: data["MEF"],
-      });
-      if (!bcnMef) {
-        return null;
-      }
-
-      const bcn = await BCNRepository.first({
-        code_certification: bcnMef.mef_stat_11,
-      });
-      if (!bcn) {
-        return null;
-      }
-
-      return { data, bcn };
+    await BCN.getLienFamilleMetier(bcnApi),
+    transformStream(async (data) => {
+      return compose(
+        await BCNRepository.find({ code_formation_diplome: data.code_formation_diplome }),
+        transformData((bcn) => {
+          return { data, bcn };
+        })
+      );
     }),
-    filterData((d) => d),
     transformData(async (data) => {
       const formationWithContinuum = await BCNRepository.cfdsParentAndChildren(data.bcn.code_certification);
       return formationWithContinuum.map((f) => {
@@ -49,7 +38,7 @@ export async function importBCNFamilleMetier(options = {}) {
     writeData(
       async ({ code_certification, data }) => {
         stats.total++;
-        const isAnneeCommune = data["tag"] === "2NDE PRO COMMUNE";
+        const isAnneeCommune = await BCNMefRepository.isAnneeCommune(data.code_formation_diplome);
         try {
           const res = await BCNRepository.updateOne(
             {
@@ -57,7 +46,7 @@ export async function importBCNFamilleMetier(options = {}) {
             },
             omitNil({
               familleMetier: {
-                ...familleMetier.find((f) => f.code === data["FAMILLE_METIER"]),
+                ...familleMetier.find((f) => f.code === data.code),
                 isAnneeCommune,
               },
             })

@@ -13,6 +13,7 @@ import CertificationStatsRepository from "#src/common/repositories/certification
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
 import * as BCN from "#src/services/bcn/bcn.js";
+import { BCNApi } from "#src/services/bcn/BCNApi.js";
 import { REGIONS } from "#src/services/regions.js";
 
 const logger = getLoggerWithContext("import");
@@ -123,9 +124,8 @@ export async function importSecondeCommune(options = {}) {
   const millesimes = options.millesimes || null;
   const millesimesDouble = millesimes ? millesimes.map((m) => `${m - 1}_${m}`) : null;
   const millesimesFilter = millesimes ? [...millesimes, ...millesimesDouble] : null;
-  const familleMetierFilePath = options.familleMetierFilePath || null;
-
-  const famillesMetier = await BCN.getFamilleMetier(familleMetierFilePath);
+  const bcnApi = new BCNApi();
+  const famillesMetier = await BCN.getFamilleMetier(bcnApi);
 
   await oleoduc(
     Readable.from(statsType),

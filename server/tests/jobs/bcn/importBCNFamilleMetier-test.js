@@ -4,6 +4,8 @@ import { omit } from "lodash-es";
 import { insertBCNMEF, insertMEF } from "#tests/utils/fakeData.js";
 import { importBCNFamilleMetier } from "#src/jobs/bcn/importBCNFamilleMetier.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
+import { mockBCN } from "#tests/utils/apiMocks.js";
+import * as Fixtures from "#tests/utils/fixtures.js";
 
 describe("importBCNFamilleMetier", () => {
   before(() => {
@@ -21,6 +23,7 @@ describe("importBCNFamilleMetier", () => {
           mef_stat_11: "23810031211",
           formation_diplome: "40031211",
           mef: "2473121131",
+          annee_dispositif: "1",
         }),
         insertMEF({
           code_certification: "23810031211",
@@ -28,6 +31,16 @@ describe("importBCNFamilleMetier", () => {
           libelle_long: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
         }),
       ]);
+
+      await mockBCN(async (client) => {
+        client
+          .get("/nomenclature/N_GROUPE_FORMATION?schema=consultation")
+          .reply(200, await Fixtures.BCN("N_GROUPE_FORMATION"));
+
+        client
+          .get("/nomenclature/N_LIEN_FORMATION_GROUPE?schema=consultation")
+          .reply(200, await Fixtures.BCN("N_LIEN_FORMATION_GROUPE"));
+      });
 
       const result = await importBCNFamilleMetier();
 
@@ -50,7 +63,7 @@ describe("importBCNFamilleMetier", () => {
         ancien_diplome: [],
         nouveau_diplome: [],
         familleMetier: {
-          code: "003",
+          code: "G0005",
           isAnneeCommune: true,
           libelle: "Relation client",
         },
@@ -68,6 +81,7 @@ describe("importBCNFamilleMetier", () => {
           mef_stat_11: "23830031212",
           formation_diplome: "40031211",
           mef: "2473121131",
+          annee_dispositif: "2",
         }),
         insertMEF({
           code_certification: "23830031212",
@@ -75,6 +89,16 @@ describe("importBCNFamilleMetier", () => {
           libelle_long: "TERMINALE",
         }),
       ]);
+
+      await mockBCN(async (client) => {
+        client
+          .get("/nomenclature/N_GROUPE_FORMATION?schema=consultation")
+          .reply(200, await Fixtures.BCN("N_GROUPE_FORMATION"));
+
+        client
+          .get("/nomenclature/N_LIEN_FORMATION_GROUPE?schema=consultation")
+          .reply(200, await Fixtures.BCN("N_LIEN_FORMATION_GROUPE"));
+      });
 
       const result = await importBCNFamilleMetier();
 
@@ -97,8 +121,8 @@ describe("importBCNFamilleMetier", () => {
         ancien_diplome: [],
         nouveau_diplome: [],
         familleMetier: {
-          code: "003",
-          isAnneeCommune: true,
+          code: "G0005",
+          isAnneeCommune: false,
           libelle: "Relation client",
         },
         _meta: {
