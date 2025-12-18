@@ -7,7 +7,11 @@ import * as Certification from "./jsonSchema/certificationSchema.js";
 export const name = "certificationsStats";
 
 export function indexes() {
-  return [[{ millesime: 1, code_certification: 1 }, { unique: true }], [{ millesime: 1 }], ...Certification.indexes()];
+  return [
+    [{ millesime: 1, code_certification: 1, filiere: 1 }, { unique: true }],
+    [{ millesime: 1 }],
+    ...Certification.indexes(),
+  ];
 }
 
 export function schema() {

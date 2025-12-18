@@ -12,7 +12,7 @@ export const UAI_TYPE = ["lieu_formation", "formateur", "gestionnaire", "inconnu
 
 export function indexes() {
   return [
-    [{ uai: 1, code_certification: 1, millesime: 1 }, { unique: true }],
+    [{ uai: 1, code_certification: 1, millesime: 1, filiere: 1 }, { unique: true }],
     [{ uai: 1 }],
     [{ millesime: 1 }],
     ...Certification.indexes(),

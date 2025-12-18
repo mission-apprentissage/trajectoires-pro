@@ -76,6 +76,7 @@ async function importSecondeCommuneFor(jobStats, { statType, formations, famille
       const query = {
         millesime: millesime,
         code_certification: secondeCommune.code_certification,
+        filiere: formations[0].filiere,
         ...keys,
       };
 
@@ -89,7 +90,7 @@ async function importSecondeCommuneFor(jobStats, { statType, formations, famille
           },
           $set: omitNil({
             millesime,
-            filiere: "pro", // Les secondes communes existent uniquement en voie scolaire
+            filiere: formations[0].filiere, // Les secondes communes existent uniquement en voie scolaire
             ...certification,
             certificationsTerminales: formations.map((f) => pick(f, ["code_certification"])),
             ...baseData,
@@ -154,7 +155,7 @@ export async function importSecondeCommune(options = {}) {
           const formations = await streamToArray(
             await statCollections[statType].repository().find({
               "donnee_source.type": "self",
-              filiere: "pro",
+              filiere: ["pro", "agricole"],
               millesime,
               "familleMetier.code": familleMetier["code"],
               ...keys,
@@ -171,6 +172,16 @@ export async function importSecondeCommune(options = {}) {
           };
         }),
         filterData(({ formations }) => formations.length > 0),
+        transformData((data) => {
+          // Sépare les formations scolaires et agricoles
+          const pro = data.formations.filter((f) => f.filiere === "pro");
+          const agricole = data.formations.filter((f) => f.filiere === "agricole");
+          return [
+            ...(pro.length ? [{ ...data, formations: pro }] : []),
+            ...(agricole.length ? [{ ...data, formations: agricole }] : []),
+          ];
+        }),
+        flattenArray(),
         writeData(async (data) => {
           await importSecondeCommuneFor(jobStats, data);
         })

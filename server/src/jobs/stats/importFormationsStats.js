@@ -158,7 +158,7 @@ export async function importFormationsStats(options = {}) {
           uai: formationStats.uai,
           code_certification: formationStats.code_certification,
           millesime: formationStats.millesime,
-          filiere: { $ne: "superieur" },
+          filiere: formationStats.filiere,
         };
 
         try {
