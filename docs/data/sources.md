@@ -114,6 +114,8 @@ La base centrale des nomenclatures (BCN) contient toutes les nomenclatures en us
 - **[N_NIVEAU_FORMATION_DIPLOME](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_NIVEAU_FORMATION_DIPLOME)** : Niveaux des diplômes et formations intermédiaires dans N_FORMATION_DIPLOME.
 - **[N_DIPLOME_SISE](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_DIPLOME_SISE)** : Codification des diplômes recensés dans le dispositif SISE (Système d'informations sur le suivi de l'étudiant).
 - **[V_FORMATION_DIPLOME](https://bcn.depp.education.fr/bcn/index.php/workspace/viewTable/n/V_FORMATION_DIPLOME/nbElements/20)** : Vue rassemblant les codifications des diplômes susceptibles d'être préparés par la voie d'apprentissage.
+- **[N_GROUPE_FORMATION](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_GROUPE_FORMATION)** : Listes des groupes de formations utilisés pour les années communes et les formations qui en découlent (ex: familles de métiers dans le cadre des 2des professionnelles communes)
+- **[N_LIEN_FORMATION_GROUPE](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_LIEN_FORMATION_GROUPE)** : Liens entre les formations et les groupes de formations
 
 ### Format des données
 {: .no_toc }
