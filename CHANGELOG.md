@@ -1,3 +1,10 @@
+# [1.32.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.31.2...v1.32.0) (2025-12-18)
+
+
+### Features
+
+* etablissements depuis l'acce, api BCN et devenir inserjeunes ([#382](https://github.com/mission-apprentissage/trajectoires-pro/issues/382)) ([18b5498](https://github.com/mission-apprentissage/trajectoires-pro/commit/18b5498d38b2e46ccf8341a4534b583df09e9d85))
+
 ## [1.31.2](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.31.1...v1.31.2) (2025-10-20)
 
 
