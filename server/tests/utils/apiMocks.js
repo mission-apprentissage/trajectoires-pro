@@ -4,15 +4,33 @@ import { generateCodeCertification } from "./testUtils.js";
 import { CatalogueApprentissageApi } from "#src/services/catalogueApprentissage/CatalogueApprentissageApi.js";
 import * as Fixtures from "#tests/utils/fixtures.js";
 import { InserSupApi } from "#src/services/insersup/InsersupApi.js";
+import { BCNApi } from "#src/services/bcn/BCNApi.js";
 
 function createNock(baseUrl, options = {}) {
   let client = nock(baseUrl);
   return options.stack ? client : client.persist();
 }
 
-export function mockBCN(callback, options) {
-  let client = createNock(`https://bcn.depp.education.fr/bcn/index.php/export`, options);
-  callback(client);
+export async function mockBCN(callback, options) {
+  let client = createNock(BCNApi.baseApiUrl, options);
+  const login = (custom = {}) => {
+    return Object.assign(
+      {},
+      {
+        token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9",
+      },
+      custom
+    );
+  };
+
+  client
+    .post("/auth/login-extraction")
+    .query(() => true)
+    .reply(200, login());
+
+  await callback(client, {
+    login,
+  });
 
   return client;
 }

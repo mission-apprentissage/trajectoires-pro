@@ -103,6 +103,90 @@ describe("formationsRoutes", () => {
       });
     });
 
+    it("Vérifie qu'on peut obtenir les stats d'une formation agricole", async () => {
+      const { httpClient } = await startServer();
+      await insertFormationsStats({
+        uai: "0751234J",
+        code_certification: "12345678910",
+        code_formation_diplome: "12345678",
+        millesime: "2018_2019",
+        filiere: "agricole",
+        nb_annee_term: 100,
+        nb_poursuite_etudes: 1,
+        nb_en_emploi_24_mois: 2,
+        nb_en_emploi_18_mois: 3,
+        nb_en_emploi_12_mois: 4,
+        nb_en_emploi_6_mois: 5,
+        nb_sortant: 6,
+        taux_rupture_contrats: 7,
+        taux_en_formation: 8,
+        taux_en_emploi_24_mois: 9,
+        taux_en_emploi_18_mois: 10,
+        taux_en_emploi_12_mois: 11,
+        taux_en_emploi_6_mois: 12,
+        taux_autres_6_mois: 13,
+        taux_autres_12_mois: 14,
+        taux_autres_18_mois: 15,
+        taux_autres_24_mois: 16,
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/formations`, {
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      assert.strictEqual(response.status, 200);
+      assert.deepStrictEqual(response.data, {
+        formations: [
+          {
+            uai: "0751234J",
+            libelle_etablissement: "Lycée",
+            code_certification: "12345678910",
+            code_certification_type: "mef11",
+            code_formation_diplome: "12345678",
+            libelle: "LIBELLE",
+            millesime: "2018_2019",
+            filiere: "agricole",
+            diplome: { code: "4", libelle: "BAC" },
+            nb_annee_term: 100,
+            nb_poursuite_etudes: 1,
+            nb_en_emploi_24_mois: 2,
+            nb_en_emploi_18_mois: 3,
+            nb_en_emploi_12_mois: 4,
+            nb_en_emploi_6_mois: 5,
+            nb_sortant: 6,
+            taux_rupture_contrats: 7,
+            taux_en_formation: 8,
+            taux_en_emploi_24_mois: 9,
+            taux_en_emploi_18_mois: 10,
+            taux_en_emploi_12_mois: 11,
+            taux_en_emploi_6_mois: 12,
+            taux_autres_6_mois: 13,
+            taux_autres_12_mois: 14,
+            taux_autres_18_mois: 15,
+            taux_autres_24_mois: 16,
+            formation_fermee: false,
+            region: { code: "11", nom: "Île-de-France" },
+            academie: {
+              code: "01",
+              nom: "Paris",
+            },
+            donnee_source: {
+              code_certification: "12345678910",
+              type: "self",
+            },
+          },
+        ],
+        pagination: {
+          nombre_de_page: 1,
+          page: 1,
+          items_par_page: 10,
+          total: 1,
+        },
+      });
+    });
+
     it("Vérifie qu'on peut obtenir les stats d'une formation avec a un millésime unique", async () => {
       const { httpClient } = await startServer();
       await insertFormationsStats({

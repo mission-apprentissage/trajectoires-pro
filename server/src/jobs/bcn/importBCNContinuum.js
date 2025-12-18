@@ -1,9 +1,9 @@
 import { oleoduc, transformData, writeData } from "oleoduc";
-import { getBCNTable } from "#src/services/bcn.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { omit } from "lodash-es";
 import { bcn } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
+import { BCNApi } from "#src/services/bcn/BCNApi.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -49,30 +49,32 @@ async function updateDiplomeList(data) {
   return { isModified, res, resOldDiplome, resNewDiplome };
 }
 
-export async function importBCNContinuum(options = {}) {
+export async function importBCNContinuum() {
   logger.info(`Création du continuum des formations depuis la BCN`);
   const stats = { total: 0, updated: 0, failed: 0 };
+  const bcnApi = new BCNApi();
 
   await oleoduc(
-    await getBCNTable("N_FORMATION_DIPLOME", options),
+    await bcnApi.fetchNomenclature("N_FORMATION_DIPLOME"),
     transformData((data) => {
       const parseDiplomeList = (match, data) => {
         const list = Object.keys(data)
           .filter((key) => key.startsWith(match))
-          .map((key) => data[key]);
+          .map((key) => data[key])
+          .filter((d) => d);
         return list;
       };
 
       const newData = {
-        code_certification: data["FORMATION_DIPLOME"],
-        date_premiere_session: data["DATE_PREMIERE_SESSION"] || null,
-        date_derniere_session: data["DATE_DERNIERE_SESSION"] || null,
+        code_certification: data["formation_diplome"],
+        date_premiere_session: data["date_premiere_session"] ? `${data["date_premiere_session"]}` : null,
+        date_derniere_session: data["date_derniere_session"] ? `${data["date_derniere_session"]}` : null,
       };
 
       return {
         ...newData,
-        ancien_diplome: parseDiplomeList("ANCIEN_DIPLOME_", data).filter((c) => c != newData.code_certification),
-        nouveau_diplome: parseDiplomeList("NOUVEAU_DIPLOME_", data).filter((c) => c != newData.code_certification),
+        ancien_diplome: parseDiplomeList("ancien_diplome_", data).filter((c) => c != newData.code_certification),
+        nouveau_diplome: parseDiplomeList("nouveau_diplome_", data).filter((c) => c != newData.code_certification),
       };
     }),
     writeData(

@@ -1,7 +1,7 @@
 import { transformData, filterData, accumulateData, flattenArray, oleoduc, writeData } from "oleoduc";
-
 import { InserJeunesApi } from "./InserJeunesApi.js";
 import { streamNestedJsonArray } from "#src/common/utils/streamUtils.js";
+import { INSERJEUNES_STATS_TO_RENAME } from "#src/common/stats.js";
 
 function getFiliereFromIDType(dimension) {
   return dimension["id_formation_apprentissage"] ? "apprentissage" : "pro";
@@ -87,18 +87,12 @@ function computeMissingStats() {
 
 function renameStats() {
   return transformData((data) => {
-    const statsToRename = {
-      salaire_TS_Q1_12_mois: "salaire_12_mois_q1",
-      salaire_TS_Q2_12_mois: "salaire_12_mois_q2",
-      salaire_TS_Q3_12_mois: "salaire_12_mois_q3",
-    };
-
     return {
       ...data,
       ...Object.fromEntries(
         Object.entries(data)
-          .filter(([k]) => statsToRename[k])
-          .map(([k, d]) => [statsToRename[k], d])
+          .filter(([k]) => INSERJEUNES_STATS_TO_RENAME[k])
+          .map(([k, d]) => [INSERJEUNES_STATS_TO_RENAME[k], d])
       ),
     };
   });

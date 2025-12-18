@@ -7,7 +7,7 @@ export function parseAsUTCDate(string) {
     return null;
   }
 
-  return DateTime.fromFormat(string, "dd/MM/yyyy", { zone: "utc" }).toJSDate();
+  return DateTime.fromFormat(string.substring(0, 10), "yyyy-MM-dd", { zone: "utc" }).toJSDate();
 }
 
 export default moment;

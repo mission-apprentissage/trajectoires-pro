@@ -12,7 +12,7 @@ import BCNRepository from "#src/common/repositories/bcn.js";
 import CertificationStatsRepository from "#src/common/repositories/certificationStats.js";
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
-import * as BCN from "#src/services/bcn.js";
+import * as BCN from "#src/services/bcn/bcn.js";
 import { REGIONS } from "#src/services/regions.js";
 
 const logger = getLoggerWithContext("import");
@@ -119,9 +119,10 @@ async function importSecondeCommuneFor(jobStats, { statType, formations, famille
 
 export async function importSecondeCommune(options = {}) {
   const jobStats = { created: 0, updated: 0, failed: 0 };
-
   const statsType = options.stats || ["certifications", "formations", "regionales"];
-  const millesimesFilter = options.millesimes || null;
+  const millesimes = options.millesimes || null;
+  const millesimesDouble = millesimes ? millesimes.map((m) => `${m - 1}_${m}`) : null;
+  const millesimesFilter = millesimes ? [...millesimes, ...millesimesDouble] : null;
   const familleMetierFilePath = options.familleMetierFilePath || null;
 
   const famillesMetier = await BCN.getFamilleMetier(familleMetierFilePath);

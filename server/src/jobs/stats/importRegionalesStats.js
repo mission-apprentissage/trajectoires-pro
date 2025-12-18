@@ -12,6 +12,7 @@ import {
   INSERJEUNES_IGNORED_STATS_NAMES,
   INSERJEUNES_STATS_NAMES,
   getUnknownIJFields,
+  INSERJEUNES_CUSTOM_STATS_NAMES,
 } from "#src/common/stats.js";
 import { getCertificationInfo } from "#src/common/certification.js";
 import { getRegions, findRegionByCodeRegionAcademique } from "#src/services/regions.js";
@@ -92,7 +93,7 @@ export async function importRegionalesStats(options = {}) {
         try {
           const certification = await getCertificationInfo(regionaleStats.code_certification);
           const stats = pick(regionaleStats, INSERJEUNES_STATS_NAMES);
-          const customStats = computeCustomStats(regionaleStats);
+          const customStats = computeCustomStats(regionaleStats, "inserjeunes", INSERJEUNES_CUSTOM_STATS_NAMES);
 
           // Delete data compute with continuum job (= when type is not self)
           await regionalesStats().deleteOne({

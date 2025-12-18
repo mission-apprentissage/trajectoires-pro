@@ -329,6 +329,10 @@ export function findRegionByCodeRegionAcademique(code) {
 }
 
 export function findRegionByCodeInsee(code) {
+  if (!code) {
+    return null;
+  }
+
   return REGIONS.find((region) => region.departements.find((d) => code.replace(/^0/, "").startsWith(d.code))) || null;
 }
 
@@ -345,6 +349,10 @@ export function getAcademies() {
 }
 
 export function findRegionByCodePostal(code) {
+  if (!code) {
+    return null;
+  }
+
   const departement = code.match(/^(97|98)/) ? code.substring(0, 3) : code.substring(0, 2);
   return REGIONS.find((region) => region.departements.find((d) => d.code == departement)) || null;
 }

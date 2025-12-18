@@ -2,6 +2,8 @@ import { RateLimitedApi } from "#src/common/api/RateLimitedApi.js";
 import config from "#src/config.js";
 import { fetchJsonWithRetry, fetchStreamWithRetry } from "#src/common/utils/httpUtils.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
+import { text } from "stream/consumers";
+import { ApiError } from "#src/common/api/ApiError.js";
 
 const logger = getLoggerWithContext("api/inserjeunes");
 
@@ -61,17 +63,30 @@ class InserJeunesApi extends RateLimitedApi {
       }
 
       // /!\ L'API Inserjeunes retourne un json dans un json, on retourne le json en string ici
-      const response = await fetchStreamWithRetry(
-        `${InserJeunesApi.baseApiUrl}/UAI/${uai}/millesime/${millesime}`,
-        {
-          headers: {
-            ...this.getAuthHeaders(),
+      try {
+        const response = await fetchStreamWithRetry(
+          `${InserJeunesApi.baseApiUrl}/UAI/${uai}/millesime/${millesime}`,
+          {
+            headers: {
+              ...this.getAuthHeaders(),
+            },
           },
-        },
-        { ...this.retry }
-      );
+          {
+            ignoreWhen: (err) => {
+              //No retry on 400
+              if (err?.status === 400) {
+                return true;
+              }
+              return false;
+            },
+            ...this.retry,
+          }
+        );
 
-      return response;
+        return response;
+      } catch (e) {
+        throw new ApiError(this.name, e.message, e.status || e.code, e?.data ? await text(e?.data) : null);
+      }
     });
   }
 

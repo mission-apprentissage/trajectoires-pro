@@ -208,6 +208,7 @@ async function computeUAILieuFormation(millesime, result, handleError) {
 export async function computeUAI(options = {}) {
   const result = { total: 0, created: 0, updated: 0, failed: 0 };
   const millesime = options.millesime || null;
+  const millesimeDouble = millesime ? `${millesime - 1}_${millesime}` : null;
 
   function handleError(e, context = {}) {
     logger.error({ err: e, ...context }, `Impossible d'associer les UAIs pour cette formation`);
@@ -215,9 +216,9 @@ export async function computeUAI(options = {}) {
     return null;
   }
 
-  await computeUAIBase(millesime, result, handleError);
+  await computeUAIBase(millesimeDouble, result, handleError);
 
-  await computeUAILieuFormation(millesime, result, handleError);
+  await computeUAILieuFormation(millesimeDouble, result, handleError);
 
   return result;
 }

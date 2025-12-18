@@ -3,6 +3,7 @@ import MockDate from "mockdate";
 import { importBCNSise } from "#src/jobs/bcn/importBCNSise.js";
 import { bcnSise } from "#src/common/db/collections/collections.js";
 import { mockBCN } from "#tests/utils/apiMocks.js";
+import * as Fixtures from "#tests/utils/fixtures.js";
 
 describe("importBCNSise", () => {
   before(() => {
@@ -14,14 +15,12 @@ describe("importBCNSise", () => {
   });
 
   it("Vérifie qu'on peut importer les sises", async () => {
-    mockBCN((client) => {
+    await mockBCN(async (client) => {
       client
-        .get("/CSV?n=N_TYPE_DIPLOME_SISE&separator=%7C")
-        .replyWithFile(200, "tests/fixtures/files/bcn/n_type_diplome_sise.csv");
-    });
+        .get("/nomenclature/N_TYPE_DIPLOME_SISE?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_TYPE_DIPLOME_SISE"));
 
-    mockBCN((client) => {
-      client.get("/CSV?n=N_DIPLOME_SISE&separator=%7C").replyWithFile(200, "tests/fixtures/files/bcn/n_sise.csv");
+      client.get("/nomenclature/N_DIPLOME_SISE?schema=consultation").reply(200, await Fixtures.BCN("N_DIPLOME_SISE"));
     });
 
     let stats = await importBCNSise();
@@ -33,7 +32,9 @@ describe("importBCNSise", () => {
         date_import: new Date(),
         updated_on: new Date(),
       },
+      cite_domaine_detaille: "0841",
       cite_domaine_formation: "341",
+      date_ouverture: new Date("2009-09-01T00:00:00.000Z"),
       date_fermeture: new Date("2000-08-31T00:00:00.000Z"),
       date_intervention: new Date("2012-10-31T00:00:00.000Z"),
       definitif: "O",

@@ -10,6 +10,7 @@ import {
   getMillesimes,
   INSERJEUNES_IGNORED_STATS_NAMES,
   INSERJEUNES_STATS_NAMES,
+  INSERJEUNES_CUSTOM_STATS_NAMES,
   getUnknownIJFields,
 } from "#src/common/stats.js";
 import { getCertificationInfo } from "#src/common/certification.js";
@@ -68,7 +69,7 @@ export async function importCertificationsStats(options = {}) {
         try {
           const certification = await getCertificationInfo(certificationStats.code_certification);
           const stats = pick(certificationStats, INSERJEUNES_STATS_NAMES);
-          const customStats = computeCustomStats(certificationStats);
+          const customStats = computeCustomStats(certificationStats, "inserjeunes", INSERJEUNES_CUSTOM_STATS_NAMES);
 
           // Delete data compute with continuum job (= when type is not self)
           await certificationsStats().deleteOne({

@@ -5,7 +5,12 @@ import { upsert } from "#src/common/db/mongodb.js";
 import { certificationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
-import { computeCustomStats, getMillesimesSup, INSERSUP_STATS_NAMES } from "#src/common/stats.js";
+import {
+  computeCustomStats,
+  getMillesimesSup,
+  INSERSUP_STATS_NAMES,
+  INSERSUP_CUSTOM_STATS_NAMES,
+} from "#src/common/stats.js";
 import { getCertificationSupInfo } from "#src/common/certification.js";
 import { InserSup } from "#src/services/dataEnseignementSup/InserSup.js";
 
@@ -51,7 +56,7 @@ export async function importCertificationsSupStats(options = {}) {
             try {
               const certification = await getCertificationSupInfo(formationStats.diplome);
               const stats = omitNil(pick(formationStats, ["millesime", ...INSERSUP_STATS_NAMES]));
-              const customStats = computeCustomStats(stats);
+              const customStats = computeCustomStats(stats, "insersup", INSERSUP_CUSTOM_STATS_NAMES);
 
               // Delete data compute with continuum job (= when type is not self)
               await certificationsStats().deleteOne({

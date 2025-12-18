@@ -5,7 +5,12 @@ import { formationsStats } from "#src/common/db/collections/collections.js";
 import { getLoggerWithContext } from "#src/common/logger.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
 import { findAcademieByCode, findRegionByCodeInsee } from "#src/services/regions.js";
-import { computeCustomStats, getMillesimesFormationsSup, INSERSUP_STATS_NAMES } from "#src/common/stats.js";
+import {
+  computeCustomStats,
+  getMillesimesFormationsSup,
+  INSERSUP_CUSTOM_STATS_NAMES,
+  INSERSUP_STATS_NAMES,
+} from "#src/common/stats.js";
 import { getCertificationSupInfo } from "#src/common/certification.js";
 import { InserSupApi } from "#src/services/insersup/InsersupApi.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
@@ -39,11 +44,12 @@ function formatData(data) {
     }
     return data.annee_universitaire.replace("-", "_");
   };
-  const formatInt = (str) => (str === "nd" || str === "na" ? null : parseInt(str.replaceAll("*", "")));
+  const formatInt = (str) =>
+    str.substr(0, 2) === "nd" || str.substr(0, 2) === "na" ? null : parseInt(str.replaceAll("*", ""));
 
   const formatted = {
     uai: data.etablissement,
-    code_certification: data.diplome,
+    code_certification: data.diplome || data.diplome_consol, // InserSup API changed its specifications
     millesime: formatMillesime(data),
     nb_poursuite_etudes: formatInt(data.nb_poursuivants),
     nb_annee_term: formatInt(data.nb_inscrits),
@@ -126,6 +132,7 @@ export async function importFormationsSupStats(options = {}) {
       const acce = await AcceEtablissementRepository.first({ numero_uai: stats.uai });
       if (!acce) {
         handleError(new Error(`Etablissement ${stats.uai} inconnu dans l'ACCE`));
+        return null;
       }
 
       const region = findRegionByCodeInsee(acce.departement_insee_3);
@@ -159,7 +166,7 @@ export async function importFormationsSupStats(options = {}) {
       try {
         const certification = await getCertificationSupInfo(formationStats.code_certification);
         const stats = omitNil(pick(formationStats, ["uai", "millesime", ...INSERSUP_STATS_NAMES]));
-        const customStats = computeCustomStats(stats);
+        const customStats = computeCustomStats(stats, "insersup", INSERSUP_CUSTOM_STATS_NAMES);
 
         // Delete data compute with continuum job (= when type is not self)
         await formationsStats().deleteOne({

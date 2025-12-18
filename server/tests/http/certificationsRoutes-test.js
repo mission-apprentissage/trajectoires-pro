@@ -558,6 +558,28 @@ describe("certificationsRoutes", () => {
       });
     });
 
+    it("Vérifie qu'on peut obtenir la certification agricole avec le format MEFSTAT11:XXXXXXXXXXX", async () => {
+      const { httpClient } = await startServer();
+      await insertCertificationsStats({
+        code_certification: "12345678910",
+        code_formation_diplome: "12345678910",
+        filiere: "agricole",
+        nb_annee_term: 100,
+      });
+
+      const response = await httpClient.get(`/api/inserjeunes/certifications/MEFSTAT11:12345678910`);
+
+      assert.strictEqual(response.status, 200);
+      assert.deepInclude(response.data, {
+        millesime: "2020",
+        code_certification: "12345678910",
+        code_formation_diplome: "12345678910",
+        filiere: "agricole",
+        diplome: { code: "4", libelle: "BAC" },
+        nb_annee_term: 100,
+      });
+    });
+
     it("Vérifie que l'on renvoi l'information si la formation est fermée", async () => {
       const { httpClient } = await startServer();
       await insertCertificationsStats({
@@ -711,6 +733,7 @@ describe("certificationsRoutes", () => {
           code_certification: "12345678",
           code_formation_diplome: "12345678",
           filiere: "apprentissage",
+          taux_en_formation: 5,
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,
@@ -724,6 +747,7 @@ describe("certificationsRoutes", () => {
           code_certification: "23830024202",
           code_formation_diplome: "12345678",
           filiere: "pro",
+          taux_en_formation: 5,
           nb_sortant: 100,
           nb_annee_term: 100,
           nb_poursuite_etudes: 5,

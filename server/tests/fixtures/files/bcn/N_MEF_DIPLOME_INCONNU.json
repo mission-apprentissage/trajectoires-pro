@@ -1,0 +1,35 @@
+{
+    "data": [
+        {
+            "mef": "999999991",
+            "dispositif_formation": "254",
+            "formation_diplome": "INCONNU",
+            "duree_dispositif": "2",
+            "annee_dispositif": "1",
+            "libelle_court": "1BP2  33404",
+            "libelle_long": "BAC PRO",
+            "date_ouverture": "2022-07-31 00:00:00",
+            "date_fermeture": "2022-08-31 00:00:00",
+            "statut_mef": "3",
+            "nb_option_obligatoire": 0,
+            "nb_option_facultatif": null,
+            "renforcement_langue": "N",
+            "duree_projet": null,
+            "duree_stage": null,
+            "horaire": "N",
+            "mef_inscription_scolarite": "O",
+            "mef_stat_11": "99999999911",
+            "mef_stat_9": "999999999",
+            "date_intervention": "2024-11-26 00:00:00",
+            "numero_compte": "BCNSCOEDT1",
+            "gestion_diffusion": "02",
+            "libelle_edition": "1bp2 gouvernante",
+            "id": 3737,
+            "created_at": null,
+            "updated_at": null,
+            "n_commentaire": null,
+            "statut_id": 1,
+            "date_statut": "2024-11-26 00:00:00"
+        }
+    ]
+}

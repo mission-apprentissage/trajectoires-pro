@@ -1,5 +1,5 @@
 import assert from "assert";
-import { getDiplome } from "#src/services/bcn.js";
+import { getDiplome } from "#src/services/bcn/bcn.js";
 
 describe("bcn", () => {
   it("Permet de trouver un diplome avec un code formation", () => {

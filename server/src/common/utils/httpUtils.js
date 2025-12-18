@@ -3,15 +3,32 @@ import asyncRetry from "async-retry";
 import { getLoggerWithContext } from "#src/common/logger.js";
 const logger = getLoggerWithContext("http");
 
+async function axiosErrorToJSON(err) {
+  const { url, method, params, data } = err.config || {};
+  return {
+    message: err.message,
+    code: err.code,
+    status: err.response?.status,
+    data: err.response?.data,
+    request: { url, method, params, data },
+  };
+}
+
 async function _fetch(url, options = {}) {
   let { method = "GET", ...rest } = options;
   logger.debug(`${method} ${url}...`);
 
-  return axios.request({
-    url,
-    method,
-    ...rest,
-  });
+  try {
+    return await axios.request({
+      url,
+      method,
+      ...rest,
+    });
+  } catch (err) {
+    const cleanError = new Error(err.message);
+    Object.assign(cleanError, await axiosErrorToJSON(err));
+    throw cleanError;
+  }
 }
 
 async function fetchStream(url, options = {}) {
@@ -20,14 +37,26 @@ async function fetchStream(url, options = {}) {
 }
 
 async function fetchJson(url, options = {}) {
-  let response = await _fetch(url, { ...options, responseType: "text" });
-  return JSON.parse(response.data);
+  let response = await _fetch(url, { ...options, responseType: "json" });
+  return response.data;
 }
 
-async function fetchJsonWithRetry(url, options = {}, retryOptions = { retries: 3 }) {
+async function ignoreRetry(cb, bail, ignoreWhen) {
+  try {
+    return await cb();
+  } catch (err) {
+    if (ignoreWhen && ignoreWhen(err)) {
+      bail(err);
+      return;
+    }
+    throw err;
+  }
+}
+
+async function fetchJsonWithRetry(url, options = {}, retryOptions = { retries: 3, ignoreWhen: () => false }) {
   return asyncRetry(
-    () => {
-      return fetchJson(url, options);
+    (bail) => {
+      return ignoreRetry(async () => fetchJson(url, options), bail, retryOptions.ignoreWhen);
     },
     {
       ...(retryOptions || {}),
@@ -38,11 +67,17 @@ async function fetchJsonWithRetry(url, options = {}, retryOptions = { retries: 3
   );
 }
 
-async function fetchWithRetry(url, options = {}, retryOptions = { retries: 3 }) {
+async function fetchWithRetry(url, options = {}, retryOptions = { retries: 3, ignoreWhen: () => false }) {
   return asyncRetry(
-    async () => {
-      let response = await _fetch(url, { ...options, responseType: "text" });
-      return response.data;
+    async (bail) => {
+      return ignoreRetry(
+        async () => {
+          let response = await _fetch(url, { ...options, responseType: "text" });
+          return response.data;
+        },
+        bail,
+        retryOptions.ignoreWhen
+      );
     },
     {
       ...(retryOptions || {}),
@@ -53,10 +88,16 @@ async function fetchWithRetry(url, options = {}, retryOptions = { retries: 3 }) 
   );
 }
 
-async function fetchStreamWithRetry(url, options = {}, retryOptions = { retries: 3 }) {
+async function fetchStreamWithRetry(url, options = {}, retryOptions = { retries: 3, ignoreWhen: () => false }) {
   return asyncRetry(
-    () => {
-      return fetchStream(url, options);
+    (bail) => {
+      return ignoreRetry(
+        async () => {
+          return fetchStream(url, options);
+        },
+        bail,
+        retryOptions.ignoreWhen
+      );
     },
     {
       ...(retryOptions || {}),

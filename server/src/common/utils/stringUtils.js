@@ -19,3 +19,11 @@ export function capitalizeFirstLetter(string) {
 export function asArray(v) {
   return v.split(",");
 }
+
+export function safeJsonParse(str, fallback = null) {
+  try {
+    return JSON.parse(str);
+  } catch {
+    return fallback;
+  }
+}

@@ -2,7 +2,7 @@ import Joi from "joi";
 import { mapValues } from "lodash-es";
 import { getRegions, findRegionByCodePostal, getAcademies } from "#src/services/regions.js";
 import { formatArrayParameters } from "./formatters.js";
-import { ANCIENS_NIVEAUX_MAPPER } from "#src/services/bcn.js";
+import { ANCIENS_NIVEAUX_MAPPER } from "#src/services/bcn/bcn.js";
 
 const UAI_PATTERN = /^[0-9]{7}[A-Z]{1}$/;
 export const CFD_PATTERN = /^(?:CFD:)?([0-9A-Z]{8})$/;

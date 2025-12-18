@@ -66,10 +66,12 @@ describe("importFormationsStats", () => {
       numero_uai: "0751234J",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
 
     const stats = await importFormationsStats({
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
@@ -106,7 +108,7 @@ describe("importFormationsStats", () => {
       },
     });
 
-    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
+    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0, ignored: 0 });
   });
 
   it("Vérifie qu'on peut importer les stats d'une formation (mefstats11)", async () => {
@@ -132,10 +134,12 @@ describe("importFormationsStats", () => {
       numero_uai: "0751234J",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
 
     const stats = await importFormationsStats({
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
@@ -173,7 +177,47 @@ describe("importFormationsStats", () => {
         date_import: new Date("2023-01-01T00:00:00.000Z"),
       },
     });
-    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
+    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0, ignored: 0 });
+  });
+
+  it("Vérifie qu'on peut gérer les erreurs pour les établissements avec une région invalide", async () => {
+    mockApi("0751234J", "2018_2019", {
+      data: [
+        {
+          id_mesure: "nb_en_emploi_6_mois",
+          valeur_mesure: 6,
+          dimensions: [
+            {
+              id_formation_apprentissage: "12345678",
+            },
+          ],
+        },
+      ],
+    });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+      departement_insee_3: "invalid",
+    });
+
+    await insertCFD({
+      code_certification: "12345678",
+      code_formation_diplome: "12345678",
+      diplome: {
+        code: "4",
+        libelle: "BAC",
+      },
+    });
+
+    const stats = await importFormationsStats({
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
+    });
+
+    const count = await formationsStats().countDocuments({});
+    assert.strictEqual(count, 0);
+    assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0, ignored: 0 });
   });
 
   describe("Vérifie que l'on calcule les nombres manquants quand cela est possible", () => {
@@ -209,10 +253,12 @@ describe("importFormationsStats", () => {
         numero_uai: "0751234J",
         academie: "16",
         academie_libe: "Toulouse",
+        departement_insee_3: "031",
       });
 
       await importFormationsStats({
-        parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+        millesimes: ["2018_2019"],
+        parameters: [{ uai: "0751234J" }],
       });
 
       const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
@@ -252,10 +298,12 @@ describe("importFormationsStats", () => {
         numero_uai: "0751234J",
         academie: "16",
         academie_libe: "Toulouse",
+        departement_insee_3: "031",
       });
 
       await importFormationsStats({
-        parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+        millesimes: ["2018_2019"],
+        parameters: [{ uai: "0751234J" }],
       });
 
       const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
@@ -296,10 +344,12 @@ describe("importFormationsStats", () => {
         numero_uai: "0751234J",
         academie: "16",
         academie_libe: "Toulouse",
+        departement_insee_3: "031",
       });
 
       await importFormationsStats({
-        parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+        millesimes: ["2018_2019"],
+        parameters: [{ uai: "0751234J" }],
       });
 
       const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
@@ -307,11 +357,123 @@ describe("importFormationsStats", () => {
     });
   });
 
-  it("Vérifie qu'on recalcule les taux", async () => {
+  it("Vérifie qu'on ne recalcule pas les taux à 6 mois", async () => {
     mockApi("0751234J", "2018_2019", {
       data: [
         {
+          id_mesure: "DEVENIR_part_autre_situation_6_mois",
+          valeur_mesure: 15,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "DEVENIR_part_en_emploi_6_mois",
+          valeur_mesure: 25,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "DEVENIR_part_poursuite_etudes",
+          valeur_mesure: 60,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
           id_mesure: "nb_en_emploi_6_mois",
+          valeur_mesure: 10,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_poursuite_etudes",
+          valeur_mesure: 50,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_annee_term",
+          valeur_mesure: 100,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+      ],
+    });
+    await insertMEF({
+      code_certification: "12345678900",
+      code_formation_diplome: "12345678",
+      diplome: { code: "4", libelle: "BAC" },
+    });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+      departement_insee_3: "031",
+    });
+
+    await importFormationsStats({
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
+    });
+
+    const found = await formationsStats().findOne({});
+    const taux = pickBy(found, (value, key) => key.startsWith("taux"));
+    assert.deepStrictEqual(taux, {
+      taux_autres_6_mois: 15,
+      taux_en_emploi_6_mois: 25,
+      taux_en_formation: 60,
+    });
+  });
+
+  it("Vérifie qu'on recalcule les taux à 12/18/24 mois", async () => {
+    mockApi("0751234J", "2018_2019", {
+      data: [
+        {
+          id_mesure: "DEVENIR_part_poursuite_etudes",
+          valeur_mesure: 50,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_12_mois",
+          valeur_mesure: 10,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_18_mois",
+          valeur_mesure: 10,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
+        {
+          id_mesure: "nb_en_emploi_24_mois",
           valeur_mesure: 10,
           dimensions: [
             {
@@ -351,14 +513,19 @@ describe("importFormationsStats", () => {
     });
 
     await importFormationsStats({
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     const found = await formationsStats().findOne({});
     const taux = pickBy(found, (value, key) => key.startsWith("taux"));
     assert.deepStrictEqual(taux, {
-      taux_autres_6_mois: 40,
-      taux_en_emploi_6_mois: 10,
+      taux_autres_12_mois: 40,
+      taux_en_emploi_12_mois: 10,
+      taux_autres_18_mois: 40,
+      taux_en_emploi_18_mois: 10,
+      taux_autres_24_mois: 40,
+      taux_en_emploi_24_mois: 10,
       taux_en_formation: 50,
     });
   });
@@ -366,6 +533,15 @@ describe("importFormationsStats", () => {
   it("Vérifie que l'on arrondit correctement les taux", async () => {
     mockApi("0751234J", "2018_2019", {
       data: [
+        {
+          id_mesure: "DEVENIR_part_poursuite_etudes",
+          valeur_mesure: 28,
+          dimensions: [
+            {
+              id_mefstat11: "12345678900",
+            },
+          ],
+        },
         {
           id_mesure: "nb_annee_term",
           valeur_mesure: 40,
@@ -376,7 +552,7 @@ describe("importFormationsStats", () => {
           ],
         },
         {
-          id_mesure: "nb_en_emploi_6_mois",
+          id_mesure: "nb_en_emploi_12_mois",
           valeur_mesure: 13,
           dimensions: [
             {
@@ -404,20 +580,22 @@ describe("importFormationsStats", () => {
       numero_uai: "0751234J",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
 
     await importFormationsStats({
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     const found = await formationsStats().findOne({});
     const taux = pickBy(found, (value, key) => key.startsWith("taux"));
     assert.deepStrictEqual(taux, {
-      taux_autres_6_mois: 40,
-      taux_en_emploi_6_mois: 32,
+      taux_autres_12_mois: 40,
+      taux_en_emploi_12_mois: 32,
       taux_en_formation: 28,
     });
-    assert.equal(taux.taux_autres_6_mois + taux.taux_en_emploi_6_mois + taux.taux_en_formation, 100);
+    assert.equal(taux.taux_autres_12_mois + taux.taux_en_emploi_12_mois + taux.taux_en_formation, 100);
   });
 
   it("Vérifie qu'on fusionne les mesures d'une formation", async () => {
@@ -448,17 +626,19 @@ describe("importFormationsStats", () => {
       numero_uai: "0751234J",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
 
     const stats = await importFormationsStats({
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.strictEqual(found.nb_en_emploi_6_mois, 6);
     assert.strictEqual(found.nb_en_emploi_12_mois, 12);
     assert.ok(found._meta.date_import);
-    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0 });
+    assert.deepStrictEqual(stats, { created: 1, failed: 0, updated: 0, ignored: 0 });
   });
 
   it("Vérifie qu'on peut importer les stats de plusieurs formations", async () => {
@@ -490,17 +670,19 @@ describe("importFormationsStats", () => {
       numero_uai: "0751234J",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
 
     const stats = await importFormationsStats({
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     let found = await formationsStats().findOne({ code_certification: "12345678" });
     assert.strictEqual(found.nb_en_emploi_6_mois, 6);
     found = await formationsStats().findOne({ code_certification: "87456123" });
     assert.strictEqual(found.nb_en_emploi_6_mois, 8);
-    assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
+    assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0, ignored: 0 });
   });
 
   it("Vérifie qu'on peut importer les stats d'une formation sur plusieurs millesimes", async () => {
@@ -535,20 +717,19 @@ describe("importFormationsStats", () => {
       numero_uai: "0751234J",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
 
     const stats = await importFormationsStats({
-      parameters: [
-        { uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" },
-        { uai: "0751234J", region: "OCCITANIE", millesime: "2019_2020" },
-      ],
+      millesimes: ["2018_2019", "2019_2020"],
+      parameters: [{ uai: "0751234J" }, { uai: "0751234J" }],
     });
 
     let found = await formationsStats().findOne({ millesime: "2018_2019" });
     assert.strictEqual(found.nb_en_emploi_6_mois, 6);
     found = await formationsStats().findOne({ millesime: "2019_2020" });
     assert.strictEqual(found.nb_en_emploi_6_mois, 8);
-    assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0 });
+    assert.deepStrictEqual(stats, { created: 2, failed: 0, updated: 0, ignored: 0 });
   });
 
   it("Vérifie qu'on peut mettre à jour les stats d'une formation", async () => {
@@ -569,6 +750,7 @@ describe("importFormationsStats", () => {
       numero_uai: "0751234J",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
     await insertFormationsStats({
       uai: "0751234J",
@@ -578,12 +760,13 @@ describe("importFormationsStats", () => {
     });
 
     const stats = await importFormationsStats({
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found.nb_en_emploi_6_mois, 6);
-    assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 1 });
+    assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 1, ignored: 0 });
   });
 
   it("Vérifie qu'on peut gérer les établissements inconnus", async () => {
@@ -591,20 +774,53 @@ describe("importFormationsStats", () => {
       numero_uai: "00000000",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
 
     // Disable retry on InserJeunes API
     const stats = await importFormationsStats({
       inserjeunesOptions: { apiOptions: { retry: { retries: 0 } } },
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     const count = await formationsStats().countDocuments({});
     assert.strictEqual(count, 0);
-    assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
+    assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0, ignored: 0 });
   });
 
   it("Vérifie qu'on peut gèrer les erreurs 400 de l'api", async () => {
+    mockInserJeunesApi((client, responses) => {
+      client
+        .post("/login")
+        .query(() => true)
+        .reply(200, responses.login());
+
+      client
+        .get(`/UAI/0751234J/millesime/2018_2019`)
+        .query(() => true)
+        .reply(400, { msg: "error" });
+    });
+    await insertAcceEtablissement({
+      numero_uai: "0751234J",
+      academie: "16",
+      academie_libe: "Toulouse",
+      departement_insee_3: "031",
+    });
+
+    // Disable retry on InserJeunes API
+    const stats = await importFormationsStats({
+      inserjeunesOptions: { apiOptions: { retry: { retries: 0 } } },
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
+    });
+
+    const count = await formationsStats().countDocuments({});
+    assert.strictEqual(count, 0);
+    assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0, ignored: 0 });
+  });
+
+  it("Vérifie qu'on ignore les erreurs 400 de l'api quand il s'agit d'un UAI incorrect (inexistant dans la base IJ)", async () => {
     mockInserJeunesApi((client, responses) => {
       client
         .post("/login")
@@ -620,17 +836,19 @@ describe("importFormationsStats", () => {
       numero_uai: "0751234J",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
 
     // Disable retry on InserJeunes API
     const stats = await importFormationsStats({
       inserjeunesOptions: { apiOptions: { retry: { retries: 0 } } },
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     const count = await formationsStats().countDocuments({});
     assert.strictEqual(count, 0);
-    assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
+    assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 0, ignored: 1 });
   });
 
   it("Vérifie qu'on peut gèrer un json invalide", async () => {
@@ -649,16 +867,18 @@ describe("importFormationsStats", () => {
       numero_uai: "0751234J",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
 
     const stats = await importFormationsStats({
       inserjeunesOptions: { apiOptions: { retry: { retries: 0 } } },
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     const count = await formationsStats().countDocuments({});
     assert.strictEqual(count, 0);
-    assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0 });
+    assert.deepStrictEqual(stats, { created: 0, failed: 1, updated: 0, ignored: 0 });
   });
 
   it("Réessai d'appeler l'api en cas d'erreur", async () => {
@@ -701,6 +921,7 @@ describe("importFormationsStats", () => {
       numero_uai: "0751234J",
       academie: "16",
       academie_libe: "Toulouse",
+      departement_insee_3: "031",
     });
 
     await insertFormationsStats({
@@ -713,11 +934,12 @@ describe("importFormationsStats", () => {
     // Change retry default timeout
     const stats = await importFormationsStats({
       inserjeunesOptions: { apiOptions: { retry: { minTimeout: 0 } } },
-      parameters: [{ uai: "0751234J", region: "OCCITANIE", millesime: "2018_2019" }],
+      millesimes: ["2018_2019"],
+      parameters: [{ uai: "0751234J" }],
     });
 
     const found = await formationsStats().findOne({}, { projection: { _id: 0 } });
     assert.deepStrictEqual(found.nb_en_emploi_6_mois, 6);
-    assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 1 });
+    assert.deepStrictEqual(stats, { created: 0, failed: 0, updated: 1, ignored: 0 });
   });
 });

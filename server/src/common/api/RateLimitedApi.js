@@ -24,7 +24,10 @@ class RateLimitedApi {
     try {
       return await this.rateLimiter.execute(callback);
     } catch (e) {
-      throw new ApiError(this.name, e.message, e.response?.status || e.code, { cause: e });
+      if (e instanceof ApiError) {
+        throw e;
+      }
+      throw new ApiError(this.name, e.message, e.status || e.code, e?.data);
     }
   }
 }

@@ -200,10 +200,10 @@ async function computeChildren({ diplomeBCN, data, query, statName }) {
 }
 
 export async function computeContinuumStats(options = {}) {
-  let stats = options.stats || ["certifications", "regionales", "formations"];
+  const stats = options.stats || ["certifications", "regionales", "formations"];
   const result = { total: 0, created: 0, updated: 0, failed: 0 };
-
   const millesime = options.millesime || null;
+  const millesimeDouble = millesime ? `${millesime - 1}_${millesime}` : null;
 
   function handleError(e, context = {}) {
     logger.error({ err: e, ...context }, `Impossible de calculer les données pour les anciens/nouveaux diplomes`);
@@ -213,7 +213,11 @@ export async function computeContinuumStats(options = {}) {
 
   await oleoduc(
     mergeStreams(stats.map(streamStats)),
-    filterData(({ data }) => data?.donnee_source?.type === "self" && (!millesime || data.millesime === millesime)),
+    filterData(
+      ({ data }) =>
+        data?.donnee_source?.type === "self" &&
+        (!millesime || data.millesime === millesime || data.millesime === millesimeDouble)
+    ),
     transformData(async ({ data, statName }) => {
       const query = { ...getQueryForStats({ data, statName, millesime: data.millesime }) };
 
