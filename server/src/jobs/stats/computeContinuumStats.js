@@ -126,7 +126,7 @@ async function computeParents({ diplomeBCN, data, query, statName }) {
   const parent_code_certification = parents[0];
   // Check if children of parent length is 1
   const diplomeParentBCN = await BCNRepository.first({ code_certification: parent_code_certification });
-  if (diplomeParentBCN.nouveau_diplome.length !== 1) {
+  if (!diplomeParentBCN || diplomeParentBCN.nouveau_diplome.length !== 1) {
     return [];
   }
 
@@ -169,7 +169,7 @@ async function computeChildren({ diplomeBCN, data, query, statName }) {
   // Check if children already exist and if parent children length is 1
   const child_code_certification = children[0];
   const diplomeChildrenBCN = await BCNRepository.first({ code_certification: child_code_certification });
-  if (diplomeChildrenBCN.ancien_diplome.length !== 1) {
+  if (!diplomeChildrenBCN || diplomeChildrenBCN.ancien_diplome.length !== 1) {
     return [];
   }
 
