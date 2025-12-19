@@ -1,4 +1,5 @@
-import { oleoduc, transformData, writeData } from "oleoduc";
+import { oleoduc, transformData, writeData, mergeStreams } from "oleoduc";
+import { Readable } from "stream";
 import { upsert } from "#src/common/db/mongodb.js";
 import { getDiplomeSup, getTypeDiplomeSise } from "#src/services/bcn/bcn.js";
 import { omitNil } from "#src/common/utils/objectUtils.js";
@@ -49,6 +50,80 @@ function fieldsValue(data, typesDiplome) {
   };
 }
 
+function getSiseFictif() {
+  // Insersup a créé des SISE fictif pour certaine spécialité de BUT
+  // On injecte ces SISE dans la BDD
+
+  return [
+    {
+      diplome_sise: "0000001",
+      type_diplome_sise: "DR",
+      voie_lmd: null,
+      domaine_formation: null,
+      libelle_intitule_1: "CARRIERES SOCIALES",
+      libelle_intitule_2: null,
+      groupe_specialite: "335",
+      lettre_specialite: "M",
+      secteur_disciplinaire_sise: "35",
+      cite_domaine_formation: "760",
+      duree: null,
+      nature_diplome_sise: null,
+      date_ouverture: "2021-09-01 00:00:00",
+      date_fermeture: null,
+      date_intervention: "2021-09-01 00:00:00",
+      definitif: "O",
+      n_commentaire: null,
+      categorie_formation_sise: null,
+      cite_domaine_detaille: "0923",
+      secteur_discipl_detail_sise: "35",
+    },
+    {
+      diplome_sise: "0000002",
+      type_diplome_sise: "DR",
+      voie_lmd: null,
+      domaine_formation: null,
+      libelle_intitule_1: "INFORMATION-COMMUNICATION",
+      libelle_intitule_2: null,
+      groupe_specialite: "320",
+      lettre_specialite: "M",
+      secteur_disciplinaire_sise: "35",
+      cite_domaine_formation: "320",
+      duree: null,
+      nature_diplome_sise: null,
+      date_ouverture: "2021-09-01 00:00:00",
+      date_fermeture: null,
+      date_intervention: "2021-09-01 00:00:00",
+      definitif: "O",
+      n_commentaire: null,
+      categorie_formation_sise: null,
+      cite_domaine_detaille: "0322",
+      secteur_discipl_detail_sise: "35",
+    },
+    {
+      diplome_sise: "0000003",
+      type_diplome_sise: "DR",
+      voie_lmd: null,
+      domaine_formation: null,
+      libelle_intitule_1: "GENIE BIOLOGIQUE",
+      libelle_intitule_2: null,
+      groupe_specialite: "331",
+      lettre_specialite: "R",
+      secteur_disciplinaire_sise: "06",
+      cite_domaine_formation: "722",
+      duree: null,
+      nature_diplome_sise: null,
+      date_ouverture: "2021-09-01 00:00:00",
+      date_fermeture: null,
+      date_intervention: "2021-09-01 00:00:00",
+      definitif: "O",
+      n_commentaire: null,
+      categorie_formation_sise: null,
+      cite_domaine_detaille: "0915",
+      secteur_discipl_detail_sise: "06",
+    },
+  ];
+}
+
 export async function importBCNSise() {
   logger.info(`Importation des formations du superieur depuis la BCN`);
   const stats = { total: 0, created: 0, updated: 0, failed: 0 };
@@ -57,7 +132,7 @@ export async function importBCNSise() {
   const typesDiplome = await getTypeDiplomeSise(bcnApi);
 
   await oleoduc(
-    await bcnApi.fetchNomenclature("N_DIPLOME_SISE"),
+    mergeStreams(await bcnApi.fetchNomenclature("N_DIPLOME_SISE"), Readable.from(getSiseFictif())),
     transformData(async (data) => fieldsValue(data, typesDiplome)),
     writeData(
       async (data) => {

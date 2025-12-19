@@ -119,10 +119,6 @@ export async function importFormationsSupStats(options = {}) {
   await oleoduc(
     await insersup.fetchEtablissementStats(),
     transformData(formatData),
-    // On ignore les BUT avec un code spécialité créé par InserSup
-    filterData((data) => {
-      return !["0000001", "0000002", "0000003"].includes(data.code_certification);
-    }),
     filterData((data) => {
       for (const millesime of millesimes) {
         const millesimePart = millesime.split("_");
