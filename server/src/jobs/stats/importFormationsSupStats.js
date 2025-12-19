@@ -119,6 +119,10 @@ export async function importFormationsSupStats(options = {}) {
   await oleoduc(
     await insersup.fetchEtablissementStats(),
     transformData(formatData),
+    // On ignore les BUT avec un code spécialité créé par InserSup
+    filterData((data) => {
+      return !["0000001", "0000002", "0000003"].includes(data.code_certification);
+    }),
     filterData((data) => {
       for (const millesime of millesimes) {
         const millesimePart = millesime.split("_");
@@ -137,7 +141,10 @@ export async function importFormationsSupStats(options = {}) {
 
       const region = findRegionByCodeInsee(acce.departement_insee_3);
       if (!region) {
-        handleError(new Error(`Région ${acce.departement_insee_3} inconnue pour l'établissement ${stats.uai}`));
+        handleError(new Error(`Région inconnue pour l'établissement ${stats.uai}`), {
+          departement_insee_3: acce.departement_insee_3,
+          uai: stats.uai,
+        });
         return null;
       }
 
@@ -167,6 +174,11 @@ export async function importFormationsSupStats(options = {}) {
         const certification = await getCertificationSupInfo(formationStats.code_certification);
         const stats = omitNil(pick(formationStats, ["uai", "millesime", ...INSERSUP_STATS_NAMES]));
         const customStats = computeCustomStats(stats, "insersup", INSERSUP_CUSTOM_STATS_NAMES);
+
+        if (!certification) {
+          handleError(new Error(`Diplome ${formationStats.code_certification} inconnu`));
+          return null;
+        }
 
         // Delete data compute with continuum job (= when type is not self)
         await formationsStats().deleteOne({

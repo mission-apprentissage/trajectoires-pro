@@ -81,12 +81,10 @@ export async function importFormationsStats(options = {}) {
         }
 
         if (!region || !academie) {
-          handleError(
-            new Error(`Région ou académie invalide ${etablissement.numero_uai}`, {
-              departement: etablissement.departement_insee_3,
-              academie: etablissement.academie,
-            })
-          );
+          handleError(new Error(`Région ou académie invalide ${etablissement.numero_uai}`), {
+            departement: etablissement.departement_insee_3,
+            academie: etablissement.academie,
+          });
           return;
         }
 
