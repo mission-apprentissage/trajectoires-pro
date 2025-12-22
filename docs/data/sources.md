@@ -111,6 +111,7 @@ La base centrale des nomenclatures (BCN) contient toutes les nomenclatures en us
 
 - **[N_MEF](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_MEF)** : modules élémentaires de formation (année dans un dispositif de formation). 
 - **[N_FORMATION_DIPLOME](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_FORMATION_DIPLOME)** : Diplômes préparés dans les établissements du secondaire (collèges, lycées) et formations intermédiaires.
+- **[N_FORMATION_DIPLOME_ENQUETE_51](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_FORMATION_DIPLOME_ENQUETE_51)** : Diplômes préparés par la voie de l'apprentissage non présents dans N_FORMATION_DIPLOME.
 - **[N_NIVEAU_FORMATION_DIPLOME](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_NIVEAU_FORMATION_DIPLOME)** : Niveaux des diplômes et formations intermédiaires dans N_FORMATION_DIPLOME.
 - **[N_DIPLOME_SISE](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_DIPLOME_SISE)** : Codification des diplômes recensés dans le dispositif SISE (Système d'informations sur le suivi de l'étudiant).
 - **[V_FORMATION_DIPLOME](https://bcn.depp.education.fr/bcn/index.php/workspace/viewTable/n/V_FORMATION_DIPLOME/nbElements/20)** : Vue rassemblant les codifications des diplômes susceptibles d'être préparés par la voie d'apprentissage.
@@ -120,7 +121,7 @@ La base centrale des nomenclatures (BCN) contient toutes les nomenclatures en us
 ### Format des données
 {: .no_toc }
 
-Les données sont disponibles au format CSV.
+Les données sont disponibles via l'API de la BCN au format JSON.
 
 ### Entité responsable
 {: .no_toc }

@@ -87,6 +87,14 @@ L'ordre d'exécution des jobs est important afin de pouvoir hydrater correctemen
 yarn cli importAll
 ```
 
+##### Importation de toute les données pour un millésime
+
+```
+yarn cli importAll --millesime 2024
+```
+
+Les millésimes sur deux années seront construits automatiquements en faisant X-1_X (ex: 2024 donnera 2023_2024).
+
 ##### Importation des données InserJeunes
 
 ```
@@ -110,21 +118,22 @@ yarn cli computeUAI
 #### Détails des principaux Jobs
 
 - `importAll` : Effectue toute les taches d'importations et de calculs des données.
-- `importBCN` : Importation des formations depuis la BCN.
-  - Importation des fichiers de la BCN
+- `importBCN` : Importation des formations depuis l'API de la BCN.
+  - Importation des nomenclatures de la BCN
     - [N_FORMATION_DIPLOME](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_FORMATION_DIPLOME)
+    - [N_FORMATION_DIPLOME_ENQUETE_51](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_FORMATION_DIPLOME_ENQUETE_51)
     - [V_FORMATION_DIPLOME](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/V_FORMATION_DIPLOME)
     - [N_MEF](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_MEF)
   - Création des liens de continuités ([cf](#continuit%C3%A9-des-donn%C3%A9es-dans-le-cadre-de-la-renovation-des-formations)) entre les formations
-  - Importation des familles de métiers
-    - `data/bcn/n_famille_metier_spec_pro.csv` : Liste des familles de métiers, ce fichier a pour base [N_FAMILLE_METIER_SPEC_PRO](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_FAMILLE_METIER_SPEC_PRO) auquel a été ajouté des familles de métiers manquantes.
-    - `data/bcn/n_lien_mef_famille_metier.csv`: Liens entre une formation et sa famille de métier, ce fichier a pour base [N_LIEN_MEF_FAMILLE_METIER](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_LIEN_MEF_FAMILLE_METIER) auquel a été ajouté les années qui ne correspondent pas aux années communes.
+  - Importation des familles de métiers depuis l'API de la BCN
+    - [N_GROUPE_FORMATION](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_GROUPE_FORMATION) : Liste des familles de métiers.
+    - [N_LIEN_FORMATION_GROUPE](https://bcn.depp.education.fr/bcn/workspace/viewTable/n/N_LIEN_FORMATION_GROUPE) : Liens entre une formation (au niveau code formation diplome) et sa famille de métier.
 - `importEtablissements` :
   - Importation des établissements depuis le fichier établissements de l'ACCE
 - `importStats` :
   - Importation des données InserJeunes :
     - `importStats formations` : Importation des données de formation au niveau établissement
-      - Utilise les listes d'établissements contenues dans `server/data`
+      - Utilise la liste d'établissements importée depuis l'ACCE
     - `importStats certifications` : Importation des données de formation au niveau nationale
     - `importStats regionale` : Importation des données au niveau régionale
 - `importSupStats` :
@@ -155,18 +164,20 @@ yarn cli computeUAI
 
 Mettre à jour les variables d'environnements avec le millesime a ajouté:
 
+Pour InserJeunes :
+
 - `TRAJECTOIRES_PRO_MILLESIMES`
 - `TRAJECTOIRES_PRO_MILLESIMES_FORMATIONS`
 - `TRAJECTOIRES_PRO_MILLESIMES_REGIONALES`
 
-Ajoutés les fichiers suivant (MILLESIME sur deux années):
+Pour InserSup :
 
-- `depp-2022-etablissements-MILLESIME-apprentissage.csv`
-- `depp-2022-etablissements-MILLESIME-pro.csv`
+- `MILLESIMES_SUP`
+- `MILLESIMES_FORMATIONS_SUP`
 
 Mettre à jour le fichier suivant :
 
-- `data/acce_etablissements.csv`
+- `data/acce_etablissements.csv` (téléchargement depuis l'[ACCE](https://www.education.gouv.fr/acce_public/extract.php))
 
 ### Outils
 
