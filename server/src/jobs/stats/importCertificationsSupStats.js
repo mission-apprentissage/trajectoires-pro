@@ -58,6 +58,11 @@ export async function importCertificationsSupStats(options = {}) {
               const stats = omitNil(pick(formationStats, ["millesime", ...INSERSUP_STATS_NAMES]));
               const customStats = computeCustomStats(stats, "insersup", INSERSUP_CUSTOM_STATS_NAMES);
 
+              if (!certification) {
+                handleError(new Error(`Diplome ${formationStats.code_certification} inconnu`));
+                return null;
+              }
+
               // Delete data compute with continuum job (= when type is not self)
               await certificationsStats().deleteOne({
                 ...query,

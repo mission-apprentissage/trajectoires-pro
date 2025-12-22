@@ -5,13 +5,19 @@ import { createReadStream } from "fs";
 import config from "#src/config.js";
 
 export const NATURE_UAI_ETABLISSEMENTS_INSERJEUNES = [
+  "240", // "Institut médico-éducatif",
+  "241", // "Institut/Dispositif intégré thérapeutique éducatif et pédagogique (ITEP/DITEP)",
+  "242", // "Instituts d'éducation Motrice (IEM)",
+  "261", // "Maison d'enfants à caractère social",
   "300", // "Lycée d'enseignement général et technologique"
   "301", // "Lycée d'enseignement technologique"
   "302", // "Lycée d'enseignement général"
   "306", // "Lycée polyvalent"
+  "307", // "Lycée d'enseignement général, technologique et professionnel agricole"
   "310", // "Lycée climatique"
   "315", // "Lycée expérimental"
   "320", // "Lycée professionnel"
+  "332", //"Ecole professionnelle spécialisée dans l'accueil d'élèves en situation de handicap",
   "334", // "Section d'enseignement professionnel"
   "370", // "Etablissement régional d'enseignement adapté / Lycée d'enseignement adapté"
   "380", // "Maison familiale rurale d'éducation et d'orientation"

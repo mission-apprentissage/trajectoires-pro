@@ -25,7 +25,7 @@ describe("importBCNSise", () => {
 
     let stats = await importBCNSise();
 
-    const found = await bcnSise().findOne({}, { projection: { _id: 0 } });
+    const found = await bcnSise().findOne({ diplome_sise: "2001235" }, { projection: { _id: 0 } });
     assert.deepStrictEqual(found, {
       _meta: {
         created_on: new Date(),
@@ -52,10 +52,10 @@ describe("importBCNSise", () => {
       type_diplome_sise: "DJ",
     });
     assert.deepStrictEqual(stats, {
-      created: 1,
+      created: 4, // Ce nombre inclus les 3 diplomes injectés
       failed: 0,
       updated: 0,
-      total: 1,
+      total: 4,
     });
   });
 });

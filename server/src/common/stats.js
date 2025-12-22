@@ -42,6 +42,9 @@ export const INSERJEUNES_STATS_TO_RENAME = {
   DEVENIR_part_autre_situation_6_mois: "taux_autres_6_mois",
   DEVENIR_part_en_emploi_6_mois: "taux_en_emploi_6_mois",
   DEVENIR_part_poursuite_etudes: "taux_en_formation",
+  salaire_TS_Q1_12_mois: "salaire_12_mois_q1",
+  salaire_TS_Q2_12_mois: "salaire_12_mois_q2",
+  salaire_TS_Q3_12_mois: "salaire_12_mois_q3",
 };
 
 export const INSERSUP_STATS_NAMES = [

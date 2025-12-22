@@ -83,7 +83,7 @@ export async function importAnneesNonTerminales(options = {}) {
       const { statType, millesime } = data;
       await oleoduc(
         await statCollections[data.statType].repository().find({
-          filiere: "pro",
+          filiere: ["pro", "agricole"],
           millesime: millesime,
           "donnee_source.type": { $exists: true },
         }),
@@ -109,6 +109,7 @@ export async function importAnneesNonTerminales(options = {}) {
           const query = {
             millesime: stats.millesime,
             code_certification: code_certification,
+            filiere: stats.filiere,
             ...statCollections[statType].keys.reduce((acc, key) => {
               acc[key] = get(stats, key);
               return acc;

@@ -9,7 +9,7 @@ export const name = "regionalesStats";
 
 export function indexes() {
   return [
-    [{ "region.code": 1, code_certification: 1, millesime: 1 }, { unique: true }],
+    [{ "region.code": 1, code_certification: 1, millesime: 1, filiere: 1 }, { unique: true }],
     [{ "region.code": 1 }],
     [{ millesime: 1 }],
     ...Certification.indexes(),

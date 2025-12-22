@@ -68,10 +68,6 @@ const config = {
       password: env.get("BCN_PASSWORD").required().asString(),
       omogenKey: env.get("BCN_OMOGEN_KEY").required().asString(),
     },
-    files: {
-      familleMetier: path.join(getDirname(import.meta.url), "..", "data", "bcn", "n_famille_metier_spec_pro.csv"),
-      lienFamilleMetier: path.join(getDirname(import.meta.url), "..", "data", "bcn", "n_lien_mef_famille_metier.csv"),
-    },
   },
   millesimes: {
     default: env.get("TRAJECTOIRES_PRO_MILLESIMES").default("2020,2021,2022,2023").asArray(),

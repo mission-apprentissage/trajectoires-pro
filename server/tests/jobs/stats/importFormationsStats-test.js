@@ -740,7 +740,7 @@ describe("importFormationsStats", () => {
           valeur_mesure: 6,
           dimensions: [
             {
-              id_mefstat11: "12345678",
+              id_formation_apprentissage: "12345678",
             },
           ],
         },
@@ -906,7 +906,7 @@ describe("importFormationsStats", () => {
                   valeur_mesure: 6,
                   dimensions: [
                     {
-                      id_mefstat11: "12345678",
+                      id_formation_apprentissage: "12345678",
                     },
                   ],
                 },

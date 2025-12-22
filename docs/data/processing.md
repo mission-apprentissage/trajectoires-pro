@@ -134,8 +134,7 @@ Nos travaux permettent donc de **récupérer les indicateurs pour une année int
   - le lien est fait sur le périmètre DEPP / InserJeunes, en scolaire
   - la question ne pose pas (encore) pour le supérieur ou l'apprentissage, le code SISE / CFD unique par formation.
 - Pour les associations multiples dans le cadre de familles de métiers :
-  - le lien est disponible pour les familles de métiers en Bac Pro,
-  - des problématiques similaires existent sur les BTS mais aucune solution n'a encore été identifiée pour faire ce lien entre première et dernière(s) année(s).
+  - le lien est disponible pour les familles de métiers en Bac Pro et en BTS,
   - des problématiques similaires vont aussi arriver sur le supérieur, par exemple en école d'ingé / commerce (et quand nous aurons une identification plus fine, par exemple avec FRESQ)
 
 ### Traitement
@@ -148,18 +147,18 @@ Nos travaux permettent donc de **récupérer les indicateurs pour une année int
       - Utilise la table “bcn_mef” qui est liée aux données du fichier “N_MEF”
       - On récupère les codes des années précédentes en changeant l’année dans le code MEFSTAT11 (4ème caractère)
       - On associe la statistique de l’année terminale pour chaque codes récupérés
-- familles de métiers : à partir des tables de la BCN (notamment N_MEF et tables des familles de métiers, légèrement modifiées).
+- familles de métiers : à partir des tables de la BCN (notamment N_MEF et tables des familles de métiers N_GROUPE_FORMATION et N_LIEN_FORMATION_GROUPE).
   - Scripts correspondants (disponibles sur [Github](https://github.com/mission-apprentissage/trajectoires-pro)) :
     - server/src/jobs/bcn/importBCNFamilleMetier.js
-      - Permet d’associer dans la table `bcn`, les code de formations à leur famille de métier et d’indiquer si il s’agit d’une seconde commune.
-      - Utilise les fichiers :
-        - server/data/bcn/n_famille_metier_spec_pro.csv
-          - Basé sur "N_FAMILLE_METIER_SPEC_PRO” auquel est ajouté les familles de métiers manquante avec un code temporaire
-        - server/data/bcn/n_lien_mef_famille_metier.csv
-          - Basé sur “N_LIEN_MEF_FAMILLE_METIER” auquel est ajouté les codes qui ne correspondent pas à des années communes
+      - Permet d’associer dans la table `bcn`, les code de formations à leur famille de métier et d’indiquer si il s’agit d’une année commune.
+      - Utilise l'API de la BCN avec les tables :
+        - N_GROUPE_FORMATION : ensemble des famille de métier
+        - N_LIEN_FORMATION_GROUPE : liens entre les formations et leur famille de métier
       - Pour chaque code de formations en voie scolaire (MEFSTAT11)
-        - Si il existe dans le fichier “N_LIEN_MEF_FAMILLE_METIER” (on vérifie également si il existe un code pour un ancien/nouveau diplôme en utilisant le continuum)
-          - On associe la formation à sa famille et de métiers et on indique si il s’agit d’une seconde commune
+        - On récupère son CFD
+        - Si il existe dans le fichier N_LIEN_FORMATION_GROUPE (on vérifie également si il existe un code pour un ancien/nouveau diplôme en utilisant le continuum)
+          - On associe la formation à sa famille et de métiers et on indique si il s’agit d’une année commune
+        - Une année commune est déterminée si il existe uniquement un code de première année pour le CFD dans la table N_MEF
     - server/src/jobs/stats/importSecondeCommune.js
       - Permet d’associer une seconde commune aux statistiques de ces années terminales
       - Utilise la table `bcn` après ajout des familles de métiers

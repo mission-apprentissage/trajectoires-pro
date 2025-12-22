@@ -81,12 +81,10 @@ export async function importFormationsStats(options = {}) {
         }
 
         if (!region || !academie) {
-          handleError(
-            new Error(`Région ou académie invalide ${etablissement.numero_uai}`, {
-              departement: etablissement.departement_insee_3,
-              academie: etablissement.academie,
-            })
-          );
+          handleError(new Error(`Région ou académie invalide ${etablissement.numero_uai}`), {
+            departement: etablissement.departement_insee_3,
+            academie: etablissement.academie,
+          });
           return;
         }
 
@@ -158,7 +156,7 @@ export async function importFormationsStats(options = {}) {
           uai: formationStats.uai,
           code_certification: formationStats.code_certification,
           millesime: formationStats.millesime,
-          filiere: { $ne: "superieur" },
+          filiere: formationStats.filiere,
         };
 
         try {

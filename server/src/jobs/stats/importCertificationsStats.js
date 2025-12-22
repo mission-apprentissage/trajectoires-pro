@@ -64,6 +64,7 @@ export async function importCertificationsStats(options = {}) {
         const query = {
           millesime: certificationStats.millesime,
           code_certification: certificationStats.code_certification,
+          filiere: certificationStats.filiere,
         };
 
         try {

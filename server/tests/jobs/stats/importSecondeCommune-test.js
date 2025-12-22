@@ -13,6 +13,8 @@ import CertificationStatsRepository from "#src/common/repositories/certification
 import RegionaleStatsRepository from "#src/common/repositories/regionaleStats.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
 import { importSecondeCommune } from "#src/jobs/stats/importSecondeCommune.js";
+import { mockBCN } from "#tests/utils/apiMocks.js";
+import * as Fixtures from "#tests/utils/fixtures.js";
 
 chai.use(chaiAsPromised);
 
@@ -47,37 +49,43 @@ describe("importSecondeCommune", () => {
 
   describe("Au niveau certifications", () => {
     it("Vérifie que l'on ajoute la seconde commune pour les certifications dans une famille de métier", async () => {
+      await mockBCN(async (client) => {
+        client
+          .get("/nomenclature/N_GROUPE_FORMATION?schema=consultation")
+          .reply(200, await Fixtures.BCN("N_GROUPE_FORMATION"));
+      });
+
       await Promise.all([
         insertMEF({
           code_certification: "23810031211",
           code_formation_diplome: "40031211",
           libelle_long: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: true },
+          familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: true },
         }),
         insertMEF({
           code_certification: "23830031212",
           code_formation_diplome: "40031212",
           libelle_long: "TLEPRO METIERS DE L'ACCUEIL",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+          familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
         }),
         insertMEF({
           code_certification: "23830031213",
           code_formation_diplome: "40031213",
           libelle_long: "TLEPRO MET.COM.VEN.OP.A ANI.GES.ESP.COM. ",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+          familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
         }),
         insertCertificationsStats({
           code_certification: "23830031212",
           code_formation_diplome: "40031212",
           filiere: "pro",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+          familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
           ...DEFAULT_STATS,
         }),
         insertCertificationsStats({
           code_certification: "23830031213",
           code_formation_diplome: "40031213",
           filiere: "pro",
-          familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+          familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
           ...DEFAULT_STATS,
         }),
       ]);
@@ -97,7 +105,7 @@ describe("importSecondeCommune", () => {
         code_formation_diplome: "40031211",
         date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
         diplome: { code: "4", libelle: "BAC" },
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: true },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: true },
         filiere: "pro",
         libelle: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
         _meta: {
@@ -115,40 +123,148 @@ describe("importSecondeCommune", () => {
         },
       ]);
     });
+
+    it("Vérifie que l'on différencie les secondes communes pro et agricole", async () => {
+      await mockBCN(async (client) => {
+        client
+          .get("/nomenclature/N_GROUPE_FORMATION?schema=consultation")
+          .reply(200, await Fixtures.BCN("N_GROUPE_FORMATION"));
+      });
+
+      await Promise.all([
+        insertMEF({
+          code_certification: "23810031211",
+          code_formation_diplome: "40031211",
+          libelle_long: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
+          familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: true },
+        }),
+        insertMEF({
+          code_certification: "23830031212",
+          code_formation_diplome: "40031212",
+          libelle_long: "TLEPRO METIERS DE L'ACCUEIL",
+          familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        }),
+        insertMEF({
+          code_certification: "23830031213",
+          code_formation_diplome: "40031213",
+          libelle_long: "TLEPRO MET.COM.VEN.OP.A ANI.GES.ESP.COM. ",
+          familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        }),
+        insertCertificationsStats({
+          code_certification: "23830031212",
+          code_formation_diplome: "40031212",
+          filiere: "pro",
+          familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
+          ...DEFAULT_STATS,
+        }),
+        insertCertificationsStats({
+          code_certification: "23830031212",
+          code_formation_diplome: "40031212",
+          filiere: "agricole",
+          familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
+          ...DEFAULT_STATS,
+        }),
+      ]);
+
+      const result = await importSecondeCommune({ stats: "certifications" });
+      assert.deepEqual(result, {
+        created: 2,
+        failed: 0,
+        updated: 0,
+      });
+
+      const certification = await CertificationStatsRepository.first({
+        code_certification: "23810031211",
+        filiere: "pro",
+      });
+      assert.deepEqual(omit(certification, ["_id", "certificationsTerminales"]), {
+        code_certification: "23810031211",
+        millesime: "2020",
+        code_certification_type: "mef11",
+        code_formation_diplome: "40031211",
+        date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
+        diplome: { code: "4", libelle: "BAC" },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: true },
+        filiere: "pro",
+        libelle: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
+        _meta: {
+          created_on: new Date(),
+          date_import: new Date(),
+          updated_on: new Date(),
+        },
+      });
+      assert.sameDeepMembers(certification.certificationsTerminales, [
+        {
+          code_certification: "23830031212",
+        },
+      ]);
+
+      const certificationAgri = await CertificationStatsRepository.first({
+        code_certification: "23810031211",
+        filiere: "agricole",
+      });
+      assert.deepEqual(omit(certificationAgri, ["_id", "certificationsTerminales"]), {
+        code_certification: "23810031211",
+        millesime: "2020",
+        code_certification_type: "mef11",
+        code_formation_diplome: "40031211",
+        date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
+        diplome: { code: "4", libelle: "BAC" },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: true },
+        filiere: "agricole",
+        libelle: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
+        _meta: {
+          created_on: new Date(),
+          date_import: new Date(),
+          updated_on: new Date(),
+        },
+      });
+      assert.sameDeepMembers(certificationAgri.certificationsTerminales, [
+        {
+          code_certification: "23830031212",
+        },
+      ]);
+    });
   });
 
   describe("Au niveau régionales", () => {
     it("Vérifie que l'on ajoute la seconde commune pour les certifications dans une famille de métier", async () => {
+      await mockBCN(async (client) => {
+        client
+          .get("/nomenclature/N_GROUPE_FORMATION?schema=consultation")
+          .reply(200, await Fixtures.BCN("N_GROUPE_FORMATION"));
+      });
+
       await insertMEF({
         code_certification: "23810031211",
         code_formation_diplome: "40031211",
         libelle_long: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: true },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: true },
       });
       await insertMEF({
         code_certification: "23830031212",
         code_formation_diplome: "40031212",
         libelle_long: "TLEPRO METIERS DE L'ACCUEIL",
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
       });
       await insertMEF({
         code_certification: "23830031213",
         code_formation_diplome: "40031213",
         libelle_long: "TLEPRO MET.COM.VEN.OP.A ANI.GES.ESP.COM. ",
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
       });
       await insertRegionalesStats({
         code_certification: "23830031212",
         code_formation_diplome: "40031212",
         filiere: "pro",
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
         ...DEFAULT_STATS,
       });
       await insertRegionalesStats({
         code_certification: "23830031213",
         code_formation_diplome: "40031213",
         filiere: "pro",
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
         ...DEFAULT_STATS,
       });
 
@@ -167,7 +283,7 @@ describe("importSecondeCommune", () => {
         code_formation_diplome: "40031211",
         date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
         diplome: { code: "4", libelle: "BAC" },
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: true },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: true },
         filiere: "pro",
         libelle: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
         certificationsTerminales: [
@@ -194,30 +310,36 @@ describe("importSecondeCommune", () => {
 
   describe("Au niveau formations", () => {
     it("Vérifie que l'on ajoute la seconde commune pour les certifications dans une famille de métier", async () => {
+      await mockBCN(async (client) => {
+        client
+          .get("/nomenclature/N_GROUPE_FORMATION?schema=consultation")
+          .reply(200, await Fixtures.BCN("N_GROUPE_FORMATION"));
+      });
+
       await insertMEF({
         code_certification: "23810031211",
         code_formation_diplome: "40031211",
         libelle_long: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: true },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: true },
       });
       await insertMEF({
         code_certification: "23830031212",
         code_formation_diplome: "40031212",
         libelle_long: "TLEPRO METIERS DE L'ACCUEIL",
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
       });
       await insertMEF({
         code_certification: "23830031213",
         code_formation_diplome: "40031213",
         libelle_long: "TLEPRO MET.COM.VEN.OP.A ANI.GES.ESP.COM. ",
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
       });
       await insertFormationsStats({
         uai: "01234567",
         code_certification: "23830031212",
         code_formation_diplome: "40031212",
         filiere: "pro",
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
         ...DEFAULT_STATS,
       });
       await insertFormationsStats({
@@ -225,7 +347,7 @@ describe("importSecondeCommune", () => {
         code_certification: "23830031213",
         code_formation_diplome: "40031213",
         filiere: "pro",
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: false },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: false },
         ...DEFAULT_STATS,
       });
 
@@ -245,7 +367,7 @@ describe("importSecondeCommune", () => {
         code_formation_diplome: "40031211",
         date_fermeture: new Date("2022-08-30T22:00:00.000Z"),
         diplome: { code: "4", libelle: "BAC" },
-        familleMetier: { code: "003", libelle: "RELATION CLIENT", isAnneeCommune: true },
+        familleMetier: { code: "G0005", libelle: "RELATION CLIENT", isAnneeCommune: true },
         filiere: "pro",
         libelle: "2NDPRO MET. RELATION CLIENT 2NDE COMMUNE",
         certificationsTerminales: [

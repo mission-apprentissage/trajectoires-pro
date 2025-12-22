@@ -852,7 +852,7 @@ components:
           type: string
         filiere:
           type: string
-          enum: [ "apprentissage", "pro" ]
+          enum: [ "apprentissage", "pro", "agricole", "superieur" ]
         libelle:
           description: "Libellé de la certification"
           type: string
@@ -963,7 +963,7 @@ components:
           type: string
         filiere:
           type: string
-          enum: [ "apprentissage", "pro" ]
+          enum: [ "apprentissage", "pro", "agricole", "superieur" ]
         libelle:
           description: "Libellé de la certification"
           type: string
@@ -1059,7 +1059,7 @@ components:
           type: string
         filiere:
           type: string
-          enum: [ "apprentissage", "pro" ]
+          enum: [ "apprentissage", "pro", "agricole", "superieur" ]
         libelle:
           description: "Libellé de la certification"
           type: string
@@ -1182,7 +1182,7 @@ components:
           type: string
         filiere:
           type: string
-          enum: [ "apprentissage", "pro" ]
+          enum: [ "apprentissage", "pro", "agricole", "superieur" ]
         diplome:
           type: object
           description: Renvoi le diplome uniquement si le diplome de toutes les certifications est le même

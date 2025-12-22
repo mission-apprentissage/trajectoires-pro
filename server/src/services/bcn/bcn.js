@@ -1,7 +1,4 @@
-import { compose, writeData, oleoduc } from "oleoduc";
-import { createReadStream } from "fs";
-import { parseCsv } from "#src/common/utils/csvUtils.js";
-import config from "#src/config.js";
+import { compose, writeData, oleoduc, transformData } from "oleoduc";
 
 export const ANCIENS_NIVEAUX_MAPPER = {
   5: "3", // CAP
@@ -88,16 +85,15 @@ export async function getTypeDiplomeSise(bcnApi) {
   return typesDiplome;
 }
 
-export async function getFamilleMetier(filePath = null) {
+export async function getFamilleMetier(bcnApi) {
   const familleMetier = [];
-  const stream = compose(createReadStream(filePath || config.bcn.files.familleMetier));
+
   await oleoduc(
-    stream,
-    parseCsv({ delimiter: ";" }),
-    writeData(async (data) => {
+    await bcnApi.fetchNomenclature("N_GROUPE_FORMATION"),
+    writeData((data) => {
       familleMetier.push({
-        code: data.FAMILLE_METIER,
-        libelle: data.LIBELLE_EDITION,
+        code: data["groupe_formation"],
+        libelle: data["libelle_edition"],
       });
     })
   );
@@ -105,7 +101,14 @@ export async function getFamilleMetier(filePath = null) {
   return familleMetier;
 }
 
-export function getLienFamilleMetier(filePath = null) {
-  const stream = compose(createReadStream(filePath || config.bcn.files.lienFamilleMetier));
-  return compose(stream, parseCsv({ delimiter: ";" }));
+export async function getLienFamilleMetier(bcnApi) {
+  return compose(
+    await bcnApi.fetchNomenclature("N_LIEN_FORMATION_GROUPE"),
+    transformData((data) => {
+      return {
+        code: data.groupe_formation,
+        code_formation_diplome: data.formation_diplome,
+      };
+    })
+  );
 }

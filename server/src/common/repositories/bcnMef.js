@@ -1,3 +1,4 @@
+import streamToArray from "stream-to-array";
 import { MongoRepository } from "./base.js";
 import { dbCollection } from "#src/common/db/mongodb.js";
 import { name } from "#src/common/db/collections/bcn_mef.js";
@@ -26,6 +27,16 @@ export class BCNMefRepository extends MongoRepository {
     return await this._findAndPaginate(query, {
       ...options,
     });
+  }
+
+  async isAnneeCommune(cfd) {
+    // On considère qu'une formation est une année commune si :
+    // Pour un code formation diplome :
+    // - Elle n'a qu'un mefstat11 avec annee_dispositif = 1
+    // - Elle n'a pas de mefstat11 avec annee_dispositif = 2 ou annee_dispositif = 3
+    const formations = await streamToArray(await this.find({ formation_diplome: cfd }));
+    const formationsAnnee1 = formations.filter((f) => f.annee_dispositif === "1");
+    return formationsAnnee1.length > 0 && formations.length === formationsAnnee1.length;
   }
 }
 
