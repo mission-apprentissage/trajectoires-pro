@@ -1,3 +1,10 @@
+# [1.33.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.32.0...v1.33.0) (2025-12-22)
+
+
+### Features
+
+* famille metier de la bcn et fix insersup opendata ([#383](https://github.com/mission-apprentissage/trajectoires-pro/issues/383)) ([ef51f45](https://github.com/mission-apprentissage/trajectoires-pro/commit/ef51f45ffc5c286219ece70d68bb05972d43b73b))
+
 # [1.32.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.31.2...v1.32.0) (2025-12-18)
 
 
