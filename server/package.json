@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "1.33.0",
+  "version": "1.34.0",
   "description": "[MNA] API exposition",
   "repository": "https://github.com/mission-apprentissage/trajectoires-pro.git",
   "private": false,

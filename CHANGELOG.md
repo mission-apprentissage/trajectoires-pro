@@ -1,3 +1,10 @@
+# [1.34.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.33.0...v1.34.0) (2025-12-23)
+
+
+### Features
+
+* maj données millésime 2024 ([#384](https://github.com/mission-apprentissage/trajectoires-pro/issues/384)) ([5d04422](https://github.com/mission-apprentissage/trajectoires-pro/commit/5d044224e7a7dd181fdd38a7152b21cfab56ca4b))
+
 # [1.33.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.32.0...v1.33.0) (2025-12-22)
 
 
