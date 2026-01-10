@@ -14,13 +14,13 @@ export const INSERJEUNES_STATS_NAMES = [
   "nb_poursuite_etudes",
   "nb_sortant",
   "taux_rupture_contrats",
-  "salaire_12_mois_q1",
-  "salaire_12_mois_q2",
-  "salaire_12_mois_q3",
   "taux_autres_6_mois",
   "taux_en_emploi_6_mois",
   "taux_en_formation",
 ];
+
+export const INSERJEUNES_NATIONAL_STATS_NAMES = ["salaire_12_mois_q1", "salaire_12_mois_q2", "salaire_12_mois_q3"];
+
 export const INSERJEUNES_IGNORED_STATS_NAMES = [
   "taux_poursuite_etudes",
   "taux_emploi_24_mois",
@@ -271,7 +271,9 @@ export function getReglesDeCalcul(method = "compute", type = "inserjeunes") {
 }
 
 export function filterStatsNames(regex = ALL) {
-  return [...INSERJEUNES_STATS_NAMES, ...INSERJEUNES_CUSTOM_STATS_NAMES].sort().filter((k) => regex.test(k));
+  return [...INSERJEUNES_STATS_NAMES, ...INSERJEUNES_NATIONAL_STATS_NAMES, ...INSERJEUNES_CUSTOM_STATS_NAMES]
+    .sort()
+    .filter((k) => regex.test(k));
 }
 
 export function getStats(regex, mapValue) {

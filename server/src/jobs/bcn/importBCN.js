@@ -29,7 +29,8 @@ export async function streamCfds(bcnApi) {
   return compose(
     mergeStreams(
       await bcnApi.fetchNomenclature("V_FORMATION_DIPLOME"), //Apprentissage
-      await bcnApi.fetchNomenclature("N_FORMATION_DIPLOME")
+      await bcnApi.fetchNomenclature("N_FORMATION_DIPLOME"),
+      await bcnApi.fetchNomenclature("N_FORMATION_DIPLOME_ENQUETE_51")
     ),
     transformData(async (data) => {
       return {
