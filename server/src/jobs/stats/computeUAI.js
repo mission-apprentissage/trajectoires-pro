@@ -8,6 +8,7 @@ import { formationsStats } from "#src/common/db/collections/collections.js";
 import BCNRepository from "#src/common/repositories/bcn.js";
 import FormationStatsRepository from "#src/common/repositories/formationStats.js";
 import CAFormationRepository from "#src/common/repositories/CAFormation.js";
+import config from "#src/config.js";
 
 const logger = getLoggerWithContext("import");
 
@@ -499,8 +500,6 @@ export async function computeUAI(options = {}) {
     lieu_formation_to_formateur: 0,
     formateur_to_gestionnaire: 0,
   };
-  const millesime = options.millesime || null;
-  const millesimeDouble = millesime ? `${millesime - 1}_${millesime}` : null;
 
   function handleError(e, context = {}) {
     logger.error({ err: e, ...context }, `Impossible d'associer les UAIs pour cette formation`);
@@ -508,12 +507,19 @@ export async function computeUAI(options = {}) {
     return null;
   }
 
-  await computeUAIBase(millesimeDouble, result, handleError);
+  const millesimes = options.millesime
+    ? [`${options.millesime - 1}_${options.millesime}`]
+    : uniq([...config.millesimes.formations, ...config.millesimes.formationsSup]);
 
-  await computeUaiFormateur(millesimeDouble, result, handleError);
-  await computeUaiGestionnaire(millesimeDouble, result, handleError);
-  await computeUAILieuFormationForFormateur(millesimeDouble, result, handleError);
-  await computeUAILieuFormationForGestionnaire(millesimeDouble, result, handleError);
+  for (const millesimeDouble of millesimes) {
+    logger.info(`Traitement du millésime ${millesimeDouble}`);
+
+    await computeUAIBase(millesimeDouble, result, handleError);
+    await computeUaiFormateur(millesimeDouble, result, handleError);
+    await computeUaiGestionnaire(millesimeDouble, result, handleError);
+    await computeUAILieuFormationForFormateur(millesimeDouble, result, handleError);
+    await computeUAILieuFormationForGestionnaire(millesimeDouble, result, handleError);
+  }
 
   return result;
 }
