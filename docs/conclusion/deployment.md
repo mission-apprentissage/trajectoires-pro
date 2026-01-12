@@ -1,6 +1,6 @@
 ---
 title: "Plateformes d'exposition et acquisition"
-parent: 🚧 Bilan
+parent: Bilan
 layout: default
 nav_order: 2.5
 ---
@@ -26,16 +26,17 @@ Retrouvez ci-dessous la liste des principales plateformes d'orientation ou de pi
 5. [1jeune1solution](https://www.1jeune1solution.gouv.fr/)
 6. [Diagoriente](https://diagoriente.beta.gouv.fr/)
 7. [L'Étudiant](https://www.letudiant.fr/)
-8. [IJBox](https://www.ijbox.fr/) : utilisation du widget v1
+8. [IJBox](https://www.ijbox.fr/) (utilisation du widget v1, changement prévu pour S1-26)
 9. [Octopilot](https://octopilot.pro/)
-10. [C'est qui le pro ?](https://cestquilepro.inserjeunes.beta.gouv.fr/) : en construction, utilisation du widget v2
+10. [Futur Pro](https://futurpro.inserjeunes.beta.gouv.fr/)
 
 ### Plateformes ayant exprimé le souhait d'intégrer les données
 
-1. [Ideo](https://ideo.bretagne.bzh/)
-2. [Orient'Est](https://www.orientest.fr/)
-3. [Oriane](https://oriane.info/)
-4. [Proch’Orientation](https://www.prochorientation.fr/)
+1. [Orion](https://orion.education.gouv.fr/)
+2. [Ideo](https://ideo.bretagne.bzh/)
+3. [Orient'Est](https://www.orientest.fr/)
+4. [Oriane](https://oriane.info/)
+5. [Proch’Orientation](https://www.prochorientation.fr/)
 
 
 ### Plateformes contactées mais en réflexion

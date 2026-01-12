@@ -1,6 +1,6 @@
 ---
 title: Résumé
-parent: 🚧 Bilan
+parent: Bilan
 layout: default
 nav_order: 2.1
 ---
@@ -9,7 +9,7 @@ nav_order: 2.1
 {: .no_toc }
 
 {: .note }
-Une partie des informations présentées ci-après peuvent être retrouvées dans la note "Bilan de la mission interministérielle InserJeunes et préconisations pour garantir la pérennité des travaux menés" rédigée par Benjamin Barralon et Julianne Lagadec lors de l'arrêt de la mission interministérielle InserJeunes. Des informations sur les autres produits de la mission ([Sirius](https://beta.gouv.fr/startups/sirius.html), [Orion](https://beta.gouv.fr/startups/pilotagevoiepro.html) et [C'est qui le pro ?](https://beta.gouv.fr/startups/cestquilepro.html)) y sont aussi disponibles. La présente documentation reprend et enrichit cette note pour le produit d'[Exposition des indicateurs InserJeunes](https://beta.gouv.fr/startups/exposition-ij.html).
+Une partie des informations présentées ci-après peuvent être retrouvées dans la note "Bilan de la mission interministérielle InserJeunes et préconisations pour garantir la pérennité des travaux menés" rédigée par Benjamin Barralon et Julianne Lagadec lors de l'arrêt de la mission interministérielle InserJeunes. Des informations sur les autres produits de la mission ([Sirius](https://beta.gouv.fr/startups/sirius.html), [Orion](https://beta.gouv.fr/startups/pilotagevoiepro.html) et [Futur Pro](https://beta.gouv.fr/startups/cestquilepro.html)) y sont aussi disponibles. La présente documentation reprend et enrichit cette note pour le produit d'[Exposition des indicateurs InserJeunes](https://beta.gouv.fr/startups/exposition-ij.html).
 
 ## Table des matières
 {: .no_toc .text-delta }
@@ -40,13 +40,14 @@ Ont été réalisés :
 - Des travaux de raccordement, entre les données InserJeunes et les catalogues de formation des réutilisateurs pour que les indicateurs puissent être visibles sur un maximum de formations ;
 - Un bloc pour mettre en avant et expliquer les données sur les rémunérations perçues par les jeunes en emploi 1 an après la formation est prêt à être exploité ;
 - Un suivi de statistiques d’utilisation et de visitorat sur les données ;
-- Une première étude de l’impact de la mise à disposition des données sur Affelnet.
+- Une première étude de l’impact de la mise à disposition des données sur Affelnet ;
+- Des travaux de transfert vers l'administration.
 
-[En savoir plus sur nos réalisations]({{ site.baseurl }}{% link mission.md %})
+[En savoir plus sur nos réalisations]({{ site.baseurl }}{% link conclusion/actions.md %})
 
 ## Diffusion
 
-9 plateformes utilisent actuellement le widget ou l’API proposées par la mission : [Affelnet](https://affectation3e.phm.education.gouv.fr/pna-public/offre/A19/00812165), [Parcoursup](https://dossierappel.parcoursup.fr/Candidats/public/fiches/afficherFicheFormation?g_ta_cod=26437&typeBac=0&originePc=0), [Onisep.fr](https://www.onisep.fr/ressources/univers-formation/formations/lycees/cap-cuisine) , [La bonne alternance](https://labonnealternance.apprentissage.beta.gouv.fr/formation/115708P01215089042240004750890422400047-91216%23L01/cuisine?romes=G1603%2CG1402%2CG1602%2CG1604%2CG1601%2CG1401), 1 jeune 1 solution, IJ box (outil proposé par le réseau Information Jeunesse), Diagoriente, l’Etudiant et Octopilot.
+10 plateformes utilisent actuellement le widget ou l’API proposées par la mission : [Affelnet](https://affectation3e.phm.education.gouv.fr/pna-public/offre/A19/00812165), [Parcoursup](https://dossierappel.parcoursup.fr/Candidats/public/fiches/afficherFicheFormation?g_ta_cod=26437&typeBac=0&originePc=0), [Onisep.fr](https://www.onisep.fr/ressources/univers-formation/formations/lycees/cap-cuisine) , [La bonne alternance](https://labonnealternance.apprentissage.beta.gouv.fr/formation/115708P01215089042240004750890422400047-91216%23L01/cuisine?romes=G1603%2CG1402%2CG1602%2CG1604%2CG1601%2CG1401), 1 jeune 1 solution, IJ box (outil proposé par le réseau Information Jeunesse), Diagoriente, l’Etudiant, Octopilot et [Futur Pro](https://futurpro.inserjeunes.beta.gouv.fr/details/40025223-247-0130150T-scolaire?latitude=43.29606&longitude=5.368504).
 
 20 sont envisagées dans le contrat FTAP : 16 autres interlocuteurs (régions, Carif-Oref, edtech, associations) ont été invités à utiliser ces outils, 12 sont en réflexion, dont 4 avec lesquels les échanges sont très avancés.
 
@@ -76,11 +77,11 @@ Au regard des ressources limitées à disposition, des difficultés associées �
 
 Il est en outre indispensable  :
 
-- mener à bien le chantier de reprise des travaux de l'équipe par les services statistiques et les ré-utilisateurs ;
+- mener à bien le [chantier de reprise des travaux de l'équipe par la DNE, les services statistiques et les ré-utilisateurs]({{ site.baseurl }}{% link conclusion/transfer.md %}) ;
 - maintenir des échanges interministériels entre les divers acteurs, producteurs ou ré-utilisateurs, impliqués dans le dispositif (choix des priorités d'extension du périmètre, remontée des retours terrain, cohérence des dpnnées, uniformité des modules de visualisation, etc.) ;
 - continuer à enrichir les indicateurs, à étendre le périmètre, à améliorer la couverture au sein de ce périmètre et à actualiser les données ;
 - faire évoluer le [site vitrine InserJeunes](https://www.inserjeunes.education.gouv.fr/diffusion/accueil), peu consulté mais problématique (notamment vis à vis des CFA).
 
-Enfin, le rôle des accompagnateurs à l’orientation, dans le milieu scolaire ou familial, semble primordial pour améliorer et accélérer la prise en compte des données InserJeunes dans les choix d'orientation. C’est ce qui a amené la mission à se concentrer sur le projet “C’est qui le pro ?”, pour notamment toucher directement les accompagnateurs à l’orientation qui jouent un rôle décisif dans l’accompagnement des plus jeunes (3ème). Cette valorisation, dans un contexte différent, permet une articulation des données InserJeunes avec d’autres informations utiles adaptées pour les accompagnateurs pour préparer une stratégie de choix de formation ancrée dans une réalité terrain.
+Enfin, le rôle des accompagnateurs à l’orientation, dans le milieu scolaire ou familial, semble primordial pour améliorer et accélérer la prise en compte des données InserJeunes dans les choix d'orientation. C’est ce qui a amené la mission à se concentrer sur le projet [Futur Pro](https://futurpro.inserjeunes.beta.gouv.fr/), pour notamment toucher directement les accompagnateurs à l’orientation qui jouent un rôle décisif dans l’accompagnement des plus jeunes (3ème). Cette valorisation, dans un contexte différent, permet une articulation des données InserJeunes avec d’autres informations utiles adaptées pour les accompagnateurs pour préparer une stratégie de choix de formation ancrée dans une réalité terrain.
 
 [Nos propositions pour la suite]({{ site.baseurl }}{% link conclusion/proposals.md %})

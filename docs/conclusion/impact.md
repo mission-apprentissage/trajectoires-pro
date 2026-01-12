@@ -1,6 +1,6 @@
 ---
 title: '🚧 Enseignements : Impact'
-parent: 🚧 Bilan
+parent: Bilan
 layout: default
 nav_order: 2.6
 ---

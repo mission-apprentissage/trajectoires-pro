@@ -1,11 +1,11 @@
 ---
-title: Plus-value du projet et propositions pour la suite
-parent: 🚧 Bilan
+title: Propositions pour la suite
+parent: Bilan
 layout: default
-nav_order: 2.2
+nav_order: 2.4
 ---
 
-# Plus-value du projet et propositions pour la suite
+# Propositions pour la suite
 {: .no_toc }
 
 ## Table des matières
@@ -13,96 +13,45 @@ nav_order: 2.2
 - TOC
 {:toc}
 
-## Ce que nous faisons
+## Maintenir une coordination inter-ministérielle et organiser un comité de pilotage bi-mensuel
 
-### Coordination et mobilisation inter-ministérielle
+Des échanges, à la fois stratégiques et opérationnels doivent être maintenus pour :
 
-#### C’est quoi ?
-{: .no_toc }
+- Assurer la cohérence de la feuille de route commune et définir des jalons ;
+- Être le garant de la faisabilité de la feuille de route en mettant en adéquation ambition et moyens disponibles ;
+- Être le point de relais des besoins “terrains” ;
+- Garantir la cohérence des données et des définitions sur les différents systèmes techniques (InserJeunes, InserSup) ;
+- Faire le lien avec les réutilisateurs de données (administrations, opérateurs, start-ups, acteurs privés) pour garantir que les productions sont utilisables et valorisables ;
+- Assurer l’ouverture des données (opendata) ;
+- Déceler les opportunités de nouveaux services numériques pour lancer des investigations pertinentes en lien avec la DINUM.
 
-- **assurer la cohérence des productions de la DEPP et du SIES** (indicateurs similaires, mailles, formats, etc.)
-- être moteur pour :
-    - **étendre le périmètre des données** (nouveaux diplômes, autres ministères certificateurs, mailles, etc.) en fonction des besoin des réutilisateurs
-    - **améliorer la couverture** au sein du périmètre
+Pour cette coordination nous proposons de maintenir les instances mises en place sur la période Mai 2025 - Janvier 2026 :
+- comités de pilotage, tous les 2 mois, en présence de : HCEFP / Cabinets des 3 ministères / DGEFP / DGESCO / DGESIP / DNE / Services statistiques / Utilisateurs principaux (Parcoursup / Affelnet / Onisep)
+- groupes de travail, 1 à 2 fois par mois, en présence de : HCEFP / Référents ministériels / DNE / Services statistiques / Utilisateurs principaux (Parcoursup / Affelnet / Onisep)
+- échanges techniques / opérationnels, 2 fois par mois, en présence de : DNE / Services statistiques / Utilisateurs principaux (Parcoursup / Affelnet / Onisep)
 
-#### Risques si la mission s’arrête (sans transfert)
-{: .no_toc }
+## Continuer à enrichir les indicateurs, à étendre le périmètre, à améliorer la couverture au sein de ce périmètre et à actualiser les données
 
-- Incohérences entre les données produites par les SSM (→ imprécisions, moins de lisibilité pour les jeunes, travail technique supplémentaire pour les réutilisateurs…)
-- Ralentissement de l’extension du périmètre
-- Ralentissement des travaux d’amélioration de la couverture sur le périmètre
+Au delà de l’intégration de nouveaux diplômes, notamment prévue dans le cadre des feuilles de route InserJeunes et InserSup, certains chantiers semblent cruciaux pour permettre de mettre à disposition des ré-utilisateurs une information plus complète et pertinente :
 
-### Enrichissement des données issues des services statistiques
+- **Mieux qualifier les indicateurs :**
+    - **insertion dans l’emploi :** est-ce que l’insertion se fait dans les métiers associés à la formation ? dans la filière de formation ?
+    - **poursuite d’études :** différencier redoublement / changement de voie / poursuite dans une formation “complémentaire” (= formation qui est une “poursuite” associée à la formation)
+    - **autres parcours :** différencier chômage / auto-entreprise (→ emploi) / départ à l’étranger
+    - et **régionalisation** : est-ce que l’insertion se fait dans la région de formation ?
+- **Synchroniser les productions pour une exposition plus rapide et pertinente :**
+    - Produire des indicateurs pour les diplômes délivrés à la fois dans des établissements relevant du Ministère de l'Éducation Nationale ou du ministère de l'Enseignement Supérieur
+    - Aligner si possible le mode de calcul des indicateurs sur le périmètre de l'apprentissage (actuellement scolaire + apprentissage pour la DEPP, et ensemble + apprentissage pour le SIES)
+- DEPP :
+    - **extension du périmètre** à d’autres ministères certificateurs et **augmentation de la couverture**
+    - **séparation apprentissage et scolaire** pour les formations mixtes
+- InserSup :
+    - données à la **maille parcours**
+    - fourniture de **données régionales**
+    - **apprentissage**
+    - utilisation du référentiel FRESQ (en remplacement du SISE) à horizon 2026 et accompagnement de Parcoursup pour la migration associée
 
-#### C’est quoi ?
-{: .no_toc }
-
-- Continuum (historisation des données et lien entre formations révisées)
-- Lien avec d’autres référentiels : nom de la formation (BCN), libellés anciens (BCN), académie, région, etc.
-- Informations liées à la fermeture éventuelle de la formation
-- Gestion des différents UAI, consolidation
-- Lien entre filières (scolaire et apprentissage)
-- Lien entre années d’une formation et familles de métiers
-
-#### Risques si la mission s’arrête (sans transfert)
-{: .no_toc }
-
-- Diminution drastique de la couverture
-- Perte d’informations rattachées aux formations
-
-### Démarche produit et travail UX
-
-#### C’est quoi ?
-{: .no_toc }
-
-- Recherche utilisateur : identification et remontée des besoins, de pistes d’améliorations
-- Conception : proposition et design de solutions innovantes, par exemple pour les nouveaux indicateurs ou les suggestions de formations
-- Analyse : tests qualitatifs et quantitatifs, mesure d’impact
-- Widgets pour les indicateurs existants (projet de widget pour les données à venir telles que la rémunération et les métiers d’avenir) permettant un visuel clair, compréhensible et une cohérence / continuité entre sites
-- Documentation “grand public”
-
-#### Risques si la mission s’arrête (sans transfert)
-{: .no_toc }
-
-- Déconnexion entre les besoin des utilisateurs et les travaux des différents services
-- Visuels plus difficiles à comprendre par les utilisateurs finaux, moins percutants
-- Impact plus faible
-
-### Simplification de la réutilisation des indicateurs par les partenaires
-
-#### C’est quoi ?
-{: .no_toc }
-
-- **Mise à disposition d’une API unique** (important notamment pour l’Onisep, PS, l’Étudiant) regroupant les données produites par la DEPP et le SIES
-- Documentation technique à destination des “partenaires”
-- Mise à disposition de widgets pour simplifier l’intégration et assurer un design de qualité et cohérent pour les parcours d’orientation (et projet de widgets pour d’autres indicateurs tels que la rémunération et les métiers d’avenir)
-- **Accompagnement des partenaires, dont Parcoursup** et Affelnet, en amont des phases d’affectation (design des visualisations “custom”, support technique, association des données, analyse de couverture, analyse d’impact, etc.)
-
-#### Risques si la mission s’arrête (sans transfert)
-{: .no_toc }
-
-- Surplus de travail “data / tech” pour les partenaires, qui doivent aller chercher les indicateurs auprès des 2 services stats, dans les fichiers en open data ou API (si disponible)
-- baisse de couverture importante, notamment pour PS. Exposition permet de multiplier par 1.7 le taux de couverture du catalogue ParcourSup:
-    - Sans api ni effort d’appariement, la couverture sur notre scope serait de 25.9%. L’utilisation de l’API permet de passer à 37% sur notre scope (grâce au continuum et au rapprochement des uai notamment). Enfin les efforts d’appariement à un code valide en amont permettent d’aboutir à une couverture 45.1% sur notre scope. 15% des formations restent sous les seuils de diffusion des données.
-
-### Acquisition de nouvelles plateformes d’exposition et suivi de la relation
-
-#### C’est quoi ?
-{: .no_toc }
-
-- Recherche de nouvelles plateformes (nationales ou régionales, publiques ou privées) pour exposer les indicateurs
-- Accompagnement lors de la mise en oeuvre
-- Suivi de la relation, mises à jour, etc.
-
-#### Risques si la mission s’arrête (sans transfert)
-{: .no_toc }
-
-- Visibilité moindre des indicateurs
-- Maîtrise plus faible des données affichées par des tiers
-
-## Nos propositions pour la suite
-
-### Stopper l’effort d’acquisition de nouvelles plateformes
+## Stopper l’effort d’acquisition de nouvelles plateformes
 
 Les plateformes intéressées peuvent récupérer les données, dialoguer avec les services, etc. mais l’effort “proactif” est stoppé pour le moment.
 
@@ -111,46 +60,7 @@ Les plateformes intéressées peuvent récupérer les données, dialoguer avec l
 
 Ces travaux pourront reprendre une fois l’exposition plus mature et stabilisée pour le coeur de la cible (PS, Affelnet, Onisep).
 
-### Reprise de l’API et des traitements données par l’un des SSM
-
-- inclure continuum et autres traitements data
-- inclure données DEPP + SIES
-- (suppression possible des widgets si pas de ressources et pour déporter les réflexions design plus près des utilisateurs)
-
-### Autonomisation des ré-utilisateurs
-
-- Parcoursup + SIES
-    - Développement et utilisation du référentiel FRESQ dans le catalogue Parcoursup (en remplacement du SISE) à horizon 2026. Permet de simplifier fortement le travail côté PS.
-- Parcoursup :
-    - Consolidation des identifiants du catalogue Parcoursup, notamment des codes SISE (en attendant FRESQ)
-    - Travail d’appariement côté PS
-- Certifinfo
-
-### Maintenir une coordination inter-ministérielle et organiser un comité de pilotage bi-mensuel
-
-Concernant la production de données, même si les SSM des différents ministères concernés
-collaborent efficacement, une coordination interministérielle est pertinente pour :
-
-- Assurer la cohérence de la feuille de route commune et définir des jalons ;
-- Être le garant de la faisabilité de la feuille de route en mettant en adéquation ambition et moyens disponibles ;
-- Être le point de relai des besoins “terrains” ;
-- Garantir la cohérence des données et des définitions sur les différents systèmes techniques (InserJeunes, InserSup) ;
-- Faire le lien avec les réutilisateurs de données (administrations, opérateurs, start-ups, acteurs privés) pour garantir que les productions sont utilisables et valorisables ;
-- Assurer l’ouverture des données (opendata) ;
-- Déceler les opportunités de nouveaux services numériques pour lancer des investigations pertinentes en lien avec la DINUM.
-    
-
-Ces travaux pourraient être assurés par une seule personne, mais qui doit avoir une légitimité
-auprès des 4 ministères concernés (MEN, MESR, MTE, MTFP) via une nouvelle lettre de
-mission.
-
-Pour cette coordination nous proposons de maintenir le rythme des comités de pilotage tous les 2 mois en impliquant : 
-
-- DEPP
-- SIES
-- Ré-utilisateurs principaux : Parcoursup, Affelnet, Onisep
-
-### Lancer une investigation sur le thème de la qualité (Site IJ historique, établissement, qualité)
+## Lancer une investigation sur le thème de la qualité (Site IJ historique, établissement, qualité)
 
 - les CFA et plus généralement les établissements ne savent pas comment s’approprier nos données pour suivre et piloter leur action… quand ils ne les rejettent pas.
 - Il existe un site historique InserJeunes géré par la DEPP. Au-delà de la faible visibilité du site (environ 20k par an), il nous paraît important de faire évoluer ce site qui est souvent mal compris, notamment par les établissements, apporte une image biaisée d’InserJeunes et ne remplit pas sa fonction.
@@ -164,7 +74,7 @@ Nous préconisons le lancement d’une investigation, avec le soutien de la DINU
 
 À noter que certains de ces modules sont déjà développés dans “Orion” ou “C’est qui le pro ?”, ce qui pourrait faciliter la production d’un nouveau site à moindre coût.
 
-### Insister sur le rôle des accompagnateurs via le développement de "C'est qui le pro ?"
+## Insister sur le rôle des accompagnateurs via le développement de "Futur Pro"
 
 Le rôle des accompagnateurs à l’orientation, dans le milieu scolaire ou familial, semble primordial pour améliorer et accélérer la prise en compte des données InserJeunes dans les choix d'orientation.
 
