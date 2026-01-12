@@ -244,19 +244,69 @@ async function computeUaiFormateur(millesime, result, handleError) {
 
 async function computeUaiGestionnaire(millesime, result, handleError) {
   return oleoduc(
-    // Récupère tout les UAIs dont le type est uai formateur et dont l'uai formateur est identique à l'uai gestionnaire
+    // Récupère tout les UAIs dont le type est uai formateur OU lieu_formation et dont l'uai gestionnaire est identique à l'uai
     await FormationStatsRepository.find({
       filiere: "apprentissage",
       millesime,
-      uai_type: { $eq: "formateur" },
+      uai_type: { $in: ["formateur", "lieu_formation"] },
       uai_gestionnaire: { $size: 1 },
       $expr: {
-        $eq: [{ $arrayElemAt: ["$uai_gestionnaire", 0] }, "$uai"],
+        $and: [
+          { $eq: [{ $arrayElemAt: ["$uai_gestionnaire", 0] }, "$uai"] },
+          {
+            $or: [
+              // Cas formateur
+              {
+                $and: [{ $eq: ["$uai_type", "formateur"] }],
+              },
+              // Cas lieu_formation
+              {
+                $and: [
+                  { $eq: ["$uai_type", "lieu_formation"] },
+                  { $eq: [{ $size: "$uai_formateur" }, 1] },
+                  { $eq: [{ $arrayElemAt: ["$uai_formateur", 0] }, "$uai"] },
+                ],
+              },
+            ],
+          },
+        ],
       },
     }),
     // Pour chaque element on regarde si le gestionnaire à d'autre enfant pour ce cfd et cet uai en gestionnaire
     transformData(async (data) => {
       const cfdWithContinuum = await BCNRepository.cfdsParentAndChildren(data.code_formation_diplome);
+
+      // Si c'est un lieu_formation, vérifier d'abord si cet UAI a d'autres lieux de formation en tant que formateur
+      // Si l'un d'eux a de la donnée, cet UAI doit rester formateur et ne pas passer gestionnaire
+      if (data.uai_type === "lieu_formation") {
+        const autresLieuxFormateur = await CAFormationRepository.find({
+          etablissement_formateur_uai: data.uai,
+          uai_formation: { $ne: data.uai, $exists: true },
+          cfd: cfdWithContinuum,
+        }).then((stream) => toArray(stream));
+
+        // Vérifier si au moins un de ces lieux a de la donnée
+        const hasLieuAvecDonnees = await Promise.all(
+          autresLieuxFormateur.map((lieu) =>
+            FormationStatsRepository.first({
+              uai: lieu.uai_formation,
+              code_certification: data.code_certification,
+              millesime,
+              filiere: data.filiere,
+            })
+          )
+        ).then((results) => results.some((r) => r !== null));
+
+        // Si cet UAI a des lieux de formation avec données, il doit rester formateur, pas gestionnaire
+        if (hasLieuAvecDonnees) {
+          return {
+            data,
+            cfdWithContinuum,
+            uaisWithGestionnaire: { results: [], resultsFormateur: [], resultsLieux: [] },
+          };
+        }
+      }
+
       const uaisWithGestionnaire = await CAFormationRepository.find({
         etablissement_gestionnaire_uai: data.uai,
         etablissement_formateur_uai: { $ne: data.uai, $exists: true },
@@ -268,7 +318,7 @@ async function computeUaiGestionnaire(millesime, result, handleError) {
           const results = [];
           // Ensemble des formateurs associé à ce gestionnaire
           const resultsFormateur = [data.uai];
-          const resultsLieux = [...data.uai_lieu_formation];
+          const resultsLieux = data.uai_lieu_formation ? [...data.uai_lieu_formation] : [data.uai];
 
           for (const uaiWithGestionnaire of uaisWithGestionnaire) {
             resultsFormateur.push(uaiWithGestionnaire.etablissement_formateur_uai);
@@ -332,14 +382,14 @@ async function computeUaiGestionnaire(millesime, result, handleError) {
         );
 
         if (res.modifiedCount) {
-          logger.info(`Type de l'UAI mise à jour (formateur vers gestionnaire)`, {
+          logger.info(`Type de l'UAI mise à jour (${data.uai_type} vers gestionnaire)`, {
             uai: data.uai,
             code_certification: data.code_certification,
             cfdWithContinuum,
           });
           result.formateur_to_gestionnaire++;
         } else {
-          logger.trace(`Type de l'UAI (formateur vers gestionnaire) déjà à jour`, {
+          logger.trace(`Type de l'UAI (${data.uai_type} vers gestionnaire) déjà à jour`, {
             uai: data.uai,
             code_certification: data.code_certification,
             cfdWithContinuum,
