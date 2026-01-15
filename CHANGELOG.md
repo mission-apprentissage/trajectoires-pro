@@ -1,3 +1,10 @@
+# [1.35.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.34.0...v1.35.0) (2026-01-15)
+
+
+### Features
+
+* nouvelle gestion des uai ([#386](https://github.com/mission-apprentissage/trajectoires-pro/issues/386)) ([c9a1c14](https://github.com/mission-apprentissage/trajectoires-pro/commit/c9a1c14480f5b88ef40b9a6dc77cb865ecf0648a))
+
 # [1.34.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.33.0...v1.34.0) (2025-12-23)
 
 
