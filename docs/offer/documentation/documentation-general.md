@@ -47,9 +47,7 @@ Recherche d’emploi, auto-entreprise, à l’étranger…
 <details markdown="block">
 <summary>Nombre d’étudiants en emploi  : Taux d’insertion à 6 mois à travers la part en emploi</summary>
 
-**Mode de calcul :** nombre de jeunes insérés dans l’emploi / effectif total de la dernière année de formation\*
-
-\*_les taux sont calculés sur le nombre d’élèves en année terminale sauf pour les formations en “Licence Pro” et “Master” pour lesquelles ils sont calculés sur le nombre de diplômés._
+**Mode de calcul :** nombre de jeunes insérés dans l’emploi / effectif total de la dernière année de formation
 
 Le nombre de jeunes insérés dans l’emploi est déterminé 6 mois après la fin de leur formation. Cela consiste à dénombrer ceux pour qui une déclaration sociale nominative a été saisie par une entreprise, qui atteste que la personne est en emploi dans cette entreprise.
 Ce calcul n’est pas basé sur une enquête adressée aux jeunes.
@@ -62,9 +60,7 @@ De ce fait tous **les jeunes en emploi non salarié ne sont pas pris en compte d
 <details markdown="block">
 <summary>Nombre d’étudiants poursuivant leur formation : Taux d’étudiants inscrits en formation à 6 mois en sortie de formation</summary>
  
-**Mode de calcul** : nombre de jeunes inscrits en année N+1 / effectif total de la dernière année de formation*
-
-\*_les taux sont calculés sur le nombre d’élèves en année terminale sauf pour les formations en “Licence Pro” et “Master” pour lesquelles ils sont calculés sur le nombre de diplômés._
+**Mode de calcul** : nombre de jeunes inscrits en année N+1 / effectif total de la dernière année de formation
 
 Cet indicateur comptabilise le nombre d’étudiants inscrits dans une formation, qu’il s’agisse d’un autre niveau d’étude, d’un redoublement, d’une réorientation vers une nouvelle formation…
 L’indicateur ne tient pas compte de la continuité dans un parcours de formation pour le moment.
@@ -77,9 +73,7 @@ Pour exemple, cet indicateur ne témoigne pas qu’un jeune qui a commencé à s
 <details markdown="block">
 <summary>Autres parcours : Taux d’étudiants effectuant d’autres parcours à 6 mois en sortie de formation</summary>
 
-**Mode de calcul** : (nombre d’effectifs total de la dernière année de formation) - (ceux qui sont en emploi ou en poursuite d’étude)\*
-
-\*_les taux sont calculés sur le nombre d’élèves en année terminale sauf pour les formations en “Licence Pro” et “Master” pour lesquelles ils sont calculés sur le nombre de diplômés._
+**Mode de calcul** : (nombre d’effectifs total de la dernière année de formation) - (ceux qui sont en emploi ou en poursuite d’étude)
 
 Il s’agit du nombre d’étudiant n’appartenant ni au taux en emploi, ni au taux en poursuite de formation. C’est-à-dire qu’il s’agit des étudiants qui n’ont pas pu être catégorisé sur une base liée à la scolarité ou une base emploi.
 Ils peuvent être au chômage, en inactivité, en indépendant, parties à l’étranger, en formation privée hors contrat ou encore en service civique. Cette liste des cas possibles est non exhaustive.
