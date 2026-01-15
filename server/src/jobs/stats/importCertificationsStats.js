@@ -9,6 +9,7 @@ import {
   computeCustomStats,
   getMillesimes,
   INSERJEUNES_IGNORED_STATS_NAMES,
+  INSERJEUNES_NATIONAL_STATS_NAMES,
   INSERJEUNES_STATS_NAMES,
   INSERJEUNES_CUSTOM_STATS_NAMES,
   getUnknownIJFields,
@@ -51,6 +52,7 @@ export async function importCertificationsStats(options = {}) {
         "millesime",
         "filiere",
         ...INSERJEUNES_STATS_NAMES,
+        ...INSERJEUNES_NATIONAL_STATS_NAMES,
         ...INSERJEUNES_IGNORED_STATS_NAMES,
       ]);
       if (unknownFields) {
@@ -69,7 +71,7 @@ export async function importCertificationsStats(options = {}) {
 
         try {
           const certification = await getCertificationInfo(certificationStats.code_certification);
-          const stats = pick(certificationStats, INSERJEUNES_STATS_NAMES);
+          const stats = pick(certificationStats, [...INSERJEUNES_STATS_NAMES, ...INSERJEUNES_NATIONAL_STATS_NAMES]);
           const customStats = computeCustomStats(certificationStats, "inserjeunes", INSERJEUNES_CUSTOM_STATS_NAMES);
 
           // Delete data compute with continuum job (= when type is not self)

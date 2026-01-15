@@ -30,6 +30,10 @@ describe("importBCN", () => {
       client
         .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
         .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_EMPTY"));
+
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME_ENQUETE_51?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_ENQUETE_51_EMPTY"));
     });
 
     let stats = await importBCN();
@@ -75,6 +79,10 @@ describe("importBCN", () => {
       client
         .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
         .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_EMPTY"));
+
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME_ENQUETE_51?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_ENQUETE_51_EMPTY"));
     });
 
     let stats = await importBCN();
@@ -104,6 +112,10 @@ describe("importBCN", () => {
       client
         .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
         .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_EMPTY"));
+
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME_ENQUETE_51?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_ENQUETE_51_EMPTY"));
     });
 
     let stats = await importBCN();
@@ -155,6 +167,10 @@ describe("importBCN", () => {
       client
         .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
         .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME"));
+
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME_ENQUETE_51?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_ENQUETE_51_EMPTY"));
     });
 
     let stats = await importBCN();
@@ -196,6 +212,9 @@ describe("importBCN", () => {
       client
         .get("/nomenclature/N_FORMATION_DIPLOME?schema=consultation")
         .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_UNKNOW"));
+      client
+        .get("/nomenclature/N_FORMATION_DIPLOME_ENQUETE_51?schema=consultation")
+        .reply(200, await Fixtures.BCN("N_FORMATION_DIPLOME_ENQUETE_51_EMPTY"));
     });
 
     let stats = await importBCN();

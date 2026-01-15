@@ -29,7 +29,7 @@ export const up = async (db) => {
   );
 };
 
-export const down = async () => {
+export const down = async (db) => {
   await Promise.all(
     indexes.map(async ({ collection, oldIndex, newIndex }) => {
       logger.debug(`Configuring indexes for collection ${collection}...`);
