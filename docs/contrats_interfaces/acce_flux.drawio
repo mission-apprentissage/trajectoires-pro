@@ -1,0 +1,139 @@
+<mxfile host="65bd71144e">
+    <diagram id="acce-sequence" name="Page-1">
+        <mxGraphModel dx="912" dy="531" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="u1" value="Utilisateur" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="100" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="w1" value="Portail ACCE (Web)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="100" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="d1" value="Répertoire &quot;server/data&quot;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="100" width="140" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1" value="Application Exposition" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="100" width="140" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="u2" value="Utilisateur" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="720" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="w2" value="Portail ACCE (Web)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="720" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="d2" value="Répertoire &quot;server/data&quot;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="720" width="140" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="e2" value="Application Exposition" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="720" width="140" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="ul1" style="edgeStyle=none;html=1;endArrow=none;endFill=0;" parent="1" source="u1" target="u2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="wl1" style="edgeStyle=none;html=1;endArrow=none;endFill=0;" parent="1" source="w1" target="w2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="dl1" style="edgeStyle=none;html=1;endArrow=none;endFill=0;" parent="1" source="d1" target="d2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="el1" style="edgeStyle=none;html=1;endArrow=none;endFill=0;" parent="1" source="e1" target="e2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="wbox1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="275" y="250" width="10" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="m1" value="" style="endArrow=classic;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="100" y="250" as="sourcePoint"/>
+                        <mxPoint x="275" y="250" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m1l" value="1. Accès au site d&#39;extraction" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="m1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" y="-3" relative="1" as="geometry">
+                        <mxPoint x="24" y="-13" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m2" value="" style="endArrow=classic;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="100" y="300" as="sourcePoint"/>
+                        <mxPoint x="275" y="300" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m2l" value="2. Sélection &quot;Tout sélectionner&quot;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="m2" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" y="-3" relative="1" as="geometry">
+                        <mxPoint x="24" y="-13" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="s2" value="2. DÉPÔT" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="400" width="390" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="m4" value="" style="endArrow=classic;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="100" y="470" as="sourcePoint"/>
+                        <mxPoint x="470" y="470" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m4l" value="1. Renommage &amp; Placement du fichier&lt;br&gt;(acce_etablissements.csv)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="m4" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="-3" relative="1" as="geometry">
+                        <mxPoint x="10" y="-17" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="ebox1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="665" y="600" width="10" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="m5" value="" style="endArrow=classic;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="665" y="600" as="sourcePoint"/>
+                        <mxPoint x="470" y="600" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m5l" value="1. Lecture du fichier CSV" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="m5" vertex="1" connectable="0">
+                    <mxGeometry x="0.1" y="1" relative="1" as="geometry">
+                        <mxPoint x="10" y="-9" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m6" value="" style="endArrow=classic;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="675" y="640" as="sourcePoint"/>
+                        <mxPoint x="720" y="640" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m6l" value="2. Opération d&#39;Upsert (MongoDB)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="m6" vertex="1" connectable="0">
+                    <mxGeometry x="0.5" y="1" relative="1" as="geometry">
+                        <mxPoint x="80" y="-9" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m6b" value="" style="endArrow=classic;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="720" y="640" as="sourcePoint"/>
+                        <mxPoint x="720" y="670" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m6c" value="" style="endArrow=classic;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="720" y="670" as="sourcePoint"/>
+                        <mxPoint x="675" y="670" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m3" value="" style="endArrow=classic;html=1;dashed=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="275" y="350" as="sourcePoint"/>
+                        <mxPoint x="102.50000000000011" y="350" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m3l" value="3. Téléchargement du CSV" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="m3" vertex="1" connectable="0">
+                    <mxGeometry x="0.1" y="1" relative="1" as="geometry">
+                        <mxPoint x="10" y="11" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="ggIclGSzunCl1YHEtCMO-2" value="1. EXTRACTION" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="180" width="260" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="ggIclGSzunCl1YHEtCMO-5" value="3. INTÉGRATION" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+                    <mxGeometry x="450" y="540" width="240" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
