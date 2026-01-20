@@ -7,7 +7,6 @@ import * as bcnDescriptor from "./bcn.js";
 import * as bcnMefDescriptor from "./bcn_mef.js";
 import * as bcnSiseDescriptor from "./bcn_sise.js";
 import * as acceEtablissementsDescriptor from "./acceEtablissements.js";
-import * as usersDescriptor from "./users.js";
 import * as catalogueApprentissageFormationsDescriptor from "./catalogueApprentissageFormations.js";
 import { dbCollection } from "#src/common/db/mongodb.js";
 
@@ -22,7 +21,6 @@ export function getCollectionDescriptors() {
     bcnMefDescriptor,
     bcnSiseDescriptor,
     acceEtablissementsDescriptor,
-    usersDescriptor,
     catalogueApprentissageFormationsDescriptor,
   ];
 }
@@ -61,10 +59,6 @@ export function bcnSise() {
 
 export function acceEtablissements() {
   return dbCollection(acceEtablissementsDescriptor.name);
-}
-
-export function users() {
-  return dbCollection(usersDescriptor.name);
 }
 
 export function CAFormations() {
