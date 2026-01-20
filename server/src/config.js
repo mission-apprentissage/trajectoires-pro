@@ -11,11 +11,6 @@ const config = {
     destinations: env.get("TRAJECTOIRES_PRO_LOG_DESTINATIONS").default("stdout").asArray(),
   },
   slackWebhookUrl: env.get("TRAJECTOIRES_PRO_SLACK_WEBHOOK_URL").asString(),
-  auth: {
-    jwtSecret: env.get("TRAJECTOIRES_PRO_AUTH_JWT_SECRET").required().asString(),
-    jwtIssuer: "exposition-ij",
-    jwtExpirationTime: "1d",
-  },
   mongodb: {
     uri: env
       .get("TRAJECTOIRES_PRO_MONGODB_URI")

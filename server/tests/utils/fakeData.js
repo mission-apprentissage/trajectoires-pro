@@ -12,11 +12,9 @@ import {
   bcnMef,
   bcnSise,
   acceEtablissements,
-  users,
   CAFormations,
 } from "#src/common/db/collections/collections.js";
 import { ALL, ALL_WITHOUT_INCOME, getStatsCompute } from "#src/common/stats.js";
-import { hashPassword } from "#src/services/auth/auth.js";
 import { ObjectId } from "mongodb";
 
 export function createCodeFormationDiplome() {
@@ -336,25 +334,6 @@ export function insertCAFormation(custom = {}) {
         etablissement_formateur_uai: faker.helpers.replaceSymbols("########"),
         etablissement_gestionnaire_uai: faker.helpers.replaceSymbols("########"),
         _meta: { date_import: new Date(), created_on: new Date(), updated_on: new Date() },
-      },
-      custom
-    )
-  );
-}
-
-export function insertUser(custom = {}) {
-  custom.password = hashPassword(custom.password || "Password1234!");
-  return users().insertOne(
-    merge(
-      {},
-      {
-        username: "test",
-        password: custom.password,
-        widget: {
-          hash: "test",
-          version: [],
-        },
-        _meta: { created_on: new Date(), updated_on: new Date() },
       },
       custom
     )

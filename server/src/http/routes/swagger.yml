@@ -11,8 +11,6 @@ info:
 
     L’API permet en outre de récupérer plusieurs de ces éléments à la fois, et propose divers filtres, par exemple pour récupérer les données à la maille régionale ou académique.
 
-    Certaines routes, mentionnées par un cadenas, nécessitent une authentification. Pour obtenir une clef API, nous vous invitons à [contacter nos équipes](mailto:contact@inserjeunes.beta.gouv.fr).
-
     Le code source de l’API est public et disponible [sur Github](https://github.com/mission-apprentissage/trajectoires-pro/).
 
   license:
@@ -21,26 +19,6 @@ info:
   version: 1.0.0
 
 paths:
-  /api/inserjeunes/auth/login:
-    post:
-      description: |
-        Permet de s'authentifier afin de récupérer un JSON Web Token qui permet l'accès aux routes demandant une autorisation.
-        
-        Le token expire après 1 jour.
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Login'
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Login'
-      responses:
-        200:
-          $ref: "#/components/responses/LoginResponse"
-        401:
-          $ref: "#/components/responses/401"
   /api/inserjeunes/certifications:
     get:
       description: Rechercher des statistiques de certifications
@@ -1447,13 +1425,5 @@ components:
                   ]
                 }
               }
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: query
-      name: apiKey
-    BearerAuth:
-      type: http
-      scheme: bearer
 
   

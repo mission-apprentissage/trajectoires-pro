@@ -1,7 +1,6 @@
 import "dotenv/config";
 import { program as cli } from "commander";
 import { createWriteStream } from "fs";
-import passwordPrompt from "@inquirer/password";
 import { runScript } from "./common/runScript.js";
 import { writeToStdout } from "oleoduc";
 import { exportCodeCertifications } from "./jobs/exportCodeCertifications.js";
@@ -16,7 +15,6 @@ import { importFormations as importCAFormations } from "./jobs/catalogueApprenti
 import { asArray } from "./common/utils/stringUtils.js";
 import { computeContinuumStats } from "./jobs/stats/computeContinuumStats.js";
 import { computeUAI } from "./jobs/stats/computeUAI.js";
-import * as UserJob from "./jobs/user/user.js";
 import { importBCNSise } from "./jobs/bcn/importBCNSise.js";
 import { importBCNFamilleMetier } from "./jobs/bcn/importBCNFamilleMetier.js";
 import { importSecondeCommune } from "./jobs/stats/importSecondeCommune.js";
@@ -182,29 +180,6 @@ cli
 
       await exportCodeCertifications(output);
     });
-  });
-
-const user = cli.command("user").description("Gestion des utilisateurs");
-user
-  .command("create")
-  .description("Créer un utilisateur")
-  .argument("username", "Nom d'utilisateur")
-  .action((username) => {
-    runScript(
-      async () => {
-        const password = await passwordPrompt({ message: "Entrer votre mot de passe" });
-        const passwordRepeat = await passwordPrompt({ message: "Entrer votre mot de passe de nouveau" });
-        return await UserJob.create({ username, password, passwordRepeat });
-      },
-      { withTimer: false }
-    );
-  });
-user
-  .command("remove")
-  .description("Supprime un utilisateur")
-  .argument("username", "Nom d'utilisateur")
-  .action((username) => {
-    runScript(() => UserJob.remove({ username }), { withTimer: false });
   });
 
 cli.parse(process.argv);

@@ -19,7 +19,6 @@ Certaine variable d'environnement sont requises pour démarrer le projet et impo
 
 #### Backend
 
-- TRAJECTOIRES_PRO_AUTH_JWT_SECRET: Utiliser pour signer les JWTs. Voir [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
 - Accès à l'API InserJeunes de la DEPP
   - TRAJECTOIRES_PRO_INSERJEUNES_USERNAME
   - TRAJECTOIRES_PRO_INSERJEUNES_PASSWORD
