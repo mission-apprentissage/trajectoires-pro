@@ -168,7 +168,7 @@ export default () => {
 
       return sendImageOnError(
         async () => {
-          const stats = await certificationStats({ codes_certifications, millesime });
+          const stats = await certificationStats({ codes_certifications, millesime, fetchAnneesTerminales: true });
           return sendStats("certification", stats, res, options);
         },
         res,

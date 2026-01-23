@@ -189,7 +189,7 @@ export default () => {
 
       return sendImageOnError(
         async () => {
-          const stats = await regionaleStats({ codes_certifications, region, millesime });
+          const stats = await regionaleStats({ codes_certifications, region, millesime, fetchAnneesTerminales: true });
           return sendStats("certification", stats, res, options);
         },
         res,

@@ -458,7 +458,7 @@ async function computeUAILieuFormationForFormateur(millesime, result, handleErro
             uai_type: "lieu_formation",
             ...mapKeys(omit(stats._meta, ["created_on", "date_import", "updated_on"]), (value, key) => `_meta.${key}`),
             uai_formateur: [stats.uai],
-            uai_gestionnaire: uai_gestionnaire,
+            uai_gestionnaire: uniq(uai_gestionnaire),
           };
         });
     }),
@@ -531,7 +531,7 @@ async function computeUAILieuFormationForGestionnaire(millesime, result, handleE
             uai: uai_lieu,
             uai_type: "lieu_formation",
             ...mapKeys(omit(stats._meta, ["created_on", "date_import", "updated_on"]), (value, key) => `_meta.${key}`),
-            uai_formateur: uais_formateur,
+            uai_formateur: uniq(uais_formateur),
             uai_gestionnaire: [stats.uai],
           };
         });

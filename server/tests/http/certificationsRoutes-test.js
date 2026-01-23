@@ -641,8 +641,17 @@ describe("certificationsRoutes", () => {
       });
     });
 
-    it("Vérifie qu'on peut obtenir une année non terminale", async () => {
+    it("Vérifie qu'on peut obtenir une année non terminale : renvoi les stats la dernière année", async () => {
       const { httpClient } = await startServer();
+      await insertCertificationsStats(
+        {
+          code_certification: "32220000000",
+          code_formation_diplome: "12345678",
+          filiere: "pro",
+        },
+        false
+      );
+
       await insertCertificationsStats(
         {
           code_certification: "12345678910",
@@ -658,21 +667,20 @@ describe("certificationsRoutes", () => {
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data, {
         millesime: "2020",
-        code_certification: "12345678910",
+        code_certification: "32220000000",
         code_certification_type: "mef11",
         code_formation_diplome: "12345678",
         libelle: "LIBELLE",
         filiere: "pro",
         diplome: { code: "4", libelle: "BAC" },
-        certificationsTerminales: [{ code_certification: "32220000000" }],
         donnee_source: {
-          code_certification: "12345678910",
+          code_certification: "32220000000",
           type: "self",
         },
         formation_fermee: false,
         _meta: {
-          titre: "Certification 12345678910",
-          details: "Données InserJeunes pour la certification 12345678910 (BAC filière pro) pour le millésime 2020",
+          titre: "Certification 32220000000",
+          details: "Données InserJeunes pour la certification 32220000000 (BAC filière pro) pour le millésime 2020",
         },
       });
     });
