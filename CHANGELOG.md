@@ -1,3 +1,10 @@
+## [1.35.1](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.35.0...v1.35.1) (2026-01-23)
+
+
+### Bug Fixes
+
+* annee terminales et uai uniq dans compute ([#387](https://github.com/mission-apprentissage/trajectoires-pro/issues/387)) ([75e94d0](https://github.com/mission-apprentissage/trajectoires-pro/commit/75e94d0e50684ee09e05ba92eb40d87b269ba076))
+
 # [1.35.0](https://github.com/mission-apprentissage/trajectoires-pro/compare/v1.34.0...v1.35.0) (2026-01-15)
 
 
