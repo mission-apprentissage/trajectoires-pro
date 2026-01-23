@@ -1045,8 +1045,18 @@ describe("formationsRoutes", () => {
       });
     });
 
-    it("Vérifie qu'on peut obtenir une année non terminale", async () => {
+    it("Vérifie qu'on peut obtenir une année non terminale : renvoi les stats la dernière année", async () => {
       const { httpClient } = await startServer();
+      await insertFormationsStats(
+        {
+          uai: "0751234J",
+          code_certification: "32220000000",
+          code_formation_diplome: "12345678",
+          filiere: "pro",
+        },
+        false
+      );
+
       await insertFormationsStats(
         {
           uai: "0751234J",
@@ -1063,16 +1073,15 @@ describe("formationsRoutes", () => {
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data, {
         millesime: "2018_2019",
-        code_certification: "12345678910",
+        code_certification: "32220000000",
         code_certification_type: "mef11",
         code_formation_diplome: "12345678",
         libelle: "LIBELLE",
         libelle_etablissement: "Lycée",
         filiere: "pro",
         diplome: { code: "4", libelle: "BAC" },
-        certificationsTerminales: [{ code_certification: "32220000000" }],
         donnee_source: {
-          code_certification: "12345678910",
+          code_certification: "32220000000",
           type: "self",
         },
         academie: {
@@ -1086,9 +1095,9 @@ describe("formationsRoutes", () => {
         uai: "0751234J",
         formation_fermee: false,
         _meta: {
-          titre: "Certification 12345678910, établissement 0751234J",
+          titre: "Certification 32220000000, établissement 0751234J",
           details:
-            "Données InserJeunes pour la certification 12345678910 (BAC filière pro) dispensée par l'établissement 0751234J, pour le millésime 2018_2019",
+            "Données InserJeunes pour la certification 32220000000 (BAC filière pro) dispensée par l'établissement 0751234J, pour le millésime 2018_2019",
         },
       });
     });

@@ -199,7 +199,12 @@ export default () => {
 
       return sendImageOnError(
         async () => {
-          const stats = await formationStats({ uai, codeCertificationWithType, millesime });
+          const stats = await formationStats({
+            uai,
+            codeCertificationWithType,
+            millesime,
+            fetchAnneesTerminales: true,
+          });
           return sendStats("formation", stats, res, options);
         },
         res,

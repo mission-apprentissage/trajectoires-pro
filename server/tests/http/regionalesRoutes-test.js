@@ -754,8 +754,18 @@ describe("regionalesRoutes", () => {
       });
     });
 
-    it("Vérifie qu'on peut obtenir une année non terminale", async () => {
+    it("Vérifie qu'on peut obtenir une année non terminale : renvoi les stats la dernière année", async () => {
       const { httpClient } = await startServer();
+      await insertRegionalesStats(
+        {
+          region: { code: "11", nom: "Île-de-France" },
+          code_certification: "32220000000",
+          code_formation_diplome: "12345678",
+          filiere: "pro",
+        },
+        false
+      );
+
       await insertRegionalesStats(
         {
           region: { code: "11", nom: "Île-de-France" },
@@ -772,15 +782,14 @@ describe("regionalesRoutes", () => {
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.data, {
         millesime: "2018_2019",
-        code_certification: "12345678910",
+        code_certification: "32220000000",
         code_certification_type: "mef11",
         code_formation_diplome: "12345678",
         libelle: "LIBELLE",
         filiere: "pro",
         diplome: { code: "4", libelle: "BAC" },
-        certificationsTerminales: [{ code_certification: "32220000000" }],
         donnee_source: {
-          code_certification: "12345678910",
+          code_certification: "32220000000",
           type: "self",
         },
         region: {
@@ -789,9 +798,9 @@ describe("regionalesRoutes", () => {
         },
         formation_fermee: false,
         _meta: {
-          titre: "Certification 12345678910",
+          titre: "Certification 32220000000",
           details:
-            "Données InserJeunes pour la certification 12345678910 (BAC filière pro) pour le millésime 2018_2019 et la région Île-de-France",
+            "Données InserJeunes pour la certification 32220000000 (BAC filière pro) pour le millésime 2018_2019 et la région Île-de-France",
         },
       });
     });
