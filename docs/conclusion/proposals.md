@@ -43,6 +43,7 @@ Au delà de l’intégration de nouveaux diplômes, notamment prévue dans le ca
     - Produire des indicateurs pour les diplômes délivrés à la fois dans des établissements relevant du Ministère de l'Éducation Nationale ou du ministère de l'Enseignement Supérieur
     - Aligner si possible le mode de calcul des indicateurs sur le périmètre de l'apprentissage (actuellement scolaire + apprentissage pour la DEPP, et ensemble + apprentissage pour le SIES)
 - DEPP :
+    - récupération des **données à la maille la plus fine** (pour éviter autant que possible de devoir faire des associations entre UAI)
     - **extension du périmètre** à d’autres ministères certificateurs et **augmentation de la couverture**
     - **séparation apprentissage et scolaire** pour les formations mixtes
 - InserSup :
