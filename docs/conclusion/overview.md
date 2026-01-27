@@ -9,7 +9,7 @@ nav_order: 2.1
 {: .no_toc }
 
 {: .note }
-Une partie des informations présentées ci-après peuvent être retrouvées dans la note "Bilan de la mission interministérielle InserJeunes et préconisations pour garantir la pérennité des travaux menés" rédigée par Benjamin Barralon et Julianne Lagadec lors de l'arrêt de la mission interministérielle InserJeunes. Des informations sur les autres produits de la mission ([Sirius](https://beta.gouv.fr/startups/sirius.html), [Orion](https://beta.gouv.fr/startups/pilotagevoiepro.html) et [Futur Pro](https://beta.gouv.fr/startups/cestquilepro.html)) y sont aussi disponibles. La présente documentation reprend et enrichit cette note pour le produit d'[Exposition des indicateurs InserJeunes](https://beta.gouv.fr/startups/exposition-ij.html).
+Une partie des informations présentées ci-après peuvent être retrouvées dans la note "Bilan de la mission interministérielle InserJeunes et préconisations pour garantir la pérennité des travaux menés" rédigée par Benjamin Barralon et Julianne Lagadec lors de l'arrêt de la mission interministérielle InserJeunes. Des informations sur les autres produits de la mission ([Sirius](https://beta.gouv.fr/startups/sirius.html), [Orion](https://beta.gouv.fr/startups/pilotagevoiepro.html) et [Futur Pro](https://beta.gouv.fr/startups/cestquilepro.html)) y sont aussi disponibles. La présente documentation reprend et enrichit cette note pour le produit d'[Exposition des indicateurs InserJeunes & InserSup](https://beta.gouv.fr/startups/exposition-ij.html).
 
 ## Table des matières
 {: .no_toc .text-delta }
@@ -59,15 +59,18 @@ Il est difficile de convaincre et d'outiller les conseils régionaux, les outils
 
 ## Impact
 
+La mise à disposition du grand public d'une information sur les débouchés des formations est un exercice de transparence important. Le projet a permis de rendre ces données plus facilement compréhensibles et exploitables, pour des acteurs du domaine mais aussi et surtout pour les jeunes et leurs familles.
+
+D'un point de vue organisationnel, la mission interministérielle InserJeunes le projet d'Exposition des indicateurs InserJeunes & InserSup, ont permis de faciliter les échanges inter-ministériels (Travail, Éducation Nationale et Enseignement Supérieur notamment) et d'insufler, même modestement, de nouvelles dynamiques et méthodes de travail, davantage orientées vers les utilisateurs, plus agiles et guidées par l'impact.
+
 Malgré les études de plus en plus avancées menées, notamment dans le cadre des campagnes Affelnet, nous n'avons pas été en mesure d'isoler l'impact précis de l'exposition des données sur l'évolution des vœux. Les protocoles mis en œuvre et les données récoltées ne permettaient pas de mesurer la contribution individuelle de nos travaux dans ce problème multi-factoriel.
 
 Les tests menés auprès de jeunes montrent :
 
 - qu'un grand nombre n'est pas encore exposé à la donnée ou ne la voit pas,
 - que parmi les autres, une partie ne les lit pas ou comprend moyennement la signification et l'incidence des chiffres exposés,
+- que les visualisations successives proposées par la mission ont permis une amélioration de la compréhension des indicateurs,
 - que l'information est priorisée par un pourcentage faible de jeunes qui la voient et comprennent ce qu’ils peuvent en faire. Ces individus considèrent la donnée comme très éclairante.
-
-[Enseignements : Impact]({{ site.baseurl }}{% link conclusion/impact.md %})
 
 ## Conclusion et recommandations
 
