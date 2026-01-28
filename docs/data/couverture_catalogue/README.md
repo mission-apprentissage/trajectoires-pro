@@ -26,6 +26,7 @@ Nous voulons savoir plus précisément ce qui est contenu dans notre base et la 
 -   ONISEP:
     -   [Catalogue Ideo action univers lycée Onisep - Juillet 2024](onisep/ideo_action_univers_lycee_07_2024.html)
 -   Parcoursup:
+    -   [Catalogue Parcoursup - Campagne 2026](parcoursup/parcoursup_campagne_2026.html)
     -   [Catalogue Parcoursup - Campagne 2025](parcoursup/parcoursup_campagne_2025.html)
     -   [Catalogue Parcoursup - Campagne 2024](parcoursup/parcoursup_campagne_2024.html)
 -   Catalogue de l'apprentissage des ministères éducatifs:
