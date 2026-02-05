@@ -13,7 +13,7 @@ params:
     type_voeux: "affelnet"
     nom_catalogue: "Affelnet"
     nom_catalogue_detail: "Catalogue Affelnet 2024 V20240531_Extraction_catalogue_SLA_2024"
-    lien_drive_catalogue: "https://docs.google.com/spreadsheets/d/1i3URB63eaiQJ9UfteY4_PULom_I5f1wK/edit#gid=397487575"
+    lien_drive_catalogue: ""
     catalogue_renseigne: NULL
     stats_catalogue: NULL
     afficher_stats_voeux: true

@@ -842,6 +842,79 @@ rmarkdown::render("stats_catalogue_generique.Rmd",
                   output_file = "parcoursup_campagne_2025.html"
 )
 
+
+## Parcoursup campagne 2026----
+
+stats_catalogue_parcoursup_2026 <- list(stats_catalogue_partenaire=readRDS("parcoursup/stats_catalogue_parcoursup_2026.rds"))  
+stats_catalogue_parcoursup_campagne_2026_synthese <- list(stats_catalogue_partenaire=readRDS("parcoursup/stats_catalogue_parcoursup_campagne_2026_synthese.rds"))  
+
+stats_catalogue_parcoursup_campagne_2026_synthese$stats_catalogue_partenaire <- stats_catalogue_parcoursup_campagne_2026_synthese$stats_catalogue_partenaire %>% 
+  bind_rows(
+    stats_catalogue_parcoursup_campagne_2026_synthese$stats_catalogue_partenaire %>% 
+      summarise_if("is.numeric",sum) %>% 
+      mutate(
+        `Scope campagne 2026`="Ensemble catalogue" ,
+        `Couvert (%)`=`Couvert (nb)`/`Nombre de formations`, 
+        `Non couvert (%)`=`Non couvert (nb)`/`Nombre de formations`, 
+        `Non couvert - Sous le seuil de 20 élèves (%)`=`Non couvert - Sous le seuil de 20 élèves (nb)`/`Nombre de formations`, 
+        `Non couvert - Premiere annee commune (%)`=`Non couvert - Premiere annee commune (nb)`/`Nombre de formations`, 
+        `Non couvert - Nouvelle formation (%)`=`Non couvert - Nouvelle formation (nb)`/`Nombre de formations`, 
+        `Non couvert - code certification inconnu (%)`=`Non couvert - code certification inconnu (nb)`/`Nombre de formations`, 
+        `Non couvert - UAI Inconnu (%)`=`Non couvert - UAI Inconnu (nb)`/`Nombre de formations`, 
+        `Non couvert - Territoire mal couvert (%)`=`Non couvert - Territoire mal couvert (nb)`/`Nombre de formations`, 
+        `Non couvert - Plusieurs formations en annéee terminale associées (%)`=ifelse("Non couvert - Plusieurs formations en annéee terminale associées (nb)" %in% names(.),
+                                                                                      `Non couvert - Plusieurs formations en annéee terminale associées (nb)`/`Nombre de formations`,
+                                                                                      NA),
+        # `Non couvert - Plusieurs certifications associées au départ dont une seule est couverte (%)`=`Non couvert - Plusieurs certifications associées au départ dont une seule est couverte (nb)`/`Nombre de formations`,
+        `Non couvert - Sans raison évidente (%)`=`Non couvert - Sans raison évidente (nb)`/`Nombre de formations`
+      )    
+  ) 
+
+stats_catalogue_parcoursup_2026$stats_catalogue_partenaire <- stats_catalogue_parcoursup_2026$stats_catalogue_partenaire %>%  
+  bind_rows(
+    stats_catalogue_parcoursup_2026$stats_catalogue_partenaire %>% 
+      summarise_if("is.numeric",sum) %>% 
+      mutate(
+        `Type diplôme`="Total",
+        Filiere="Total",
+        `Scope campagne 2026`="Total" ,
+        `Couvert (%)`=`Couvert (nb)`/`Nombre de formations`, 
+        `Non couvert (%)`=`Non couvert (nb)`/`Nombre de formations`, 
+        `Non couvert - Sous le seuil de 20 élèves (%)`=`Non couvert - Sous le seuil de 20 élèves (nb)`/`Nombre de formations`, 
+        `Non couvert - Premiere annee commune (%)`=`Non couvert - Premiere annee commune (nb)`/`Nombre de formations`, 
+        `Non couvert - Nouvelle formation (%)`=`Non couvert - Nouvelle formation (nb)`/`Nombre de formations`, 
+        `Non couvert - code certification inconnu (%)`=`Non couvert - code certification inconnu (nb)`/`Nombre de formations`, 
+        `Non couvert - UAI Inconnu (%)`=`Non couvert - UAI Inconnu (nb)`/`Nombre de formations`, 
+        `Non couvert - Territoire mal couvert (%)`=`Non couvert - Territoire mal couvert (nb)`/`Nombre de formations`, 
+        `Non couvert - Plusieurs formations en annéee terminale associées (%)`=ifelse("Non couvert - Plusieurs formations en annéee terminale associées (nb)" %in% names(.),
+                                                                                      `Non couvert - Plusieurs formations en annéee terminale associées (nb)`/`Nombre de formations`,
+                                                                                      NA),
+        # `Non couvert - Plusieurs certifications associées au départ dont une seule est couverte (%)`=`Non couvert - Plusieurs certifications associées au départ dont une seule est couverte (nb)`/`Nombre de formations`,
+        `Non couvert - Sans raison évidente (%)`=`Non couvert - Sans raison évidente (nb)`/`Nombre de formations`
+      )    
+  ) 
+
+
+
+
+rmarkdown::render("stats_catalogue_generique.Rmd", 
+                  params = list(
+                    catalogue_init=NULL,
+                    type_source = NULL,
+                    type_voeux= "parcoursup",
+                    nom_catalogue= "Parcoursup",
+                    afficher_stats_voeux=FALSE,
+                    stats_catalogue=stats_catalogue_parcoursup_2026,
+                    afficher_stats_synthese=TRUE,
+                    stats_catalogue_synthese=stats_catalogue_parcoursup_campagne_2026_synthese,
+                    nom_catalogue_detail = "Parcoursup - campagne 2026 paramétrée au 28/01/2026",
+                    lien_drive_catalogue = NA
+                  ),
+                  output_format = "html_document",
+                  output_dir = "parcoursup",
+                  output_file = "parcoursup_campagne_2026.html"
+)
+
 # Catalogue apprentissage  ----
 
 formation_catalogue_apprentissage <- data.table::fread(file.path(chemin_racine_data,"RCO/formation_2024-05-02T07 56 05.492Z.csv")) %>% 
